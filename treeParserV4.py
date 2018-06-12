@@ -17,12 +17,14 @@ class Strain(object):
     sequence = []
     genes = []
     descendants = []
+    operonPositions = []
     
     #Class constructor
-    def __init__(self, name, sequence, descendants):
+    def __init__(self, name, sequence, descendants, operonPositions):
         self.name = name
         self.sequence = sequence
         self.descendants = descendants
+        self.operonPositions = operonPositions
         
     #Prints the Strain content
     def printStrain(self):
@@ -42,6 +44,9 @@ class Strain(object):
     
     def setGenes(self, genes):
         self.genes = genes
+
+    def getOperonPositions(self):
+        return self.operonPositions
         
 ######################################################
 # computeSetDifference
@@ -86,7 +91,7 @@ def computeSetDifference(operon1, operon2):
 # Parameters: directoryList - List of directories to process
 # Description: 
 ###################################################### 
-def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesStrain1, genesStrain2):
+def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2):
     
     print('Starting sequence analysis of {%s, %s}...' % (strain1, strain2))
     
@@ -158,7 +163,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
     print ('Done analyzing {%s, %s}\n' % (strain1, strain2)) 
     outputResults(strain1, strain2, firstOperonList, secondOperonList, resultMatrix)
     outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix)
-    ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2)
+    ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2)
      
     return ancestralOperons
 
@@ -167,7 +172,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
 # Parameters: strain1, strain2, sequence1, sequence2, resultMatrix
 # Description: Scans the matrix to find orthologs
 ######################################################
-def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2):
+def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2):
     ancestralOperons = []
     
     #Initialize the arrays that will track the coverage of the operons in the two genomes
@@ -181,7 +186,7 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, setDiffe
         coverageTracker2[x] = False
     
     #Step 1: Optimal global alignments
-    coverageTracker1, coverageTracker2, ancestralOperons = performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons)
+    coverageTracker1, coverageTracker2, ancestralOperons = performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, operonPositionList1, operonPositionList2)
     
     #Step 2: Scan genes incase any operons were missed
     if len(genesStrain2) > 0:
@@ -266,7 +271,7 @@ def performStep2(coverageTracker, ancestralOperons, genes, sequence):
 # Parameters: resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
 # Description: Finds the optimal global alignments in the matrix
 ######################################################
-def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons):
+def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, operonPositionList1, operonPositionList2):
 
     #Scan each row
     for i in range(0, len(resultMatrix)):
@@ -314,7 +319,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
             print('**************************************\n')
             for j in range(0, len(resultMatrix[i])):
                 op2 = sequence2[j]
-                localAlignment(op1, op2)
+                localAlignment(op1, op2, operonPositionList1, operonPositionList2)
             print('\n**************************************')
             print('**************************************\n\n')
 
@@ -326,7 +331,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
 # Parameters: operon1, operon2
 # Description: performs local alignment on two operons
 ######################################################
-def localAlignment(op1, op2):
+def localAlignment(op1, op2, operonPositionList1, operonPositionList2):
     print('\nPerforming local alignment..')
     print(op1)
     print(op2)
@@ -583,6 +588,8 @@ def removeContent(operonList):
 def getOperons(sequence):
     operonList = []
     index = 0
+    geneIndex = 0
+    operonPositions = []
     
     while index < len(sequence):
         
@@ -596,20 +603,29 @@ def getOperons(sequence):
             #increment the index to include the >
             index += 1
             operonList.append(sequence[startIndex:index])
+            #decrement the geneIndex to not include <> values
+            geneIndex -= 1
             
         elif (sequence[index] == '[') or (sequence[index] == '-' and sequence[index + 1] == '['):
             startIndex = index
+            operonPositions.append(geneIndex)
             
             while sequence[index] != ']':
+                if sequence[index] == ',':
+                    geneIndex += 1
                 index += 1
             
             #increment the index to include the ]
             index += 1
             operonList.append(sequence[startIndex:index])
-            
+        if sequence[index] == ',':
+            geneIndex += 1
+        #print(sequence[index] + " " + str(index) + " " + str(geneIndex))
         index += 1
     print("Length of sequence: " + str(len(sequence.split(','))))
-    return operonList
+    print(sequence)
+    print(operonPositions)
+    return operonList, operonPositions
 
 ######################################################
 # processDistanceFile
@@ -617,13 +633,15 @@ def getOperons(sequence):
 # Description: Reads in the file and stores the genes as an array
 ######################################################
 def processDistanceFile(fileName):
-    genes = []
+    genes1 = []
+    genes2 = []
+    listTwo = False
     
     file = open(fileName, 'r')
     
     for line in file:   
         #Split the data
-        data = line.split()   
+        data = line.split()
         #The third position holds the gene
         if 'tRNA' in data[0] or 'rRNA' in data[0]:
             gene = data[2]
@@ -631,11 +649,21 @@ def processDistanceFile(fileName):
             if 'tRNA-' in gene:
                 gene = gene.replace("tRNA-", "")
             #add the gene to the genes array
-            genes.append(gene)
+            if listTwo:
+                genes2.append(gene)
+            else:
+                genes1.append(gene)
+            #genes1.append(gene)
+        elif 'Origin' in data[0]:
+            listTwo = True
+
+    genes2.extend(genes1)
+
     #Close the file
     file.close()
-    print("Length of genes: " + str(len(genes)))
-    return genes
+    print("Length of genes: " + str(len(genes2)))
+    print(genes2)
+    return genes2
  
 ######################################################
 # post_traversal
@@ -668,8 +696,8 @@ def post_traversal(node):
                 sequence = open(node.name + '/sequence.rtf', 'r').read()
                 
                 #Get the operons for this sequence
-                currNodeOperons = getOperons(sequence)
-                strain = Strain(node.name, currNodeOperons, [])                
+                currNodeOperons, operonPositions = getOperons(sequence)
+                strain = Strain(node.name, currNodeOperons, [], operonPositions)                
                 
                 if os.path.isfile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt'):
                     print('Opening tRNA rRNA distance file: %s/%s_tRNA_and_rRNA_Positions.txt' % (node.name, node.name))
@@ -686,13 +714,14 @@ def post_traversal(node):
         leftChildStrain.printStrain()
         rightChildStrain.printStrain()
         
-        ancestralOperons = sequenceAnalysis(leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getGenes(), rightChildStrain.getGenes())
+        ancestralOperons = sequenceAnalysis(leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions())
         
         global ancestralCounter
         ancestralCounter += 1
         
         node.name = 'Ancestor %d' % (ancestralCounter)
-        ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()])
+        #TO DO: Properly calculate operon positions for the ancestor
+        ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [])
         
         print('This is the resulting ancestor after the comparison:')
         ancestor.printStrain()
