@@ -10,7 +10,7 @@ threshold = 2
 ######################################################
 # Strain
 # Parameters: name, sequence, descendants
-# Description: Stores information about a Strain in the tree
+# Description: Stores information about a Strain from the tree
 ######################################################
 class Strain(object):
     name = ""
@@ -51,9 +51,7 @@ class Strain(object):
 ######################################################
 def computeSetDifference(operon1, operon2):
     
-    noDuplicatesSet1 = set()
-    noDuplicatesSet2 = set()
-    
+
     set1 = multiset.Multiset();
     set2 = multiset.Multiset();
     
@@ -70,16 +68,13 @@ def computeSetDifference(operon1, operon2):
     
     for op in operon1List:
         set1.add(op.split('_')[0].strip())
-        noDuplicatesSet1.add(op.split('_')[0].strip())
     
     for op in operon2List:
         set2.add(op.split('_')[0].strip())
-        noDuplicatesSet2.add(op.split('_')[0].strip())
     
     set3 = set1.symmetric_difference(set2)
-    noDuplicatesSet3 = noDuplicatesSet1.symmetric_difference(noDuplicatesSet2)
     
-    return len(set3), operon1List, operon2List, len(noDuplicatesSet3)
+    return len(set3), operon1List, operon2List
     
 ######################################################
 # sequenceAnalysis
@@ -94,11 +89,8 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
     firstOperonList = removeContent(firstOperonList)
     secondOperonList = removeContent(secondOperonList)
     
-    #initialize the matrix to store the scores
-    resultMatrix = [[ 0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
-    
-    #initialize the matrix to store the set differences
-    setDifferenceMatrix = [[ 0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
+    #initialize the matrix to store the global alignment scores
+    globalAlignmentMatrix = [[ 0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
     
     ####################################
     ##Calculations
@@ -113,7 +105,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
             reverseOp2 = reverseSequence(op2)
             
             #compute the set differences between the two operons
-            setDifference, operon1, operon2, numberOfDifferentGenes = computeSetDifference(op1, op2)
+            setDifference, operon1, operon2 = computeSetDifference(op1, op2)
             
             #Reverse operons if needed to
             if reverseOp1:
@@ -123,13 +115,13 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
                 operon2.reverse()
                 
             #initialize the distance matrix
-            distanceMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+            scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
             
             for a in range(0, len(operon1)+1):
-                distanceMatrix[a][0] = a
+                scoreMatrix[a][0] = a
                 
             for a in range(0, len(operon2)+1):
-                distanceMatrix[0][a] = a
+                scoreMatrix[0][a] = a
                 
             #perform the Global Alignment
             for a in range(1, len(operon1)+1):
@@ -140,25 +132,24 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
                         
                         #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
                         if operon1[a-1].strip() == operon2[b-1].strip():
-                            distanceMatrix[a][b] = distanceMatrix[a-1][b-1]
+                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
                         else:
-                            distanceMatrix[a][b] = distanceMatrix[a-1][b-1] + 0.5
+                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
                     else:
-                        distanceMatrix[a][b] = min(distanceMatrix[a-1][b] + 1, distanceMatrix[a][b-1] + 1, distanceMatrix[a-1][b-1] + 1)
+                        scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
                         
-            resultMatrix[x][y] = distanceMatrix[len(operon1)][len(operon2)]
-            setDifferenceMatrix[x][y] = numberOfDifferentGenes
+            globalAlignmentMatrix[x][y] = scoreMatrix[len(operon1)][len(operon2)]
             
             if setDifference < threshold:
-                resultMatrix[x][y] = str(resultMatrix[x][y]) + '*'
+                globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
                 
     ####################################
     ##End of Calculations
     ####################################
     print ('Done analyzing {%s, %s}\n' % (strain1, strain2)) 
-    outputResults(strain1, strain2, firstOperonList, secondOperonList, resultMatrix)
-    outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix)
-    ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2)
+    outputResults(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
+    outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
+    ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix, genesStrain1, genesStrain2)
      
     return ancestralOperons
 
@@ -167,7 +158,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
 # Parameters: strain1, strain2, sequence1, sequence2, resultMatrix
 # Description: Scans the matrix to find orthologs
 ######################################################
-def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2):
+def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, genesStrain1, genesStrain2):
     ancestralOperons = []
     
     #Initialize the arrays that will track the coverage of the operons in the two genomes
@@ -606,8 +597,10 @@ def getOperons(sequence):
             #increment the index to include the ]
             index += 1
             operonList.append(sequence[startIndex:index])
-            
+        
+        #increment the index
         index += 1
+        
     print("Length of sequence: " + str(len(sequence.split(','))))
     return operonList
 
@@ -665,18 +658,19 @@ def post_traversal(node):
                 print('Opening the file: %s/sequence.rtf' % node.name)
                 
                 #Read the sequence in
-                sequence = open(node.name + '/sequence.rtf', 'r').read()
+                fileGeneSequence = open(node.name + '/sequence.rtf', 'r').read()
                 
-                #Get the operons for this sequence
-                currNodeOperons = getOperons(sequence)
+                #Get the operons for this sequence. Operons stored as an array
+                currNodeOperons = getOperons(fileGeneSequence)
                 strain = Strain(node.name, currNodeOperons, [])                
                 
+                #Check if we have the distance tRNA & rRNA distance file for this strain
                 if os.path.isfile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt'):
                     print('Opening tRNA rRNA distance file: %s/%s_tRNA_and_rRNA_Positions.txt' % (node.name, node.name))
                     
                     #Read the distance file in
-                    genes = processDistanceFile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt')
-                    strain.setGenes(genes)
+                    allGenes = processDistanceFile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt')
+                    strain.setGenes(allGenes)
                     
                 return strain
     
@@ -692,6 +686,8 @@ def post_traversal(node):
         ancestralCounter += 1
         
         node.name = 'Ancestor %d' % (ancestralCounter)
+        
+        #Create ancestral Strain
         ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()])
         
         print('This is the resulting ancestor after the comparison:')
@@ -711,17 +707,22 @@ def post_traversal(node):
     else:
         return None        
         
-##### main #######
+######################################################
+#                       main
+###################################################### 
 print 'Reading in phylogenetic tree...'
 tree = Phylo.read('simpletree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
+#Traverses, computes the ancestral genomes and returns the root node
 result = post_traversal(tree.clade)
 
+#Output the root node
 if result is not None:
     print('This is the result:')
     result.printStrain()
 
+#Draw tree to the console
 Phylo.draw(tree)
 
 print 'End of processing'
