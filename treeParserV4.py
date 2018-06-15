@@ -186,7 +186,7 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, setDiffe
         coverageTracker2[x] = False
     
     #Step 1: Optimal global alignments
-    coverageTracker1, coverageTracker2, ancestralOperons = performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, operonPositionList1, operonPositionList2)
+    coverageTracker1, coverageTracker2, ancestralOperons = performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2)
     
     #Step 2: Scan genes incase any operons were missed
     if len(genesStrain2) > 0:
@@ -271,7 +271,7 @@ def performStep2(coverageTracker, ancestralOperons, genes, sequence):
 # Parameters: resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
 # Description: Finds the optimal global alignments in the matrix
 ######################################################
-def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, operonPositionList1, operonPositionList2):
+def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2):
 
     #Scan each row
     for i in range(0, len(resultMatrix)):
@@ -285,7 +285,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
             #Check if the entry has an asterisk and if both operons have not been marked off
             if ('*' in str(resultMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
                 currentScore = float(str(resultMatrix[i][j]).replace("*", ""))
-                print(str(currentScore))
+                #print(str(currentScore))
                 
                 #If we have not found a score yet or this score is lower then select it
                 if lowestScore == -1 or currentScore < lowestScore:
@@ -301,7 +301,6 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
                     colIndex = j
                     distance = abs(i - j)
 
-        print(str(lowestScore))
         #If we found an ortholog, then mark off both operons
         if lowestScore > -1:
             
@@ -319,7 +318,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
             print('**************************************\n')
             for j in range(0, len(resultMatrix[i])):
                 op2 = sequence2[j]
-                localAlignment(op1, op2, operonPositionList1, operonPositionList2)
+                localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2)
             print('\n**************************************')
             print('**************************************\n\n')
 
@@ -331,7 +330,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
 # Parameters: operon1, operon2
 # Description: performs local alignment on two operons
 ######################################################
-def localAlignment(op1, op2, operonPositionList1, operonPositionList2):
+def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2):
     print('\nPerforming local alignment..')
     print(op1)
     print(op2)
@@ -349,6 +348,10 @@ def localAlignment(op1, op2, operonPositionList1, operonPositionList2):
     #compute the set differences between the two operons
     setDifference, operon1, operon2, numberOfDifferentGenes = computeSetDifference(op1, op2)
     
+    leftAdjustment1 = 0
+    leftAdjustment2 = 0
+    rightAdjustment1 = 0
+    rightAdjustment2 = 0
     #Reverse operons if needed to
     if reverseOp1:
         operon1.reverse()
@@ -381,27 +384,102 @@ def localAlignment(op1, op2, operonPositionList1, operonPositionList2):
                 maxPosition = (a, b)
 
     aligned1, aligned2, numGaps, endPosition = traceback(operon1, operon2, scoreMatrix, maxPosition)
-    print(scoreMatrix)
-    print(aligned1)
-    print(aligned2)
+    #print(scoreMatrix)
 
     if len(operon1) <= len(operon2):
         shortestLength = len(operon1)
     else:
         shortestLength = len(operon2)
 
-    if numGaps == 0:
+    if reverseOp1:
+        leftAdjustment1 = len(operon1)-1
+        leftAdjustment1 -= endPosition[0]-1
+        rightAdjustment1 += (len(operon1) - (maxPosition[0]))
+    else:
+        leftAdjustment1 += endPosition[0]-1
+        rightAdjustment1 = len(operon1)-1
+        rightAdjustment1 -= (len(operon1) - (maxPosition[0]))
+    
+    if reverseOp2:
+        leftAdjustment2 = len(operon2)-1
+        leftAdjustment2 -= endPosition[1]-1
+        rightAdjustment2 += (len(operon2) - (maxPosition[1]))
+    else:
+        leftAdjustment2 += endPosition[1]-1
+        rightAdjustment2 = len(operon2)-1
+        rightAdjustment2 -= (len(operon2) - (maxPosition[1]))
+
+    if numGaps == 0 and genesStrain1 and genesStrain2:
         if len(aligned1) == shortestLength:
-            print("One operon is a SUBSET of the other..")
-            #Expand from both sides
+            print("One operon is a SUBSET of the other. Performing extention..")
+            extendLeft(genesStrain1, genesStrain2, operonPositionList1[op1Position]+leftAdjustment1, operonPositionList2[op2Position]+leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2)
+            extendRight(genesStrain1, genesStrain2, operonPositionList1[op1Position]+rightAdjustment1, operonPositionList2[op2Position]+rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2)
         elif len(aligned1) < shortestLength:
-            print("Score matrix lengths")
-            print(str(len(scoreMatrix)) + " " + str(len(scoreMatrix[0])))
-            print(maxPosition)
             if maxPosition[0] == len(scoreMatrix)-1 and maxPosition[1] == len(scoreMatrix[0])-1:
-                print("Extend to the right")
+                print("Performing right extension..")
+                extendRight(genesStrain1, genesStrain2, operonPositionList1[op1Position]+rightAdjustment1, operonPositionList2[op2Position]+rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2)
             elif endPosition[0] == 1 and endPosition[1] == 1:
-                print("Extend to the left")
+                print("Performing left extension..")
+                extendLeft(genesStrain1, genesStrain2, operonPositionList1[op1Position]+leftAdjustment1, operonPositionList2[op2Position]+leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2)
+    print("Final alignment:")
+    print(aligned1)
+    print(aligned2)
+
+def extendLeft(genesStrain1, genesStrain2, opGenePosition1, opGenePosition2, reverseOp1, reverseOp2, aligned1, aligned2):
+    mismatch = False
+
+    while not mismatch:
+        if reverseOp1:
+            opGenePosition1 += 1
+        else:
+            opGenePosition1 -= 1
+
+        if reverseOp2:
+            opGenePosition2 += 1
+        else:
+            opGenePosition2 -= 1
+
+        #print(str(opGenePosition1) + " " + str(opGenePosition2))
+        if (opGenePosition1 in range(0, len(genesStrain1))) and (opGenePosition2 in range(0, len(genesStrain2))):
+            gene1 = genesStrain1[opGenePosition1]
+            gene2  = genesStrain2[opGenePosition2]
+            #print(gene1 + " " + gene2)
+
+            if gene1 == gene2:
+                aligned1.insert(0, gene1)
+                aligned2.insert(0, gene2)
+            else:
+                mismatch = True
+        else:
+            mismatch = True
+
+def extendRight(genesStrain1, genesStrain2, opGenePosition1, opGenePosition2, reverseOp1, reverseOp2, aligned1, aligned2):
+    mismatch = False
+
+    while not mismatch:
+        if reverseOp1:
+            opGenePosition1 -= 1
+        else:
+            opGenePosition1 += 1
+
+        if reverseOp2:
+            opGenePosition2 -= 1
+        else:
+            opGenePosition2 += 1
+
+        #print(str(opGenePosition1) + " " + str(opGenePosition2))
+        if (opGenePosition1 in range(0, len(genesStrain1))) and (opGenePosition2 in range(0, len(genesStrain2))):
+            gene1 = genesStrain1[opGenePosition1]
+            gene2  = genesStrain2[opGenePosition2]
+            #print(gene1 + " " + gene2)
+
+            if gene1 == gene2:
+                aligned1.append(gene1)
+                aligned2.append(gene2)
+            else:
+                mismatch = True
+        else:
+            mismatch = True
 
 
 ######################################################
@@ -620,11 +698,7 @@ def getOperons(sequence):
             operonList.append(sequence[startIndex:index])
         if sequence[index] == ',':
             geneIndex += 1
-        #print(sequence[index] + " " + str(index) + " " + str(geneIndex))
         index += 1
-    print("Length of sequence: " + str(len(sequence.split(','))))
-    print(sequence)
-    print(operonPositions)
     return operonList, operonPositions
 
 ######################################################
@@ -653,7 +727,6 @@ def processDistanceFile(fileName):
                 genes2.append(gene)
             else:
                 genes1.append(gene)
-            #genes1.append(gene)
         elif 'Origin' in data[0]:
             listTwo = True
 
@@ -661,8 +734,6 @@ def processDistanceFile(fileName):
 
     #Close the file
     file.close()
-    print("Length of genes: " + str(len(genes2)))
-    print(genes2)
     return genes2
  
 ######################################################
