@@ -6,6 +6,9 @@ import xlsxwriter
 
 ancestralCounter = 0
 threshold = 2
+localAlignmentCounter = 0
+fullAlignmentCounter = 0
+extensionCounter = 0
 
 ######################################################
 # Strain
@@ -166,6 +169,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
     ##End of Calculations
     ####################################
     print ('Done analyzing {%s, %s}\n' % (strain1, strain2)) 
+    printStrains(strain1, strain2)
     outputResults(strain1, strain2, firstOperonList, secondOperonList, resultMatrix)
     outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix)
     ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, resultMatrix, setDifferenceMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
@@ -277,6 +281,7 @@ def performStep2(coverageTracker, ancestralOperons, genes, sequence):
 # Description: Finds the optimal global alignments in the matrix
 ######################################################
 def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
+    global localAlignmentCounter
 
     #Scan each row
     for i in range(0, len(resultMatrix)):
@@ -324,12 +329,48 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
             for j in range(0, len(resultMatrix[i])):
                 if coverageTracker1[i] == False and coverageTracker2[j] == False:
                     op2 = sequence2[j]
+                    localAlignmentCounter += 1
                     localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
             print('\n**************************************')
             print('**************************************\n\n')
 
+    printStats()
             
     return coverageTracker1, coverageTracker2, ancestralOperons
+
+def printStrains(strain1, strain2):
+    file  = open('localAlignmentResults.txt', 'a+')
+
+    file.write("\nResults of Local Alignment: %s & %s\n" %(strain1, strain2))
+    file.write("...\n")
+    file.close()
+
+def printAlignments(op1Position, op2Position, operon1, operon2, alignment1, alignment2, message):
+    file  = open('localAlignmentResults.txt', 'a+')
+
+    file.write("Strain 1 Operon %d: %s\n" %(op1Position, operon1))
+    file.write("Strain 2 Operon  %d: %s\n" %(op2Position, operon2))
+    file.write("Alignment Result (%s):\n" %message)
+    file.write("%s\n" %alignment1)
+    file.write("%s\n\n" %alignment2)
+
+    file.close()
+
+def printStats():
+    global localAlignmentCounter
+    global fullAlignmentCounter
+    global extensionCounter
+    file  = open('localAlignmentResults.txt', 'a+')
+
+    file.write("\nTotals:\n")
+    file.write("Number of times alignment performed: %d\n" %localAlignmentCounter)
+    file.write("Number of full alignments that occurred: %d\n" %fullAlignmentCounter)
+    file.write("Number of extensions performed: %d\n\n" %extensionCounter)
+
+    file.close()
+    localAlignmentCounter = 0
+    fullAlignmentCounter = 0
+    extensionCounter = 0
 
 ######################################################
 # localAlignment
@@ -337,6 +378,7 @@ def performStep1(resultMatrix, coverageTracker1, coverageTracker2, sequence1, se
 # Description: performs local alignment on two operons
 ######################################################
 def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
+    global fullAlignmentCounter
     print('\nPerforming local alignment..')
     print(op1)
     print(op2)
@@ -417,21 +459,31 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
 
     if numGaps == 0 and genesStrain1 and genesStrain2:
         if len(aligned1) == shortestLength:
-            print("One operon is a SUBSET of the other. Performing extention..")
+            fullAlignmentCounter += 1
+            print("One operon is a SUBSET of the other. Trying extention..")
             extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
             extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+            printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left and right extension")
         elif len(aligned1) < shortestLength:
             if maxPosition[0] == len(scoreMatrix)-1 and maxPosition[1] == len(scoreMatrix[0])-1:
-                print("Performing right extension..")
+                print("Trying right extension..")
                 extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+                if len(aligned1) >= shortestLength:
+                    printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after right extension")
             elif endPosition[0] == 1 and endPosition[1] == 1:
-                print("Performing left extension..")
+                print("Trying left extension..")
                 extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+                if len(aligned1) >= shortestLength:
+                    printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left extension")
+    elif numGaps == 0 and len(aligned1) == shortestLength:
+        fullAlignmentCounter += 1
+        printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after no extension due to missing gene list(s)")
     print("Final alignment:")
     print(aligned1)
     print(aligned2)
 
 def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opGenePosition1, opGenePosition2, leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2):
+    global extensionCounter
     mismatch = False
     operonRange1 = range(opGenePosition1, opGenePosition1+len(operon1))
     operonRange2 = range(opGenePosition2, opGenePosition2+len(operon2))
@@ -482,6 +534,7 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
                 if gene1 == gene2:
                     aligned1.insert(0, gene1)
                     aligned2.insert(0, gene2)
+                    extensionCounter += 1
                 else:
                     mismatch = True
         else:
@@ -714,10 +767,10 @@ def getOperons(sequence):
                 singletonList[str(geneIndex)] = sequence[startIndex:index]
                 index -= 1
         index += 1
-    print(sequence)
-    print(operonList)
-    print(operonPositions)
-    print(singletonList)
+    #print(sequence)
+    #print(operonList)
+    #print(operonPositions)
+    #print(singletonList)
     return operonList, operonPositions, singletonList
 
 ######################################################
@@ -835,6 +888,7 @@ print 'Reading in phylogenetic tree...'
 tree = Phylo.read('simpletree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
+open('localAlignmentResults.txt', 'w+').close()
 result = post_traversal(tree.clade)
 
 if result is not None:
