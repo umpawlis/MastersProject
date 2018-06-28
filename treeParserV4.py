@@ -6,7 +6,6 @@ import xlsxwriter
 
 ancestralCounter = 0
 threshold = 2
-localAlignmentCounter = 0
 fullAlignmentCounter = 0
 extensionCounter = 0
 
@@ -383,7 +382,6 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             for j in range(0, len(globalAlignmentMatrix[i])):
                 if coverageTracker1[i] == False and coverageTracker2[j] == False:
                     op2 = sequence2[j]
-                    localAlignmentCounter += 1
                     localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
             print('\n**************************************')
             print('**************************************\n\n')
@@ -416,18 +414,15 @@ def printAlignments(op1Position, op2Position, operon1, operon2, alignment1, alig
     file.close()
 
 def printStats():
-    global localAlignmentCounter
     global fullAlignmentCounter
     global extensionCounter
     file  = open('localAlignmentResults.txt', 'a+')
 
     file.write("\nTotals:\n")
-    file.write("Number of times alignment performed: %d\n" %localAlignmentCounter)
     file.write("Number of full alignments that occurred: %d\n" %fullAlignmentCounter)
     file.write("Number of extensions performed: %d\n\n" %extensionCounter)
 
     file.close()
-    localAlignmentCounter = 0
     fullAlignmentCounter = 0
     extensionCounter = 0
 
