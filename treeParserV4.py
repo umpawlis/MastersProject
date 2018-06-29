@@ -385,6 +385,11 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
                     localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
             print('\n**************************************')
             print('**************************************\n\n')
+            
+            #######Statement is a place holder, will determine better condition later#######
+            if(False):
+                duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
+            
     printStats()
     
     if len(trackingEvents) > 0:
@@ -394,6 +399,64 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     
     return coverageTracker1, coverageTracker2, ancestralOperons, globalAlignmentCounter, localAlignmentCounter
+
+######################################################
+# duplicateAlignment
+# Parameters: 
+# Description: Performs a global alignment on genome itself to find best source of duplicate
+######################################################
+def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
+    print('Duplicate Alignment')
+    
+    optimalScore = -1
+    
+    for x in range(0, len(g1Sequence)):
+        #Ignore global alignment on operon itself
+        if x != g1OperonIndex:
+            #Check if we have to reverse anything
+            reverseOp1 = reverseSequence(g1Operon)
+            reverseOp2 = reverseSequence(g1Sequence[x])
+            
+            #Compute the set differences
+            setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(g1Operon, g1Sequence[x])
+            
+            #Reverse operons if needed to
+            if reverseOp1:
+                operon1.reverse()
+            
+            if reverseOp2:
+                operon2.reverse()
+            
+            #initialize the distance matrix
+            scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+            
+            for a in range(0, len(operon1)+1):
+                scoreMatrix[a][0] = a
+                
+            for a in range(0, len(operon2)+1):
+                scoreMatrix[0][a] = a
+                
+            #Perform Duplicate Alignment
+            for a in range(1, len(operon1) + 1):
+                for b in range(1, len(operon2) + 1):
+                    #check if genes are identical
+                    if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                        #if codons match then the string will be a perfect match since we established in the previous if statement whether they're the same gene
+                        if operon1[a-1].strip() == operon2[b-1].strip():
+                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                        else:
+                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
+                    else:
+                        scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
+            score = scoreMatrix[len(operon1)][len(operon2)]
+            
+            if optimalScore == -1 or score < optimalScore:
+                optimalScore = score
+                duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
+
+    if optimalScore != -1:
+        #We found an alignment
+        duplicateEvent.printTrackingEvent()
 
 def printStrains(strain1, strain2):
     file  = open('localAlignmentResults.txt', 'a+')
