@@ -519,16 +519,17 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
             extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
             printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left and right extension")
         elif len(aligned1) < shortestLength:
-            if maxPosition[0] == len(scoreMatrix)-1 and maxPosition[1] == len(scoreMatrix[0])-1:
+            if maxPosition[0] == len(scoreMatrix)-1 or maxPosition[1] == len(scoreMatrix[0])-1:
                 print("Trying right extension..")
                 extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
                 if len(aligned1) >= shortestLength:
                     printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after right extension")
-            elif endPosition[0] == 1 and endPosition[1] == 1:
+            elif endPosition[0] == 1 or endPosition[1] == 1:
                 print("Trying left extension..")
                 extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
                 if len(aligned1) >= shortestLength:
                     printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left extension")
+
     elif numGaps == 0 and len(aligned1) == shortestLength:
         fullAlignmentCounter += 1
         printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after no extension due to missing gene list(s)")
@@ -583,7 +584,7 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
             if not mismatch:
                 gene1 = genesStrain1[opGenePosition1]
                 gene2  = genesStrain2[opGenePosition2]
-                #print(gene1 + " " + gene2)
+                print(gene1 + " " + gene2)
 
                 if gene1 == gene2:
                     aligned1.insert(0, gene1)
@@ -764,6 +765,7 @@ def removeContent(operonList):
 # Description: extracts a list of operons from a sequence
 ###################################################### 
 def getOperons(sequence):
+    geneList = []
     operonList = []
     singletonList = {}
     index = 0
@@ -797,6 +799,10 @@ def getOperons(sequence):
             #increment the index to include the ]
             index += 1
             operonList.append(sequence[startIndex:index])
+            if sequence[startIndex] == '[':
+                geneList.extend([gene.strip() for gene in sequence[startIndex+1:index-1].split(',')])
+            else:
+                geneList.extend([gene.strip() for gene in sequence[startIndex+2:index-1].split(',')])
 
         if sequence[index] == ',':
             geneIndex += 1
@@ -808,13 +814,11 @@ def getOperons(sequence):
                     index += 1
 
                 singletonList[str(geneIndex)] = sequence[startIndex:index]
+                geneList.append(sequence[startIndex:index].strip().replace("-", ""))
                 index -= 1
         index += 1
-    #print(sequence)
-    #print(operonList)
-    #print(operonPositions)
-    #print(singletonList)
-    return operonList, operonPositions, singletonList
+
+    return operonList, operonPositions, singletonList, geneList
 
 ######################################################
 # processDistanceFile
@@ -882,7 +886,7 @@ def post_traversal(node):
                 fileGeneSequence = open(node.name + '/sequence.rtf', 'r').read()
                 
                 #Get the operons for this sequence
-                currNodeOperons, operonPositions, singletonDict = getOperons(fileGeneSequence)
+                currNodeOperons, operonPositions, singletonDict, allGenes = getOperons(fileGeneSequence)
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)                
                 
                 #Check if we have the distance tRNA & rRNA distance file for this strain
@@ -890,7 +894,8 @@ def post_traversal(node):
                     print('Opening tRNA rRNA distance file: %s/%s_tRNA_and_rRNA_Positions.txt' % (node.name, node.name))
                     
                     #Read the distance file in
-                    allGenes = processDistanceFile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt')
+                    #Old version
+                    #allGenes = processDistanceFile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt')
                     strain.setGenes(allGenes)
                     
                 return strain
