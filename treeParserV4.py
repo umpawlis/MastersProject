@@ -10,6 +10,61 @@ fullAlignmentCounter = 0
 extensionCounter = 0
 
 ######################################################
+# Singleton Operon
+# Parameters: 
+# Description: Stores information about singleton operons
+######################################################
+class SingletonOperon(object):
+    gene = ""
+    index = -1
+    genomeName = ""
+    geneSequence = ""
+    counter = -1
+    
+    def __init__(self, gene, index, genomeName, geneSequence, counter,):
+        self.gene = gene
+        self.index = index
+        self.genomeName = genomeName
+        self.geneSequence = geneSequence
+        self.counter = counter
+        
+    #####################################
+    #Getters
+    #####################################
+    def getGene(self):
+        return self.gene
+    
+    def getIndex(self):
+        return self.index
+    
+    def getGenomeName(self):
+        return self.genomeName
+    
+    def getGeneSeqeunce(self):
+        return self.geneSequence
+    
+    def getCounter(self):
+        return self.counter
+    
+    #####################################
+    #Setters
+    #####################################
+    def setGene(self, gene):
+        self.gene = gene
+        
+    def setIndex(self, index):
+        self.index = index
+        
+    def setGenomeName(self, genomeName):
+        self.genomeName = genomeName
+        
+    def setGeneSequence(self, geneSequence):
+        self.geneSequence = geneSequence
+    
+    def setCounter(self, counter):
+        self.counter = counter
+
+######################################################
 # Tracking Event
 # Parameters: 
 # Description: Stores information about a pair of orthologous operons
@@ -1009,7 +1064,9 @@ def getOperons(sequence):
                 geneList.append(sequence[startIndex:index].strip().replace("-", ""))
                 index -= 1
         index += 1
-
+    
+    print("\n\n SINGLETON LIST %s \n\n" % (singletonList))
+    
     return operonList, operonPositions, singletonList, geneList
 
 ######################################################
