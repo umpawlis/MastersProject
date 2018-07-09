@@ -232,18 +232,23 @@ def computeSetDifference(operon1, operon2):
     operon1List = operon1.split(',')
     operon2List = operon2.split(',')
     
+    noWhiteSpaceOperon1List = []
+    noWhiteSpaceOperon2List = []
+    
     for op in operon1List:
         set1.add(op.split('_')[0].strip())
         noDuplicatesSet1.add(op.split('_')[0].strip())
-    
+        noWhiteSpaceOperon1List.append(op.strip())
+        
     for op in operon2List:
         set2.add(op.split('_')[0].strip())
         noDuplicatesSet2.add(op.split('_')[0].strip())
+        noWhiteSpaceOperon2List.append(op.strip())
     
     set3 = set1.symmetric_difference(set2)
     noDuplicatesSet3 = noDuplicatesSet1.symmetric_difference(noDuplicatesSet2)
     
-    return len(set3), operon1List, operon2List, len(noDuplicatesSet3)
+    return len(set3), noWhiteSpaceOperon1List, noWhiteSpaceOperon2List, len(noDuplicatesSet3)
     
 ######################################################
 # sequenceAnalysis
@@ -268,54 +273,70 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
         for y in range(0, len(secondOperonList)):
             op1 = firstOperonList[x]
             op2 = secondOperonList[y]
-                    
-            #check if we need to reverse any of the operons
-            reverseOp1 = reverseSequence(op1)
-            reverseOp2 = reverseSequence(op2)
             
             #compute the set differences between the two operons
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
             
-            #Reverse operons if needed to
-            if reverseOp1:
-                operon1.reverse()
+            #Case 1: We have two singleton operons
+            if len(operon1) == 1 and len(operon2) == 1:
+                #Perfect match
+                if operon1 == operon2:
+                    globalAlignmentMatrix[x][y] =  str(0) + '*'
+                #Mismatch
+                else:
+                    globalAlignmentMatrix[x][y] = -999
             
-            if reverseOp2:
-                operon2.reverse()
+            #Case 2: Only one of them is a singleton operon
+            elif (len(operon1) == 1 and len(operon2) > 1) or (len(operon2) == 1 and len(operon1) > 1):
+                globalAlignmentMatrix[x][y] = -999
                 
-            #initialize the distance matrix
-            scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+            #Case 3: None of them are singleton operons, perform a global alignment
+            elif len(op1) > 1 and len(op2) > 1:
+                #check if we need to reverse any of the operons
+                reverseOp1 = reverseSequence(op1)
+                reverseOp2 = reverseSequence(op2)
             
-            for a in range(0, len(operon1)+1):
-                scoreMatrix[a][0] = a
+                #Reverse operons if needed to
+                if reverseOp1:
+                    operon1.reverse()
+                if reverseOp2:
+                    operon2.reverse()
                 
-            for a in range(0, len(operon2)+1):
-                scoreMatrix[0][a] = a
+                #initialize the distance matrix
+                scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+            
+                for a in range(0, len(operon1)+1):
+                    scoreMatrix[a][0] = a
                 
-            #perform the Global Alignment
-            for a in range(1, len(operon1)+1):
-                for b in range(1, len(operon2)+1):
-                    
-                    #check if genes are identical
-                    if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                        
-                        #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
-                        if operon1[a-1].strip() == operon2[b-1].strip():
-                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                for a in range(0, len(operon2)+1):
+                    scoreMatrix[0][a] = a
+                
+                #perform the Global Alignment
+                for a in range(1, len(operon1)+1):
+                    for b in range(1, len(operon2)+1):
+                        #check if genes are identical
+                        if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                            #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
+                            if operon1[a-1].strip() == operon2[b-1].strip():
+                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                            else:
+                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
                         else:
-                            scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
-                    else:
-                        scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
+                            scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
                         
-            globalAlignmentMatrix[x][y] = scoreMatrix[len(operon1)][len(operon2)]
+                globalAlignmentMatrix[x][y] = scoreMatrix[len(operon1)][len(operon2)]
             
-            #comment out if threshold of two is desired, use 1/3 of longest operon as threshold
-            threshold = max(len(operon1), len(operon2))
-            threshold = threshold//3
+                #comment out if threshold of two is desired, use 1/3 of longest operon as threshold
+                threshold = max(len(operon1), len(operon2))
+                threshold = threshold//3
             
-            if setDifference <= threshold:
-                globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
-                
+                if setDifference <= threshold:
+                    globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
+                 
+            #Case 4: Some unhandled case
+            else:
+                print('Case 4: Error, an unhandled case has occured in the sequence analysis')
+ 
     ####################################
     ##End of Calculations
     ####################################
@@ -324,7 +345,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
     outputResults(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
     outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
     ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
-     
+
     return ancestralOperons
 
 ######################################################
@@ -359,15 +380,14 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, genesStr
     ##########################
     # Printer for debugging
     ##########################
-    print('Remaining operons from each respective tracker')
+    print('Remaining operons from each respective tracker:')
     for x in range(0, len(coverageTracker1)):
         if coverageTracker1[x] == False:
             print ('Sequence 1, index: %d, Operon: %s' % (x, sequence1[x]))
-            
     for x in range (0, len(coverageTracker2)):
         if coverageTracker2[x] == False:
             print('Sequence 2, index: %d, Operon: %s' % (x, sequence2[x]))
-    print('Fin\n')
+    print('Finished printing trackers\n')
     
     return ancestralOperons
 
@@ -387,18 +407,15 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
     trackingId = 0
     trackingEvents = []
     
-    #Scan each row
+    #Scan each row in the global alignment score matrix
     for i in range(0, len(globalAlignmentMatrix)):
-        
         #Track the lowest score
         lowestScore = -1
-        
-        #Scan each entry in a row
+        #Scan each item in a row of the global alignment matrix
         for j in range(0, len(globalAlignmentMatrix[i])):   
-            
             #Check if the entry has an asterisk and if both operons have not been marked off
             if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
-                currentScore = float(str(globalAlignmentMatrix[i][j]).replace("*", ""))
+                currentScore = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
                 
                 #If we have not found a score yet or this score is lower then select it
                 if lowestScore == -1 or currentScore < lowestScore:
@@ -413,102 +430,139 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
                     rowIndex = i
                     colIndex = j
                     distance = abs(i - j)
-
+        
+        #Retrieve the operon genes
+        operonGenes = sequence1[i].split(',')
+            
         #If we found an ortholog, then mark off both operons
         if lowestScore > -1:
             print('\n##### Global Alignment #####')
-            print('###################################\n')
-            
+                  
+            trackingId += 1
             globalAlignmentCounter+=1
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
-            ancestralOperons.append(sequence1[rowIndex])
-            
-            trackingId += 1
-            trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "2 Genome Global Alignment")
+            #If both operons are perfect matches, doesn't matter which one we pick
+            if lowestScore == 0:
+                ancestralOperons.append(sequence1[rowIndex])
+                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence1[rowIndex], "2 Genome Global Alignment")
+            #TODO: Figure out what to do if not a perfect match
+            else: 
+                ancestralOperons.append(sequence1[rowIndex])
+                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence1[rowIndex], "2 Genome Global Alignment")
+            #Add the event to the tracking events list
             trackingEvents.append(trackingEvent)
             trackingEvent.printTrackingEvent()
-            print('###################################\n')
+            
             print('###################################\n')
             #Used for debugging
             #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[rowIndex], sequence2[colIndex]))
             #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(rowIndex, colIndex))
-        #Else we failed to find a suitable global alignment so perform a local alignment
-        else:
-            highestScore = -1
-            distance = 50   #arbitrary large number
-            op1 = sequence1[i]
+        #Check if singleton
+        elif len(operonGenes) == 1:
+            sourceIndex = -1
+            #Check if an exact gene exists in an operon
+            for o in range(0, len(sequence1)):
+                #Don't compare to itself
+                if o != i:
+                    #Get a list of operon genes
+                    setDifference, singletonGene, operonGenes, numDifferentGenes = computeSetDifference(sequence1[i], sequence1[o])
+                    #If a match found and no other match found
+                    if (singletonGene[0] in operonGenes) and sourceIndex == -1:
+                        sourceIndex = o
+                        distance = abs(o - i)
+                    #If a match found with smaller distance
+                    elif (singletonGene[0] in operonGenes) and distance > abs(o - i):
+                        sourceIndex = o
+                        distance = abs(o - i)
             
-            for j in range(0, len(globalAlignmentMatrix[i])):
-                if coverageTracker1[i] == False and coverageTracker2[j] == False:
-                    op2 = sequence2[j]
-                    score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+            coverageTracker1[i] = True
+            if sourceIndex != -1:
+                print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
+                print('The singleton gene %s was found in operon %s, index: %d' % (sequence1[i].strip(), sequence1[sourceIndex].strip(), sourceIndex))
+                print('###################################\n')
+            else:
+                print('\n##### No Singleton Source Found!!(ADDED TO ANCESTOR) #####')
+                print('Could not find source for the singleton gene: %s: %d' % (sequence1[i].strip(), rowIndex))
+                ancestralOperons.append(sequence1[i])
+                print('###################################\n')
+                        
+        #Else not a singleton and we failed to find a suitable global alignment so perform a local alignment
+        #else:
+            #highestScore = -1
+            #distance = 50   #arbitrary large number
+            #op1 = sequence1[i]
+            
+            #for j in range(0, len(globalAlignmentMatrix[i])):
+                #if coverageTracker1[i] == False and coverageTracker2[j] == False:
+                    #op2 = sequence2[j]
+                    #score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
 
-                    if score > highestScore:
-                        highestScore = score
-                        rowIndex = i
-                        colIndex = j
-                        distance = abs(i - j)
-                    elif score == highestScore and (abs(i - j)) < distance:
-                        highestScore = score
-                        rowIndex = i
-                        colIndex = j
-                        distance = abs(i - j)
+                    #if score > highestScore:
+                        #highestScore = score
+                        #rowIndex = i
+                        #colIndex = j
+                        #distance = abs(i - j)
+                    #elif score == highestScore and (abs(i - j)) < distance:
+                        #highestScore = score
+                        #rowIndex = i
+                        #colIndex = j
+                        #distance = abs(i - j)
 
-            if highestScore > -1:
-                print('\n******** Local Alignment ***********')
-                print('**************************************\n')
+            #if highestScore > -1:
+                #print('\n******** Local Alignment ***********')
+                #print('**************************************\n')
                 
-                localAlignmentCounter+=1
-                coverageTracker1[rowIndex] = True
-                coverageTracker2[colIndex] = True
-                ancestralOperons.append(sequence1[rowIndex])
+                #localAlignmentCounter+=1
+                #coverageTracker1[rowIndex] = True
+                #coverageTracker2[colIndex] = True
+                #ancestralOperons.append(sequence1[rowIndex])
                 
-                trackingId += 1
-                trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "Local Alignment")
-                trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
+                #trackingId += 1
+                #trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "Local Alignment")
+                #trackingEvent.printTrackingEvent()
+                #trackingEvents.append(trackingEvent)
                 
-                print('\n**************************************')
-                print('**************************************\n\n')
+                #print('\n**************************************')
+                #print('**************************************\n\n')
                 
     #Resolve the remaining operons
-    for i in range(0, len(coverageTracker1)):
-        if coverageTracker1[i] == False:
-            print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
-            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            duplicateAlignmentCount += 1
-            duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
-            coverageTracker1[i] = True
+    #for i in range(0, len(coverageTracker1)):
+        #if coverageTracker1[i] == False:
+            #print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
+            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+            #duplicateAlignmentCount += 1
+            #duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
+            #coverageTracker1[i] = True
             
             #checks if duplicate event is null            
-            if duplicateEvent:
-                trackingId += 1
-                duplicateEvent.setTrackingEventId(trackingId)
-                duplicateEvent.printTrackingEvent()
-            else:
-                print('No duplicate event found for operon: %s' % (sequence1[i]))
+            #if duplicateEvent:
+                #trackingId += 1
+                #duplicateEvent.setTrackingEventId(trackingId)
+                #duplicateEvent.printTrackingEvent()
+            #else:
+                #print('No duplicate event found for operon: %s' % (sequence1[i]))
                 
-            print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
+            #print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
             
-    for i in range(0, len(coverageTracker2)):
-        if coverageTracker2[i] == False:
-            print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
-            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            duplicateAlignmentCount += 1
-            duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
-            coverageTracker2[i] = True
+    #for i in range(0, len(coverageTracker2)):
+        #if coverageTracker2[i] == False:
+            #print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
+            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+            #duplicateAlignmentCount += 1
+            #duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
+            #coverageTracker2[i] = True
             
-            if duplicateEvent:
-                trackingId += 1
-                duplicateEvent.setTrackingEventId(trackingId)
-                duplicateEvent.printTrackingEvent()
-            else:
-                print('No duplicate event found for operon: %s' % (sequence2[i]))
+            #if duplicateEvent:
+                #trackingId += 1
+                #duplicateEvent.setTrackingEventId(trackingId)
+                #duplicateEvent.printTrackingEvent()
+            #else:
+                #print('No duplicate event found for operon: %s' % (sequence2[i]))
                 
-            print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
+            #print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
             
             
     printStats()
@@ -958,7 +1012,7 @@ def outputResultsToExcel(strain1, strain2, sequence1, sequence2, resultMatrix):
 # Description: outputs the results into a file
 ######################################################
 def outputResults(stain1, strain2, sequence1, sequence2, resultMatrix):
-    f = open('out.txt','a')
+    f = open('globalAlignmentScores.txt','a')
     
     f.write('%s : %s' % (stain1, sequence1))
     f.write('%s : %s' % (strain2, sequence2))
@@ -1059,13 +1113,14 @@ def getOperons(sequence):
 
                 while sequence[index] != ',' and index < len(sequence)-1:
                     index += 1
-
+                
+                #Add singleton gene
+                operonList.append(sequence[startIndex:index])
+                
                 singletonList[str(geneIndex)] = sequence[startIndex:index]
                 geneList.append(sequence[startIndex:index].strip().replace("-", ""))
                 index -= 1
         index += 1
-    
-    print("\n\n SINGLETON LIST %s \n\n" % (singletonList))
     
     return operonList, operonPositions, singletonList, geneList
 
@@ -1137,15 +1192,7 @@ def post_traversal(node):
                 #Get the operons for this sequence
                 currNodeOperons, operonPositions, singletonDict, allGenes = getOperons(fileGeneSequence)
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)                
-                
-                #Check if we have the distance tRNA & rRNA distance file for this strain
-                if os.path.isfile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt'):
-                    print('Opening tRNA rRNA distance file: %s/%s_tRNA_and_rRNA_Positions.txt' % (node.name, node.name))
-                    
-                    #Read the distance file in
-                    #Old version
-                    #allGenes = processDistanceFile(node.name + '/' + node.name + '_tRNA_and_rRNA_Positions.txt')
-                    strain.setGenes(allGenes)
+                strain.setGenes(allGenes)
                     
                 return strain
     
