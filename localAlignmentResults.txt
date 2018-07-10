@@ -1,0 +1,46 @@
+
+Results of Local Alignment: CP013352 & CP013252
+...
+Strain 1 Operon 22: ['16S', '23S', '5S', 'Met_AUG', 'Ala_GCA']
+Strain 2 Operon  23: ['16S', '23S', '5S', '16S', '23S', '5S', 'Met_AUG', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Met_AUG', 'Ala_GCA']
+['16S', '23S', '5S', 'Met_AUG', 'Ala_GCA']
+
+Strain 1 Operon 22: ['16S', '23S', '5S', 'Met_AUG', 'Ala_GCA']
+Strain 2 Operon  25: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+
+Totals:
+Number of full alignments that occurred: 2
+Number of extensions performed: 0
+
+
+Results of Local Alignment: Ancestor 1 & CP001666
+...
+Strain 1 Operon 3: ['Leu_UUA', 'Met_AUG', 'Met_AUG', 'Leu_UUA', 'Met_AUG', 'Met_AUG', 'Leu_UUA', 'Met_AUG', 'Leu_UUA']
+Strain 2 Operon  27: ['Leu_UUA', 'Met_AUG', 'Met_AUG', 'Leu_UUA', 'Met_AUG']
+Alignment Result (after no extension due to missing gene list(s)):
+['Leu_UUA', 'Met_AUG', 'Met_AUG', 'Leu_UUA', 'Met_AUG']
+['Leu_UUA', 'Met_AUG', 'Met_AUG', 'Leu_UUA', 'Met_AUG']
+
+Strain 1 Operon 5: ['16S', 'Ala_GCA', 'Ile_AUC', '23S', '5S', 'Phe_UUC', 'Cys_UGC']
+Strain 2 Operon  9: ['16S', 'Ala_GCA', 'Ile_AUC', '23S']
+Alignment Result (after no extension due to missing gene list(s)):
+['16S', 'Ala_GCA', 'Ile_AUC', '23S']
+['16S', 'Ala_GCA', 'Ile_AUC', '23S']
+
+Strain 1 Operon 5: ['16S', 'Ala_GCA', 'Ile_AUC', '23S', '5S', 'Phe_UUC', 'Cys_UGC']
+Strain 2 Operon  10: ['5S', 'Phe_UUC']
+Alignment Result (after no extension due to missing gene list(s)):
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
+
+
+Totals:
+Number of full alignments that occurred: 3
+Number of extensions performed: 0
+

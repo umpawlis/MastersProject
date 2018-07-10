@@ -1131,6 +1131,7 @@ def getOperons(sequence):
                 
                 #Add singleton gene
                 operonList.append(sequence[startIndex:index])
+                operonPositions.append(geneIndex)
                 
                 singletonList[str(geneIndex)] = sequence[startIndex:index]
                 geneList.append(sequence[startIndex:index].strip().replace("-", ""))
