@@ -458,112 +458,94 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             #Used for debugging
             #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[rowIndex], sequence2[colIndex]))
             #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(rowIndex, colIndex))
-        #Check if singleton
-        elif len(operonGenes) == 1:
-            sourceIndex = -1
-            #Check if an exact gene exists in an operon
-            for o in range(0, len(sequence1)):
-                #Don't compare to itself
-                if o != i:
-                    #Get a list of operon genes
-                    setDifference, singletonGene, operonGenes, numDifferentGenes = computeSetDifference(sequence1[i], sequence1[o])
-                    #If a match found and no other match found
-                    if (singletonGene[0] in operonGenes) and sourceIndex == -1:
-                        sourceIndex = o
-                        distance = abs(o - i)
-                    #If a match found with smaller distance
-                    elif (singletonGene[0] in operonGenes) and distance > abs(o - i):
-                        sourceIndex = o
-                        distance = abs(o - i)
+        
+        #Make sure it's not a singleton
+        elif lowestScore == -1 and len(operonGenes) > 1:
+            highestScore = -1
+            distance = 50   #arbitrary large number
+            op1 = sequence1[i]
             
-            coverageTracker1[i] = True
-            if sourceIndex != -1:
-                print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
-                print('The singleton gene %s was found in operon %s, index: %d' % (sequence1[i].strip(), sequence1[sourceIndex].strip(), sourceIndex))
-                print('###################################\n')
-            else:
-                print('\n##### No Singleton Source Found!!(ADDED TO ANCESTOR) #####')
-                print('Could not find source for the singleton gene: %s: %d' % (sequence1[i].strip(), rowIndex))
+            for j in range(0, len(globalAlignmentMatrix[i])):
+                if coverageTracker1[i] == False and coverageTracker2[j] == False and len(sequence2[j].split(',')) > 1:
+                    op2 = sequence2[j]
+                    score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+                    if score > highestScore:
+                        highestScore = score
+                        rowIndex = i
+                        colIndex = j
+                        distance = abs(i - j)
+                    elif score == highestScore and (abs(i - j)) < distance:
+                        highestScore = score
+                        rowIndex = i
+                        colIndex = j
+                        distance = abs(i - j)
+
+            if highestScore > -1:
+                print('\n******** Local Alignment ***********')
+                print('**************************************\n')
+                
+                localAlignmentCounter+=1
+                coverageTracker1[rowIndex] = True
+                coverageTracker2[colIndex] = True
+                ancestralOperons.append(sequence1[rowIndex])
+                
+                trackingId += 1
+                trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "Local Alignment")
+                trackingEvent.printTrackingEvent()
+                trackingEvents.append(trackingEvent)
+                
+                print('\n**************************************')
+                print('**************************************\n\n')
+    
+    #Resolve the singleton genes
+    for i in range(0, len(coverageTracker1)):
+        if coverageTracker1[i] == False and len(sequence1[i].split(',')) == 1:
+            addToAncestor = resolveSingleton(sequence1, i, coverageTracker1)
+            if addToAncestor:
                 ancestralOperons.append(sequence1[i])
-                print('###################################\n')
-                        
-        #Else not a singleton and we failed to find a suitable global alignment so perform a local alignment
-        #else:
-            #highestScore = -1
-            #distance = 50   #arbitrary large number
-            #op1 = sequence1[i]
-            
-            #for j in range(0, len(globalAlignmentMatrix[i])):
-                #if coverageTracker1[i] == False and coverageTracker2[j] == False:
-                    #op2 = sequence2[j]
-                    #score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+    for i in range(0, len(coverageTracker2)):
+        if coverageTracker2[i] == False and len(sequence2[i].split(',')) == 1:
+            addToAncestor = resolveSingleton(sequence2, i, coverageTracker2)
+            if addToAncestor:
+                ancestralOperons.append(sequence2[i])
 
-                    #if score > highestScore:
-                        #highestScore = score
-                        #rowIndex = i
-                        #colIndex = j
-                        #distance = abs(i - j)
-                    #elif score == highestScore and (abs(i - j)) < distance:
-                        #highestScore = score
-                        #rowIndex = i
-                        #colIndex = j
-                        #distance = abs(i - j)
-
-            #if highestScore > -1:
-                #print('\n******** Local Alignment ***********')
-                #print('**************************************\n')
-                
-                #localAlignmentCounter+=1
-                #coverageTracker1[rowIndex] = True
-                #coverageTracker2[colIndex] = True
-                #ancestralOperons.append(sequence1[rowIndex])
-                
-                #trackingId += 1
-                #trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "Local Alignment")
-                #trackingEvent.printTrackingEvent()
-                #trackingEvents.append(trackingEvent)
-                
-                #print('\n**************************************')
-                #print('**************************************\n\n')
-                
-    #Resolve the remaining operons
-    #for i in range(0, len(coverageTracker1)):
-        #if coverageTracker1[i] == False:
-            #print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
-            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            #duplicateAlignmentCount += 1
-            #duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
-            #coverageTracker1[i] = True
+    #Resolve the remaining operons that are not singletons
+    for i in range(0, len(coverageTracker1)):
+        if coverageTracker1[i] == False and len(sequence1[i].split(',')) > 1:
+            print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+            duplicateAlignmentCount += 1
+            duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
+            coverageTracker1[i] = True
             
             #checks if duplicate event is null            
-            #if duplicateEvent:
-                #trackingId += 1
-                #duplicateEvent.setTrackingEventId(trackingId)
-                #duplicateEvent.printTrackingEvent()
-            #else:
-                #print('No duplicate event found for operon: %s' % (sequence1[i]))
+            if duplicateEvent:
+                trackingId += 1
+                duplicateEvent.setTrackingEventId(trackingId)
+                duplicateEvent.printTrackingEvent()
+            else:
+                print('No duplicate event found for operon: %s' % (sequence1[i]))
                 
-            #print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
+            print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
             
-    #for i in range(0, len(coverageTracker2)):
-        #if coverageTracker2[i] == False:
-            #print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
-            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            #duplicateAlignmentCount += 1
-            #duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
-            #coverageTracker2[i] = True
+    for i in range(0, len(coverageTracker2)):
+        if coverageTracker2[i] == False and len(sequence2[i].split(',')) > 1:
+            print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+            duplicateAlignmentCount += 1
+            duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
+            coverageTracker2[i] = True
             
-            #if duplicateEvent:
-                #trackingId += 1
-                #duplicateEvent.setTrackingEventId(trackingId)
-                #duplicateEvent.printTrackingEvent()
-            #else:
-                #print('No duplicate event found for operon: %s' % (sequence2[i]))
+            if duplicateEvent:
+                trackingId += 1
+                duplicateEvent.setTrackingEventId(trackingId)
+                duplicateEvent.printTrackingEvent()
+            else:
+                print('No duplicate event found for operon: %s' % (sequence2[i]))
                 
-            #print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-            #print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
-            
+            print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
             
     printStats()
     
@@ -574,6 +556,42 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
         #print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     
     return coverageTracker1, coverageTracker2, ancestralOperons, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCount
+
+######################################################
+# resolveSingleton
+# Parameters: 
+# Description: Finds original copy of singleton
+######################################################
+def resolveSingleton(sequence, singletonIndex, coverageTracker1):
+    addToAncestor = False
+    sourceIndex = -1
+    #Check if an exact gene exists in an operon
+    for o in range(0, len(sequence)):
+        #Don't compare to itself
+        if o != singletonIndex:
+            #Get a list of operon genes
+            setDifference, singletonGene, operonGenes, numDifferentGenes = computeSetDifference(sequence[singletonIndex], sequence[o])
+            #If a match found and no other match found
+            if (singletonGene[0] in operonGenes) and sourceIndex == -1:
+                sourceIndex = o
+                distance = abs(o - singletonIndex)
+            #If a match found with smaller distance
+            elif (singletonGene[0] in operonGenes) and distance > abs(o - singletonIndex):
+                sourceIndex = o
+                distance = abs(o - singletonIndex)
+
+    coverageTracker1[singletonIndex] = True
+    if sourceIndex != -1:
+        print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
+        print('The singleton gene %s was found in operon %s, index: %d' % (sequence[singletonIndex].strip(), sequence[sourceIndex].strip(), sourceIndex))
+        print('###################################\n')
+    else:
+        addToAncestor = True
+        print('\n##### No Singleton Source Found!!(ADDED TO ANCESTOR) #####')
+        print('Could not find source for the singleton gene: %s' % (sequence[singletonIndex].strip()))
+        print('###################################\n')
+    
+    return addToAncestor
 
 ######################################################
 # duplicateAlignment
