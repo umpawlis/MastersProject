@@ -430,10 +430,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
                     rowIndex = i
                     colIndex = j
                     distance = abs(i - j)
-        
-        #Retrieve the operon genes
-        operonGenes = sequence1[i].split(',')
-            
+
         #If we found an ortholog, then mark off both operons
         if lowestScore > -1:
             print('\n##### Global Alignment #####')
@@ -460,7 +457,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(rowIndex, colIndex))
         
         #Make sure it's not a singleton
-        elif lowestScore == -1 and len(operonGenes) > 1:
+        elif lowestScore == -1 and len(sequence1[i].split(',')) > 1:
             highestScore = -1
             distance = 50   #arbitrary large number
             op1 = sequence1[i]
