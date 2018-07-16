@@ -9,6 +9,7 @@ ancestralCounter = 0
 threshold = 2
 fullAlignmentCounter = 0
 extensionCounter = 0
+trackingId = 0
 
 ######################################################
 # Singleton Operon
@@ -81,6 +82,7 @@ class TrackingEvent(object):
     genome2OperonIndex = -1
     ancestralOperon = ""
     technique = ""
+    numLosses = 0
     
     def __init__(self, trackingEventId, score, genome1Name, genome2Name, genome1Operon, genome2Operon, genome1OperonIndex, genome2OperonIndex, ancestralOperon, technique):
         self.trackingEventId = trackingEventId
@@ -130,6 +132,9 @@ class TrackingEvent(object):
     def getTechnique(self):
         return self.technique
     
+    def getNumLosses(self):
+        return self.numLosses
+    
     #####################################
     #Setters
     #####################################
@@ -162,6 +167,9 @@ class TrackingEvent(object):
         
     def setTechnique(self, technique):
         self.technique = technique
+        
+    def setNumLosses(self, numLosses):
+        self.numLosses = numLosses
 
 ######################################################
 # Strain
@@ -175,6 +183,7 @@ class Strain(object):
     descendants = []
     operonPositions = []
     singletonDict = {}
+    trackingEvents = []
     
     #Class constructor
     def __init__(self, name, sequence, descendants, operonPositions, singletonDict):
@@ -208,6 +217,12 @@ class Strain(object):
 
     def getSingletonDict(self):
         return self.singletonDict
+    
+    def getTrackingEvents(self):
+        return self.trackingEvents
+    
+    def setTrackingEvents(self, trackingEvents):
+        self.trackingEvents = trackingEvents
         
 ######################################################
 # computeSetDifference
@@ -407,7 +422,6 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
     singletonAlignmentCount = 0
     
     #Tracking Events store information about the ortholog
-    trackingId = 0
     trackingEvents = []
     
     #Scan each row in the global alignment score matrix
@@ -438,7 +452,9 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
         if lowestScore > -1:
             print('\n##### Global Alignment #####')
                   
+            global trackingId
             trackingId += 1
+            
             globalAlignmentCounter+=1
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
