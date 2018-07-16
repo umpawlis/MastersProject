@@ -271,7 +271,7 @@ def computeSetDifference(operon1, operon2):
 # Parameters: directoryList - List of directories to process
 # Description: 
 ###################################################### 
-def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
+def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
     
     print('Starting sequence analysis of {%s, %s}...' % (strain1, strain2))
     
@@ -360,32 +360,23 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2, genesS
     printStrains(strain1, strain2)
     outputResults(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
     outputResultsToExcel(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix)
-    ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+    #ancestralOperons = findOrthologs(strain1, strain2, firstOperonList, secondOperonList, globalAlignmentMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
 
-    return ancestralOperons
+    return globalAlignmentMatrix, firstOperonList, secondOperonList
 
 ######################################################
 # findOrthologs
 # Parameters: strain1, strain2, sequence1, sequence2, resultMatrix
 # Description: Scans the matrix to find orthologs
 ######################################################
-def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
-    
-    ancestralOperons = []
-    
+def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
     #Initialize the arrays that will track the coverage of the operons in the two genomes
     coverageTracker1 = {}
     coverageTracker2 = {}
     
-    for y in range(0, len(sequence1)):
-        coverageTracker1[y] = False
-        
-    for x in range(0, len(sequence2)):
-        coverageTracker2[x] = False
-    
     #Use global alignment scores to find orthologs
-    coverageTracker1, coverageTracker2, ancestralOperons, numGlobalAlignment, numLocalAlignment, numDuplicateAlignment, numSingletonAlignment = findOrthologsWithGlobalAlignment(strain1, strain2, resultMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
-    
+    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignment, numSingletonAlignment = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
+
     print('#####################################################################')
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
     print('Number of orthologs found through global alignment: %d' %(numGlobalAlignment))
@@ -406,23 +397,201 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, resultMatrix, genesStr
             print('Sequence 2, index: %d, Operon: %s' % (x, sequence2[x]))
     print('Finished printing trackers\n')
     
-    return ancestralOperons
+    return ancestralOperons, trackingEvents
+
 
 ######################################################
 # findOrthologsWithGlobalAlignment
 # Parameters: globalAlignmentMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
 # Description: Finds orthologous operons using global alignment
 ######################################################
-def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2, ancestralOperons, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
+def performGlobalAlignment(op1, op2):
+    #compute the set differences between the two operons
+    setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
     
+    #Case 1: We have two singleton operons
+    if len(operon1) == 1 and len(operon2) == 1:
+        #Perfect match
+        if operon1 == operon2:
+            return 0
+        #Mismatch
+        else:
+            return 500
+         
+    #Case 2: Only one of them is a singleton operon
+    elif (len(operon1) == 1 and len(operon2) > 1) or (len(operon2) == 1 and len(operon1) > 1):
+        return 500 
+    
+    #Case 3: None of them are singleton operons, perform a global alignment
+    elif len(op1) > 1 and len(op2) > 1:
+        #check if we need to reverse any of the operons
+        reverseOp1 = reverseSequence(op1)
+        reverseOp2 = reverseSequence(op2)
+        
+        #Reverse operons if needed to
+        if reverseOp1:
+            operon1.reverse()
+            
+        if reverseOp2:
+            operon2.reverse()
+                
+        #initialize the distance matrix
+        scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+            
+        for a in range(0, len(operon1)+1):
+            scoreMatrix[a][0] = a
+                
+        for a in range(0, len(operon2)+1):
+            scoreMatrix[0][a] = a
+                
+        #perform the Global Alignment
+        for a in range(1, len(operon1)+1):
+            for b in range(1, len(operon2)+1):
+                #check if genes are identical
+                if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                    #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
+                    if operon1[a-1].strip() == operon2[b-1].strip():
+                        scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                    else:
+                        scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
+                else:
+                    scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
+                        
+                return scoreMatrix[len(operon1)][len(operon2)]
+            
+    #Case 4: Some unhandled case
+    else:
+        print('Case 4: Error, an unhandled case has occured in the sequence analysis')                
+        return 500
+            
+######################################################
+# findOrthologsWithGlobalAlignment
+# Parameters: globalAlignmentMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
+# Description: Finds orthologous operons using global alignment
+######################################################
+def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
     #Keep track of number of global and local alignments
     globalAlignmentCounter = 0
     localAlignmentCounter = 0
     duplicateAlignmentCount = 0
     singletonAlignmentCount = 0
     
+    conflictingOperons = False #Tracks whether we will have to resolve any operons
+    
     #Tracking Events store information about the ortholog
     trackingEvents = []
+    ancestralOperons = []
+    
+    if len(sequence1) > 0 and len(sequence2) > 0:
+        #Compute the global alignment matrix
+        #Returning sequence 1 and 2 because they are being modified by removing origin and terminus
+        globalAlignmentMatrix, sequence1, sequence2 = sequenceAnalysis(sequence1, sequence2, genomeName1, genomeName2)
+    else:
+        #TODO: Resolve inconsistencies and create global alignment matrix
+        for i in range(0, len(trackingEventsStrain1)):
+            if trackingEventsStrain1[i].getAncestralOperon() == '':
+                bestScoreG1 = 500
+                bestScoreG2 = 500
+                #Figure out which operon to pick
+                for j in range(0, len(trackingEventsStrain2)):
+                    #Case 1: performing a global alignment with a resolved operon in strain 2
+                    if trackingEventsStrain2[j].getAncestralOperon() != '':
+                        #Perform a global alignment
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain1[i].getGenome1Operon(), trackingEventsStrain2[j].getAncestralOperon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain1[i].getGenome2Operon(), trackingEventsStrain2[j].getAncestralOperon())
+                        
+                        #Check if these are the best scores yet
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                    
+                    else:
+                        #Case 2: performing a global alignment with a unresolved operon in strain 2 so compare seq1 and seq2
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain1[i].getGenome1Operon(), trackingEventsStrain2[j].getGenome1Operon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain1[i].getGenome2Operon(), trackingEventsStrain2[j].getGenome1Operon())
+                        
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                            
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain1[i].getGenome1Operon(), trackingEventsStrain2[j].getGenome2Operon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain1[i].getGenome2Operon(), trackingEventsStrain2[j].getGenome2Operon())
+                        
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                #Pick the one with the best score
+                if bestScoreG1 < bestScoreG2:
+                    sequence1.append(trackingEventsStrain1[i].getGenome1Operon())
+                else:
+                    sequence1.append(trackingEventsStrain1[i].getGenome2Operon())
+            else:
+                #If we already have an ancestral operon, add it to the sequence
+                sequence1.append(trackingEventsStrain1[i].getAncestralOperon())
+        
+        #Second List of Tracking Events
+        for i in range(0, len(trackingEventsStrain2)):
+            if trackingEventsStrain2[i].getAncestralOperon() == '':
+                bestScoreG1 = 500
+                bestScoreG2 = 500
+                #Figure out which operon to pick
+                for j in range(0, len(trackingEventsStrain1)):
+                    #Case 1: performing a global alignment with a resolved operon in strain 2
+                    if trackingEventsStrain1[j].getAncestralOperon() != '':
+                        #Perform a global alignment
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain2[i].getGenome1Operon(), trackingEventsStrain1[j].getAncestralOperon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain2[i].getGenome2Operon(), trackingEventsStrain1[j].getAncestralOperon())
+                        
+                        #Check if these are the best scores yet
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                    
+                    else:
+                        #Case 2: performing a global alignment with a unresolved operon in strain 2 so compare seq1 and seq2
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain2[i].getGenome1Operon(), trackingEventsStrain1[j].getGenome1Operon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain2[i].getGenome2Operon(), trackingEventsStrain1[j].getGenome1Operon())
+                        
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                            
+                        scoreG1 = performGlobalAlignment(trackingEventsStrain2[i].getGenome1Operon(), trackingEventsStrain1[j].getGenome2Operon())
+                        scoreG2 = performGlobalAlignment(trackingEventsStrain2[i].getGenome2Operon(), trackingEventsStrain1[j].getGenome2Operon())
+                        
+                        if scoreG1 < bestScoreG1:
+                            bestScoreG1 = scoreG1
+                            
+                        if scoreG2 < bestScoreG2:
+                            bestScoreG2 = scoreG2
+                #Pick the one with the best score
+                if bestScoreG1 < bestScoreG2:
+                    sequence2.append(trackingEventsStrain2[i].getGenome1Operon())
+                else:
+                    sequence2.append(trackingEventsStrain2[i].getGenome2Operon())
+            else:
+                #If we already have an ancestral operon, add it to the sequence
+                sequence2.append(trackingEventsStrain2[i].getAncestralOperon())
+        
+        #Perform Global Alignment on these genomes
+        globalAlignmentMatrix, sequence1, sequence2 = sequenceAnalysis(sequence1, sequence2, genomeName1, genomeName2)
+        
+    #Now initialize trackers here because we removed the origin and terminus markers, otherwise we'll an index out of range
+    for y in range(0, len(sequence1)):
+        coverageTracker1[y] = False
+        
+    for x in range(0, len(sequence2)):
+        coverageTracker2[x] = False
     
     #Scan each row in the global alignment score matrix
     for i in range(0, len(globalAlignmentMatrix)):
@@ -458,14 +627,14 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             globalAlignmentCounter+=1
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
-            #If both operons are perfect matches, doesn't matter which one we pick
+            
             if lowestScore == 0:
-                ancestralOperons.append(sequence1[rowIndex])
+                #We found a perfect match, doesn't matter which operon we pick
                 trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence1[rowIndex], "2 Genome Global Alignment")
-            #TODO: Figure out what to do if not a perfect match
-            else: 
-                ancestralOperons.append(sequence1[rowIndex])
-                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence1[rowIndex], "2 Genome Global Alignment")
+            else:
+                #We found orthologs that are not a perfect match and need to be resolved
+                conflictingOperons = True
+                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, '', "2 Genome Global Alignment")
             #Add the event to the tracking events list
             trackingEvents.append(trackingEvent)
             trackingEvent.printTrackingEvent()
@@ -503,10 +672,9 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
                 localAlignmentCounter+=1
                 coverageTracker1[rowIndex] = True
                 coverageTracker2[colIndex] = True
-                ancestralOperons.append(sequence1[rowIndex])
                 
                 trackingId += 1
-                trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, "", "Local Alignment")
+                trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence2[colIndex], "Local Alignment")
                 trackingEvent.printTrackingEvent()
                 trackingEvents.append(trackingEvent)
                 
@@ -515,11 +683,12 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
     
     #Resolve the singleton genes
     for i in range(0, len(coverageTracker1)):
+       
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence1, i, coverageTracker1)
             singletonAlignmentCount += 1
             if addToAncestor:
-                ancestralOperons.append(sequence1[i])
+                #If no match found then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Singleton Alignment")
                 trackingEvent.printTrackingEvent()
@@ -530,7 +699,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             addToAncestor, matchIndex = resolveSingleton(sequence2, i, coverageTracker2)
             singletonAlignmentCount += 1
             if addToAncestor:
-                ancestralOperons.append(sequence2[i])
+                #If no match found, then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Singleton Alignment")
                 trackingEvent.printTrackingEvent()
@@ -545,14 +714,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
             coverageTracker1[i] = True
             
-            #checks if duplicate event is null            
+            #checks if duplicate event is null      
             if duplicateEvent:
-                trackingId += 1
-                duplicateEvent.setTrackingEventId(trackingId)
+                #Not null, we found a partner for this operon
+                print('Found a matching duplicate operon, therefore not adding to ancestor!')
                 duplicateEvent.printTrackingEvent()
             else:
-                print('No duplicate ortholog found for operon: %s' % (sequence1[i]))
-                ancestralOperons.append(sequence1[i])
+                print('No duplicate ortholog found for operon: %s, therefore it will be added to ancestor as it is a loss' % (sequence1[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Duplicate Alignment (No match found)")
                 trackingEvent.printTrackingEvent()
@@ -570,12 +738,11 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
             coverageTracker2[i] = True
             
             if duplicateEvent:
-                trackingId += 1
-                duplicateEvent.setTrackingEventId(trackingId)
+                #Not null, we found a partner for this operon
+                print('Found a matching duplicate operon, therefore not adding to ancestor!')
                 duplicateEvent.printTrackingEvent()
             else:
-                print('No duplicate ortholog found for operon: %s' % (sequence2[i]))
-                ancestralOperons.append(sequence2[i])
+                print('No duplicate ortholog found for operon: %s, therefore it will be added to the ancestor as it is a loss' % (sequence2[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Duplicate Alignment (No match found)")
                 trackingEvent.printTrackingEvent()
@@ -596,15 +763,21 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, globalAlignmentMa
                x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                y_coord.append(trackingEvents[i].getGenome2OperonIndex())
                print('x-axis: %d, y-axis: %d' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
-            # trackingEvents[i].printTrackingEvent()
+            
+           #Assemble the ancestral operons if no conflicts
+           if conflictingOperons == False:
+               ancestralOperons.append(trackingEvents[i].getAncestralOperon())
+                
+        #If we have any coordinates to plot, display them
         if len(x_coord) > 0:
-            plt.plot(x_coord, y_coord)
+            plt.plot(x_coord, y_coord, 'ro')
             plt.axis([0, 50, 0, 50])
             plt.show()
+        else:
+            print('No plot to display!')
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    
-    
-    return coverageTracker1, coverageTracker2, ancestralOperons, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCount, singletonAlignmentCount
+        
+    return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCount, singletonAlignmentCount
 
 ######################################################
 # resolveSingleton
@@ -1270,15 +1443,16 @@ def post_traversal(node):
         #leftChildStrain.printStrain()
         #rightChildStrain.printStrain()
         
-        ancestralOperons = sequenceAnalysis(leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions(), leftChildStrain.getSingletonDict(), rightChildStrain.getSingletonDict())
+        ancestralOperons, trackingEvents = findOrthologs(leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions(), leftChildStrain.getSingletonDict(), rightChildStrain.getSingletonDict(), leftChildStrain.getTrackingEvents(), rightChildStrain.getTrackingEvents())
+        
+        #ancestralOperons = sequenceAnalysis(leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions(), leftChildStrain.getSingletonDict(), rightChildStrain.getSingletonDict())
         
         global ancestralCounter
         ancestralCounter += 1
         
         node.name = 'Ancestor %d' % (ancestralCounter)
-
-        #TO DO: Properly calculate operon positions for the ancestor
         ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
+        ancestor.setTrackingEvents(trackingEvents)
         
         #print('This is the resulting ancestor after the comparison:')
         #ancestor.printStrain()
