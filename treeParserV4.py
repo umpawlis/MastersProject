@@ -1479,7 +1479,7 @@ def post_traversal(node):
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)
                 strain.setGenes(allGenes)
                 strain.setHasData(True)
-
+                
                 return strain
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
@@ -1489,7 +1489,6 @@ def post_traversal(node):
         #rightChildStrain.printStrain()
 
         ancestralOperons, trackingEvents = findOrthologs(leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions(), leftChildStrain.getSingletonDict(), rightChildStrain.getSingletonDict(), leftChildStrain.getTrackingEvents(), rightChildStrain.getTrackingEvents())
-        #ancestralOperons = sequenceAnalysis(leftChildStrain.getSequence(), rightChildStrain.getSequence(), leftChildStrain.getName(), rightChildStrain.getName(), leftChildStrain.getGenes(), rightChildStrain.getGenes(), leftChildStrain.getOperonPositions(), rightChildStrain.getOperonPositions(), leftChildStrain.getSingletonDict(), rightChildStrain.getSingletonDict())
 
         global ancestralCounter
         ancestralCounter += 1
@@ -1498,7 +1497,9 @@ def post_traversal(node):
         ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
         ancestor.setTrackingEvents(trackingEvents)
         ancestor.setHasData(True)
-
+        
+        #Check
+        
         #print('This is the resulting ancestor after the comparison:')
         #ancestor.printStrain()
 
