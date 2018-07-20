@@ -95,9 +95,10 @@ class TrackingEvent(object):
         self.genome2OperonIndex = genome2OperonIndex
         self.ancestralOperon = ancestralOperon
         self.technique = technique
+        self.lostEventIds = []
 
     def printTrackingEvent(self):
-        print("{ Tracking Event Id: %d, \nAlignment Score: %d, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %d, \nGenome 2 Operon Index: %d, \nAncestral Operon: %s, \nTechnique: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique))
+        print("{ Tracking Event Id: %d, \nAlignment Score: %d, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %d, \nGenome 2 Operon Index: %d, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds))
 
     #####################################
     #Getters
@@ -132,8 +133,8 @@ class TrackingEvent(object):
     def getTechnique(self):
         return self.technique
 
-    def getNumLosses(self):
-        return self.numLosses
+    def getLostEventIds(self):
+        return self.lostEventIds
 
     #####################################
     #Setters
@@ -168,8 +169,8 @@ class TrackingEvent(object):
     def setTechnique(self, technique):
         self.technique = technique
 
-    def setNumLosses(self, numLosses):
-        self.numLosses = numLosses
+    def setLostEventIds(self, lostEventIds):
+        self.lostEventIds = lostEventIds
 
 ######################################################
 # Strain
@@ -481,7 +482,6 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
     #Resolve inconsistencies
     for i in range(0, len(trackingEventsG1)):
 
-
         if trackingEventsG1[i].getAncestralOperon() == '':
             #Ancestral operon is not resolved, need to decide which one to pick
             print('Resolve operon!')
@@ -704,6 +704,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 #If no match found then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Singleton Alignment")
+                trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
                 trackingEvent.printTrackingEvent()
                 trackingEvents.append(trackingEvent)
 
@@ -715,6 +716,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 #If no match found, then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Singleton Alignment")
+                trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
                 trackingEvent.printTrackingEvent()
                 trackingEvents.append(trackingEvent)
 
@@ -736,6 +738,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to ancestor as it is a loss' % (sequence1[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Duplicate Alignment (No match found)")
+                trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
                 trackingEvent.printTrackingEvent()
                 trackingEvents.append(trackingEvent)
 
@@ -758,6 +761,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to the ancestor as it is a loss' % (sequence2[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Duplicate Alignment (No match found)")
+                trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
                 trackingEvent.printTrackingEvent()
                 trackingEvents.append(trackingEvent)
 
@@ -796,6 +800,28 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
             print('NO CONFLICTS!!!')
 
     return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCount, singletonAlignmentCount
+
+######################################################
+# trackLossEvents
+# Parameters:
+# Description: Appends the previous tracking loss Ids to the current nodes tracking Id
+######################################################
+def trackLossEvents(currTrackingEvent, currTrackingEvents):
+    if len(currTrackingEvents) == 0:
+        #If no events then this is  leaf so we just add the event tracking Id
+        lostEventIds = currTrackingEvent.getLostEventIds()
+        lostEventIds.append(currTrackingEvent.getTrackingEventId())
+        currTrackingEvent.setLostEventIds(lostEventIds)
+    else:
+        #We have a list of events we have to iterate through, find a match and append the current tracking id to the previous list
+        for i in range(0, len(currTrackingEvents)):
+            if currTrackingEvents[i].getAncestralOperon().strip() == currTrackingEvent.getAncestralOperon().strip():
+                #We found our from decendent node
+                lostEventIds = currTrackingEvents[i].getLostEventIds()
+                lostEventIds.append(currTrackingEvent.getTrackingEventId())
+                currTrackingEvent.setLostEventIds(lostEventIds)
+                
+    return currTrackingEvent
 
 ######################################################
 # resolveSingleton
@@ -1505,7 +1531,13 @@ result = post_traversal(tree.clade)
 if result is not None:
     print('This is the result:')
     result.printStrain()
-
+    
+    if len(result.getSequence()) == 0:
+        print('Printing Tracking Events since root needs to be resolved')
+        trackingEvents = result.getTrackingEvents()
+        for i in range(0, len(trackingEvents)):
+            print(trackingEvents[i].printTrackingEvent())
+            
 #Draw tree to the console
 Phylo.draw(tree)
 
