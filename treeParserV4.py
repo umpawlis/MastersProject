@@ -619,6 +619,8 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
 
     #Find all the optimal scores via global alignment
     maxValue = findMax(globalAlignmentMatrix)
+    currentScoreSelected = 0
+    
     
 
     #Scan each row in the global alignment score matrix
