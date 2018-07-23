@@ -655,44 +655,51 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                         print('###################################\n')
         currentScoreSelected += 0.5
 
-    #Finding orthologs using local alignment
-    for i in range(0, len(coverageTracker1)):
-        #Check if operon was covered and not a singleton
-        if coverageTracker1[i] == False and len(sequence1[i]) > 1:
-            highestScore = -1
-            distance = 50   #arbitrary large number
-            op1 = sequence1[i]
+    #Finding optimal orthologs using local alignment
+    minValue = min(len(coverageTracker1), len(coverageTracker2))
 
-            for j in range(0, len(coverageTracker2)):
-                if coverageTracker1[i] == False and coverageTracker2[j] == False and len(sequence2[j].split(',')) > 1:
-                    op2 = sequence2[j]
-                    score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
-                    if score > highestScore:
-                        highestScore = score
-                        rowIndex = i
-                        colIndex = j
-                        distance = abs(i - j)
-                    elif score == highestScore and (abs(i - j)) < distance:
-                        highestScore = score
-                        rowIndex = i
-                        colIndex = j
-                        distance = abs(i - j)
+    #Scan the matrix x times to find optimal local alignments everytime an entire matrix is scanned
+    for x in range(0, minValue):
+        highestScore = -1
+        distance = 50   #arbitrary large number
 
-            if highestScore > -1:
-                print('\n******** Local Alignment ***********')
-                print('**************************************\n')
+        for i in range(0, len(coverageTracker1)):
+            #Check if operon was not covered and not a singleton
+            if coverageTracker1[i] == False and len(sequence1[i].split(',')) > 1:
+                for j in range(0, len(coverageTracker2)):
+                    if coverageTracker1[i] == False and coverageTracker2[j] == False and len(sequence2[j].split(',')) > 1:
+                        op1 = sequence1[i]
+                        op2 = sequence2[j]
 
-                localAlignmentCounter+=1
-                coverageTracker1[rowIndex] = True
-                coverageTracker2[colIndex] = True
+                        score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
 
-                trackingId += 1
-                trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence2[colIndex], "Local Alignment")
-                trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
+                        if score > highestScore:
+                            highestScore = score
+                            rowIndex = i
+                            colIndex = j
+                            distance = abs(i - j)
+                        elif score == highestScore and (abs(i - j)) < distance:
+                            highestScore = score
+                            rowIndex = i
+                            colIndex = j
+                            distance = abs(i - j)
 
-                print('\n**************************************')
-                print('**************************************\n\n')
+        #After scanning the whole matrix if we found a best score, then store it
+        if highestScore > -1:
+            print('\n******** Local Alignment ***********')
+            print('**************************************\n')
+
+            localAlignmentCounter+=1
+            coverageTracker1[rowIndex] = True
+            coverageTracker2[colIndex] = True
+
+            trackingId += 1
+            trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence2[colIndex], "Local Alignment")
+            trackingEvent.printTrackingEvent()
+            trackingEvents.append(trackingEvent)
+
+            print('\n**************************************')
+            print('**************************************\n\n')
 
     #Resolve the singleton genes
     for i in range(0, len(coverageTracker1)):
