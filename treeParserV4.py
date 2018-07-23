@@ -573,7 +573,7 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
 # Description: Finds the maximum value in the global alignment matrix
 ######################################################
 def findMax(globalAlignmentMatrix):
-    
+
     maxValue = -1
     for i in range(0, len(globalAlignmentMatrix)):
         for j in range(0, len(globalAlignmentMatrix[i])):
@@ -620,66 +620,50 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     #Find all the optimal scores via global alignment
     maxValue = findMax(globalAlignmentMatrix)
     currentScoreSelected = 0
-    
-    
 
-    #Scan each row in the global alignment score matrix
-    for i in range(0, len(globalAlignmentMatrix)):
-        #Track the lowest score
-        lowestScore = -1
-        #Scan each item in a row of the global alignment matrix
-        for j in range(0, len(globalAlignmentMatrix[i])):
-            #Check if the entry has an asterisk and if both operons have not been marked off
-            if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
-                currentScore = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
+    #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
+    while currentScoreSelected <= maxValue:
+        for i in range(0, len(globalAlignmentMatrix)):
+            for j in range(0, len(globalAlignmentMatrix[i])):
+                #Check if this is a * score and if both operons have not been marked off
+                if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
+                    score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
+                    #Check if the score matches the scores we're currently looking for
+                    if score == currentScoreSelected:
+                        #We found an ortholog in the global alignment matrix
+                        print('\n##### Global Alignment #####')
+                        global trackingId
+                        trackingId += 1
 
-                #If we have not found a score yet or this score is lower then select it
-                if lowestScore == -1 or currentScore < lowestScore:
-                    lowestScore = currentScore
-                    rowIndex = i
-                    colIndex = j
-                    distance = abs(i - j)
+                        globalAlignmentCounter+=1
+                        coverageTracker1[i] = True
+                        coverageTracker2[j] = True
 
-                #If we have a score that is the same, select the one closest to the diagonal
-                elif lowestScore == currentScore and (abs(i - j) < distance):
-                    lowestScore = currentScore
-                    rowIndex = i
-                    colIndex = j
-                    distance = abs(i - j)
-        #If we found an ortholog, then mark off both operons
-        if lowestScore > -1:
-            print('\n##### Global Alignment #####')
+                        if score == 0:
+                            #We found a perfect match, doesn't matter which operon we pick
+                            trackingEvent = TrackingEvent(trackingId, score, genomeName1, genomeName2, sequence1[i], sequence2[j], i, j, sequence1[i], "2 Genome Global Alignment")
+                        else:
+                            #We found orthologs that are not a perfect match and need to be resolved
+                            conflictingOperons = True
+                            trackingEvent = TrackingEvent(trackingId, score, genomeName1, genomeName2, sequence1[i], sequence2[j], i, j, '', "2 Genome Global Alignment")
+                        #Add the event to the tracking events list
+                        trackingEvents.append(trackingEvent)
+                        trackingEvent.printTrackingEvent()
+                        #Used for debugging
+                        #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[i], sequence2[j]))
+                        #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(i, j))
+                        print('###################################\n')
+        currentScoreSelected += 0.5
 
-            global trackingId
-            trackingId += 1
-
-            globalAlignmentCounter+=1
-            coverageTracker1[rowIndex] = True
-            coverageTracker2[colIndex] = True
-
-            if lowestScore == 0:
-                #We found a perfect match, doesn't matter which operon we pick
-                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence1[rowIndex], "2 Genome Global Alignment")
-            else:
-                #We found orthologs that are not a perfect match and need to be resolved
-                conflictingOperons = True
-                trackingEvent = TrackingEvent(trackingId, lowestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, '', "2 Genome Global Alignment")
-            #Add the event to the tracking events list
-            trackingEvents.append(trackingEvent)
-            trackingEvent.printTrackingEvent()
-
-            print('###################################\n')
-            #Used for debugging
-            #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[rowIndex], sequence2[colIndex]))
-            #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(rowIndex, colIndex))
-
-        #Make sure it's not a singleton
-        elif lowestScore == -1 and len(sequence1[i].split(',')) > 1:
+    #Finding orthologs using local alignment
+    for i in range(0, len(coverageTracker1)):
+        #Check if operon was covered and not a singleton
+        if coverageTracker1[i] == False and len(sequence1[i]) > 1:
             highestScore = -1
             distance = 50   #arbitrary large number
             op1 = sequence1[i]
 
-            for j in range(0, len(globalAlignmentMatrix[i])):
+            for j in range(0, len(coverageTracker2)):
                 if coverageTracker1[i] == False and coverageTracker2[j] == False and len(sequence2[j].split(',')) > 1:
                     op2 = sequence2[j]
                     score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
