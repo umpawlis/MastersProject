@@ -411,7 +411,7 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
 ######################################################
 # performGlobalAlignment
 # Parameters:
-# Description: Given two operons, performs a global alignment
+# Description: Given two operons, this function performs a global alignment
 ######################################################
 def performGlobalAlignment(op1, op2):
     #compute the set differences between the two operons
@@ -469,22 +469,21 @@ def performGlobalAlignment(op1, op2):
 
     #Case 4: Some unhandled case
     else:
-        print('Case 4: Error, an unhandled case has occured in the sequence analysis')
+        print('Case 4: Error, an unhandled case has occured while computing the global alignment')
         return 500
 
 ######################################################
-# resolveInconsistencies
+# resolveAncestralOperon
 # Parameters:
 # Description: Resolves conflicts and reconstructs the ancestral genome
 ######################################################
-def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, sequenceG2):
+def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, sequenceG2):
 
-    #Resolve inconsistencies
+    #Resolve the ancestral operons
     for i in range(0, len(trackingEventsG1)):
-
         if trackingEventsG1[i].getAncestralOperon() == '':
-            #Ancestral operon is not resolved, need to decide which one to pick
-            print('Resolve operon!')
+            #Ancestral operon is not resolved, need to decide which one to pick, op1 or op2
+            print('MUST RESOLVE OPERON!')
 
             if len(trackingEventsG2) > 0:
                 #We have tracking events to compare to
@@ -492,9 +491,8 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                 pickOp1 = False
 
                 for x in range(0, len(trackingEventsG2)):
-
                     if trackingEventsG2[x].getAncestralOperon != '':
-                        #Case 1: We are dealing with a resolved ancestral operon
+                        #Case 1: We are dealing with a resolved ancestral operon in Genome 2
                         currentScore1 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getAncestralOperon())
                         currentScore2 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getAncestralOperon())
 
@@ -510,7 +508,7 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                             pickOp1 = False
                             bestScore = currentScore2
                     else:
-                        #Case 2: We are dealing with an unresolved ancestral operon
+                        #Case 2: We are dealing with an unresolved ancestral operon in Genome 2
                         currentScore1 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome1Operon())
                         currentScore2 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome2Operon())
                         currentScore3 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getGenome1Operon())
@@ -535,13 +533,13 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                         if bestScore > currentScore4:
                             pickOp1 = False
                             bestScore = currentScore4
+                #Resolve the ancestral operon by picking the operon that had the best score
                 if pickOp1:
                     sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
                 else:
                     sequenceG1.append(trackingEventsG1[i].getGenome2Operon())
-
             else:
-                #We don't have tracking events so we rely on the sequence (must be a leaf)
+                #We don't have tracking events so we rely on the sequence (must be a leaf, that's why there's no tracking events)
                 bestScore = -1
                 pickOp1 = False
                 for x in range(0, len(sequenceG2)):
@@ -560,14 +558,30 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                     if bestScore > currentScore2:
                         pickOp1 = False
                         bestScore = currentScore2
-                #decide which to pick
+                #decide which to pick based on the boolean
                 if pickOp1:
                     sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
                 else:
                     sequenceG1.append(trackingEventsG1[i].getGenome2Operon())
         else:
             #Ancestral operon is resolved, just add it to the sequence
-            sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
+            sequenceG1.append(trackingEventsG1[i].getAncestralOperon())
+
+######################################################
+# findMax
+# Parameters:
+# Description: Finds the maximum value in the global alignment matrix
+######################################################
+def findMax(globalAlignmentMatrix):
+    
+    maxValue = -1
+    for i in range(0, len(globalAlignmentMatrix)):
+        for j in range(0, len(globalAlignmentMatrix[i])):
+            if ('*' in str(globalAlignmentMatrix[i][j])):
+                currentValue = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
+                if currentValue > maxValue:
+                    maxValue = currentValue
+    return maxValue
 
 ######################################################
 # findOrthologsWithGlobalAlignment
@@ -575,7 +589,7 @@ def resolveInconsistencies(trackingEventsG1, sequenceG1, trackingEventsG2, seque
 # Description: Finds orthologous operons using global alignment
 ######################################################
 def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
-    #Keep track of number of global and local alignments
+    #Keep track of number of each type of analysis performed
     globalAlignmentCounter = 0
     localAlignmentCounter = 0
     duplicateAlignmentCount = 0
@@ -587,16 +601,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     trackingEvents = []
     ancestralOperons = []
 
-    if len(sequence1) > 0 and len(sequence2) > 0:
-        print('NOTHING TO RESOLVE')
-    elif len(sequence1) == 0:
+    if len(sequence1) == 0:
         print('NEED TO RESOLVE %s!!!!' % (genomeName1))
-        resolveInconsistencies(trackingEventsStrain1, sequence1, trackingEventsStrain2, sequence2)
-    elif len(sequence2) == 0:
+        resolveAncestralOperon(trackingEventsStrain1, sequence1, trackingEventsStrain2, sequence2)
+    if len(sequence2) == 0:
         print('NEED TO RESOLVE %s!!!!' % (genomeName2))
-        resolveInconsistencies(trackingEventsStrain2, sequence2, trackingEventsStrain1, sequence1)
-    #Compute the global alignment matrix
-    #Returning sequence 1 and 2 because they are being modified by removing origin and terminus
+        resolveAncestralOperon(trackingEventsStrain2, sequence2, trackingEventsStrain1, sequence1)
+    #Compute the global alignment matrix and return sequence 1 and 2 because they are being modified by removing origin and terminus
     globalAlignmentMatrix, sequence1, sequence2 = sequenceAnalysis(sequence1, sequence2, genomeName1, genomeName2)
 
     #Now initialize trackers here because we removed the origin and terminus markers, otherwise we'll an index out of range
@@ -605,6 +616,10 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
 
     for x in range(0, len(sequence2)):
         coverageTracker2[x] = False
+
+    #Find all the optimal scores via global alignment
+    maxValue = findMax(globalAlignmentMatrix)
+    
 
     #Scan each row in the global alignment score matrix
     for i in range(0, len(globalAlignmentMatrix)):
@@ -629,7 +644,6 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                     rowIndex = i
                     colIndex = j
                     distance = abs(i - j)
-
         #If we found an ortholog, then mark off both operons
         if lowestScore > -1:
             print('\n##### Global Alignment #####')
@@ -696,7 +710,6 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
 
     #Resolve the singleton genes
     for i in range(0, len(coverageTracker1)):
-
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence1, i, coverageTracker1)
             singletonAlignmentCount += 1
@@ -705,8 +718,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Singleton Alignment")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
+
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this singleton because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
                 trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
 
     for i in range(0, len(coverageTracker2)):
         if coverageTracker2[i] == False and len(sequence2[i].split(',')) == 1:
@@ -717,8 +735,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Singleton Alignment")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
+
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this singleton because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
                 trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
 
     #Resolve the remaining operons that are not singletons
     for i in range(0, len(coverageTracker1)):
@@ -739,9 +762,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
-                trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
 
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this operon because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
+                trackingEvent.printTrackingEvent()
             print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
 
@@ -762,9 +789,14 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
-                trackingEvent.printTrackingEvent()
-                trackingEvents.append(trackingEvent)
 
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this operon because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
+
+                trackingEvent.printTrackingEvent()
             print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
 
@@ -806,21 +838,24 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
 # Parameters:
 # Description: Appends the previous tracking loss Ids to the current nodes tracking Id
 ######################################################
-def trackLossEvents(currTrackingEvent, currTrackingEvents):
-    if len(currTrackingEvents) == 0:
-        #If no events then this is  leaf so we just add the event tracking Id
+def trackLossEvents(currTrackingEvent, previousTrackingEvents):
+    if len(previousTrackingEvents) == 0:
+        #If there are no tracking events, then this is a leaf we're dealing with
         lostEventIds = currTrackingEvent.getLostEventIds()
         lostEventIds.append(currTrackingEvent.getTrackingEventId())
         currTrackingEvent.setLostEventIds(lostEventIds)
     else:
-        #We have a list of events we have to iterate through, find a match and append the current tracking id to the previous list
-        for i in range(0, len(currTrackingEvents)):
-            if currTrackingEvents[i].getAncestralOperon().strip() == currTrackingEvent.getAncestralOperon().strip():
-                #We found our from decendent node
-                lostEventIds = currTrackingEvents[i].getLostEventIds()
+        #If there are tracking events, then this is not a leaf. Two cases to consider, it was lost in the previous tracking events or not
+        for i in range(0, len(previousTrackingEvents)):
+            if previousTrackingEvents[i].getAncestralOperon().strip() == currTrackingEvent.getAncestralOperon().strip():
+                #We found the tracking event associated with the operon from the previous ancestral node
+                lostEventIds = previousTrackingEvents[i].getLostEventIds()
                 lostEventIds.append(currTrackingEvent.getTrackingEventId())
                 currTrackingEvent.setLostEventIds(lostEventIds)
-                
+                #If there was a loss in the previous ancestor for the same operon, remove the operon from both the previous and current ancestor
+                #if len(lostEventIds) >= 2:
+                    #previousTrackingEvents.pop(i)
+
     return currTrackingEvent
 
 ######################################################
@@ -1479,7 +1514,7 @@ def post_traversal(node):
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)
                 strain.setGenes(allGenes)
                 strain.setHasData(True)
-                
+
                 return strain
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
@@ -1497,9 +1532,9 @@ def post_traversal(node):
         ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
         ancestor.setTrackingEvents(trackingEvents)
         ancestor.setHasData(True)
-        
+
         #Check
-        
+
         #print('This is the resulting ancestor after the comparison:')
         #ancestor.printStrain()
 
@@ -1532,13 +1567,14 @@ result = post_traversal(tree.clade)
 if result is not None:
     print('This is the result:')
     result.printStrain()
-    
+    #Check if the sequence is resolved
     if len(result.getSequence()) == 0:
         print('Printing Tracking Events since root needs to be resolved')
         trackingEvents = result.getTrackingEvents()
         for i in range(0, len(trackingEvents)):
-            print(trackingEvents[i].printTrackingEvent())
-            
+            if trackingEvents[i].printTrackingEvent() is not None:
+                trackingEvents[i].printTrackingEvent()
+
 #Draw tree to the console
 Phylo.draw(tree)
 
