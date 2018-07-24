@@ -316,41 +316,8 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
 
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
-                #check if we need to reverse any of the operons
-                reverseOp1 = reverseSequence(op1)
-                reverseOp2 = reverseSequence(op2)
-
-                #Reverse operons if needed to
-                if reverseOp1:
-                    operon1.reverse()
-                if reverseOp2:
-                    operon2.reverse()
-
-                #initialize the distance matrix
-                scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
-
-                for a in range(0, len(operon1)+1):
-                    scoreMatrix[a][0] = a
-
-                for a in range(0, len(operon2)+1):
-                    scoreMatrix[0][a] = a
-
-                #perform the Global Alignment
-                for a in range(1, len(operon1)+1):
-                    for b in range(1, len(operon2)+1):
-                        #check if genes are identical
-                        if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                            #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
-                            if operon1[a-1].strip() == operon2[b-1].strip():
-                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
-                            else:
-                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
-                        else:
-                            scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
-
-                globalAlignmentMatrix[x][y] = scoreMatrix[len(operon1)][len(operon2)]
-
-                #comment out if threshold of two is desired, use 1/3 of longest operon as threshold
+                globalAlignmentMatrix[x][y] = performGlobalAlignment(operon1, operon2)
+                
                 threshold = max(len(operon1), len(operon2))
                 threshold = threshold//3
 
@@ -407,13 +374,12 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
 
     return ancestralOperons, trackingEvents
 
-
 ######################################################
-# performGlobalAlignment
+# computeComparisonScore
 # Parameters:
-# Description: Given two operons, this function performs a global alignment
+# Description: Given two operons, this function computes a comparison score
 ######################################################
-def performGlobalAlignment(op1, op2):
+def computeComparisonScore(op1, op2):
     #compute the set differences between the two operons
     setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
 
@@ -432,53 +398,59 @@ def performGlobalAlignment(op1, op2):
 
     #Case 3: None of them are singleton operons, perform a global alignment
     elif len(op1) > 1 and len(op2) > 1:
-
-        #Make a copy of operon and reverse to perform a reverse global alignment
-        operon1Reversed = []
-        for i in range(0, len(operon1)):
-            operon1Reversed.append(operon1[i])
-        operon1Reversed.reverse()
-
-        #initialize the distance matrix
-        scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
-        reversedScoreMatrix = np.zeros((len(operon1Reversed)+1, len(operon2)+1))
-
-        for a in range(0, len(operon1)+1):
-            scoreMatrix[a][0] = a
-            reversedScoreMatrix[a][0] = a
-
-        for a in range(0, len(operon2)+1):
-            scoreMatrix[0][a] = a
-            reversedScoreMatrix[0][a] = a
-
-        #perform the Global Alignment
-        for a in range(1, len(operon1)+1):
-            for b in range(1, len(operon2)+1):
-                #check if genes are identical
-                if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                    #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
-                    if operon1[a-1].strip() == operon2[b-1].strip():
-                        scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
-                    else:
-                        scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
-                else:
-                    scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
-
-                #Comput score for the reverse matrix
-                if operon1Reversed[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                    if operon1Reversed[a-1].strip() == operon2[b-1].strip():
-                        reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1]
-                    else:
-                        reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
-                else:
-                    reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
-
-        return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)])
-
+        return performGlobalAlignment(op1, op2)
     #Case 4: Some unhandled case
     else:
         print('Case 4: Error, an unhandled case has occured while computing the global alignment')
         return 500
+
+######################################################
+# performGlobalAlignment
+# Parameters:
+# Description: Performs a forward and reversed global alignment and returns the best score
+######################################################
+def performGlobalAlignment(operon1, operon2):
+    #Make a copy of operon and reverse it to perform a reverse global alignment
+    operon1Reversed = []
+    for i in range(0, len(operon1)):
+        operon1Reversed.append(operon1[i])
+    operon1Reversed.reverse()
+    
+    #initialize the distance matrix
+    scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+    reversedScoreMatrix = np.zeros((len(operon1Reversed)+1, len(operon2)+1))
+    
+    for a in range(0, len(operon1)+1):
+        scoreMatrix[a][0] = a
+        reversedScoreMatrix[a][0] = a
+
+    for a in range(0, len(operon2)+1):
+        scoreMatrix[0][a] = a
+        reversedScoreMatrix[0][a] = a
+        
+    #perform the Global Alignment
+    for a in range(1, len(operon1)+1):
+        for b in range(1, len(operon2)+1):
+            #check if genes are identical
+            if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
+                if operon1[a-1].strip() == operon2[b-1].strip():
+                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                else:
+                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
+            else:
+                scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
+
+            #Comput score for the reverse matrix
+            if operon1Reversed[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                if operon1Reversed[a-1].strip() == operon2[b-1].strip():
+                    reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1]
+                else:
+                    reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
+            else:
+                reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
+                
+    return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)])
 
 ######################################################
 # resolveAncestralOperon
@@ -501,8 +473,8 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                 for x in range(0, len(trackingEventsG2)):
                     if trackingEventsG2[x].getAncestralOperon != '':
                         #Case 1: We are dealing with a resolved ancestral operon in Genome 2
-                        currentScore1 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getAncestralOperon())
-                        currentScore2 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getAncestralOperon())
+                        currentScore1 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getAncestralOperon())
+                        currentScore2 = computeComparisonScore(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getAncestralOperon())
 
                         if bestScore == -1:
                             pickOp1 = True
@@ -517,10 +489,10 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                             bestScore = currentScore2
                     else:
                         #Case 2: We are dealing with an unresolved ancestral operon in Genome 2
-                        currentScore1 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome1Operon())
-                        currentScore2 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome2Operon())
-                        currentScore3 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getGenome1Operon())
-                        currentScore4 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getGenome2Operon())
+                        currentScore1 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome1Operon())
+                        currentScore2 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome2Operon())
+                        currentScore3 = computeComparisonScore(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getGenome1Operon())
+                        currentScore4 = computeComparisonScore(trackingEventsG1[i].getGenome2Operon(), trackingEventsG2[x].getGenome2Operon())
 
                         if bestScore == -1:
                             pickOp1 = True
@@ -552,8 +524,8 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                 pickOp1 = False
                 for x in range(0, len(sequenceG2)):
                     #perform global alignment
-                    currentScore1 = performGlobalAlignment(trackingEventsG1[i].getGenome1Operon(), sequenceG2[x])
-                    currentScore2 = performGlobalAlignment(trackingEventsG1[i].getGenome2Operon(), sequenceG2[x])
+                    currentScore1 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), sequenceG2[x])
+                    currentScore2 = computeComparisonScore(trackingEventsG1[i].getGenome2Operon(), sequenceG2[x])
 
                     if bestScore == -1:
                         pickOp1 = True
@@ -821,7 +793,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         #If we have any coordinates to plot, display them
         if len(x_coord) > 0:
             plt.plot(x_coord, y_coord, 'ro')
-            plt.axis([0, 50, 0, 50])
+            plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
             plt.show()
         else:
             print('No plot to display!')
@@ -913,49 +885,9 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(g1Operon, g1Sequence[x])
 
             #Threshold to check if the sequences are worth comparing
-            if setDifference <= (max(len(operon1), len(operon2))//3):
-
-                #initialize two score matrices, one for forward and one for backward alignment
-                scoreMatrix = initializeScoreMatrix(operon1, operon2)
-                reverseScoreMatrix = initializeScoreMatrix(operon1, operon2)
-                reverseOperon1 = []
-                #Copy and reverse the operon
-                for c in range(0, len(operon1)):
-                    reverseOperon1.append(operon1[c])
-                reverseOperon1.reverse();
-
-                #Perform the duplicate alignment
-                for a in range(1, len(operon1) + 1):
-                    for b in range(1, len(operon2) + 1):
-
-                        #Forward operon
-                        #check if genes are identical
-                        if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                            #if codons match then the string will be a perfect match since we established in the previous if statement whether they're the same gene
-                            if operon1[a-1].strip() == operon2[b-1].strip():
-                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
-                            else:
-                                scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
-                        else:
-                            scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
-
-                        #Score matrix for reverse operon
-                        #check if genes are identical
-                        if reverseOperon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                            #if codons match then the string will be a perfect match since we established in the previous if statement whether they're the same gene
-                            if reverseOperon1[a-1].strip() == operon2[b-1].strip():
-                                reverseScoreMatrix[a][b] = reverseScoreMatrix[a-1][b-1]
-                            else:
-                                reverseScoreMatrix[a][b] = reverseScoreMatrix[a-1][b-1] + 0.5
-                        else:
-                            reverseScoreMatrix[a][b] = min(reverseScoreMatrix[a-1][b] + 1, reverseScoreMatrix[a][b-1] + 1, reverseScoreMatrix[a-1][b-1] + 1)
-
-                #Bottom right corner is the score
-                score = scoreMatrix[len(operon1)][len(operon2)]
-                reverseScore = reverseScoreMatrix[len(operon1)][len(operon2)]
-
-                lowestScore = min(score, reverseScore)
-
+            if setDifference <= (max(len(operon1), len(operon2))//3):                
+                lowestScore = performGlobalAlignment(operon1, operon2)
+                
                 if optimalScore == -1 or (lowestScore < optimalScore):
                     optimalScore = lowestScore
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
@@ -967,23 +899,6 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
                     distance = abs(g1OperonIndex - x)
 
     return duplicateEvent
-
-######################################################
-# initializeMatrix
-# Parameters:
-# Description: Initializes the score matrix that will be used for the global alignment
-######################################################
-def initializeScoreMatrix(operon1, operon2):
-
-    matrix = np.zeros((len(operon1)+1, len(operon2)+1))
-
-    for a in range(0, len(operon1)+1):
-        matrix[a][0] = a
-
-    for a in range(0, len(operon2)+1):
-        matrix[0][a] = a
-
-    return matrix
 
 ######################################################
 # printStrains, printAlignments, printStats
