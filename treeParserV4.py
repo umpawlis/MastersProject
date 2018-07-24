@@ -432,25 +432,24 @@ def performGlobalAlignment(op1, op2):
 
     #Case 3: None of them are singleton operons, perform a global alignment
     elif len(op1) > 1 and len(op2) > 1:
-        #check if we need to reverse any of the operons
-        reverseOp1 = reverseSequence(op1)
-        reverseOp2 = reverseSequence(op2)
 
-        #Reverse operons if needed to
-        if reverseOp1:
-            operon1.reverse()
-
-        if reverseOp2:
-            operon2.reverse()
+        #Make a copy of operon and reverse to perform a reverse global alignment
+        operon1Reversed = []
+        for i in range(0, len(operon1)):
+            operon1Reversed.append(operon1[i])
+        operon1Reversed.reverse()
 
         #initialize the distance matrix
         scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
+        reversedScoreMatrix = np.zeros((len(operon1Reversed)+1, len(operon2)+1))
 
         for a in range(0, len(operon1)+1):
             scoreMatrix[a][0] = a
+            reversedScoreMatrix[a][0] = a
 
         for a in range(0, len(operon2)+1):
             scoreMatrix[0][a] = a
+            reversedScoreMatrix[0][a] = a
 
         #perform the Global Alignment
         for a in range(1, len(operon1)+1):
@@ -465,7 +464,19 @@ def performGlobalAlignment(op1, op2):
                 else:
                     scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
 
-        return scoreMatrix[len(operon1)][len(operon2)]
+                #Comput score for the reverse matrix
+                if operon1Reversed[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
+                    if operon1Reversed[a-1].strip() == operon2[b-1].strip():
+                        reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1]
+                    else:
+                        reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
+                else:
+                    reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
+
+        if scoreMatrix[len(operon1)][len(operon2)] < reversedScoreMatrix[len(operon1Reversed)][len(operon2)]:
+            return scoreMatrix[len(operon1)][len(operon2)]
+        else:
+            return reversedScoreMatrix[len(operon1Reversed)][len(operon2)]
 
     #Case 4: Some unhandled case
     else:
