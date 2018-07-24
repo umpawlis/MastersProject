@@ -473,10 +473,7 @@ def performGlobalAlignment(op1, op2):
                 else:
                     reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
 
-        if scoreMatrix[len(operon1)][len(operon2)] < reversedScoreMatrix[len(operon1Reversed)][len(operon2)]:
-            return scoreMatrix[len(operon1)][len(operon2)]
-        else:
-            return reversedScoreMatrix[len(operon1Reversed)][len(operon2)]
+        return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)])
 
     #Case 4: Some unhandled case
     else:
