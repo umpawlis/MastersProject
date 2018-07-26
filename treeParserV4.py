@@ -10,6 +10,7 @@ threshold = 2
 fullAlignmentCounter = 0
 extensionCounter = 0
 trackingId = 0
+duplicateLengthTracker = {}
 
 ######################################################
 # Singleton Operon
@@ -317,7 +318,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
                 globalAlignmentMatrix[x][y] = performGlobalAlignment(operon1, operon2)
-                
+
                 threshold = max(len(operon1), len(operon2))
                 threshold = threshold//3
 
@@ -415,11 +416,11 @@ def performGlobalAlignment(operon1, operon2):
     for i in range(0, len(operon1)):
         operon1Reversed.append(operon1[i])
     operon1Reversed.reverse()
-    
+
     #initialize the distance matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
     reversedScoreMatrix = np.zeros((len(operon1Reversed)+1, len(operon2)+1))
-    
+
     for a in range(0, len(operon1)+1):
         scoreMatrix[a][0] = a
         reversedScoreMatrix[a][0] = a
@@ -427,7 +428,7 @@ def performGlobalAlignment(operon1, operon2):
     for a in range(0, len(operon2)+1):
         scoreMatrix[0][a] = a
         reversedScoreMatrix[0][a] = a
-        
+
     #perform the Global Alignment
     for a in range(1, len(operon1)+1):
         for b in range(1, len(operon2)+1):
@@ -449,7 +450,7 @@ def performGlobalAlignment(operon1, operon2):
                     reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
             else:
                 reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
-                
+
     return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)])
 
 ######################################################
@@ -461,7 +462,7 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
     foundUnresolvedEvent = False
     foundUnresolvedEventOp1 = False
     unresolvedEvent = None
-    
+
     #Resolve the ancestral operons
     for i in range(0, len(trackingEventsG1)):
         if trackingEventsG1[i].getAncestralOperon() == '':
@@ -499,7 +500,7 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                             foundUnresolvedEvent = False
                             foundUnresolvedEventOp1 = False
                             unresolvedEvent = None
-                            
+
                     else:
                         #Case 2: We are dealing with an unresolved ancestral operon in Genome 2
                         currentScore1 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome1Operon())
@@ -540,23 +541,23 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                             foundUnresolvedEvent = True
                             foundUnresolvedEventOp1 = False
                             unresolvedEvent = trackingEventsG2
-                            
+
                 #Resolve the ancestral operon by picking the operon that had the best score
                 if pickOp1:
                     sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
                     trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome1Operon())
-                    
+
                 else:
                     sequenceG1.append(trackingEventsG1[i].getGenome2Operon())
                     trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome2Operon())
-                    
+
                 #Check if we can resolve the other operon that was selected
                 if foundUnresolvedEvent == True and unresolvedEvent != None:
                     if foundUnresolvedEventOp1 == True:
                         unresolvedEvent.setAncestralOperon(unresolvedEvent.getGenome1Operon())
                     else:
                         unresolvedEvent.setAncestralOperon(unresolvedEvent.getGenome2Operon())
-                        
+
             else:
                 #We don't have tracking events so we rely on the sequence (must be a leaf, that's why there's no tracking events)
                 bestScore = -1
@@ -605,6 +606,19 @@ def findMax(globalAlignmentMatrix):
     return maxValue
 
 ######################################################
+# incrementDuplicateTracker
+# Parameters:
+# Description: Increments the tracker according by using the operon length as the key
+######################################################
+def incrementDuplicateTracker(operon):
+    key = str(len(operon)) #Figures out which key we need to increment
+    
+    if key in duplicateLengthTracker:
+        duplicateLengthTracker[str(key)] = duplicateLengthTracker[str(key)] + 1
+    else:
+        duplicateLengthTracker[str(key)] = 1
+    
+######################################################
 # findOrthologsWithGlobalAlignment
 # Parameters: globalAlignmentMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
 # Description: Finds orthologous operons using global alignment
@@ -623,10 +637,8 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     ancestralOperons = []
 
     if len(sequence1) == 0:
-        print('NEED TO RESOLVE %s!!!!' % (genomeName1))
         resolveAncestralOperon(trackingEventsStrain1, sequence1, trackingEventsStrain2, sequence2)
     if len(sequence2) == 0:
-        print('NEED TO RESOLVE %s!!!!' % (genomeName2))
         resolveAncestralOperon(trackingEventsStrain2, sequence2, trackingEventsStrain1, sequence1)
     #Compute the global alignment matrix and return sequence 1 and 2 because they are being modified by removing origin and terminus
     globalAlignmentMatrix, sequence1, sequence2 = sequenceAnalysis(sequence1, sequence2, genomeName1, genomeName2)
@@ -897,6 +909,7 @@ def resolveSingleton(sequence, singletonIndex, coverageTracker1):
 
     coverageTracker1[singletonIndex] = True
     if sourceIndex != -1:
+        incrementDuplicateTracker(singletonGene)
         print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
         print('The singleton gene %s was found in operon %s, index: %d' % (sequence[singletonIndex].strip(), sequence[sourceIndex].strip(), sourceIndex))
         print('###################################\n')
@@ -926,9 +939,9 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(g1Operon, g1Sequence[x])
 
             #Threshold to check if the sequences are worth comparing
-            if setDifference <= (max(len(operon1), len(operon2))//3):                
+            if setDifference <= (max(len(operon1), len(operon2))//3):
                 lowestScore = performGlobalAlignment(operon1, operon2)
-                
+
                 if optimalScore == -1 or (lowestScore < optimalScore):
                     optimalScore = lowestScore
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
@@ -938,7 +951,11 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
                     optimalScore = lowestScore
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
                     distance = abs(g1OperonIndex - x)
-
+    
+    #check if we found a duplicate event
+    if duplicateEvent:
+        incrementDuplicateTracker(operon1)
+    
     return duplicateEvent
 
 ######################################################
@@ -1535,4 +1552,11 @@ if result is not None:
 #Draw tree to the console
 Phylo.draw(tree)
 
+if len(duplicateLengthTracker) > 0:
+    print("-" * 30)
+    print('Results of Duplicate Tracker:')
+    for key, value in duplicateLengthTracker.items():
+        print("Size: %s => Num Duplicates: %s" % (key, value))
+    print("-" * 30)
+    
 print 'End of processing'
