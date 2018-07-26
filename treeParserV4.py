@@ -458,7 +458,10 @@ def performGlobalAlignment(operon1, operon2):
 # Description: Resolves conflicts and reconstructs the ancestral genome
 ######################################################
 def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, sequenceG2):
-
+    foundUnresolvedEvent = False
+    foundUnresolvedEventOp1 = False
+    unresolvedEvent = None
+    
     #Resolve the ancestral operons
     for i in range(0, len(trackingEventsG1)):
         if trackingEventsG1[i].getAncestralOperon() == '':
@@ -479,14 +482,24 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                         if bestScore == -1:
                             pickOp1 = True
                             bestScore = currentScore1
+                            foundUnresolvedEvent = False
+                            foundUnresolvedEventOp1 = False
+                            unresolvedEvent = None
 
                         if bestScore > currentScore1:
                             pickOp1 = True
                             bestScore = currentScore1
+                            foundUnresolvedEvent = False
+                            foundUnresolvedEventOp1 = False
+                            unresolvedEvent = None
 
                         if bestScore > currentScore2:
                             pickOp1 = False
                             bestScore = currentScore2
+                            foundUnresolvedEvent = False
+                            foundUnresolvedEventOp1 = False
+                            unresolvedEvent = None
+                            
                     else:
                         #Case 2: We are dealing with an unresolved ancestral operon in Genome 2
                         currentScore1 = computeComparisonScore(trackingEventsG1[i].getGenome1Operon(), trackingEventsG2[x].getGenome1Operon())
@@ -497,27 +510,53 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                         if bestScore == -1:
                             pickOp1 = True
                             bestScore = currentScore1
+                            foundUnresolvedEvent = True
+                            foundUnresolvedEventOp1 = True
+                            unresolvedEvent = trackingEventsG2
 
-                        if bestScore > currentScore1:
+                        if bestScore >= currentScore1:
                             pickOp1 = True
                             bestScore = currentScore1
+                            foundUnresolvedEvent = True
+                            foundUnresolvedEventOp1 = False
+                            unresolvedEvent = trackingEventsG2
 
-                        if bestScore > currentScore2:
+                        if bestScore >= currentScore2:
                             pickOp1 = True
                             bestScore = currentScore2
+                            foundUnresolvedEvent = True
+                            unresolvedEvent = trackingEventsG2
 
-                        if bestScore > currentScore3:
+                        if bestScore >= currentScore3:
                             pickOp1 = False
                             bestScore = currentScore3
+                            foundUnresolvedEvent = True
+                            foundUnresolvedEventOp1 = True
+                            unresolvedEvent = trackingEventsG2
 
-                        if bestScore > currentScore4:
+                        if bestScore >= currentScore4:
                             pickOp1 = False
                             bestScore = currentScore4
+                            foundUnresolvedEvent = True
+                            foundUnresolvedEventOp1 = False
+                            unresolvedEvent = trackingEventsG2
+                            
                 #Resolve the ancestral operon by picking the operon that had the best score
                 if pickOp1:
                     sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
+                    trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome1Operon())
+                    
                 else:
                     sequenceG1.append(trackingEventsG1[i].getGenome2Operon())
+                    trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome2Operon())
+                    
+                #Check if we can resolve the other operon that was selected
+                if foundUnresolvedEvent == True and unresolvedEvent != None:
+                    if foundUnresolvedEventOp1 == True:
+                        unresolvedEvent.setAncestralOperon(unresolvedEvent.getGenome1Operon())
+                    else:
+                        unresolvedEvent.setAncestralOperon(unresolvedEvent.getGenome2Operon())
+                        
             else:
                 #We don't have tracking events so we rely on the sequence (must be a leaf, that's why there's no tracking events)
                 bestScore = -1
@@ -541,8 +580,10 @@ def resolveAncestralOperon(trackingEventsG1, sequenceG1, trackingEventsG2, seque
                 #decide which to pick based on the boolean
                 if pickOp1:
                     sequenceG1.append(trackingEventsG1[i].getGenome1Operon())
+                    trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome1Operon())
                 else:
                     sequenceG1.append(trackingEventsG1[i].getGenome2Operon())
+                    trackingEventsG1[i].setAncestralOperon(trackingEventsG1[i].getGenome2Operon())
         else:
             #Ancestral operon is resolved, just add it to the sequence
             sequenceG1.append(trackingEventsG1[i].getAncestralOperon())
