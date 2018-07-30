@@ -21,14 +21,16 @@ class OperonEvents(object):
     numMatches = 0
     numCodonMismatches = 0
     numMismatches = 0
+    numSubstitutions = 0
 
-    def __init__(self, numMatches, numCodonMismatches, numMismatches):
+    def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions):
         self.numMatches = numMatches
         self.numCodonMismatches = numCodonMismatches
         self.numMismatches = numMismatches
+        self.numSubstitutions = numSubstitutions
 
     def toStringOperonEvents(self):
-        return "[Operon Events: Num Matches = %d, Num Codon Mismatches = %d, Num Mismatches = %d]" % (self.numMatches, self.numCodonMismatches, self.numMismatches)
+        return "[Operon Events: Num Matches = %d, Num Codon Mismatches = %d, Num Mismatches = %d, Num Substitutions = %d]" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions)
 
     #####Getters#####
     def getNumMatches(self):
@@ -37,6 +39,8 @@ class OperonEvents(object):
         return self.numCodonMismatches
     def getNumMismatches(self):
         return self.numMismatches
+    def getNumSubstitutions(self):
+        return self.numSubstitutions
     #####Setters#####
     def setNumMatches(self, numMatches):
         self.numMatches = numMatches
@@ -44,6 +48,8 @@ class OperonEvents(object):
         self.numCodonMismatches = numCodonMismatches
     def setNumMismatches(self, numMismatches):
         self.numMismatches = numMismatches
+    def setNumSubstitutions(self, numSubstitutions):
+        self.numSubstitutions = numSubstitutions
 
 ######################################################
 # Tracking Event
@@ -274,9 +280,9 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
 
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
-                score, matches, codonMismatches, geneMismatches = performGlobalAlignment(operon1, operon2)
+                score, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
                 globalAlignmentMatrix[x][y] = score
-                operonEventMatrix[x][y] = OperonEvents(matches, codonMismatches, geneMismatches)
+                operonEventMatrix[x][y] = OperonEvents(matches, codonMismatches, geneMismatches, substitutions)
                 
                 threshold = max(len(operon1), len(operon2))
                 threshold = threshold//3
@@ -358,7 +364,7 @@ def computeComparisonScore(op1, op2):
 
     #Case 3: None of them are singleton operons, perform a global alignment
     elif len(op1) > 1 and len(op2) > 1:
-        score, matches, codonMismatches, geneMismatches = performGlobalAlignment(operon1, operon2)
+        score, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
         return score
     #Case 4: Some unhandled case
     else:
@@ -412,11 +418,11 @@ def performGlobalAlignment(operon1, operon2):
                 reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
     #Compute the number of events that occured between the operons
     if scoreMatrix[len(operon1)][len(operon2)] < reversedScoreMatrix[len(operon1Reversed)][len(operon2)]:
-        matches, codonMismatches, geneMismatches = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
+        matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
     else:
-        matches, codonMismatches, geneMismatches = globalAlignmentTraceback(reversedScoreMatrix, operon1, operon2)
+        matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(reversedScoreMatrix, operon1, operon2)
 
-    return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)]), matches, codonMismatches, geneMismatches
+    return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)]), matches, codonMismatches, geneMismatches, substitutions
 
 ######################################################
 # globalAlignmentTraceback
@@ -430,20 +436,26 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     match = 0
     codonMismatch = 0
     mismatch = 0
+    substitution = 0
 
-    while i > 1 or j > 1:
+    while i > 0 or j > 0:
         #Perfect match
-        if i > 1 and j > 1 and matrix[i][j] == matrix[i-1][j-1]:
+        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1]:
             match += 1
             i -= 1
             j -= 1
         #Codon mismatch
-        elif i > 1 and j > 1 and (matrix[i][j] == matrix[i-1][j-1] + 0.5):
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + 0.5):
             codonMismatch += 1
             i -= 1
             j -= 1
+        #Substitution
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + 1):
+            substitution += 1
+            i -= 1
+            j -= 1
         #Mismatch
-        elif i > 1 and matrix[i][j] == (matrix[i-1][j] + 1):
+        elif i > 0 and matrix[i][j] == (matrix[i-1][j] + 1):
             mismatch += 1
             i -= 1
         #Mismatch
@@ -451,7 +463,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             mismatch += 1
             j -= 1
 
-    return match, codonMismatch, mismatch
+    return match, codonMismatch, mismatch, substitution
 
 ######################################################
 # resolveAncestralOperon
@@ -941,7 +953,7 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
 
             #Threshold to check if the sequences are worth comparing
             if setDifference <= (max(len(operon1), len(operon2))//3):
-                lowestScore, matches, codonMismatches, geneMismatches = performGlobalAlignment(operon1, operon2)
+                lowestScore, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
                 
                 if optimalScore == -1 or (lowestScore < optimalScore):
                     optimalScore = lowestScore
@@ -952,7 +964,7 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
                     distance = abs(g1OperonIndex - x)
                     
-                operonEvents = OperonEvents(matches, codonMismatches, geneMismatches)
+                operonEvents = OperonEvents(matches, codonMismatches, geneMismatches, substitutions)
                 duplicateEvent.setOperonEvents(operonEvents)
     #check if we found a duplicate event
     if duplicateEvent:
