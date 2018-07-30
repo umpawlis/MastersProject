@@ -416,8 +416,11 @@ def performGlobalAlignment(operon1, operon2):
                     reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
             else:
                 reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
+
     #Compute the number of events that occured between the operons
     if scoreMatrix[len(operon1)][len(operon2)] < reversedScoreMatrix[len(operon1Reversed)][len(operon2)]:
+        if '5S' in operon1[0] and '23S' in operon1[1] and '16S' in operon1[2] and '5S' in operon2[0] and '23S' in operon2[1] and '16S' in operon2[2]:
+            print scoreMatrix
         matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
     else:
         matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(reversedScoreMatrix, operon1, operon2)
