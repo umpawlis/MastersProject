@@ -11,6 +11,7 @@ fullAlignmentCounter = 0
 extensionCounter = 0
 trackingId = 0
 duplicateLengthTracker = {}
+strains = []
 
 ######################################################
 # Operon Events
@@ -1470,6 +1471,25 @@ def processDistanceFile(fileName):
     file.close()
     return genes2
 
+
+######################################################
+# preOrderTraversal
+# Parameters: node - The node that we want to process
+# Description: iterates to left and right nodes, reads
+# in the sequence and takes the symmetric difference between the sequences
+######################################################
+def preOrderTraversal(node, strains):
+    #Visit node
+    
+    if len(node.clades) > 0:
+        preOrderTraversal(node.clades[0], strains)
+        preOrderTraversal(node.clades[1], strains)
+    else:
+        for i in range(0, len(strains)):
+            strain = strains[i]
+            if (node.name).strip() == strain.getName().strip():
+                print("Leaf node: %s" % (node.name))
+    
 ######################################################
 # post_traversal
 # Parameters: node - The node that we want to process
@@ -1505,7 +1525,9 @@ def post_traversal(node):
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)
                 strain.setGenes(allGenes)
                 strain.setHasData(True)
-
+                global strains
+                strains.append(strain)
+                
                 return strain
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
@@ -1523,10 +1545,12 @@ def post_traversal(node):
         ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
         ancestor.setTrackingEvents(trackingEvents)
         ancestor.setHasData(True)
+        global strains
+        strains.append(ancestor)
         #Check
         #print('This is the resulting ancestor after the comparison:')
         #ancestor.printStrain()
-
+        
         return ancestor
 
     #If the left child has a sequence, return it
@@ -1566,6 +1590,10 @@ if result is not None:
 
 #Draw tree to the console
 Phylo.draw(tree)
+
+#Calculate number of events for each lineage
+global strains
+preOrderTraversal(tree.clade, strains)
 
 if len(duplicateLengthTracker) > 0:
     print("-" * 30)
