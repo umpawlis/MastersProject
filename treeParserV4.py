@@ -450,18 +450,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
 
     while i > 0 or j > 0:
         #Perfect match
-        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1]:
+        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
             match += 1
             i -= 1
             j -= 1
         #Codon mismatch
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost):
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
-            i -= 1
-            j -= 1
-        #Substitution
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
-            substitution += 1
             i -= 1
             j -= 1
         #Mismatch
@@ -475,39 +470,6 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
 
     if '5S' in operon1 and '23S' in operon1 and '16S' in operon1 and '5S' in operon2 and '23S' in operon2 and '16S' in operon2 and mismatch == 1:
         print("Stop")
-    
-    i = len(operon1)
-    j = len(operon2)
-
-    match = 0
-    codonMismatch = 0
-    mismatch = 0
-    substitution = 0
-
-    while i > 0 or j > 0:
-        #Perfect match
-        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1]:
-            match += 1
-            i -= 1
-            j -= 1
-        #Codon mismatch
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost):
-            codonMismatch += 1
-            i -= 1
-            j -= 1
-        #Substitution
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
-            substitution += 1
-            i -= 1
-            j -= 1
-        #Mismatch
-        elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
-            mismatch += 1
-            i -= 1
-        #Mismatch
-        else:
-            mismatch += 1
-            j -= 1
     
     return match, codonMismatch, mismatch, substitution
 
