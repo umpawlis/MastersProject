@@ -12,6 +12,9 @@ extensionCounter = 0
 trackingId = 0
 duplicateLengthTracker = {}
 strains = []
+deletionCost = 1
+substitutionCost = 2
+codonCost = 0.5
 
 ######################################################
 # Operon Events
@@ -262,10 +265,20 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
         for y in range(0, len(secondOperonList)):
             op1 = firstOperonList[x]
             op2 = secondOperonList[y]
-
+            
             #compute the set differences between the two operons
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
-
+            
+            #Checks if either operons at in the - orientation
+            reverseOp1 = reverseSequence(op1)
+            reverseOp2 = reverseSequence(op2)
+            
+            #Reverse operons if needed to
+            if reverseOp1:
+                operon1.reverse()
+            if reverseOp2:
+                operon2.reverse()
+            
             #Case 1: We have two singleton operons
             if len(operon1) == 1 and len(operon2) == 1:
                 #Perfect match
@@ -349,6 +362,16 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
 def computeComparisonScore(op1, op2):
     #compute the set differences between the two operons
     setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
+    
+    #Checks if either operons at in the - orientation
+    reverseOp1 = reverseSequence(op1)
+    reverseOp2 = reverseSequence(op2)
+            
+    #Reverse operons if needed to
+    if reverseOp1:
+        operon1.reverse()
+    if reverseOp2:
+        operon2.reverse()
 
     #Case 1: We have two singleton operons
     if len(operon1) == 1 and len(operon2) == 1:
@@ -378,23 +401,17 @@ def computeComparisonScore(op1, op2):
 # Description: Performs a forward and reversed global alignment and returns the best score
 ######################################################
 def performGlobalAlignment(operon1, operon2):
-    #Make a copy of operon and reverse it to perform a reverse global alignment
-    operon1Reversed = []
-    for i in range(0, len(operon1)):
-        operon1Reversed.append(operon1[i])
-    operon1Reversed.reverse()
-
+    global substitutionCost
+    global deletionCost
+    
     #initialize the distance matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
-    reversedScoreMatrix = np.zeros((len(operon1Reversed)+1, len(operon2)+1))
 
     for a in range(0, len(operon1)+1):
         scoreMatrix[a][0] = a
-        reversedScoreMatrix[a][0] = a
 
     for a in range(0, len(operon2)+1):
         scoreMatrix[0][a] = a
-        reversedScoreMatrix[0][a] = a
 
     #perform the Global Alignment
     for a in range(1, len(operon1)+1):
@@ -405,28 +422,14 @@ def performGlobalAlignment(operon1, operon2):
                 if operon1[a-1].strip() == operon2[b-1].strip():
                     scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
                 else:
-                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + 0.5
+                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + codonCost
             else:
-                scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + 1, scoreMatrix[a][b-1] + 1, scoreMatrix[a-1][b-1] + 1)
-
-            #Comput score for the reverse matrix
-            if operon1Reversed[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
-                if operon1Reversed[a-1].strip() == operon2[b-1].strip():
-                    reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1]
-                else:
-                    reversedScoreMatrix[a][b] = reversedScoreMatrix[a-1][b-1] + 0.5
-            else:
-                reversedScoreMatrix[a][b] = min(reversedScoreMatrix[a-1][b] + 1, reversedScoreMatrix[a][b-1] + 1, reversedScoreMatrix[a-1][b-1] + 1)
+                scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + deletionCost, scoreMatrix[a][b-1] + deletionCost, scoreMatrix[a-1][b-1] + substitutionCost)
 
     #Compute the number of events that occured between the operons
-    if scoreMatrix[len(operon1)][len(operon2)] < reversedScoreMatrix[len(operon1Reversed)][len(operon2)]:
-        if '5S' in operon1[0] and '23S' in operon1[1] and '16S' in operon1[2] and '5S' in operon2[0] and '23S' in operon2[1] and '16S' in operon2[2]:
-            print scoreMatrix
-        matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
-    else:
-        matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(reversedScoreMatrix, operon1, operon2)
+    matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
 
-    return min(scoreMatrix[len(operon1)][len(operon2)], reversedScoreMatrix[len(operon1Reversed)][len(operon2)]), matches, codonMismatches, geneMismatches, substitutions
+    return scoreMatrix[len(operon1)][len(operon2)], matches, codonMismatches, geneMismatches, substitutions
 
 ######################################################
 # globalAlignmentTraceback
@@ -434,6 +437,9 @@ def performGlobalAlignment(operon1, operon2):
 # Description: Performs a traceback on a given matrix
 ######################################################
 def globalAlignmentTraceback(matrix, operon1, operon2):
+    global substitutionCost
+    global deletionCost
+    
     i = len(operon1)
     j = len(operon2)
 
@@ -449,17 +455,17 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             i -= 1
             j -= 1
         #Codon mismatch
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + 0.5):
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost):
             codonMismatch += 1
             i -= 1
             j -= 1
         #Substitution
-        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + 1):
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
             i -= 1
             j -= 1
         #Mismatch
-        elif i > 0 and matrix[i][j] == (matrix[i-1][j] + 1):
+        elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             mismatch += 1
             i -= 1
         #Mismatch
@@ -467,6 +473,42 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             mismatch += 1
             j -= 1
 
+    if '5S' in operon1 and '23S' in operon1 and '16S' in operon1 and '5S' in operon2 and '23S' in operon2 and '16S' in operon2 and mismatch == 1:
+        print("Stop")
+    
+    i = len(operon1)
+    j = len(operon2)
+
+    match = 0
+    codonMismatch = 0
+    mismatch = 0
+    substitution = 0
+
+    while i > 0 or j > 0:
+        #Perfect match
+        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1]:
+            match += 1
+            i -= 1
+            j -= 1
+        #Codon mismatch
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost):
+            codonMismatch += 1
+            i -= 1
+            j -= 1
+        #Substitution
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
+            substitution += 1
+            i -= 1
+            j -= 1
+        #Mismatch
+        elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
+            mismatch += 1
+            i -= 1
+        #Mismatch
+        else:
+            mismatch += 1
+            j -= 1
+    
     return match, codonMismatch, mismatch, substitution
 
 ######################################################
@@ -703,7 +745,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                         #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[i], sequence2[j]))
                         #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(i, j))
                         print('###################################\n')
-        currentScoreSelected += 0.5
+        currentScoreSelected += codonCost
 
     #Finding optimal orthologs using local alignment
     minValue = min(len(coverageTracker1), len(coverageTracker2))
@@ -954,6 +996,16 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
         if x != g1OperonIndex:
             #Compute the set differences
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(g1Operon, g1Sequence[x])
+            
+            #Checks if either operons at in the - orientation
+            reverseOp1 = reverseSequence(g1Operon)
+            reverseOp2 = reverseSequence(g1Sequence[x])
+            
+            #Reverse operons if needed to
+            if reverseOp1:
+                operon1.reverse()
+            if reverseOp2:
+                operon2.reverse()
 
             #Threshold to check if the sequences are worth comparing
             if setDifference <= (max(len(operon1), len(operon2))//3):
