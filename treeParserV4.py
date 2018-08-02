@@ -459,6 +459,11 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             codonMismatch += 1
             i -= 1
             j -= 1
+        #Substitution
+        elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
+            substitution += 1
+            i -= 1
+            j -= 1
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             mismatch += 1
@@ -467,7 +472,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         else:
             mismatch += 1
             j -= 1
-
+            
     if '5S' in operon1 and '23S' in operon1 and '16S' in operon1 and '5S' in operon2 and '23S' in operon2 and '16S' in operon2 and mismatch == 1:
         print("Stop")
     
