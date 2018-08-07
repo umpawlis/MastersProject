@@ -29,8 +29,12 @@ class OperonEvents(object):
     operon1 = None
     operon2 = None
     matrix = None
+    operon1GeneLosses = 0
+    operon2GeneLosses = 0
+    operon1GeneDuplicates = 0
+    operon2GeneDuplicates = 0
 
-    def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
+    def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix, operon1GeneLosses, operon2GeneLosses, operon1GeneDuplicates, operon2GeneDuplicates):
         self.numMatches = numMatches
         self.numCodonMismatches = numCodonMismatches
         self.numMismatches = numMismatches
@@ -38,9 +42,13 @@ class OperonEvents(object):
         self.operon1 = operon1
         self.operon2 = operon2
         self.matrix = matrix
+        self.operon1GeneLosses = operon1GeneLosses
+        self.operon2GeneLosses = operon2GeneLosses
+        self.operon1GeneDuplicates = operon1GeneDuplicates
+        self.operon2GeneDuplicates = operon2GeneDuplicates
 
     def toStringOperonEvents(self):
-        return "(Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2)
+        return "(Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s,\nOperon 1 Gene Losses: %s,\nOperon 2 Gene Losses: %s,\nOperon 1 Gene Extras: %s,\nOperon 2 Gene Extras: %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2, self.operon1GeneLosses, self.operon2GeneLosses, self.operon1GeneDuplicates, self.operon2GeneDuplicates)
 
     #####Getters#####
     def getNumMatches(self):
@@ -57,6 +65,15 @@ class OperonEvents(object):
         return self.operon2
     def getMatrix(self):
         return self.matrix
+    def getOperon1GeneLosses(self):
+        return self.operon1GeneLosses
+    def getOperon2GeneLosses(self):
+        return self.operon2GeneLosses
+    def getOperon1GeneDuplicates(self):
+        return self.operon1GeneDuplicates
+    def getOperon2GeneDuplicates(self):
+        return self.operon2GeneDuplicates
+    
     #####Setters#####
     def setNumMatches(self, numMatches):
         self.numMatches = numMatches
@@ -72,6 +89,14 @@ class OperonEvents(object):
         self.operon2 = operon2
     def setMatrix(self, matrix):
         self.matrix = matrix
+    def setOperon1GeneLosses(self, operon1GeneLosses):
+        self.operon1GeneLosses = operon1GeneLosses
+    def setOperon2GeneLosses(self, operon2GeneLosses):
+        self.operon2GeneLosses = operon2GeneLosses
+    def setOperon1GeneDuplicates(self, operon1GeneDuplicates):
+        self.operon1GeneDuplicates = operon1GeneDuplicates
+    def setOperon2GeneDuplicates(self, operon2GeneDuplicates):
+        self.operon2GeneDuplicates = operon2GeneDuplicates
 
 ######################################################
 # Tracking Event
@@ -475,6 +500,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     codonMismatch = 0
     mismatch = 0
     substitution = 0
+    operon1Losses = 0
+    operon2Losses = 0
+    operon1Duplications = 0
+    operon2Duplications = 0
 
     while i > 0 or j > 0:
         #Perfect match
@@ -492,16 +521,25 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             substitution += 1
             i -= 1
             j -= 1
+            operon1Losses += 1
+            operon2Losses += 1
+            operon1Duplications += 1
+            operon2Duplications += 1
+            
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             mismatch += 1
             i -= 1
+            operon1Duplications += 1
+            operon2Losses += 1
         #Mismatch
         else:
             mismatch += 1
             j -= 1
+            operon2Duplications += 1
+            operon1Losses += 1
 
-    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix)
+    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
 
     return operonEvents
 
@@ -1650,10 +1688,10 @@ global strains
 preOrderTraversal(tree.clade, strains)
 
 if len(duplicateLengthTracker) > 0:
-    print("-" * 30)
+    print("-" * 50)
     print('Results of Duplicate Tracker:')
     for key, value in duplicateLengthTracker.items():
         print("Size: %s => Num Duplicates: %s" % (key, value))
-    print("-" * 30)
+    print("-" * 50)
 
 print 'End of processing'
