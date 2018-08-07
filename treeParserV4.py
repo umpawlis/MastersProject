@@ -26,15 +26,21 @@ class OperonEvents(object):
     numCodonMismatches = 0
     numMismatches = 0
     numSubstitutions = 0
+    operon1 = None
+    operon2 = None
+    matrix = None
 
-    def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions):
+    def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
         self.numMatches = numMatches
         self.numCodonMismatches = numCodonMismatches
         self.numMismatches = numMismatches
         self.numSubstitutions = numSubstitutions
+        self.operon1 = operon1
+        self.operon2 = operon2
+        self.matrix = matrix
 
     def toStringOperonEvents(self):
-        return "[Operon Events: Num Matches = %d, Num Codon Mismatches = %d, Num Mismatches = %d, Num Substitutions = %d]" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions)
+        return "(Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2)
 
     #####Getters#####
     def getNumMatches(self):
@@ -45,6 +51,12 @@ class OperonEvents(object):
         return self.numMismatches
     def getNumSubstitutions(self):
         return self.numSubstitutions
+    def getOperon1(self):
+        return self.operon1
+    def getOperon2(self):
+        return self.operon2
+    def getMatrix(self):
+        return self.matrix
     #####Setters#####
     def setNumMatches(self, numMatches):
         self.numMatches = numMatches
@@ -54,6 +66,12 @@ class OperonEvents(object):
         self.numMismatches = numMismatches
     def setNumSubstitutions(self, numSubstitutions):
         self.numSubstitutions = numSubstitutions
+    def setOperon1(self, operon1):
+        self.operon1 = operon1
+    def setOperon2(self, operon2):
+        self.operon2 = operon2
+    def setMatrix(self, matrix):
+        self.matrix = matrix
 
 ######################################################
 # Tracking Event
@@ -90,9 +108,9 @@ class TrackingEvent(object):
     def printTrackingEvent(self):
         if self.operonEvents != None:
             operonEventsString = self.operonEvents.toStringOperonEvents()
-            print("{ Tracking Event Id: %d, \nAlignment Score: %d, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %d, \nGenome 2 Operon Index: %d, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s, \nOperon Events: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds, operonEventsString))
+            print("{ Tracking Event Id: %s, \nAlignment Score: %s, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %s, \nGenome 2 Operon Index: %s, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s, \nOperon Events: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds, operonEventsString))
         else:
-            print("{ Tracking Event Id: %d, \nAlignment Score: %d, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %d, \nGenome 2 Operon Index: %d, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds))
+            print("{ Tracking Event Id: %s, \nAlignment Score: %s, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %s, \nGenome 2 Operon Index: %s, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds))
     #####################################
     #Getters
     #####################################
@@ -255,7 +273,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
     secondOperonList = removeContent(secondOperonList)
 
     #initialize the matrix to store the global alignment scores
-    globalAlignmentMatrix = [[ 0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
+    globalAlignmentMatrix = [[ 0.0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
     operonEventMatrix = [[None for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
 
     ####################################
@@ -265,20 +283,20 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
         for y in range(0, len(secondOperonList)):
             op1 = firstOperonList[x]
             op2 = secondOperonList[y]
-            
+
             #compute the set differences between the two operons
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
-            
+
             #Checks if either operons at in the - orientation
             reverseOp1 = reverseSequence(op1)
             reverseOp2 = reverseSequence(op2)
-            
+
             #Reverse operons if needed to
-            if reverseOp1:
+            if reverseOp1 and reverseOp2 == False:
                 operon1.reverse()
-            if reverseOp2:
+            if reverseOp2 and reverseOp1 == False:
                 operon2.reverse()
-            
+
             #Case 1: We have two singleton operons
             if len(operon1) == 1 and len(operon2) == 1:
                 #Perfect match
@@ -294,16 +312,24 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
 
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
-                score, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
+                score, operonEvents = performGlobalAlignment(operon1, operon2)
+
                 globalAlignmentMatrix[x][y] = score
-                operonEventMatrix[x][y] = OperonEvents(matches, codonMismatches, geneMismatches, substitutions)
-                
+                operonEventMatrix[x][y] = operonEvents
+
                 threshold = max(len(operon1), len(operon2))
                 threshold = threshold//3
 
                 if setDifference <= threshold:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
-
+                #if len(operon1) == 4 and len(operon2) == 3 and 'Ser_AGC' in operon1 and 'Ser_AGC' in operon2:
+                    #Debugging
+                    #print("Debugging")
+                    #print(score)
+                    #print(operonEvents.toStringOperonEvents())
+                    #print(globalAlignmentMatrix[x][y])
+                    #print(float(str(globalAlignmentMatrix[x][y]).replace('*', '')))
+                    #print("Debugging")
             #Case 4: Some unhandled case
             else:
                 print('Case 4: Error, an unhandled case has occured in the sequence analysis')
@@ -334,10 +360,10 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
 
     print('#####################################################################')
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
-    print('Number of orthologs found through global alignment: %d' %(numGlobalAlignment))
-    print('Number of orthologs found through local alignment: %d' %(numLocalAlignment))
-    print('Number of orthologs found through duplicate alignment: %d' %(numDuplicateAlignment))
-    print('Number of orthologs found through singleton alignment: %d' %(numSingletonAlignment))
+    print('Number of orthologs found through global alignment: %s' %(numGlobalAlignment))
+    print('Number of orthologs found through local alignment: %s' %(numLocalAlignment))
+    print('Number of orthologs found through duplicate alignment: %s' %(numDuplicateAlignment))
+    print('Number of orthologs found through singleton alignment: %s' %(numSingletonAlignment))
     print('#####################################################################')
 
     ##########################
@@ -346,10 +372,10 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     print('Remaining operons from each respective tracker:')
     for x in range(0, len(coverageTracker1)):
         if coverageTracker1[x] == False:
-            print ('Sequence 1, index: %d, Operon: %s' % (x, sequence1[x]))
+            print ('Sequence 1, index: %s, Operon: %s' % (x, sequence1[x]))
     for x in range (0, len(coverageTracker2)):
         if coverageTracker2[x] == False:
-            print('Sequence 2, index: %d, Operon: %s' % (x, sequence2[x]))
+            print('Sequence 2, index: %s, Operon: %s' % (x, sequence2[x]))
     print('Finished printing trackers\n')
 
     return ancestralOperons, trackingEvents
@@ -362,15 +388,15 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
 def computeComparisonScore(op1, op2):
     #compute the set differences between the two operons
     setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(op1, op2)
-    
+
     #Checks if either operons at in the - orientation
     reverseOp1 = reverseSequence(op1)
     reverseOp2 = reverseSequence(op2)
-            
+
     #Reverse operons if needed to
-    if reverseOp1:
+    if reverseOp1 and reverseOp2 == False:
         operon1.reverse()
-    if reverseOp2:
+    if reverseOp2 and reverseOp1 == False:
         operon2.reverse()
 
     #Case 1: We have two singleton operons
@@ -388,7 +414,7 @@ def computeComparisonScore(op1, op2):
 
     #Case 3: None of them are singleton operons, perform a global alignment
     elif len(op1) > 1 and len(op2) > 1:
-        score, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
+        score, operonEvents = performGlobalAlignment(operon1, operon2)
         return score
     #Case 4: Some unhandled case
     else:
@@ -403,7 +429,7 @@ def computeComparisonScore(op1, op2):
 def performGlobalAlignment(operon1, operon2):
     global substitutionCost
     global deletionCost
-    
+
     #initialize the distance matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
 
@@ -422,14 +448,16 @@ def performGlobalAlignment(operon1, operon2):
                 if operon1[a-1].strip() == operon2[b-1].strip():
                     scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
                 else:
-                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + codonCost
+                    #Solves a special case with a bunch of duplicates with different codons
+                    scoreMatrix[a][b] = min(scoreMatrix[a-1][b-1] + codonCost, scoreMatrix[a-1][b] + deletionCost, scoreMatrix[a][b-1] + deletionCost, scoreMatrix[a-1][b-1] + substitutionCost)
+                    #scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + codonCost
             else:
                 scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + deletionCost, scoreMatrix[a][b-1] + deletionCost, scoreMatrix[a-1][b-1] + substitutionCost)
 
     #Compute the number of events that occured between the operons
-    matches, codonMismatches, geneMismatches, substitutions = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
+    operonEvents = globalAlignmentTraceback(scoreMatrix, operon1, operon2)
 
-    return scoreMatrix[len(operon1)][len(operon2)], matches, codonMismatches, geneMismatches, substitutions
+    return scoreMatrix[len(operon1)][len(operon2)], operonEvents
 
 ######################################################
 # globalAlignmentTraceback
@@ -439,7 +467,7 @@ def performGlobalAlignment(operon1, operon2):
 def globalAlignmentTraceback(matrix, operon1, operon2):
     global substitutionCost
     global deletionCost
-    
+
     i = len(operon1)
     j = len(operon2)
 
@@ -472,11 +500,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         else:
             mismatch += 1
             j -= 1
-            
-    if '5S' in operon1 and '23S' in operon1 and '16S' in operon1 and '5S' in operon2 and '23S' in operon2 and '16S' in operon2 and mismatch == 1:
-        print("Stop")
-    
-    return match, codonMismatch, mismatch, substitution
+
+    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix)
+
+    return operonEvents
 
 ######################################################
 # resolveAncestralOperon
@@ -710,7 +737,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                         trackingEvent.printTrackingEvent()
                         #Used for debugging
                         #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[i], sequence2[j]))
-                        #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %d, (top of matrix) %d\n' %(i, j))
+                        #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %s, (top of matrix) %s\n' %(i, j))
                         print('###################################\n')
         currentScoreSelected += codonCost
 
@@ -863,7 +890,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
            if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
                x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                y_coord.append(trackingEvents[i].getGenome2OperonIndex())
-               print('x-axis: %d, y-axis: %d' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
+               print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
 
            #Assemble the ancestral operons if no conflicts
            if conflictingOperons == False:
@@ -937,7 +964,7 @@ def resolveSingleton(sequence, singletonIndex, coverageTracker1):
     if sourceIndex != -1:
         incrementDuplicateTracker(singletonGene)
         print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
-        print('The singleton gene %s was found in operon %s, index: %d' % (sequence[singletonIndex].strip(), sequence[sourceIndex].strip(), sourceIndex))
+        print('The singleton gene %s was found in operon %s, index: %s' % (sequence[singletonIndex].strip(), sequence[sourceIndex].strip(), sourceIndex))
         print('###################################\n')
     else:
         addToAncestor = True
@@ -963,32 +990,32 @@ def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
         if x != g1OperonIndex:
             #Compute the set differences
             setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(g1Operon, g1Sequence[x])
-            
+
             #Checks if either operons at in the - orientation
             reverseOp1 = reverseSequence(g1Operon)
             reverseOp2 = reverseSequence(g1Sequence[x])
-            
+
             #Reverse operons if needed to
-            if reverseOp1:
+            if reverseOp1 and reverseOp2 == False:
                 operon1.reverse()
-            if reverseOp2:
+            if reverseOp2 and reverseOp1 == False:
                 operon2.reverse()
 
             #Threshold to check if the sequences are worth comparing
             if setDifference <= (max(len(operon1), len(operon2))//3):
-                lowestScore, matches, codonMismatches, geneMismatches, substitutions = performGlobalAlignment(operon1, operon2)
-                
+                lowestScore, operonEvents = performGlobalAlignment(operon1, operon2)
+
                 if optimalScore == -1 or (lowestScore < optimalScore):
                     optimalScore = lowestScore
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
+                    duplicateEvent.setOperonEvents(operonEvents)
                     distance = abs(g1OperonIndex - x)
                 elif lowestScore == optimalScore and (abs(g1OperonIndex - x) < distance):
                     optimalScore = lowestScore
                     duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
+                    duplicateEvent.setOperonEvents(operonEvents)
                     distance = abs(g1OperonIndex - x)
-                    
-                operonEvents = OperonEvents(matches, codonMismatches, geneMismatches, substitutions)
-                duplicateEvent.setOperonEvents(operonEvents)
+
     #check if we found a duplicate event
     if duplicateEvent:
         incrementDuplicateTracker(operon1)
@@ -1010,8 +1037,8 @@ def printStrains(strain1, strain2):
 def printAlignments(op1Position, op2Position, operon1, operon2, alignment1, alignment2, message):
     file  = open('localAlignmentResults.txt', 'a+')
 
-    file.write("Strain 1 Operon %d: %s\n" %(op1Position, operon1))
-    file.write("Strain 2 Operon  %d: %s\n" %(op2Position, operon2))
+    file.write("Strain 1 Operon %s: %s\n" %(op1Position, operon1))
+    file.write("Strain 2 Operon  %s: %s\n" %(op2Position, operon2))
     file.write("Alignment Result (%s):\n" %message)
     file.write("%s\n" %alignment1)
     file.write("%s\n\n" %alignment2)
@@ -1024,8 +1051,8 @@ def printStats():
     file  = open('localAlignmentResults.txt', 'a+')
 
     file.write("\nTotals:\n")
-    file.write("Number of full alignments that occurred: %d\n" %fullAlignmentCounter)
-    file.write("Number of extensions performed: %d\n\n" %extensionCounter)
+    file.write("Number of full alignments that occurred: %s\n" %fullAlignmentCounter)
+    file.write("Number of extensions performed: %s\n\n" %extensionCounter)
 
     file.close()
     fullAlignmentCounter = 0
@@ -1060,10 +1087,9 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     rightAdjustment1 = 0
     rightAdjustment2 = 0
     #Reverse operons if needed to
-    if reverseOp1:
+    if reverseOp1 and reverseOp2 == False:
         operon1.reverse()
-
-    if reverseOp2:
+    if reverseOp2 and reverseOp1 == False:
         operon2.reverse()
 
     #Initialize the distance matrix
@@ -1499,7 +1525,7 @@ def processDistanceFile(fileName):
 ######################################################
 def preOrderTraversal(node, strains):
     #Visit node
-    
+
     if len(node.clades) > 0:
         preOrderTraversal(node.clades[0], strains)
         preOrderTraversal(node.clades[1], strains)
@@ -1508,7 +1534,7 @@ def preOrderTraversal(node, strains):
             strain = strains[i]
             if (node.name).strip() == strain.getName().strip():
                 print("Leaf node: %s" % (node.name))
-    
+
 ######################################################
 # post_traversal
 # Parameters: node - The node that we want to process
@@ -1541,12 +1567,21 @@ def post_traversal(node):
 
                 #Get the operons for this sequence
                 currNodeOperons, operonPositions, singletonDict, allGenes = getOperons(fileGeneSequence)
+
+                #Random newline characters in file are causing the alignment scores to be messed up
+                for x in range(0, len(currNodeOperons)):
+                    currNodeOperons[x] = (currNodeOperons[x]).replace('\r', '').replace('\n', '')
+                for x in range(0, len(allGenes)):
+                    allGenes[x] = (allGenes[x]).replace('\r', '').replace('\n', '')
+                for key in singletonDict.keys():
+                    singletonDict[key] = (singletonDict[key]).replace('\r', '').replace('\n', '')
+
                 strain = Strain(node.name, currNodeOperons, [], operonPositions, singletonDict)
                 strain.setGenes(allGenes)
                 strain.setHasData(True)
                 global strains
                 strains.append(strain)
-                
+
                 return strain
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
@@ -1560,8 +1595,8 @@ def post_traversal(node):
         global ancestralCounter
         ancestralCounter += 1
 
-        node.name = 'Ancestor %d' % (ancestralCounter)
-        ancestor = Strain('Ancestor %d' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
+        node.name = 'Ancestor %s' % (ancestralCounter)
+        ancestor = Strain('Ancestor %s' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
         ancestor.setTrackingEvents(trackingEvents)
         ancestor.setHasData(True)
         global strains
@@ -1569,7 +1604,7 @@ def post_traversal(node):
         #Check
         #print('This is the resulting ancestor after the comparison:')
         #ancestor.printStrain()
-        
+
         return ancestor
 
     #If the left child has a sequence, return it
