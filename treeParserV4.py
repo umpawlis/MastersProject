@@ -1560,7 +1560,7 @@ def processDistanceFile(fileName):
 # Parameters: node - The node that we want to process
 # Description:
 ######################################################
-def preOrderTraversal(node, strains):
+def preOrderTraversal(node, strains, score):
 
     totalGeneLosses = 0
     totalGeneDuplicates = 0
@@ -1574,22 +1574,25 @@ def preOrderTraversal(node, strains):
                     print('Currently processing: %s' % (node.name))
                 else:
                     print("Currently processing leaf node: %s" % (node.name))
+                    print('Total number of events for this lineage: %s' % (score))
 
                 trackingEvents = strain.getTrackingEvents()
                 if len(trackingEvents) > 0:
                     for x in range(0, len(trackingEvents)):
+                        score += trackingEvents[x].getScore(); #Counts number of events
                         operonEvents = trackingEvents[x].getOperonEvents()
                         if operonEvents:
                             totalGeneLosses += operonEvents.getOperon1GeneLosses()
                             totalGeneLosses += operonEvents.getOperon2GeneLosses()
                             totalGeneDuplicates += operonEvents.getOperon1GeneDuplicates()
                             totalGeneDuplicates += operonEvents.getOperon2GeneDuplicates()
-                print('Total number of losses for this node: %s' % (totalGeneLosses))
-                print('Total number of duplicates for this node %s' % (totalGeneDuplicates))
+                    print('Total number of events for this node: %s' % (score))
+                #print('Total number of losses for this node: %s' % (totalGeneLosses))
+                #print('Total number of duplicates for this node %s' % (totalGeneDuplicates))
 
     if len(node.clades) > 0:
-        preOrderTraversal(node.clades[0], strains)
-        preOrderTraversal(node.clades[1], strains)
+        preOrderTraversal(node.clades[0], strains, score)
+        preOrderTraversal(node.clades[1], strains, score)
 
 ######################################################
 # post_traversal
@@ -1703,7 +1706,7 @@ Phylo.draw(tree)
 
 #Calculate number of events for each lineage
 global strains
-preOrderTraversal(tree.clade, strains)
+preOrderTraversal(tree.clade, strains, 0)
 
 if len(duplicateLengthTracker) > 0:
     print("-" * 50)
