@@ -73,7 +73,7 @@ class OperonEvents(object):
         return self.operon1GeneDuplicates
     def getOperon2GeneDuplicates(self):
         return self.operon2GeneDuplicates
-    
+
     #####Setters#####
     def setNumMatches(self, numMatches):
         self.numMatches = numMatches
@@ -383,13 +383,13 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     #Use global alignment scores to find orthologs
     coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignment, numSingletonAlignment = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
 
-    print('#####################################################################')
+    print('#' * 70)
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
     print('Number of orthologs found through global alignment: %s' %(numGlobalAlignment))
     print('Number of orthologs found through local alignment: %s' %(numLocalAlignment))
     print('Number of orthologs found through duplicate alignment: %s' %(numDuplicateAlignment))
     print('Number of orthologs found through singleton alignment: %s' %(numSingletonAlignment))
-    print('#####################################################################')
+    print('#' * 70)
 
     ##########################
     # Printer for debugging
@@ -525,7 +525,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon2Losses += 1
             operon1Duplications += 1
             operon2Duplications += 1
-            
+
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             mismatch += 1
@@ -920,7 +920,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     printStats()
 
     if len(trackingEvents) > 0:
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print("x" * 70)
         x_coord = []
         y_coord = []
         print('Indexes of Local and Global alignment orthologous operons')
@@ -941,7 +941,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
             plt.show()
         else:
             print('No plot to display!')
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print("x" * 70)
 
         if conflictingOperons == True:
             print('FOUND CONFLICTING OPERONS!!!')
