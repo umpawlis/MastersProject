@@ -1558,20 +1558,38 @@ def processDistanceFile(fileName):
 ######################################################
 # preOrderTraversal
 # Parameters: node - The node that we want to process
-# Description: iterates to left and right nodes, reads
-# in the sequence and takes the symmetric difference between the sequences
+# Description:
 ######################################################
 def preOrderTraversal(node, strains):
-    #Visit node
+
+    totalGeneLosses = 0
+    totalGeneDuplicates = 0
+
+    if len(strains) > 0 and node.name:
+        for i in range(0, len(strains)):
+            strain = strains[i]
+            if (node.name).strip() == strain.getName().strip():
+
+                if len(node.clades) > 0:
+                    print('Currently processing: %s' % (node.name))
+                else:
+                    print("Currently processing leaf node: %s" % (node.name))
+
+                trackingEvents = strain.getTrackingEvents()
+                if len(trackingEvents) > 0:
+                    for x in range(0, len(trackingEvents)):
+                        operonEvents = trackingEvents[x].getOperonEvents()
+                        if operonEvents:
+                            totalGeneLosses += operonEvents.getOperon1GeneLosses()
+                            totalGeneLosses += operonEvents.getOperon2GeneLosses()
+                            totalGeneDuplicates += operonEvents.getOperon1GeneDuplicates()
+                            totalGeneDuplicates += operonEvents.getOperon2GeneDuplicates()
+                print('Total number of losses for this node: %s' % (totalGeneLosses))
+                print('Total number of duplicates for this node %s' % (totalGeneDuplicates))
 
     if len(node.clades) > 0:
         preOrderTraversal(node.clades[0], strains)
         preOrderTraversal(node.clades[1], strains)
-    else:
-        for i in range(0, len(strains)):
-            strain = strains[i]
-            if (node.name).strip() == strain.getName().strip():
-                print("Leaf node: %s" % (node.name))
 
 ######################################################
 # post_traversal
