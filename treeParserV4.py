@@ -347,7 +347,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
 
                 if setDifference <= threshold:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
-                    
+
             #Case 4: Some unhandled case
             else:
                 print('Case 4: Error, an unhandled case has occured in the sequence analysis')
@@ -837,7 +837,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     for i in range(0, len(coverageTracker1)):
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence1, i, coverageTracker1)
-            
+
             if addToAncestor:
                 #If no match found then it's a loss so add to ancestor
                 trackingId += 1
@@ -845,7 +845,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
                 #Indicates a loss
                 singletonAlignmentCountLossG1 += 1
-                
+
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this singleton because it was lost two times in a row')
@@ -859,7 +859,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     for i in range(0, len(coverageTracker2)):
         if coverageTracker2[i] == False and len(sequence2[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence2, i, coverageTracker2)
-            
+
             if addToAncestor:
                 #If no match found, then it's a loss so add to ancestor
                 trackingId += 1
@@ -867,7 +867,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
                 #Indicates a loss
                 singletonAlignmentCountLossG2 += 1
-                
+
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this singleton because it was lost two times in a row')
@@ -883,7 +883,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) > 1:
             print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            
+
             duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
             coverageTracker1[i] = True
 
@@ -899,10 +899,10 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
-                
+
                 #Indicates operon is a loss
                 duplicateAlignmentCountLossG1 += 1
-                
+
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this operon because it was lost two times in a row')
@@ -916,7 +916,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         if coverageTracker2[i] == False and len(sequence2[i].split(',')) > 1:
             print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            
+
             duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
             coverageTracker2[i] = True
 
@@ -931,10 +931,10 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
-                
+
                 #Indicates operon is a loss
                 duplicateAlignmentCountLossG2 += 1
-                
+
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this operon because it was lost two times in a row')
@@ -1582,7 +1582,6 @@ def processDistanceFile(fileName):
     file.close()
     return genes2
 
-
 ######################################################
 # preOrderTraversal
 # Parameters: node - The node that we want to process
@@ -1600,9 +1599,10 @@ def preOrderTraversal(node, strains, score):
 
                 if len(node.clades) > 0:
                     print('Currently processing: %s' % (node.name))
+                    print('Total number of events for this node: %s\n' % (score))
                 else:
                     print("Currently processing leaf node: %s" % (node.name))
-                    print('Total number of events for this lineage: %s' % (score))
+                    print('Total number of events for this lineage: %s\n' % (score))
 
                 trackingEvents = strain.getTrackingEvents()
                 if len(trackingEvents) > 0:
@@ -1614,7 +1614,6 @@ def preOrderTraversal(node, strains, score):
                             totalGeneLosses += operonEvents.getOperon2GeneLosses()
                             totalGeneDuplicates += operonEvents.getOperon1GeneDuplicates()
                             totalGeneDuplicates += operonEvents.getOperon2GeneDuplicates()
-                    print('Total number of events for this node: %s' % (score))
                 #print('Total number of losses for this node: %s' % (totalGeneLosses))
                 #print('Total number of duplicates for this node %s' % (totalGeneDuplicates))
 
@@ -1723,12 +1722,28 @@ if result is not None:
     result.printStrain()
     #Check if the sequence is resolved
     if len(result.getSequence()) == 0:
+        seq = result.getSequence()
         print('Printing Tracking Events since root needs to be resolved')
         trackingEvents = result.getTrackingEvents()
         for i in range(0, len(trackingEvents)):
-            if trackingEvents[i].printTrackingEvent() is not None:
-                trackingEvents[i].printTrackingEvent()
-
+            #Resolve the Ancestral operons
+            if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
+                if trackingEvents[i].getScore() == 0:
+                    #Both operons the same
+                    seq.append(trackingEvents[i].getAncestralOperon())
+                else:
+                    print('Test')
+                    #Operons are different, pick the sortest one
+                    if len(trackingEvents[i].getGenome1Operon()) < len(trackingEvents[i].getGenome2Operon()):
+                        seq.append(trackingEvents[i].getGenome1Operon())
+                        trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
+                    else:
+                        seq.append(trackingEvents[i].getGenome2Operon())
+                        trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
+            else:
+                seq.append(trackingEvents[i].getAncestralOperon())
+            trackingEvents[i].printTrackingEvent()
+                
 #Draw tree to the console
 Phylo.draw(tree)
 
