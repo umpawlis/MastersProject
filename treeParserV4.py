@@ -1743,7 +1743,7 @@ if result is not None:
             else:
                 seq.append(trackingEvents[i].getAncestralOperon())
             trackingEvents[i].printTrackingEvent()
-                
+
 #Draw tree to the console
 Phylo.draw(tree)
 
