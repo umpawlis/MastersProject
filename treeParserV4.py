@@ -347,14 +347,7 @@ def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
 
                 if setDifference <= threshold:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
-                #if len(operon1) == 4 and len(operon2) == 3 and 'Ser_AGC' in operon1 and 'Ser_AGC' in operon2:
-                    #Debugging
-                    #print("Debugging")
-                    #print(score)
-                    #print(operonEvents.toStringOperonEvents())
-                    #print(globalAlignmentMatrix[x][y])
-                    #print(float(str(globalAlignmentMatrix[x][y]).replace('*', '')))
-                    #print("Debugging")
+                    
             #Case 4: Some unhandled case
             else:
                 print('Case 4: Error, an unhandled case has occured in the sequence analysis')
@@ -381,14 +374,22 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     coverageTracker2 = {}
 
     #Use global alignment scores to find orthologs
-    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignment, numSingletonAlignment = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
+    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignmentG1, numDuplicateAlignmentG2, numSingletonAlignmentG1, numSingletonAlignmentG2, numDuplicateLossG1, numDuplicateLossG2, numSingletonLossG1, numSingletonLossG2 = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
 
     print('#' * 70)
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
+    print('Number of operons for %s: %s' %(strain1, len(coverageTracker1)))
+    print('Number of operons for %s: %s' %(strain2, len(coverageTracker2)))
     print('Number of orthologs found through global alignment: %s' %(numGlobalAlignment))
     print('Number of orthologs found through local alignment: %s' %(numLocalAlignment))
-    print('Number of orthologs found through duplicate alignment: %s' %(numDuplicateAlignment))
-    print('Number of orthologs found through singleton alignment: %s' %(numSingletonAlignment))
+    print('Number of operons identified as duplicates in %s: %s' %(strain1, numDuplicateAlignmentG1))
+    print('Number of operons identified as duplicates in %s: %s' %(strain2, numDuplicateAlignmentG2))
+    print('Number of singletons identified as duplicates in %s: %s' %(strain1, numSingletonAlignmentG1))
+    print('Number of singletons identified as duplicates in %s: %s' %(strain2, numSingletonAlignmentG2))
+    print('Number of operons lost in %s: %s' %(strain1, numDuplicateLossG1))
+    print('Number of operons lost in %s: %s' %(strain2, numDuplicateLossG2))
+    print('Number of singletons lost in %s: %s' %(strain1, numSingletonLossG1))
+    print('Number of singletons lost in %s: %s' %(strain2, numSingletonLossG2))
     print('#' * 70)
 
     ##########################
@@ -715,10 +716,17 @@ def incrementDuplicateTracker(operon):
 ######################################################
 def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
     #Keep track of number of each type of analysis performed
-    globalAlignmentCounter = 0
-    localAlignmentCounter = 0
-    duplicateAlignmentCount = 0
-    singletonAlignmentCount = 0
+    globalAlignmentCounter = 0 #decrements available operons in both
+    localAlignmentCounter = 0 #decrements available operons in both
+    duplicateAlignmentCountG1 = 0 #decrements available operons in genome 1
+    duplicateAlignmentCountG2 = 0 #decrements available operons in genome 2
+    singletonAlignmentCountG1 = 0 #decrements available operons in genome 1
+    singletonAlignmentCountG2 = 0 #decrements available operons in genome 2
+
+    duplicateAlignmentCountLossG1 = 0 #indicates a loss
+    duplicateAlignmentCountLossG2 = 0 #indicates a loss
+    singletonAlignmentCountLossG1 = 0 #indicates a loss
+    singletonAlignmentCountLossG2 = 0 #indicates a loss
 
     conflictingOperons = False #Tracks whether we will have to resolve any operons
 
@@ -829,43 +837,53 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     for i in range(0, len(coverageTracker1)):
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence1, i, coverageTracker1)
-            singletonAlignmentCount += 1
+            
             if addToAncestor:
                 #If no match found then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Singleton Alignment")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
-
+                #Indicates a loss
+                singletonAlignmentCountLossG1 += 1
+                
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this singleton because it was lost two times in a row')
                 else:
                     trackingEvents.append(trackingEvent)
                 trackingEvent.printTrackingEvent()
+            else:
+                #Increment Counter to indicate success in finding source
+                singletonAlignmentCountG1 += 1
 
     for i in range(0, len(coverageTracker2)):
         if coverageTracker2[i] == False and len(sequence2[i].split(',')) == 1:
             addToAncestor, matchIndex = resolveSingleton(sequence2, i, coverageTracker2)
-            singletonAlignmentCount += 1
+            
             if addToAncestor:
                 #If no match found, then it's a loss so add to ancestor
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Singleton Alignment")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
-
+                #Indicates a loss
+                singletonAlignmentCountLossG2 += 1
+                
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this singleton because it was lost two times in a row')
                 else:
                     trackingEvents.append(trackingEvent)
                 trackingEvent.printTrackingEvent()
+            else:
+                #Increment Counter to indicate success in finding source
+                singletonAlignmentCountG2 += 1
 
     #Resolve the remaining operons that are not singletons
     for i in range(0, len(coverageTracker1)):
         if coverageTracker1[i] == False and len(sequence1[i].split(',')) > 1:
             print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            duplicateAlignmentCount += 1
+            
             duplicateEvent = duplicateAlignment(i, sequence1[i], sequence1, genomeName1)
             coverageTracker1[i] = True
 
@@ -874,12 +892,17 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 #Not null, we found a partner for this operon
                 print('Found a matching duplicate operon, therefore not adding to ancestor!')
                 duplicateEvent.printTrackingEvent()
+                #Increment counter to indicate we successfully found a match
+                duplicateAlignmentCountG1 += 1
             else:
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to ancestor as it is a loss' % (sequence1[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName1, '', sequence1[i], '', i, -1, sequence1[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain1)
-
+                
+                #Indicates operon is a loss
+                duplicateAlignmentCountLossG1 += 1
+                
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this operon because it was lost two times in a row')
@@ -893,7 +916,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         if coverageTracker2[i] == False and len(sequence2[i].split(',')) > 1:
             print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
             print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-            duplicateAlignmentCount += 1
+            
             duplicateEvent = duplicateAlignment(i, sequence2[i], sequence2, genomeName2)
             coverageTracker2[i] = True
 
@@ -901,12 +924,17 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 #Not null, we found a partner for this operon
                 print('Found a matching duplicate operon, therefore not adding to ancestor!')
                 duplicateEvent.printTrackingEvent()
+                #Increment counter to indicate we successfully found a match
+                duplicateAlignmentCountG2 += 1
             else:
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to the ancestor as it is a loss' % (sequence2[i]))
                 trackingId += 1
                 trackingEvent = TrackingEvent(trackingId, 0, genomeName2, '', sequence2[i], '', i, -1, sequence2[i], "Duplicate Alignment (No match found)")
                 trackingEvent = trackLossEvents(trackingEvent, trackingEventsStrain2)
-
+                
+                #Indicates operon is a loss
+                duplicateAlignmentCountLossG2 += 1
+                
                 #decides whether to add the event or not
                 if len(trackingEvent.getLostEventIds()) >= 2:
                     print('Removing this operon because it was lost two times in a row')
@@ -948,7 +976,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         else:
             print('NO CONFLICTS!!!')
 
-    return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCount, singletonAlignmentCount
+    return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCountG1, duplicateAlignmentCountG2, singletonAlignmentCountG1, singletonAlignmentCountG2, duplicateAlignmentCountLossG1, duplicateAlignmentCountLossG2, singletonAlignmentCountLossG1, singletonAlignmentCountLossG2
 
 ######################################################
 # trackLossEvents
