@@ -751,9 +751,42 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     #Find all the optimal scores via global alignment
     maxValue = findMax(globalAlignmentMatrix)
     currentScoreSelected = 0
-
+    
     #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
     while currentScoreSelected <= maxValue:
+        #Prioritize the selection of operons with the same sign
+        for i in range(0, len(globalAlignmentMatrix)):
+            for j in range(0, len(globalAlignmentMatrix[i])):
+                #Check if this is a * score, if both operons have not been marked off and if both are the same sign
+                if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False) and (('-' in sequence1[i] and '-' in sequence2[j]) or ('-' not in sequence1[i] and '-' not in sequence2[j])):
+                    score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
+                    #Check if the score matches the scores we're currently looking for
+                    if score == currentScoreSelected:
+                        #We found an ortholog in the global alignment matrix
+                        print('\n##### Global Alignment #####')
+                        global trackingId
+                        trackingId += 1
+
+                        globalAlignmentCounter+=1
+                        coverageTracker1[i] = True
+                        coverageTracker2[j] = True
+
+                        if score == 0:
+                            #We found a perfect match, doesn't matter which operon we pick
+                            trackingEvent = TrackingEvent(trackingId, score, genomeName1, genomeName2, sequence1[i], sequence2[j], i, j, sequence1[i], "2 Genome Global Alignment")
+                        else:
+                            #We found orthologs that are not a perfect match and need to be resolved
+                            conflictingOperons = True
+                            trackingEvent = TrackingEvent(trackingId, score, genomeName1, genomeName2, sequence1[i], sequence2[j], i, j, '', "2 Genome Global Alignment")
+                        #Add the event to the tracking events list
+                        trackingEvent.setOperonEvents(operonEventMatrix[i][j])
+                        trackingEvents.append(trackingEvent)
+                        trackingEvent.printTrackingEvent()
+                        #Used for debugging
+                        #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[i], sequence2[j]))
+                        #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %s, (top of matrix) %s\n' %(i, j))
+                        print('###################################\n')
+        #Select the remaining operons with the optimal score                     
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
                 #Check if this is a * score and if both operons have not been marked off
