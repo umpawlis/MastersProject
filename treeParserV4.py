@@ -751,7 +751,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     #Find all the optimal scores via global alignment
     maxValue = findMax(globalAlignmentMatrix)
     currentScoreSelected = 0
-    
+
     #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
     while currentScoreSelected <= maxValue:
         #Prioritize the selection of operons with the same sign
@@ -786,7 +786,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                         #print('Found an orthologous operon using Global Alignment: (left of matrix) %s, (top of matrix) %s' %(sequence1[i], sequence2[j]))
                         #print('These are the indexes of the orthologous operon from the global alignment: (left of matrix) %s, (top of matrix) %s\n' %(i, j))
                         print('###################################\n')
-        #Select the remaining operons with the optimal score                     
+        #Select the remaining operons with the optimal score
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
                 #Check if this is a * score and if both operons have not been marked off
@@ -1765,15 +1765,27 @@ if result is not None:
                     #Both operons the same
                     seq.append(trackingEvents[i].getAncestralOperon())
                 else:
-                    print('Test')
-                    #Operons are different, pick the sortest one
-                    if len(trackingEvents[i].getGenome1Operon()) < len(trackingEvents[i].getGenome2Operon()):
-                        seq.append(trackingEvents[i].getGenome1Operon())
-                        trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
+                    #If set difference is zero then pick the short one else pick the long one
+                    setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(trackingEvents[i].getGenome1Operon(), trackingEvents[i].getGenome2Operon())
+
+                    if setDifference == 0:
+                        #Pick the sortest one
+                        if len(trackingEvents[i].getGenome1Operon()) < len(trackingEvents[i].getGenome2Operon()):
+                            seq.append(trackingEvents[i].getGenome1Operon())
+                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
+                        else:
+                            seq.append(trackingEvents[i].getGenome2Operon())
+                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
                     else:
-                        seq.append(trackingEvents[i].getGenome2Operon())
-                        trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
+                        #Pick the longest one
+                        if len(trackingEvents[i].getGenome1Operon()) > len(trackingEvents[i].getGenome2Operon()):
+                            seq.append(trackingEvents[i].getGenome1Operon())
+                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
+                        else:
+                            seq.append(trackingEvents[i].getGenome2Operon())
+                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
             else:
+                #Lost operon, nothing to compare to so just add it
                 seq.append(trackingEvents[i].getAncestralOperon())
             trackingEvents[i].printTrackingEvent()
 
