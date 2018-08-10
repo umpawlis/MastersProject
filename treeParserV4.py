@@ -48,7 +48,7 @@ class OperonEvents(object):
         self.operon2GeneDuplicates = operon2GeneDuplicates
 
     def toStringOperonEvents(self):
-        return "(Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s,\nOperon 1 Gene Losses: %s,\nOperon 2 Gene Losses: %s,\nOperon 1 Gene Extras: %s,\nOperon 2 Gene Extras: %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2, self.operon1GeneLosses, self.operon2GeneLosses, self.operon1GeneDuplicates, self.operon2GeneDuplicates)
+        return "(Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s,\nOperon 1 Gene Losses: %s,\nOperon 2 Gene Losses: %s,\nOperon 1 Gene Duplications: %s,\nOperon 2 Gene Duplications: %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2, self.operon1GeneLosses, self.operon2GeneLosses, self.operon1GeneDuplicates, self.operon2GeneDuplicates)
 
     #####Getters#####
     def getNumMatches(self):
@@ -529,16 +529,33 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
 
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
+            foundMatch = False
+            index = i-1
             mismatch += 1
             i -= 1
-            operon1Duplications += 1
-            operon2Losses += 1
+            #Check if there is another gene in the operon that matches this extra gene with or without the codon
+            for x in range(0, len(operon1)):
+                if (foundMatch == False) and (x != index) and (operon1[index].strip() == operon1[x].strip() or operon1[index].split('_')[0].strip() == operon1[x].split('_')[0].strip()):
+                    operon1Duplications += 1
+                    foundMatch = True
+            #If we didn't find a match in the operon itself then it must have been lost in operon 2
+            if foundMatch == False:
+                operon2Losses += 1
+
         #Mismatch
         else:
+            foundMatch = False
+            index = j - 1
             mismatch += 1
             j -= 1
-            operon2Duplications += 1
-            operon1Losses += 1
+            #Check if there is another gene in the operon that matches this extra gene with or without the codon
+            for x in range(0, len(operon2)):
+                if (foundMatch == False) and (x != index) and (operon2[index].strip() == operon2[x].strip() or operon2[index].split('_')[0].strip() == operon2[x].split('_')[0].strip()):
+                    operon2Duplications += 1
+                    foundMatch = True
+            #If we didn't find a match in the operon itself then it must have been lost in operon 2
+            if foundMatch == False:
+                operon1Losses += 1
 
     operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
 
@@ -1788,6 +1805,7 @@ if result is not None:
                 #Lost operon, nothing to compare to so just add it
                 seq.append(trackingEvents[i].getAncestralOperon())
             trackingEvents[i].printTrackingEvent()
+            print('\n')
 
 #Draw tree to the console
 Phylo.draw(tree)
