@@ -1677,10 +1677,10 @@ def processDistanceFile(fileName):
 ######################################################
 def preOrderTraversal(node, strains, numLosses, numDuplications):
 
-    geneDuplicationsG1 = numDuplications
-    geneDuplicationsG2 = numDuplications
-    geneLossesG1 = numLosses
-    geneLossesG2 = numLosses
+    geneDuplicationsG1 = 0
+    geneDuplicationsG2 = 0
+    geneLossesG1 = 0
+    geneLossesG2 = 0
 
     if len(strains) > 0 and node.name:
         for i in range(0, len(strains)):
@@ -1699,21 +1699,14 @@ def preOrderTraversal(node, strains, numLosses, numDuplications):
                 trackingEvents = strain.getTrackingEvents()
                 if len(trackingEvents) > 0:
                     for x in range(0, len(trackingEvents)):
-                        if trackingEvents[x].getTechnique() == '2 Genome Global Alignment' and trackingEvents[x].getScore() != 0:
-                            ancestralOperon = trackingEvents[x].getAncestralOperon().strip()
-                            genome1Operon = trackingEvents[x].getGenome1Operon().strip()
-                            genome2Operon = trackingEvents[x].getGenome2Operon().strip()
-
-                            if ancestralOperon == genome1Operon:
-                                geneLossesG2 += trackingEvents[x].getOperonEvents().getOperon2GeneLosses()
-                                geneDuplicationsG2 += trackingEvents[x].getOperonEvents().getOperon2GeneDuplicates()
-                            elif ancestralOperon == genome2Operon:
-                                geneLossesG1 += trackingEvents[x].getOperonEvents().getOperon1GeneLosses()
-                                geneDuplicationsG1 += trackingEvents[x].getOperonEvents().getOperon1GeneDuplicates()
-
+                        if trackingEvents[x].getTechnique() == '2 Genome Global Alignment' and trackingEvents[x].getScore() > 0:
+                            geneLossesG2 = geneLossesG2 + trackingEvents[x].getOperonEvents().getOperon2GeneLosses()
+                            geneDuplicationsG2 += trackingEvents[x].getOperonEvents().getOperon2GeneDuplicates()
+                            geneLossesG1 = geneLossesG1 + trackingEvents[x].getOperonEvents().getOperon1GeneLosses()
+                            geneDuplicationsG1 += trackingEvents[x].getOperonEvents().getOperon1GeneDuplicates()
     if len(node.clades) > 0:
-        preOrderTraversal(node.clades[0], strains, geneLossesG1, geneDuplicationsG1)
-        preOrderTraversal(node.clades[1], strains, geneLossesG2, geneDuplicationsG2)
+        preOrderTraversal(node.clades[0], strains, geneLossesG1 + numLosses, geneDuplicationsG1 + numDuplications)
+        preOrderTraversal(node.clades[1], strains, geneLossesG2 + numLosses, geneDuplicationsG2 + numDuplications)
 
 ######################################################
 # post_traversal
