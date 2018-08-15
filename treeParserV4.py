@@ -290,7 +290,6 @@ def computeSetDifference(operon1, operon2):
 # Description:
 ######################################################
 def sequenceAnalysis(firstOperonList, secondOperonList, strain1, strain2):
-
     print('Starting sequence analysis of {%s, %s}...' % (strain1, strain2))
 
     #remove unwanted content from the operon list
@@ -374,12 +373,16 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     coverageTracker2 = {}
 
     #Use global alignment scores to find orthologs
-    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignmentG1, numDuplicateAlignmentG2, numSingletonAlignmentG1, numSingletonAlignmentG2, numDuplicateLossG1, numDuplicateLossG2, numSingletonLossG1, numSingletonLossG2 = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
+    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignmentG1, numDuplicateAlignmentG2, numSingletonAlignmentG1, numSingletonAlignmentG2, numDuplicateLossG1, numDuplicateLossG2, numSingletonLossG1, numSingletonLossG2, numSingletonsG1, numSingletonsG2, numOperonsG1, numOperonsG2, numInvertedDuplicatesG1, numInvertedDuplicatesG2 = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
 
     print('#' * 70)
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
-    print('Number of operons for %s: %s' %(strain1, len(coverageTracker1)))
-    print('Number of operons for %s: %s' %(strain2, len(coverageTracker2)))
+    print('Total number of operons for %s: %s' %(strain1, len(coverageTracker1)))
+    print('Total number of operons for %s: %s' %(strain2, len(coverageTracker2)))
+    print('Number of singletons for %s: %s' %(strain1, numSingletonsG1))
+    print('Number of singletons for %s: %s' %(strain2, numSingletonsG2))
+    print('Number of operons for %s: %s' %(strain1, numOperonsG1))
+    print('Number of operons for %s: %s' %(strain2, numOperonsG2))
     print('Number of orthologs found through global alignment: %s' %(numGlobalAlignment))
     print('Number of orthologs found through local alignment: %s' %(numLocalAlignment))
     print('Number of operons identified as duplicates in %s: %s' %(strain1, numDuplicateAlignmentG1))
@@ -390,6 +393,9 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     print('Number of operons lost in %s: %s' %(strain2, numDuplicateLossG2))
     print('Number of singletons lost in %s: %s' %(strain1, numSingletonLossG1))
     print('Number of singletons lost in %s: %s' %(strain2, numSingletonLossG2))
+    print('Number of inverted duplicates in %s: %s' %(strain1, numInvertedDuplicatesG1))
+    print('Number of inverted duplicates in %s: %s' %(strain2, numInvertedDuplicatesG2))
+
     print('#' * 70)
 
     ##########################
@@ -745,6 +751,14 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     singletonAlignmentCountLossG1 = 0 #indicates a loss
     singletonAlignmentCountLossG2 = 0 #indicates a loss
 
+    numSingletonsG1 = 0 #Counts number of singletons in G1
+    numSingletonsG2 = 0 #Counts number of singletons in G2
+    numOperonsG1 = 0 #Counts number of operons in G1
+    numOperonsG2 = 0 #Counts number of operons in G2
+
+    numInvertedDuplicatesG1 = 0 #Counts number of inverted duplicates in G1
+    numInvertedDuplicatesG2 = 0 #Counts number of inverted duplicates in G2
+
     conflictingOperons = False #Tracks whether we will have to resolve any operons
 
     #Tracking Events store information about the ortholog
@@ -757,6 +771,20 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         resolveAncestralOperon(trackingEventsStrain2, sequence2, trackingEventsStrain1, sequence1)
     #Compute the global alignment matrix and return sequence 1 and 2 because they are being modified by removing origin and terminus
     globalAlignmentMatrix, sequence1, sequence2, operonEventMatrix = sequenceAnalysis(sequence1, sequence2, genomeName1, genomeName2)
+
+    #Count number of operons and singletons in each genome
+    for x in range(0, len(sequence1)):
+        genes = sequence1[x].split(',')
+        if len(genes) == 1:
+            numSingletonsG1 += 1
+        else:
+            numOperonsG1 += 1
+    for x in range(0, len(sequence2)):
+        genes = sequence2[x].split(',')
+        if len(genes) == 1:
+            numSingletonsG2 += 1
+        else:
+            numOperonsG2 += 1
 
     #Now initialize trackers here because we removed the origin and terminus markers, otherwise we'll an index out of range
     for y in range(0, len(sequence1)):
@@ -944,6 +972,11 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 duplicateEvent.printTrackingEvent()
                 #Increment counter to indicate we successfully found a match
                 duplicateAlignmentCountG1 += 1
+
+                #Check if inverted duplicates
+                if ('-' in duplicateEvent.getGenome1Operon() and '-' not in duplicateEvent.getGenome2Operon()) or ('-' not in duplicateEvent.getGenome1Operon() and '-' in duplicateEvent.getGenome2Operon()):
+                    numInvertedDuplicatesG1 += 1
+
             else:
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to ancestor as it is a loss' % (sequence1[i]))
                 trackingId += 1
@@ -976,6 +1009,11 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                 duplicateEvent.printTrackingEvent()
                 #Increment counter to indicate we successfully found a match
                 duplicateAlignmentCountG2 += 1
+
+                #Check if inverted duplicates
+                if ('-' in duplicateEvent.getGenome1Operon() and '-' not in duplicateEvent.getGenome2Operon()) or ('-' not in duplicateEvent.getGenome1Operon() and '-' in duplicateEvent.getGenome2Operon()):
+                    numInvertedDuplicatesG2 += 1
+
             else:
                 print('No duplicate ortholog found for operon: %s, therefore it will be added to the ancestor as it is a loss' % (sequence2[i]))
                 trackingId += 1
@@ -1026,7 +1064,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         else:
             print('NO CONFLICTS!!!')
 
-    return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCountG1, duplicateAlignmentCountG2, singletonAlignmentCountG1, singletonAlignmentCountG2, duplicateAlignmentCountLossG1, duplicateAlignmentCountLossG2, singletonAlignmentCountLossG1, singletonAlignmentCountLossG2
+    return coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, globalAlignmentCounter, localAlignmentCounter, duplicateAlignmentCountG1, duplicateAlignmentCountG2, singletonAlignmentCountG1, singletonAlignmentCountG2, duplicateAlignmentCountLossG1, duplicateAlignmentCountLossG2, singletonAlignmentCountLossG1, singletonAlignmentCountLossG2, numSingletonsG1, numSingletonsG2, numOperonsG1, numOperonsG2, numInvertedDuplicatesG1, numInvertedDuplicatesG2
 
 ######################################################
 # trackLossEvents
@@ -1637,10 +1675,12 @@ def processDistanceFile(fileName):
 # Parameters: node - The node that we want to process
 # Description:
 ######################################################
-def preOrderTraversal(node, strains, score):
+def preOrderTraversal(node, strains, numLosses, numDuplications):
 
-    totalGeneLosses = 0
-    totalGeneDuplicates = 0
+    geneDuplicationsG1 = numDuplications
+    geneDuplicationsG2 = numDuplications
+    geneLossesG1 = numLosses
+    geneLossesG2 = numLosses
 
     if len(strains) > 0 and node.name:
         for i in range(0, len(strains)):
@@ -1649,27 +1689,31 @@ def preOrderTraversal(node, strains, score):
 
                 if len(node.clades) > 0:
                     print('Currently processing: %s' % (node.name))
-                    print('Total number of events for this node: %s\n' % (score))
+                    print('Total number of losses: %s' %(numLosses))
+                    print('Total number of duplications: %s\n' %(numDuplications))
                 else:
                     print("Currently processing leaf node: %s" % (node.name))
-                    print('Total number of events for this lineage: %s\n' % (score))
+                    print('Total number of loss events for this lineage: %s' % (numLosses))
+                    print('Total number of duplication events for this lineage: %s\n' % (numDuplications))
 
                 trackingEvents = strain.getTrackingEvents()
                 if len(trackingEvents) > 0:
                     for x in range(0, len(trackingEvents)):
-                        score += trackingEvents[x].getScore(); #Counts number of events
-                        operonEvents = trackingEvents[x].getOperonEvents()
-                        if operonEvents:
-                            totalGeneLosses += operonEvents.getOperon1GeneLosses()
-                            totalGeneLosses += operonEvents.getOperon2GeneLosses()
-                            totalGeneDuplicates += operonEvents.getOperon1GeneDuplicates()
-                            totalGeneDuplicates += operonEvents.getOperon2GeneDuplicates()
-                #print('Total number of losses for this node: %s' % (totalGeneLosses))
-                #print('Total number of duplicates for this node %s' % (totalGeneDuplicates))
+                        if trackingEvents[x].getTechnique() == '2 Genome Global Alignment' and trackingEvents[x].getScore() != 0:
+                            ancestralOperon = trackingEvents[x].getAncestralOperon().strip()
+                            genome1Operon = trackingEvents[x].getGenome1Operon().strip()
+                            genome2Operon = trackingEvents[x].getGenome2Operon().strip()
+
+                            if ancestralOperon == genome1Operon:
+                                geneLossesG2 += trackingEvents[x].getOperonEvents().getOperon2GeneLosses()
+                                geneDuplicationsG2 += trackingEvents[x].getOperonEvents().getOperon2GeneDuplicates()
+                            elif ancestralOperon == genome2Operon:
+                                geneLossesG1 += trackingEvents[x].getOperonEvents().getOperon1GeneLosses()
+                                geneDuplicationsG1 += trackingEvents[x].getOperonEvents().getOperon1GeneDuplicates()
 
     if len(node.clades) > 0:
-        preOrderTraversal(node.clades[0], strains, score)
-        preOrderTraversal(node.clades[1], strains, score)
+        preOrderTraversal(node.clades[0], strains, geneLossesG1, geneDuplicationsG1)
+        preOrderTraversal(node.clades[1], strains, geneLossesG2, geneDuplicationsG2)
 
 ######################################################
 # post_traversal
@@ -1717,8 +1761,11 @@ def post_traversal(node):
                 strain.setHasData(True)
                 global strains
                 strains.append(strain)
-
                 return strain
+            else:
+                print('No sequence file found for node: %s' % node.name)
+        else:
+            print('No directory found for node: %s' % node.name)
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
 
@@ -1812,7 +1859,7 @@ Phylo.draw(tree)
 
 #Calculate number of events for each lineage
 global strains
-preOrderTraversal(tree.clade, strains, 0)
+preOrderTraversal(tree.clade, strains, 0, 0)
 
 if len(duplicateLengthTracker) > 0:
     print("-" * 50)
