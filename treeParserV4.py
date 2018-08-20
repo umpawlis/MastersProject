@@ -827,6 +827,12 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     for x in range(0, minValue):
         highestScore = -1
         distance = 50   #arbitrary large number
+        chosenOperon1 = []
+        chosenOperon2 = []
+        chosenStart = (0,0)
+        chosenEnd = (0,0)
+        chosenAligned1 = []
+        chosenAligned2 = []
 
         for i in range(0, len(coverageTracker1)):
             #Check if operon was not covered and not a singleton
@@ -836,18 +842,20 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                         op1 = sequence1[i]
                         op2 = sequence2[j]
 
-                        score = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+                        score, formattedOperon1, formattedOperon2, endPosition, startPosition, aligned1, aligned2 = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
 
-                        if score > highestScore:
+                        if (score > highestScore) or (score == highestScore and (abs(i - j)) < distance):
                             highestScore = score
                             rowIndex = i
                             colIndex = j
                             distance = abs(i - j)
-                        elif score == highestScore and (abs(i - j)) < distance:
-                            highestScore = score
-                            rowIndex = i
-                            colIndex = j
-                            distance = abs(i - j)
+
+                            chosenOperon1 = formattedOperon1
+                            chosenOperon2 = formattedOperon2
+                            chosenStart = startPosition
+                            chosenEnd = endPosition
+                            chosenAligned1 = aligned1
+                            chosenAligned2 = aligned2
 
         #After scanning the whole matrix if we found a best score, then store it
         if highestScore > -1:
@@ -858,8 +866,13 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
 
+            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2)):
+                ancestralOperon = sequence1[rowIndex]
+            else:
+                ancestralOperon = sequence2[colIndex]
+
             trackingId += 1
-            trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, sequence2[colIndex], "Local Alignment")
+            trackingEvent = TrackingEvent(trackingId, highestScore, genomeName1, genomeName2, sequence1[rowIndex], sequence2[colIndex], rowIndex, colIndex, ancestralOperon, "Local Alignment")
             trackingEvent.printTrackingEvent()
             trackingEvents.append(trackingEvent)
 
@@ -1158,6 +1171,57 @@ def printStats():
     extensionCounter = 0
 
 ######################################################
+# extendAlignment
+# Parameters: operon1, operon2
+# Description: Tries to extend the alignment of two operons by using their gene lists.
+######################################################
+def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2):
+    chooseOp1 = True
+
+    if len(op1) > len(op2):
+        unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
+        numUnique = compareDuplicates(aligned2, unaligned)
+        if numUnique < 2:
+            chooseOp1 = False
+    else:
+        unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
+        numUnique = compareDuplicates(aligned1, unaligned)
+        if numUnique >= 2:
+            chooseOp1 = False
+
+    print(chooseOp1)
+    return chooseOp1
+
+######################################################
+# extendAlignment
+# Parameters: operon1, operon2
+# Description: Tries to extend the alignment of two operons by using their gene lists.
+######################################################
+def getUnaligned(operon, startPosition, endPosition):
+    unaligned = []
+
+    print("Getting unaligned:")
+    for i in range(len(operon)):
+        if i < startPosition or i > endPosition:
+            unaligned.append(operon[i])
+
+    return unaligned
+
+######################################################
+# extendAlignment
+# Parameters: operon1, operon2
+# Description: Tries to extend the alignment of two operons by using their gene lists.
+######################################################
+def compareDuplicates(aligned, unaligned):
+    uniqueCounter = 0
+
+    for i in range(len(unaligned)):
+        if unaligned[i] not in aligned:
+            uniqueCounter += 1
+
+    return uniqueCounter
+
+######################################################
 # localAlignment
 # Parameters:
 # Description: Performs local alignment on two operons
@@ -1276,7 +1340,7 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     #print(aligned1)
     #print(aligned2)
 
-    return returningScore
+    return returningScore, operon1, operon2, maxPosition, endPosition, aligned1, aligned2
 
 ######################################################
 # extendAlignment
