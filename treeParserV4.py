@@ -868,6 +868,10 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     #Finding optimal orthologs using local alignment
     minValue = min(len(coverageTracker1), len(coverageTracker2))
 
+    formattedSequence1 = formatAllOperons(sequence1)
+    print(formattedSequence1)
+    formattedSequence2 = formatAllOperons(sequence2)
+    print(formattedSequence2)
     #Scan the matrix x times to find optimal local alignments everytime an entire matrix is scanned
     for x in range(0, minValue):
         highestScore = -1
@@ -911,7 +915,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
 
-            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2)):
+            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2)):
                 ancestralOperon = sequence1[rowIndex]
             else:
                 ancestralOperon = sequence2[colIndex]
@@ -1226,53 +1230,191 @@ def printStats():
     extensionCounter = 0
 
 ######################################################
-# extendAlignment
-# Parameters: operon1, operon2
-# Description: Tries to extend the alignment of two operons by using their gene lists.
+# searchOtherOperons
+# Parameters: 
+# Description: Checks if the other unique genes are found in other operons.
 ######################################################
-def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2):
+def searchOtherOperons():
+    print("Filler")
+
+######################################################
+# formatAllOperons
+# Parameters: sequence
+# Description: Formats all operons to correct orientation.
+######################################################
+def formatAllOperons(sequence):
+    sequenceList = []
+
+    for operon1 in sequence:
+        reverseOp = reverseSequence(operon1)
+
+        operon1 = operon1.replace('-', '')
+        operon1 = operon1.replace('[', '')
+        operon1 = operon1.replace(']', '')
+
+        operon1List = operon1.split(',')
+
+        if len(operon1List) > 1:
+            noWhiteSpaceOperon1List = []
+
+            for op in operon1List:
+                noWhiteSpaceOperon1List.append(op.strip())
+
+            if reverseOp:
+                noWhiteSpaceOperon1List.reverse()
+            sequenceList.append(noWhiteSpaceOperon1List)
+
+    return sequenceList
+
+######################################################
+# determineAncestor
+# Parameters: op1, op2, startPosition, endPosition, aligned1, aligned2
+# Description: Determines which ancestor to pick from local alignment results.
+######################################################
+def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2):
     chooseOp1 = True
 
     if len(op1) > len(op2):
         unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
         numUnique = compareDuplicates(aligned2, unaligned)
+
+        for geneList in unaligned:
+            if geneList:
+                numUniqueFound = findUniqueGenes(geneList, sequence1)
+                numUnique -= numUniqueFound
         if numUnique < 2:
             chooseOp1 = False
     else:
         unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
         numUnique = compareDuplicates(aligned1, unaligned)
+
+        for geneList in unaligned:
+            if geneList:
+                numUniqueFound = findUniqueGenes(geneList, sequence2)
+                numUnique -= numUniqueFound
         if numUnique >= 2:
             chooseOp1 = False
 
-    print(chooseOp1)
     return chooseOp1
 
 ######################################################
-# extendAlignment
-# Parameters: operon1, operon2
-# Description: Tries to extend the alignment of two operons by using their gene lists.
+# findUniqueGenes
+# Parameters: geneList, sequence
+# Description: Tries to find the list of genes in another operon of the genome.
+######################################################
+def findUniqueGenes(geneList, sequence):
+    comparisonSize = len(geneList)
+    startIndex = 0
+    currentIndex = 0
+    genesNotFound = True
+    endOfList = False
+    missedGene = False
+    geneRanges = []
+    numGeneMatches = 0
+
+    while (comparisonSize >= 1) and genesNotFound:
+        while (startIndex < comparisonSize) and (startIndex+comparisonSize <= len(geneList)) and genesNotFound:
+
+            currentIndex = startIndex
+            while currentIndex < len(geneList):
+                if currentIndex+comparisonSize <= len(geneList):
+                    gene = geneList[currentIndex:currentIndex+comparisonSize]
+
+                    if geneInSequence(gene, sequence, comparisonSize):
+                        newRange = (currentIndex, currentIndex+comparisonSize-1)
+                        if not checkOverlap(newRange, geneRanges):
+                            geneRanges.append(newRange)
+                            numGeneMatches += len(gene)
+                        if numGeneMatches == len(geneList):
+                            genesNotFound = False
+                currentIndex += comparisonSize
+
+            missedGene = False
+            startIndex += 1
+
+        currentIndex = 0
+        startIndex = 0
+        endOfList = False
+        comparisonSize -= 1
+
+    return numGeneMatches
+
+######################################################
+# checkOverlap
+# Parameters: newRange, rangeList
+# Description: Checks if the newly matched genes were already matched within another set.
+######################################################
+def checkOverlap(newRange, rangeList):
+    overlap = False
+
+    for ranges in rangeList:
+        if (newRange[0] <= ranges[1]) and (ranges[0] <= newRange[1]):
+            overlap = True
+
+    return overlap
+
+######################################################
+# findUniqueGenes
+# Parameters: gene, sequence, comparisonSize
+# Description: Determines if the list of genes appear somewhere else in the operon.
+######################################################
+def geneInSequence(gene, sequence, comparisonSize):
+    geneFound = False
+    currentIndex = 0
+
+    for operon in sequence:
+        while currentIndex+comparisonSize <= len(operon) and not geneFound:
+            operonGene = operon[currentIndex:currentIndex+comparisonSize]
+            if operonGene == gene:
+                geneFound = True
+
+            currentIndex += 1
+        currentIndex = 0
+
+    return geneFound
+
+######################################################
+# getUnaligned
+# Parameters: operon, startPosition, endPosition
+# Description: Finds genes in the operon that are not part of the alignment
 ######################################################
 def getUnaligned(operon, startPosition, endPosition):
     unaligned = []
+    beforeList = []
+    afterList = []
 
-    print("Getting unaligned:")
     for i in range(len(operon)):
-        if i < startPosition or i > endPosition:
-            unaligned.append(operon[i])
+        if i < startPosition:
+            beforeList.append(operon[i])
+        elif i > endPosition:
+            afterList.append(operon[i])
+
+    unaligned.append(beforeList)
+    unaligned.append(afterList)
 
     return unaligned
 
 ######################################################
-# extendAlignment
-# Parameters: operon1, operon2
-# Description: Tries to extend the alignment of two operons by using their gene lists.
+# compareDuplicates
+# Parameters: aligned, unaligned
+# Description: Compares unaligned genes with genes in the alignment to see how many unique genes are found.
 ######################################################
 def compareDuplicates(aligned, unaligned):
     uniqueCounter = 0
 
-    for i in range(len(unaligned)):
-        if unaligned[i] not in aligned:
-            uniqueCounter += 1
+    if unaligned[0]:
+        for i in reversed(range(len(unaligned[0]))):
+            if unaligned[0][i] not in aligned:
+                uniqueCounter += 1
+            else:
+                unaligned[0].pop(i)
+
+    if unaligned[1]:
+        for j in reversed(range(len(unaligned[1]))):
+            if unaligned[1][j] not in aligned:
+                uniqueCounter += 1
+            else:
+                unaligned[1].pop(j)
 
     return uniqueCounter
 

@@ -77,11 +77,11 @@ Number of extensions performed: 0
 
 Results of Local Alignment: Ancestor 2 & CP006721
 ...
-Strain 1 Operon 27: ['Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA']
-Strain 2 Operon  32: ['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+Strain 1 Operon 28: ['5S', 'Phe_UUC']
+Strain 2 Operon  17: ['16S', '23S', 'Asn_AAC', '5S', 'Phe_UUC', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA']
 Alignment Result (after no extension due to missing gene list(s)):
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
 
 
 Totals:
