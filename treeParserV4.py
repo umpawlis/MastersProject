@@ -511,18 +511,30 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     operon2Losses = 0
     operon1Duplications = 0
     operon2Duplications = 0
-
+    
+    operon1Gaps = []
+    operon1Gap = []
+    operon1ConsecutiveGap = False #Tracks consecutive gaps
+    
+    operon2Gaps = []
+    operon2Gap = []
+    operon2ConsecutiveGap = False #Tracks consecutive gaps
+    
     while i > 0 or j > 0:
         #Perfect match
         if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
             match += 1
             i -= 1
             j -= 1
+            operon1ConsecutiveGap = False
+            operon2ConsecutiveGap = False
         #Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
             i -= 1
             j -= 1
+            operon1ConsecutiveGap = False
+            operon2ConsecutiveGap = False
         #Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
@@ -532,13 +544,27 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon2Losses += 1
             operon1Duplications += 1
             operon2Duplications += 1
-
+            operon1ConsecutiveGap = False
+            operon2ConsecutiveGap = False
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             foundMatch = False
             index = i-1
             mismatch += 1
             i -= 1
+            operon2ConsecutiveGap = False
+            
+            #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
+            if operon1ConsecutiveGap:
+                operon1Gap.append(operon1[index])
+                operon1ConsecutiveGap = True
+            else:
+                if len(operon1Gap) > 0:
+                    operon1Gaps.append(operon1Gap)
+                operon1Gap = []
+                operon1Gap.append(operon1[index])
+                operon1ConsecutiveGap = True
+            
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon1)):
                 if (foundMatch == False) and (x != index) and (operon1[index].strip() == operon1[x].strip() or operon1[index].split('_')[0].strip() == operon1[x].split('_')[0].strip()):
@@ -547,13 +573,25 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             #If we didn't find a match in the operon itself then it must have been lost in operon 2
             if foundMatch == False:
                 operon2Losses += 1
-
         #Mismatch
         else:
             foundMatch = False
             index = j - 1
             mismatch += 1
             j -= 1
+            operon1ConsecutiveGap = False
+            
+            #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
+            if operon2ConsecutiveGap:
+                operon2Gap.append(operon2[index])
+                operon2ConsecutiveGap = True
+            else:
+                if len(operon2Gap) > 0:
+                    operon2Gaps.append(operon2Gap)
+                operon2Gap = []
+                operon2Gap.append(operon2[index])
+                operon2ConsecutiveGap = True
+            
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon2)):
                 if (foundMatch == False) and (x != index) and (operon2[index].strip() == operon2[x].strip() or operon2[index].split('_')[0].strip() == operon2[x].split('_')[0].strip()):
@@ -564,7 +602,14 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon1Losses += 1
 
     operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
-
+    
+    if len(operon1Gaps) > 0:
+        print('Printing Operon 1 Gaps')
+        print(operon1Gaps)
+    if len(operon2Gaps) > 0:
+        print('Printing Operon 2 Gaps')
+        print(operon2Gaps)
+    
     return operonEvents
 
 ######################################################
@@ -1876,8 +1921,17 @@ preOrderTraversal(tree.clade, strains, 0, 0)
 if len(duplicateLengthTracker) > 0:
     print("-" * 50)
     print('Results of Duplicate Tracker:')
+    x_coords = []
+    y_coords = []
     for key, value in duplicateLengthTracker.items():
+        x_coords.append(key)
+        y_coords.append(value)
         print("Size: %s => Num Duplicates: %s" % (key, value))
+        
+    plt.bar(x_coords, y_coords, align='center', alpha=0.5)
+    plt.ylabel('Size Of Operons')
+    plt.title('Duplicate Length Tracker') 
+    plt.show()
     print("-" * 50)
 
 print 'End of processing'
