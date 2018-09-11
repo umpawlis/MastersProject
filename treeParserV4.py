@@ -520,6 +520,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     operon2Gap = []
     operon2ConsecutiveGap = False #Tracks consecutive gaps
     
+    tracePath = []
+    
     while i > 0 or j > 0:
         #Perfect match
         if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
@@ -528,6 +530,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            tracePath.append('Match')
         #Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
@@ -535,6 +538,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            tracePath.append('Codon Mismatch')
         #Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
@@ -546,24 +550,29 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon2Duplications += 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            tracePath.append('Substituition')
         #Mismatch
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             foundMatch = False
             index = i-1
             mismatch += 1
             i -= 1
-            operon2ConsecutiveGap = False
+            operon1ConsecutiveGap = False
+            tracePath.append('Operon 2 Gap')
             
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
-            if operon1ConsecutiveGap:
-                operon1Gap.append(operon1[index])
-                operon1ConsecutiveGap = True
+            if operon2ConsecutiveGap:
+                operon2Gap.append(operon1[index])
+                operon2ConsecutiveGap = True
             else:
-                if len(operon1Gap) > 0:
-                    operon1Gaps.append(operon1Gap)
-                operon1Gap = []
-                operon1Gap.append(operon1[index])
-                operon1ConsecutiveGap = True
+                if len(operon2Gap) > 0:
+                    operon2Gaps.append(operon2Gap)
+                operon2Gap = []
+                operon2Gap.append(operon1[index])
+                operon2ConsecutiveGap = True
+                
+            if not (i > 0):
+                operon2Gaps.append(operon2Gap)
             
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon1)):
@@ -579,18 +588,21 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             index = j - 1
             mismatch += 1
             j -= 1
-            operon1ConsecutiveGap = False
+            operon2ConsecutiveGap = False
+            tracePath.append('Operon 1 Gap')
             
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
-            if operon2ConsecutiveGap:
-                operon2Gap.append(operon2[index])
-                operon2ConsecutiveGap = True
+            if operon1ConsecutiveGap:
+                operon1Gap.append(operon2[index])
+                operon1ConsecutiveGap = True
             else:
-                if len(operon2Gap) > 0:
-                    operon2Gaps.append(operon2Gap)
-                operon2Gap = []
-                operon2Gap.append(operon2[index])
-                operon2ConsecutiveGap = True
+                if len(operon1Gap) > 0:
+                    operon1Gaps.append(operon1Gap)
+                operon1Gap = []
+                operon1Gap.append(operon2[index])
+                operon1ConsecutiveGap = True
+            if not (j > 0):
+                operon1Gaps.append(operon1Gap)
             
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon2)):
@@ -610,6 +622,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         print('Printing Operon 2 Gaps')
         print(operon2Gaps)
     
+    if len(operon1Gaps) > 0 or len(operon2Gaps) > 0:
+        print('Operon 1: %s' % operon1)
+        print('Operon 2: %s' % operon2)
+        print(operonEvents.toStringOperonEvents())
+        print(tracePath)
+        print(matrix)
+        print('Done')
     return operonEvents
 
 ######################################################
