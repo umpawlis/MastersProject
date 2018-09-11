@@ -1093,12 +1093,19 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
         #Red ones represent scores between 3 and above
         red_x_coord = []
         red_y_coord = []
+        
+        #Blue ones represent a local alignment
+        blue_x_coord = []
+        blue_y_coord = []
 
         print('Indexes of Local and Global alignment orthologous operons')
         for i in range(0, len(trackingEvents)):
            if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
-
-               if trackingEvents[i].getScore() == 0:
+               #Assign the coords to the appropriate array
+               if trackingEvents[i].getTechnique() == 'Local Alignment':
+                  blue_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                  blue_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+               elif trackingEvents[i].getScore() == 0:
                    green_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                    green_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
                elif trackingEvents[i].getScore() == 1 or trackingEvents[i].getScore() == 2:
@@ -1115,8 +1122,8 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
                ancestralOperons.append(trackingEvents[i].getAncestralOperon())
 
         #If we have any coordinates to plot, display them
-        if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0:
-            plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro')
+        if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
+            plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
             plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
             plt.show()
         else:
