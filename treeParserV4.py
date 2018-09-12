@@ -1366,7 +1366,7 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
 
     if len(op1) > len(op2):
         unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
-        numUnique = compareDuplicates(aligned2, unaligned)
+        numUnique, unaligned = compareDuplicates(aligned2, unaligned)
 
         for geneList in unaligned:
             if geneList:
@@ -1376,7 +1376,7 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
             chooseOp1 = False
     else:
         unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
-        numUnique = compareDuplicates(aligned1, unaligned)
+        numUnique, unaligned = compareDuplicates(aligned1, unaligned)
 
         for geneList in unaligned:
             if geneList:
@@ -1490,23 +1490,52 @@ def getUnaligned(operon, startPosition, endPosition):
 # Description: Compares unaligned genes with genes in the alignment to see how many unique genes are found.
 ######################################################
 def compareDuplicates(aligned, unaligned):
+    beforeList = unaligned[0]
+    afterList = unaligned[1]
+    newUnaligned = []
     uniqueCounter = 0
 
-    if unaligned[0]:
-        for i in reversed(range(len(unaligned[0]))):
-            if unaligned[0][i] not in aligned:
+    if afterList:
+        segmentEnd = len(afterList)
+        for j in reversed(range(len(afterList))):
+            if afterList[j] not in aligned:
                 uniqueCounter += 1
             else:
-                unaligned[0].pop(i)
+                afterList.pop(j)
+                segmentEnd -= 1
+                if j < len(afterList):
+                    preList = afterList[j:segmentEnd]
+                    segmentEnd = j
 
-    if unaligned[1]:
-        for j in reversed(range(len(unaligned[1]))):
-            if unaligned[1][j] not in aligned:
+                    if preList:
+                        newUnaligned.insert(0, preList)
+        #For the last segment at the front of the list
+        preList = afterList[0:segmentEnd]
+
+        if preList:
+            newUnaligned.insert(0, preList)
+
+    if beforeList:
+        segmentEnd = len(beforeList)
+        for i in reversed(range(len(beforeList))):
+            if beforeList[i] not in aligned:
                 uniqueCounter += 1
             else:
-                unaligned[1].pop(j)
+                beforeList.pop(i)
+                segmentEnd -= 1
+                if i < len(beforeList):
+                    preList = beforeList[i:segmentEnd]
+                    segmentEnd = i
 
-    return uniqueCounter
+                    if preList:
+                        newUnaligned.insert(0, preList)
+        #For the last segment at the front of the list
+        preList = beforeList[0:segmentEnd]
+
+        if preList:
+            newUnaligned.insert(0, preList)
+
+    return uniqueCounter, newUnaligned
 
 ######################################################
 # localAlignment
