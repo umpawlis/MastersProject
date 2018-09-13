@@ -195,7 +195,7 @@ class TrackingEvent(object):
 ######################################################
 # Strain
 # Parameters: name, sequence, descendants
-# Description: Stores information about a Strain from the tree
+# Description: Stores information about a Strain from the phylogeny
 ######################################################
 class Strain(object):
     name = ""
@@ -373,7 +373,7 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     coverageTracker2 = {}
 
     #Use global alignment scores to find orthologs
-    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignmentG1, numDuplicateAlignmentG2, numSingletonAlignmentG1, numSingletonAlignmentG2, numDuplicateLossG1, numDuplicateLossG2, numSingletonLossG1, numSingletonLossG2, numSingletonsG1, numSingletonsG2, numOperonsG1, numOperonsG2, numInvertedDuplicatesG1, numInvertedDuplicatesG2 = findOrthologsWithGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
+    coverageTracker1, coverageTracker2, ancestralOperons, trackingEvents, numGlobalAlignment, numLocalAlignment, numDuplicateAlignmentG1, numDuplicateAlignmentG2, numSingletonAlignmentG1, numSingletonAlignmentG2, numDuplicateLossG1, numDuplicateLossG2, numSingletonLossG1, numSingletonLossG2, numSingletonsG1, numSingletonsG2, numOperonsG1, numOperonsG2, numInvertedDuplicatesG1, numInvertedDuplicatesG2 = findOrthologsWithAlignment(strain1, strain2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2)
 
     print('#' * 70)
     print('Statistics for the following strains: %s, %s' %(strain1, strain2))
@@ -395,7 +395,6 @@ def findOrthologs(strain1, strain2, sequence1, sequence2, genesStrain1, genesStr
     print('Number of singletons lost in %s: %s' %(strain2, numSingletonLossG2))
     print('Number of inverted duplicates in %s: %s' %(strain1, numInvertedDuplicatesG1))
     print('Number of inverted duplicates in %s: %s' %(strain2, numInvertedDuplicatesG2))
-
     print('#' * 70)
 
     ##########################
@@ -482,7 +481,6 @@ def performGlobalAlignment(operon1, operon2):
                 else:
                     #Solves a special case with a bunch of duplicates with different codons
                     scoreMatrix[a][b] = min(scoreMatrix[a-1][b-1] + codonCost, scoreMatrix[a-1][b] + deletionCost, scoreMatrix[a][b-1] + deletionCost, scoreMatrix[a-1][b-1] + substitutionCost)
-                    #scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + codonCost
             else:
                 scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + deletionCost, scoreMatrix[a][b-1] + deletionCost, scoreMatrix[a-1][b-1] + substitutionCost)
 
@@ -523,7 +521,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     tracePath = []
     
     while i > 0 or j > 0:
-        #Perfect match
+        #Case 1: Perfect match
         if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
             match += 1
             i -= 1
@@ -531,7 +529,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
             tracePath.append('Match')
-        #Codon mismatch
+        #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
             i -= 1
@@ -539,7 +537,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
             tracePath.append('Codon Mismatch')
-        #Substitution
+        #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
             i -= 1
@@ -551,7 +549,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
             tracePath.append('Substituition')
-        #Mismatch
+        #Case 4: Mismatch- Gap in operon 2
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             foundMatch = False
             index = i-1
@@ -570,7 +568,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon2Gap = []
                 operon2Gap.append(operon1[index])
                 operon2ConsecutiveGap = True
-                
+            #Check if this is the end of traceback
             if not (i > 0):
                 operon2Gaps.append(operon2Gap)
             
@@ -582,7 +580,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             #If we didn't find a match in the operon itself then it must have been lost in operon 2
             if foundMatch == False:
                 operon2Losses += 1
-        #Mismatch
+        #Case 5: Mismatch - Gap in operon 1
         else:
             foundMatch = False
             index = j - 1
@@ -601,6 +599,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon1Gap = []
                 operon1Gap.append(operon2[index])
                 operon1ConsecutiveGap = True
+            #Check if this is the end of traceback
             if not (j > 0):
                 operon1Gaps.append(operon1Gap)
             
@@ -797,11 +796,11 @@ def incrementDuplicateTracker(operon):
         duplicateLengthTracker[str(key)] = 1
 
 ######################################################
-# findOrthologsWithGlobalAlignment
+# findOrthologsWithAlignment
 # Parameters: globalAlignmentMatrix, coverageTracker1, coverageTracker2, sequence1, sequence2
 # Description: Finds orthologous operons using global alignment
 ######################################################
-def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
+def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, coverageTracker2, sequence1, sequence2, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2, trackingEventsStrain1, trackingEventsStrain2):
     #Keep track of number of each type of analysis performed
     globalAlignmentCounter = 0 #decrements available operons in both
     localAlignmentCounter = 0 #decrements available operons in both
