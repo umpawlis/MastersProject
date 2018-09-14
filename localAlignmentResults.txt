@@ -21,17 +21,17 @@ Alignment Result (after no extension due to missing gene list(s)):
 ['His_CAC', 'Gln_CAG', 'Lys_AAA']
 ['His_CAC', 'Gln_CAG', 'Lys_AAA']
 
-Strain 1 Operon 21: ['Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Phe_UUC', '5S', '23S', '16S']
-Strain 2 Operon  21: ['Phe_UUC', '5S']
+Strain 1 Operon 21: ['16S', '23S', '5S', 'Phe_UUC', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA']
+Strain 2 Operon  21: ['5S', 'Phe_UUC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Phe_UUC', '5S']
-['Phe_UUC', '5S']
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
 
-Strain 1 Operon 33: ['Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA']
-Strain 2 Operon  29: ['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+Strain 1 Operon 33: ['Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC']
+Strain 2 Operon  29: ['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 
 Strain 1 Operon 15: ['His_CAC', 'Gln_CAG', 'Lys_AAA']
 Strain 2 Operon  12: ['His_CAC', 'Gln_CAG', 'Lys_AAA', '16S', '23S', '5S']
@@ -39,35 +39,35 @@ Alignment Result (after no extension due to missing gene list(s)):
 ['His_CAC', 'Gln_CAG', 'Lys_AAA']
 ['His_CAC', 'Gln_CAG', 'Lys_AAA']
 
-Strain 1 Operon 21: ['Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Phe_UUC', '5S', '23S', '16S']
-Strain 2 Operon  21: ['Phe_UUC', '5S']
+Strain 1 Operon 21: ['16S', '23S', '5S', 'Phe_UUC', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA']
+Strain 2 Operon  21: ['5S', 'Phe_UUC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Phe_UUC', '5S']
-['Phe_UUC', '5S']
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
 
-Strain 1 Operon 33: ['Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA']
-Strain 2 Operon  29: ['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+Strain 1 Operon 33: ['Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC']
+Strain 2 Operon  29: ['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 
-Strain 1 Operon 21: ['Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Phe_UUC', '5S', '23S', '16S']
-Strain 2 Operon  21: ['Phe_UUC', '5S']
+Strain 1 Operon 21: ['16S', '23S', '5S', 'Phe_UUC', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA']
+Strain 2 Operon  21: ['5S', 'Phe_UUC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Phe_UUC', '5S']
-['Phe_UUC', '5S']
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
 
-Strain 1 Operon 33: ['Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Val_GUA', 'Glu_GAA']
-Strain 2 Operon  29: ['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+Strain 1 Operon 33: ['Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA', 'Val_GUA', 'Asp_GAC']
+Strain 2 Operon  29: ['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
-['Asp_GAC', 'Val_GUA', 'Glu_GAA']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
+['Glu_GAA', 'Val_GUA', 'Asp_GAC']
 
-Strain 1 Operon 21: ['Glu_GAA', 'Thr_ACA', 'Asp_GAC', 'Phe_UUC', '5S', '23S', '16S']
-Strain 2 Operon  21: ['Phe_UUC', '5S']
+Strain 1 Operon 21: ['16S', '23S', '5S', 'Phe_UUC', 'Asp_GAC', 'Thr_ACA', 'Glu_GAA']
+Strain 2 Operon  21: ['5S', 'Phe_UUC']
 Alignment Result (after no extension due to missing gene list(s)):
-['Phe_UUC', '5S']
-['Phe_UUC', '5S']
+['5S', 'Phe_UUC']
+['5S', 'Phe_UUC']
 
 
 Totals:

@@ -932,9 +932,11 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
     #Finding optimal orthologs using local alignment
     minValue = min(len(coverageTracker1), len(coverageTracker2))
 
-    formattedSequence1 = formatAllOperons(sequence1)
+    formattedSequence1, operonIndexes1 = formatAllOperons(sequence1)
+    print(sequence1)
     print(formattedSequence1)
-    formattedSequence2 = formatAllOperons(sequence2)
+    formattedSequence2, operonIndexes2 = formatAllOperons(sequence2)
+    print(sequence2)
     print(formattedSequence2)
     #Scan the matrix x times to find optimal local alignments everytime an entire matrix is scanned
     for x in range(0, minValue):
@@ -979,7 +981,7 @@ def findOrthologsWithGlobalAlignment(genomeName1, genomeName2, coverageTracker1,
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
 
-            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2)):
+            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex])):
                 ancestralOperon = sequence1[rowIndex]
             else:
                 ancestralOperon = sequence2[colIndex]
@@ -1334,6 +1336,8 @@ def searchOtherOperons():
 ######################################################
 def formatAllOperons(sequence):
     sequenceList = []
+    operonIndexConversions = []
+    operonIndex = 0
 
     for operon1 in sequence:
         reverseOp = reverseSequence(operon1)
@@ -1353,15 +1357,19 @@ def formatAllOperons(sequence):
             if reverseOp:
                 noWhiteSpaceOperon1List.reverse()
             sequenceList.append(noWhiteSpaceOperon1List)
+            operonIndexConversions.append(operonIndex)
+            operonIndex += 1
+        else:
+            operonIndexConversions.append(-1)
 
-    return sequenceList
+    return sequenceList, operonIndexConversions
 
 ######################################################
 # determineAncestor
 # Parameters: op1, op2, startPosition, endPosition, aligned1, aligned2
 # Description: Determines which ancestor to pick from local alignment results.
 ######################################################
-def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2):
+def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2):
     chooseOp1 = True
 
     if len(op1) > len(op2):
@@ -1370,7 +1378,7 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
 
         for geneList in unaligned:
             if geneList:
-                numUniqueFound = findUniqueGenes(geneList, sequence1)
+                numUniqueFound = findUniqueGenes(geneList, sequence1, opIndex1)
                 numUnique -= numUniqueFound
         if numUnique < 2:
             chooseOp1 = False
@@ -1380,7 +1388,7 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
 
         for geneList in unaligned:
             if geneList:
-                numUniqueFound = findUniqueGenes(geneList, sequence2)
+                numUniqueFound = findUniqueGenes(geneList, sequence2, opIndex2)
                 numUnique -= numUniqueFound
         if numUnique >= 2:
             chooseOp1 = False
@@ -1392,13 +1400,14 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
 # Parameters: geneList, sequence
 # Description: Tries to find the list of genes in another operon of the genome.
 ######################################################
-def findUniqueGenes(geneList, sequence):
+def findUniqueGenes(geneList, sequence, opIndex):
     comparisonSize = len(geneList)
     startIndex = 0
     currentIndex = 0
     genesNotFound = True
     endOfList = False
     missedGene = False
+    newSet = False
     geneRanges = []
     numGeneMatches = 0
 
@@ -1409,15 +1418,24 @@ def findUniqueGenes(geneList, sequence):
             while currentIndex < len(geneList):
                 if currentIndex+comparisonSize <= len(geneList):
                     gene = geneList[currentIndex:currentIndex+comparisonSize]
+                    newSet = True
+                elif not missedGene:
+                    gene = geneList[currentIndex:len(geneList)]
+                    newSet = True
 
-                    if geneInSequence(gene, sequence, comparisonSize):
+                if newSet:
+                    if geneInSequence(gene, sequence, len(gene), opIndex):
                         newRange = (currentIndex, currentIndex+comparisonSize-1)
                         if not checkOverlap(newRange, geneRanges):
                             geneRanges.append(newRange)
                             numGeneMatches += len(gene)
                         if numGeneMatches == len(geneList):
                             genesNotFound = False
+                    else:
+                        missedGene = True
+
                 currentIndex += comparisonSize
+                newSet = False
 
             missedGene = False
             startIndex += 1
@@ -1448,18 +1466,22 @@ def checkOverlap(newRange, rangeList):
 # Parameters: gene, sequence, comparisonSize
 # Description: Determines if the list of genes appear somewhere else in the operon.
 ######################################################
-def geneInSequence(gene, sequence, comparisonSize):
+def geneInSequence(gene, sequence, comparisonSize, opIndex):
     geneFound = False
+    currentOpIndex = 0
     currentIndex = 0
 
-    for operon in sequence:
-        while currentIndex+comparisonSize <= len(operon) and not geneFound:
-            operonGene = operon[currentIndex:currentIndex+comparisonSize]
-            if operonGene == gene:
-                geneFound = True
+    while currentOpIndex < len(sequence) and not geneFound:
+        operon = sequence[currentOpIndex]
+        if currentOpIndex != opIndex:
+            while currentIndex+comparisonSize <= len(operon) and not geneFound:
+                operonGene = operon[currentIndex:currentIndex+comparisonSize]
+                if operonGene == gene:
+                    geneFound = True
 
-            currentIndex += 1
-        currentIndex = 0
+                currentIndex += 1
+            currentIndex = 0
+        currentOpIndex += 1
 
     return geneFound
 
@@ -1566,9 +1588,9 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     rightAdjustment1 = 0
     rightAdjustment2 = 0
     #Reverse operons if needed to
-    if reverseOp1 and reverseOp2 == False:
+    if reverseOp1:
         operon1.reverse()
-    if reverseOp2 and reverseOp1 == False:
+    if reverseOp2:
         operon2.reverse()
 
     #Initialize the distance matrix
