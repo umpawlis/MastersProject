@@ -1961,7 +1961,7 @@ def getOperons(sequence):
             else:
                 geneList.extend([gene.strip() for gene in sequence[startIndex+2:index-1].split(',')])
 
-        if sequence[index] == ',':
+        if index < len(sequence) and sequence[index] == ',':
             geneIndex += 1
             if sequence[index+2] != '[' and sequence[index+2] != '<' and sequence[index+3] != '[':
                 index += 1
@@ -2052,7 +2052,8 @@ def preOrderTraversal(node, strains, numLosses, numDuplications):
                             geneDuplicationsG1 += trackingEvents[x].getOperonEvents().getOperon1GeneDuplicates()
     if len(node.clades) > 0:
         preOrderTraversal(node.clades[0], strains, geneLossesG1 + numLosses, geneDuplicationsG1 + numDuplications)
-        preOrderTraversal(node.clades[1], strains, geneLossesG2 + numLosses, geneDuplicationsG2 + numDuplications)
+        if len(node.clades) >= 2:
+            preOrderTraversal(node.clades[1], strains, geneLossesG2 + numLosses, geneDuplicationsG2 + numDuplications)
 
 ######################################################
 # post_traversal
@@ -2069,7 +2070,8 @@ def post_traversal(node):
     #Check if the clade has children
     if len(node.clades) > 0:
         leftChildStrain = post_traversal(node.clades[0])
-        rightChildStrain = post_traversal(node.clades[1])
+        if len(node.clades) >= 2:
+            rightChildStrain = post_traversal(node.clades[1])
 
     #Check if the clade has a name, if it does, check if it has a directory for its sequence
     if node.name is not None and len(node.name) > 0:
@@ -2078,11 +2080,11 @@ def post_traversal(node):
         if os.path.isdir(node.name):
             print('There exists a directory for the node: %s' % node.name)
 
-            if os.path.isfile(node.name + '/sequence.rtf'):
-                print('Opening the file: %s/sequence.rtf' % node.name)
+            if os.path.isfile(node.name + '/sequence.txt'):
+                print('Opening the file: %s/sequence.txt' % node.name)
 
                 #Read the sequence in
-                fileGeneSequence = open(node.name + '/sequence.rtf', 'r').read()
+                fileGeneSequence = open(node.name + '/sequence.txt', 'r').read()
 
                 #Get the operons for this sequence
                 currNodeOperons, operonPositions, singletonDict, allGenes = getOperons(fileGeneSequence)
@@ -2145,7 +2147,7 @@ def post_traversal(node):
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
-tree = Phylo.read('simpletree2.dnd', 'newick')
+tree = Phylo.read('Bacillus_Tree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
 open('localAlignmentResults.txt', 'w+').close()
