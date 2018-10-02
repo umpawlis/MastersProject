@@ -1288,9 +1288,12 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
 
         #If we have any coordinates to plot, display them
         if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
+            f = plt.figure()
+            plt.title("Orthologous Operons")
             plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
             plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
             plt.show()
+            f.savefig("%s %s.pdf" %(genomeName1, genomeName2), bbox_inches='tight')
         else:
             print('No plot to display!')
         print("x" * 70)
@@ -2356,7 +2359,7 @@ if result is not None:
             trackingEvents[i].printTrackingEvent()
             print('\n')
 
-#Draw tree to the console
+#Draw tree to the console     
 Phylo.draw(tree)
 
 #Calculate number of events for each lineage
@@ -2372,11 +2375,14 @@ if len(duplicateLengthTracker) > 0:
         x_coords.append(key)
         y_coords.append(value)
         print("Size: %s => Num Duplicates: %s" % (key, value))
-
+    
+    f = plt.figure()
     plt.bar(x_coords, y_coords, align='center', alpha=0.5)
-    plt.ylabel('Size Of Operons')
-    plt.title('Duplicate Length Tracker')
+    plt.ylabel('Number of Duplicates')
+    plt.xlabel('Size of Operon')
+    plt.title('Duplicate Operons')
     plt.show()
+    f.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
     print("-" * 50)
 
 print 'End of processing'
