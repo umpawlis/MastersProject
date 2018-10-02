@@ -956,7 +956,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                         op1 = sequence1[i]
                         op2 = sequence2[j]
 
-                        score, formattedOperon1, formattedOperon2, endPosition, startPosition, aligned1, aligned2 = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+                        score, formattedOperon1, formattedOperon2, endPosition, startPosition, aligned1, aligned2, operonEvents = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
 
                         if (score > highestScore) or (score == highestScore and (abs(i - j)) < distance):
                             highestScore = score
@@ -970,6 +970,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                             chosenEnd = endPosition
                             chosenAligned1 = aligned1
                             chosenAligned2 = aligned2
+                            chosenOpEvents = operonEvents
 
         #After scanning the whole matrix if we found a best score, then store it
         if highestScore > -1:
@@ -980,7 +981,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
 
-            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex])):
+            if (determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex], chosenOpEvents)):
                 ancestralOperon = sequence1[rowIndex]
             else:
                 ancestralOperon = sequence2[colIndex]
@@ -1368,29 +1369,41 @@ def formatAllOperons(sequence):
 # Parameters: op1, op2, startPosition, endPosition, aligned1, aligned2
 # Description: Determines which ancestor to pick from local alignment results.
 ######################################################
-def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2):
+def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2, operonEvents):
     chooseOp1 = True
 
     if len(op1) > len(op2):
         unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
-        numUnique, unaligned = compareDuplicates(aligned2, unaligned)
+        numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned2, unaligned)
 
         for geneList in unaligned:
             if geneList:
                 numUniqueFound = findUniqueGenes(geneList, sequence1, opIndex1)
                 numUnique -= numUniqueFound
+                numDuplicateFound += numUniqueFound
+
         if numUnique < 2:
             chooseOp1 = False
+
+        operonEvents.setOperon1GeneDuplicates(numDuplicateFound)
+        operonEvents.setOperon2GeneLosses(numUnique)
     else:
         unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
-        numUnique, unaligned = compareDuplicates(aligned1, unaligned)
+        numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned1, unaligned)
 
         for geneList in unaligned:
             if geneList:
                 numUniqueFound = findUniqueGenes(geneList, sequence2, opIndex2)
                 numUnique -= numUniqueFound
+                numDuplicateFound += numUniqueFound
+
         if numUnique >= 2:
             chooseOp1 = False
+
+        operonEvents.setOperon2GeneDuplicates(numDuplicateFound)
+        operonEvents.setOperon1GeneLosses(numUnique)
+
+    print(operonEvents.toStringOperonEvents())
 
     return chooseOp1
 
@@ -1515,6 +1528,7 @@ def compareDuplicates(aligned, unaligned):
     afterList = unaligned[1]
     newUnaligned = []
     uniqueCounter = 0
+    duplicateCounter = 0
 
     if afterList:
         segmentEnd = len(afterList)
@@ -1522,6 +1536,7 @@ def compareDuplicates(aligned, unaligned):
             if afterList[j] not in aligned:
                 uniqueCounter += 1
             else:
+                duplicateCounter += 1
                 afterList.pop(j)
                 segmentEnd -= 1
                 if j < len(afterList):
@@ -1542,6 +1557,7 @@ def compareDuplicates(aligned, unaligned):
             if beforeList[i] not in aligned:
                 uniqueCounter += 1
             else:
+                duplicateCounter += 1
                 beforeList.pop(i)
                 segmentEnd -= 1
                 if i < len(beforeList):
@@ -1556,7 +1572,7 @@ def compareDuplicates(aligned, unaligned):
         if preList:
             newUnaligned.insert(0, preList)
 
-    return uniqueCounter, newUnaligned
+    return uniqueCounter, newUnaligned, duplicateCounter
 
 ######################################################
 # localAlignment
@@ -1619,7 +1635,7 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
                 maxPosition = (a, b)
 
     #Trace back score matrix to get alignment
-    aligned1, aligned2, numGaps, endPosition = traceback(operon1, operon2, scoreMatrix, maxPosition)
+    aligned1, aligned2, numGaps, endPosition, operonEvents = traceback(operon1, operon2, scoreMatrix, maxPosition)
 
     if len(operon1) <= len(operon2):
         shortestLength = len(operon1)
@@ -1677,7 +1693,7 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     #print(aligned1)
     #print(aligned2)
 
-    return returningScore, operon1, operon2, maxPosition, endPosition, aligned1, aligned2
+    return returningScore, operon1, operon2, maxPosition, endPosition, aligned1, aligned2, operonEvents
 
 ######################################################
 # extendAlignment
@@ -1759,6 +1775,15 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
 ######################################################
 def traceback(operon1, operon2, scoreMatrix, startPosition):
 
+    match = 1
+    codonMismatch = 0
+    mismatch = 0
+    substitution = 0
+    operon1Losses = 0
+    operon2Losses = 0
+    operon1Duplications = 0
+    operon2Duplications = 0
+
     END, DIAG, UP, LEFT = range(4)
     aligned_seq1 = []
     aligned_seq2 = []
@@ -1768,6 +1793,13 @@ def traceback(operon1, operon2, scoreMatrix, startPosition):
 
     while move != END:
         if move == DIAG:
+            if operon1[x-1] == operon2[y-1]:
+                match += 1
+            elif operon1[x-1].split('_')[0].strip() == operon2[y-1].split('_')[0].strip():
+                codonMismatch += 1
+            else:
+                mismatch += 1
+
             aligned_seq1.append(operon1[x - 1])
             aligned_seq2.append(operon2[y - 1])
             x -= 1
@@ -1789,7 +1821,9 @@ def traceback(operon1, operon2, scoreMatrix, startPosition):
     aligned_seq2.append(operon2[y - 1])
     endPosition = (x,y)
 
-    return list(reversed(aligned_seq1)), list(reversed(aligned_seq2)), numGaps, endPosition
+    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, scoreMatrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
+
+    return list(reversed(aligned_seq1)), list(reversed(aligned_seq2)), numGaps, endPosition, operonEvents
 
 ######################################################
 # nextMove
