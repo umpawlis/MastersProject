@@ -10,7 +10,9 @@ threshold = 2
 fullAlignmentCounter = 0
 extensionCounter = 0
 trackingId = 0
-duplicateLengthTracker = {}
+duplicateOperonTracker = {}
+deletionEventCounter = {}
+duplicationEventCounter = {}
 strains = []
 deletionCost = 1
 substitutionCost = 2
@@ -1424,9 +1426,11 @@ def findUniqueGenes(geneList, sequence, opIndex):
     numGeneMatches = 0
 
     while (comparisonSize >= 1) and genesNotFound:
+        #Slide the window across the gene list, one gene at a time
         while (startIndex < comparisonSize) and (startIndex+comparisonSize <= len(geneList)) and genesNotFound:
 
             currentIndex = startIndex
+            #Slide the window across the gene list by comparison size
             while currentIndex < len(geneList):
                 if currentIndex+comparisonSize <= len(geneList):
                     gene = geneList[currentIndex:currentIndex+comparisonSize]
@@ -1441,6 +1445,7 @@ def findUniqueGenes(geneList, sequence, opIndex):
                         if not checkOverlap(newRange, geneRanges):
                             geneRanges.append(newRange)
                             numGeneMatches += len(gene)
+                            updateDuplicationCounter(len(gene))
                         if numGeneMatches == len(geneList):
                             genesNotFound = False
                     else:
@@ -1455,6 +1460,7 @@ def findUniqueGenes(geneList, sequence, opIndex):
         currentIndex = 0
         startIndex = 0
         endOfList = False
+        #Decrement the window size
         comparisonSize -= 1
 
     return numGeneMatches
@@ -1844,6 +1850,32 @@ def nextMove(scoreMatrix, x, y):
     else:
         # Execution should not reach here.
         raise ValueError('invalid move during traceback')
+
+######################################################
+# updateDeletionCounter
+# Parameters: deletionSize
+# Description: Updates the deletion counter when a deletion event occurs. 
+######################################################
+def updateDeletionCounter(deletionSize):
+    global deletionEventCounter
+
+    if deletionSize in deletionEventCounter:
+        deletionEventCounter[deletionSize] += 1
+    else:
+        deletionEventCounter[deletionSize] = 1
+
+######################################################
+# updateDuplicationCounter
+# Parameters: duplicationSize
+# Description: Updates the duplication counter when a duplication event occurs. 
+######################################################
+def updateDuplicationCounter(duplicationSize):
+    global duplicationEventCounter
+
+    if duplicationSize in duplicationEventCounter:
+        duplicationEventCounter[duplicationSize] += 1
+    else:
+        duplicationEventCounter[duplicationSize] = 1
 
 ######################################################
 # outputResultsToExcel
