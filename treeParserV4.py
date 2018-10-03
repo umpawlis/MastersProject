@@ -10,7 +10,7 @@ threshold = 2
 fullAlignmentCounter = 0
 extensionCounter = 0
 trackingId = 0
-duplicateOperonTracker = {}
+duplicateOperonCounter = {}
 deletionEventCounter = {}
 duplicationEventCounter = {}
 strains = []
@@ -890,10 +890,10 @@ def findMax(globalAlignmentMatrix):
 def incrementDuplicateTracker(operon):
     key = str(len(operon)) #Figures out which key we need to increment
 
-    if key in duplicateOperonTracker:
-        duplicateOperonTracker[str(key)] = duplicateOperonTracker[str(key)] + 1
+    if key in duplicateOperonCounter:
+        duplicateOperonCounter[str(key)] = duplicateOperonCounter[str(key)] + 1
     else:
-        duplicateOperonTracker[str(key)] = 1
+        duplicateOperonCounter[str(key)] = 1
 
 ######################################################
 # findOrthologsWithAlignment
@@ -2028,9 +2028,9 @@ def updateDuplicationCounter(duplicationSize):
     global duplicationEventCounter
 
     if duplicationSize in duplicationEventCounter:
-        duplicationEventCounter[duplicationSize] += 1
+        duplicationEventCounter[str(duplicationSize)] += 1
     else:
-        duplicationEventCounter[duplicationSize] = 1
+        duplicationEventCounter[str(duplicationSize)] = 1
 
 ######################################################
 # outputResultsToExcel
@@ -2365,6 +2365,30 @@ def post_traversal(node):
         return None
 
 ######################################################
+# getCoordinates
+# Parameters: mapper
+# Description: iterates through a dictionary and gathers the x and y coordinates
+######################################################
+def getCoordinates(mapper):
+    x_coords = []
+    y_coords = []
+    
+    key = 1
+    itemsIterated = 0
+    while itemsIterated < len(mapper):
+        if mapper.get(str(key)):
+            value =  mapper.get(str(key))
+            x_coords.append(key)
+            y_coords.append(value)
+            print("Size: %s => Num Duplicates: %s" % (key, value))
+            itemsIterated+=1
+        else:
+            x_coords.append(key)
+            y_coords.append(0)
+        key+=1
+    return x_coords, y_coords
+
+######################################################
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
@@ -2423,23 +2447,30 @@ Phylo.draw(tree)
 global strains
 preOrderTraversal(tree.clade, strains, 0, 0)
 
-if len(duplicateOperonTracker) > 0:
+if len(duplicateOperonCounter) > 0:
     print("-" * 50)
-    print('Results of Duplicate Tracker:')
-    x_coords = []
-    y_coords = []
-    for key, value in duplicateOperonTracker.items():
-        x_coords.append(key)
-        y_coords.append(value)
-        print("Size: %s => Num Duplicates: %s" % (key, value))
+    print('Results of Duplicate Operon Tracker:')
+    operonDuplication_x_coords, operonDuplication_y_coords = getCoordinates(duplicateOperonCounter)
     
-    f = plt.figure()
-    plt.bar(x_coords, y_coords, align='center', alpha=0.5)
+    print('Results of Duplicate Gene Tracker:')
+    geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
+    
+    print('Results of Loss Gene Tracker:')
+    #geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
+
+    fig = plt.figure()
+    txt = 'Figure 1:'
+    w = 0.3
+    plt.bar(operonDuplication_x_coords, operonDuplication_y_coords, width=w, color='b', align='center')
+    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='g', align='center')
+    
     plt.ylabel('Number of Duplicates')
-    plt.xlabel('Size of Operon')
+    plt.xlabel('Size')
     plt.title('Duplicate Operons')
+    plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
+    fig.set_size_inches(3.5, 5, forward=True)
     plt.show()
-    f.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
+    fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
     print("-" * 50)
 
 print 'End of processing'
