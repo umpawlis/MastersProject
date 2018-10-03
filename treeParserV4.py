@@ -2015,9 +2015,9 @@ def updateDeletionCounter(deletionSize):
     global deletionEventCounter
 
     if deletionSize in deletionEventCounter:
-        deletionEventCounter[deletionSize] += 1
+        deletionEventCounter[str(deletionSize)] += 1
     else:
-        deletionEventCounter[deletionSize] = 1
+        deletionEventCounter[str(deletionSize)] = 1
 
 ######################################################
 # updateDuplicationCounter
@@ -2392,7 +2392,7 @@ def getCoordinates(mapper):
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
-tree = Phylo.read('Anc27v2_subtree.dnd', 'newick')
+tree = Phylo.read('Ancestor47_subtree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
 open('localAlignmentResults.txt', 'w+').close()
@@ -2456,7 +2456,7 @@ if len(duplicateOperonCounter) > 0:
     geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
     
     print('Results of Loss Gene Tracker:')
-    #geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
+    geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
 
     fig = plt.figure()
     txt = 'Figure 1:'
