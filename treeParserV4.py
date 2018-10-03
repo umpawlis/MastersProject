@@ -890,10 +890,10 @@ def findMax(globalAlignmentMatrix):
 def incrementDuplicateTracker(operon):
     key = str(len(operon)) #Figures out which key we need to increment
 
-    if key in duplicateLengthTracker:
-        duplicateLengthTracker[str(key)] = duplicateLengthTracker[str(key)] + 1
+    if key in duplicateOperonTracker:
+        duplicateOperonTracker[str(key)] = duplicateOperonTracker[str(key)] + 1
     else:
-        duplicateLengthTracker[str(key)] = 1
+        duplicateOperonTracker[str(key)] = 1
 
 ######################################################
 # findOrthologsWithAlignment
@@ -2343,7 +2343,7 @@ def post_traversal(node):
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
-tree = Phylo.read('PATRIC_subtree1.dnd', 'newick')
+tree = Phylo.read('Ancestor47_subtree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
 open('localAlignmentResults.txt', 'w+').close()
@@ -2398,12 +2398,12 @@ Phylo.draw(tree)
 global strains
 preOrderTraversal(tree.clade, strains, 0, 0)
 
-if len(duplicateLengthTracker) > 0:
+if len(duplicateOperonTracker) > 0:
     print("-" * 50)
     print('Results of Duplicate Tracker:')
     x_coords = []
     y_coords = []
-    for key, value in duplicateLengthTracker.items():
+    for key, value in duplicateOperonTracker.items():
         x_coords.append(key)
         y_coords.append(value)
         print("Size: %s => Num Duplicates: %s" % (key, value))
