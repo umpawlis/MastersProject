@@ -709,6 +709,42 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
 # Description: Takes an array of gaps and an alignment, then checks if the genes in the gap match any of the genes in the alignment, if they do then genes are popped off the gap array
 ######################################################
 def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
+    
+    for gap in arrayOfGaps:
+        #Initialize Window
+        windowSize = len(gap)
+        startIndex = 0
+        endIndex = len(gap)
+        
+        #print('Current gap %s' % (gap))
+        while windowSize > 0:
+            genes = gap[startIndex:endIndex]
+            
+            #print('Current Window %s' %(genes))
+            #TODO: perform search
+            genesMatched = 0
+            '''
+            for x in range(0, len(alignedGenes)):
+                if genes[0] == alignedGenes[x] and genesMatched != len(genes):
+                    #reset
+                    genesMatched = 0
+                    for y in range(0, len(genes)):
+                        if y + x < len(alignedGenes) and genes[y] == alignedGenes[x]:
+                            genesMatched +=1
+            '''
+            if genesMatched == len(genes):
+                print("Duplicate")
+                updateDuplicationCounter(len(genes))
+                del gap[startIndex:endIndex]
+            else:
+                startIndex+=1
+                if (startIndex + windowSize) > len(gap):
+                    #reduce and reset
+                    windowSize = min(windowSize-1, len(gap))
+                    startIndex = 0
+                endIndex = startIndex + windowSize
+
+    '''
     numUniqueGenes = 0 #counts the number of unique genes
     #Iterate through the array of gaps
     for gap in arrayOfGaps:
@@ -728,7 +764,8 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
             for index in indexesToRemove:
                 gap.pop(index)
             #end for
-    return arrayOfGaps, numUniqueGenes
+    '''
+    return arrayOfGaps, 0
 
 ######################################################
 # resolveAncestralOperon
