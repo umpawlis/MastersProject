@@ -1990,9 +1990,9 @@ def updateDeletionCounter(deletionSize):
     global deletionEventCounter
 
     if deletionSize in deletionEventCounter:
-        deletionEventCounter[deletionSize] += 1
+        deletionEventCounter[str(deletionSize)] += 1
     else:
-        deletionEventCounter[deletionSize] = 1
+        deletionEventCounter[str(deletionSize)] = 1
 
 ######################################################
 # updateDuplicationCounter
@@ -2426,26 +2426,30 @@ if len(duplicateOperonCounter) > 0:
     print("-" * 50)
     print('Results of Duplicate Operon Tracker:')
     operonDuplication_x_coords, operonDuplication_y_coords = getCoordinates(duplicateOperonCounter)
+    operonDuplication_x_coords = np.asarray(operonDuplication_x_coords)
     
-    print('Results of Duplicate Gene Tracker:')
+    print('Distribution of Duplications')
     geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
+    geneDuplication_x_coords = np.asarray(geneDuplication_x_coords)
     
     print('Results of Loss Gene Tracker:')
-    #geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
-
-    fig = plt.figure()
-    txt = 'Figure 1:'
-    w = 0.3
-    plt.bar(operonDuplication_x_coords, operonDuplication_y_coords, width=w, color='b', align='center')
-    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='g', align='center')
+    geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
+    geneLoss_x_coords = np.asarray(geneLoss_x_coords)
     
-    plt.ylabel('Number of Duplicates')
-    plt.xlabel('Size')
-    plt.title('Duplicate Operons')
-    plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
-    fig.set_size_inches(3.5, 5, forward=True)
+    fig = plt.figure()
+    txt = 'Figure 1: This figure presents the distribution of duplication and loss events within the phylogeny. The x axis indicates the size of the sequence on which the duplication or loss event occurred. The y axis indicates the number of times an event has occurred for that particular size. Blue bar: These bars represent whole operon duplication events throughout the phylogeny. The size indicates the size of the operon that was duplicated. However, for size 1 these are not considered operons, rather they are singleton genes dispersed throughout the genome that do not belong to any operon. Green bar: These bars represent all of the gene duplications within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was duplicated within an operon. Yellow bar: These bars represent all of the gene losses within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was lost within an operon.'
+    w = 0.1
+    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='b', align='center')
+    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='g', align='center')
+    plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='y', align='center')
+    plt.ylabel('Number of Events')
+    plt.xlabel('Size of Sequence')
+    plt.title('Destribution of Duplications and Losses')
+    #plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
+    fig.set_size_inches(3.5, 8, forward=True)
     plt.show()
     fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
+    
     print("-" * 50)
 
 print 'End of processing'
