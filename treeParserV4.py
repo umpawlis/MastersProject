@@ -1251,7 +1251,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                     for gap in gaps:
                         if len(gap) > 0:
                             #Unique genes tells us number of losses
-                            numUniqueFound = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())
+                            numUniqueFound, deletionSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())
                             totalLosses += numUniqueFound
                     #end for
                     opEvents.setLossesDueToSlidingWindowMethodOperon1(totalLosses)
@@ -1262,7 +1262,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                     for gap in gaps:
                         if len(gap) > 0:
                             #Uniques tells us number of losses
-                            numUniqueFound = findUniqueGenes(gap, formattedSequence2, trackingEvents[i].getGenome2OperonIndex())
+                            numUniqueFound, deletionSizes = findUniqueGenes(gap, formattedSequence2, trackingEvents[i].getGenome2OperonIndex())
                             totalLosses += numUniqueFound
                     #end for
                     opEvents.setLossesDueToSlidingWindowMethodOperon2(totalLosses)
@@ -1510,30 +1510,39 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
 
         for geneList in unaligned:
             if geneList:
-                numUniqueFound = findUniqueGenes(geneList, sequence1, opIndex1)
+                numUniqueFound, deletionSizes = findUniqueGenes(geneList, sequence1, opIndex1)
                 numUnique -= numUniqueFound
                 numDuplicateFound += numUniqueFound
 
         if numUnique < 2:
             chooseOp1 = False
+        else:
+            operonEvents.setOperon2GeneLosses(numUnique)
+
+            if deletionSizes:
+                for size in deletionSizes:
+                    updateDeletionCounter(size)
 
         operonEvents.setOperon1GeneDuplicates(numDuplicateFound)
-        operonEvents.setOperon2GeneLosses(numUnique)
     else:
         unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
         numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned1, unaligned)
 
         for geneList in unaligned:
             if geneList:
-                numUniqueFound = findUniqueGenes(geneList, sequence2, opIndex2)
+                numUniqueFound, deletionSizes = findUniqueGenes(geneList, sequence2, opIndex2)
                 numUnique -= numUniqueFound
                 numDuplicateFound += numUniqueFound
 
         if numUnique >= 2:
             chooseOp1 = False
+            operonEvents.setOperon1GeneLosses(numUnique)
 
+            if deletionSizes:
+                for size in deletionSizes:
+                    updateDeletionCounter(size)
+        
         operonEvents.setOperon2GeneDuplicates(numDuplicateFound)
-        operonEvents.setOperon1GeneLosses(numUnique)
 
     print(operonEvents.toStringOperonEvents())
 
@@ -1593,7 +1602,23 @@ def findUniqueGenes(geneList, sequence, opIndex):
         #Decrement the window size
         comparisonSize -= 1
 
-    return numGeneMatches
+    deletionSizes = []
+    if genesNotFound:
+        inSet = True
+        deletionSize = 0
+
+        for index in range(len(geneList)):
+            if not checkOverlap((index,index), geneRanges):
+                if not inSet:
+                    inSet = True
+                deletionSize += 1
+            else:
+                inSet = False
+                if deletionSize != 0:
+                    deletionSizes.append(deletionSize)
+                    deletionSize = 0
+
+    return numGeneMatches, deletionSizes
 
 ######################################################
 # checkOverlap
@@ -1610,8 +1635,8 @@ def checkOverlap(newRange, rangeList):
     return overlap
 
 ######################################################
-# findUniqueGenes
-# Parameters: gene, sequence, comparisonSize
+# geneInSequence
+# Parameters: gene, sequence, comparisonSize, opIndex
 # Description: Determines if the list of genes appear somewhere else in the operon.
 ######################################################
 def geneInSequence(gene, sequence, comparisonSize, opIndex):
@@ -2343,7 +2368,7 @@ def post_traversal(node):
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
-tree = Phylo.read('Ancestor47_subtree.dnd', 'newick')
+tree = Phylo.read('Anc27v2_subtree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
 open('localAlignmentResults.txt', 'w+').close()
