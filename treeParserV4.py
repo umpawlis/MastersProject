@@ -37,8 +37,8 @@ class OperonEvents(object):
     operon2GeneDuplicates = 0
     operon1Gaps = []
     operon2Gaps = []
-    numUniqueGenesInOperon1 = 0
-    numUniqueGenesInOperon2 = 0
+    duplicateSizesOp1 = []
+    duplicateSizesOp2 = []
     alignedGenesInOperon1 = []
     alignedGenesInOperon2 = []
     lossesDueToSlidingWindowMethodOperon1 = 0
@@ -89,10 +89,10 @@ class OperonEvents(object):
         return self.operon1Gaps
     def getOperon2Gaps(self):
         return self.operon2Gaps
-    def getNumUniqueGenesInOperon1(self):
-        return self.numUniqueGenesInOperon1
-    def getNumUniqueGenesInOperon2(self):
-        return self.numUniqueGenesInOperon2
+    def getDuplicateSizesOp1(self):
+        return self.duplicateSizesOp1
+    def getDuplicateSizesOp2(self):
+        return self.duplicateSizesOp2
     def getAlignedGenesInOperon1(self):
         return self.alignedGenesInOperon1
     def getAlignedGenesInOperon2(self):
@@ -133,10 +133,10 @@ class OperonEvents(object):
         self.operon1Gaps = operon1Gaps
     def setOperon2Gaps(self, operon2Gaps):
         self.operon2Gaps = operon2Gaps
-    def setNumUniqueGenesInOperon1(self, numUniqueGenesInOperon1):
-        self.numUniqueGenesInOperon1 = numUniqueGenesInOperon1
-    def setNumUniqueGenesInOperon2(self, numUniqueGenesInOperon2):
-        self.numUniqueGenesInOperon2 = numUniqueGenesInOperon2
+    def setDuplicateSizesOp1(self, duplicateSizesOp1):
+        self.duplicateSizesOp1 = duplicateSizesOp1
+    def setDuplicateSizesOp2(self, duplicateSizesOp2):
+        self.duplicateSizesOp2 = duplicateSizesOp2
     def setAlignedGenesInOperon1(self, alignedGenesInOperon1):
         self.alignedGenesInOperon1 = alignedGenesInOperon1
     def setAlignedGenesInOperon2(self, alignedGenesInOperon2):
@@ -626,9 +626,6 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon2Gap = []
                 operon2Gap.append(operon1[index])
                 operon2ConsecutiveGap = True
-            #Check if this is the end of traceback
-            if not (i > 0):
-                operon2Gaps.append(operon2Gap)
 
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon1)):
@@ -658,10 +655,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon1Gap = []
                 operon1Gap.append(operon2[index])
                 operon1ConsecutiveGap = True
-            #Check if this is the end of traceback
-            if not (j > 0):
-                operon1Gaps.append(operon1Gap)
-
+                
             #Check if there is another gene in the operon that matches this extra gene with or without the codon
             for x in range(0, len(operon2)):
                 if (foundMatch == False) and (x != index) and (operon2[index].strip() == operon2[x].strip() or operon2[index].split('_')[0].strip() == operon2[x].split('_')[0].strip()):
@@ -670,11 +664,22 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             #If we didn't find a match in the operon itself then it must have been lost in operon 2
             if foundMatch == False:
                 operon1Losses += 1
+                
+    if len(operon1Gap) > 0:
+        operon1Gaps.append(operon1Gap)
 
+    if len(operon2Gap) > 0:
+        operon2Gaps.append(operon2Gap)
+        
+    if match == 7 and mismatch == 1:
+        print('Testing')
+    
     #Computes number of unique genes and if the genes are not unique then they are removed from the gap
-    operon1Gaps, numberOfUniqueGenesInOperon1 = checkForMatchesInAlignment(operon1Gaps, alignmentSequence1)
-    operon2Gaps, numberOfUniqueGenesInOperon2 = checkForMatchesInAlignment(operon2Gaps, alignmentSequence2)
-
+    operon1Gaps, geneDuplicateSizesInOperon1 = checkForMatchesInAlignment(operon1Gaps, alignmentSequence1)
+    operon2Gaps, geneDuplicateSizesInOperon2 = checkForMatchesInAlignment(operon2Gaps, alignmentSequence2)
+    
+    
+    
     operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, matrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
 
     #Sets the information we need to perform the sliding window later
@@ -682,8 +687,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     operonEvents.setAlignedGenesInOperon2(alignmentSequence2)
     operonEvents.setOperon1Gaps(operon1Gaps)
     operonEvents.setOperon2Gaps(operon2Gaps)
-    operonEvents.setNumUniqueGenesInOperon1(numberOfUniqueGenesInOperon1)
-    operonEvents.setNumUniqueGenesInOperon2(numberOfUniqueGenesInOperon2)
+    operonEvents.setDuplicateSizesOp1(geneDuplicateSizesInOperon1)
+    operonEvents.setDuplicateSizesOp2(geneDuplicateSizesInOperon2)
 
     '''
     if len(operon1Gaps) > 0:
@@ -709,6 +714,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
 # Description: Takes an array of gaps and an alignment, then checks if the genes in the gap match any of the genes in the alignment, if they do then genes are popped off the gap array
 ######################################################
 def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
+    geneDuplicateSizes = []
     
     for gap in arrayOfGaps:
         #Initialize Window
@@ -733,7 +739,8 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
                         
             if genesMatched != 0 and genesMatched == len(genes):
                 #print("Duplicate")
-                updateDuplicationCounter(len(genes))
+                #updateDuplicationCounter(len(genes))
+                geneDuplicateSizes.append(len(genes))
                 del gap[startIndex:endIndex]                
                 startIndex = endIndex 
             else:
@@ -744,8 +751,8 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
                 windowSize = min(windowSize-1, len(gap))
                 startIndex = 0
             endIndex = startIndex + windowSize
-            
-    return arrayOfGaps, 0
+
+    return arrayOfGaps, geneDuplicateSizes
 
 ######################################################
 # resolveAncestralOperon
@@ -1255,11 +1262,22 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
 
         print('Indexes of Local and Global alignment orthologous operons')
         for i in range(0, len(trackingEvents)):
-
+            
+            if trackingEvents[i].getTrackingEventId() == 18:
+                print('Test')
             if trackingEvents[i].getTechnique() == '2 Genome Global Alignment':
                 #Compute losses from alignment
                 opEvents = trackingEvents[i].getOperonEvents()
-                if opEvents and opEvents.getNumUniqueGenesInOperon1() > 0:
+                
+                if opEvents and opEvents.getDuplicateSizesOp1() and len(opEvents.getDuplicateSizesOp1()) > 0:
+                    for size in opEvents.getDuplicateSizesOp1():
+                        updateDuplicationCounter(size)
+                        
+                if opEvents and opEvents.getDuplicateSizesOp2() and len(opEvents.getDuplicateSizesOp2()) > 0:
+                    for size in opEvents.getDuplicateSizesOp2():
+                        updateDuplicationCounter(size)
+                
+                if opEvents and opEvents.getOperon1Gaps() and len(opEvents.getOperon1Gaps()) > 0:
                     gaps = opEvents.getOperon1Gaps()
                     totalLosses = 0
                     for gap in gaps:
@@ -1278,7 +1296,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                     #end for
                     opEvents.setLossesDueToSlidingWindowMethodOperon1(totalLosses)
 
-                if opEvents and opEvents.getNumUniqueGenesInOperon2() > 0:
+                if opEvents and opEvents.getOperon2Gaps() and len(opEvents.getOperon2Gaps()) > 0:
                     gaps = opEvents.getOperon2Gaps()
                     totalLosses = 0
                     for gap in gaps:
@@ -2464,7 +2482,7 @@ def getCoordinates(mapper):
 #                       main
 ######################################################
 print 'Reading in phylogenetic tree...'
-tree = Phylo.read('Anc20_subtree.dnd', 'newick')
+tree = Phylo.read('Anc27_subtree.dnd', 'newick')
 print 'Done reading in phylogenetic tree'
 
 open('localAlignmentResults.txt', 'w+').close()
@@ -2536,9 +2554,11 @@ if len(duplicateOperonCounter) > 0:
     fig = plt.figure()
     txt = 'Figure 1: This figure presents the distribution of duplication and loss events within the phylogeny. The x axis indicates the size of the sequence on which the duplication or loss event occurred. The y axis indicates the number of times an event has occurred for that particular size. Blue bar: These bars represent whole operon duplication events throughout the phylogeny. The size indicates the size of the operon that was duplicated. However, for size 1 these are not considered operons, rather they are singleton genes dispersed throughout the genome that do not belong to any operon. Green bar: These bars represent all of the gene duplications within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was duplicated within an operon. Yellow bar: These bars represent all of the gene losses within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was lost within an operon.'
     w = 0.1
-    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='c', align='center')
+    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='r', align='center')
     plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='y', align='center')
     plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='b', align='center')
+    plt.xticks(geneLoss_x_coords)
+    plt.yticks([0,1,2])
     plt.ylabel('Number of Events')
     plt.xlabel('Size of Sequence')
     plt.title('Destribution of Duplications and Losses')
