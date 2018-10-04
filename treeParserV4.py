@@ -1263,8 +1263,6 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
         print('Indexes of Local and Global alignment orthologous operons')
         for i in range(0, len(trackingEvents)):
             
-            if trackingEvents[i].getTrackingEventId() == 18:
-                print('Test')
             if trackingEvents[i].getTechnique() == '2 Genome Global Alignment':
                 #Compute losses from alignment
                 opEvents = trackingEvents[i].getOperonEvents()
@@ -1339,9 +1337,11 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
         #If we have any coordinates to plot, display them
         if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
             f = plt.figure()
-            plt.title("Orthologous Operons")
+            plt.title("Orthologous Operon Mapping")
             plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
             plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
+            plt.ylabel('Operon Position in Genome 1')
+            plt.xlabel('Operon Position in Genome 2')
             plt.show()
             f.savefig("%s %s.pdf" %(genomeName1, genomeName2), bbox_inches='tight')
         else:
