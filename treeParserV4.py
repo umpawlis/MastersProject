@@ -731,8 +731,8 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
                     if genesMatched != len(genes):
                         genesMatched = 0
                         
-            if genesMatched == len(genes):
-                print("Duplicate")
+            if genesMatched != 0 and genesMatched == len(genes):
+                #print("Duplicate")
                 updateDuplicationCounter(len(genes))
                 del gap[startIndex:endIndex]                
                 startIndex = endIndex 
@@ -1264,9 +1264,17 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                     totalLosses = 0
                     for gap in gaps:
                         if len(gap) > 0:
-                            #Unique genes tells us number of losses
-                            numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())
+                            #Compute duplications and losses along with their sizes
+                            numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())                
                             totalLosses += numUniqueFound
+                            #Update duplication counter
+                            if len(duplicationSizes) > 0:
+                                for size in duplicationSizes:
+                                    updateDuplicationCounter(size)
+                            #Update loss counter
+                            if len(deletionSizes) > 0:
+                                for size in deletionSizes:
+                                    updateDeletionCounter(size)                
                     #end for
                     opEvents.setLossesDueToSlidingWindowMethodOperon1(totalLosses)
 
@@ -1278,6 +1286,14 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
                             #Uniques tells us number of losses
                             numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence2, trackingEvents[i].getGenome2OperonIndex())
                             totalLosses += numUniqueFound
+                            #Update duplication counter
+                            if len(duplicationSizes) > 0:
+                                for size in duplicationSizes:
+                                    updateDuplicationCounter(size)
+                            #Update loss counter
+                            if len(deletionSizes) > 0:
+                                for size in deletionSizes:
+                                    updateDeletionCounter(size) 
                     #end for
                     opEvents.setLossesDueToSlidingWindowMethodOperon2(totalLosses)
 
@@ -2520,14 +2536,14 @@ if len(duplicateOperonCounter) > 0:
     fig = plt.figure()
     txt = 'Figure 1: This figure presents the distribution of duplication and loss events within the phylogeny. The x axis indicates the size of the sequence on which the duplication or loss event occurred. The y axis indicates the number of times an event has occurred for that particular size. Blue bar: These bars represent whole operon duplication events throughout the phylogeny. The size indicates the size of the operon that was duplicated. However, for size 1 these are not considered operons, rather they are singleton genes dispersed throughout the genome that do not belong to any operon. Green bar: These bars represent all of the gene duplications within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was duplicated within an operon. Yellow bar: These bars represent all of the gene losses within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was lost within an operon.'
     w = 0.1
-    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='b', align='center')
-    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='g', align='center')
-    plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='y', align='center')
+    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='c', align='center')
+    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='y', align='center')
+    plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='b', align='center')
     plt.ylabel('Number of Events')
     plt.xlabel('Size of Sequence')
     plt.title('Destribution of Duplications and Losses')
     #plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
-    fig.set_size_inches(3.5, 8, forward=True)
+    fig.set_size_inches(5, 8, forward=True)
     plt.show()
     fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
     
