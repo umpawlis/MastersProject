@@ -18257,3 +18257,91 @@ This is the distance matrix for NC_013411 NC_014206
 -999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
 -999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	
 
+NC_013411 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', '[16S, 23S, 5S, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Lys_AAA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCG, Ala_GCA, Met_AUG, Met_AUG, Ser_UCA, Thr_ACA, His_CAC, Gly_GGA, Ile_AUC, Asn_AAC, Ser_AGC, Glu_GAA]', ' Val_GUC', ' Arg_AGG', '[Pro_CCG, Ala_GCG, Ser_UCG]', ' -Ile_AUC', '-[Tyr_UAC, Thr_ACG, Ser_UCG, Leu_CUC, Ala_GCC, Val_GUC, 5S]', ' -Gln_CAA', ' Pro_CCC', '-[Arg_AGA, Gly_GGG, Arg_CGU, Gly_GGC, 23S, 16S]', ' Ala_GCC', ' -Arg_CG']NC_014206 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', ' -Ala_GCC', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[16S, 23S, Gly_GGC, Arg_CGU, Gly_GGG, Arg_AGA]', ' -Pro_CCC', ' Gln_CAA', '[5S, Val_GUC, Ala_GCC, Leu_CUC, Ser_UCG, Thr_ACG, Tyr_UAC, Ile_AUC]', ' -Ser_UCG', '-[Ala_GCG, Pro_CCG]', ' -Arg_AGG', ' -Val_GUC', '-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Thr_ACA, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCG, Arg_CGU, Leu_UUA, Gly_GGC, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Val_GUA, 5S, 23S, 16S]', ' -Arg_CG']
+This is the distance matrix for NC_013411 NC_014206
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+7.0 	7.0 	0.0* 	14.0 	10.0 	14.0 	-999 	-999 	17.0 	8.0 	-999 	-999 	10.0 	-999 	4.0 	-999 	-999 	22.0 	-999 	
+11.0 	11.0 	14.0 	0.0* 	14.0 	11.0 	-999 	-999 	23.5 	14.0 	-999 	-999 	15.0 	-999 	11.0 	-999 	-999 	20.5 	-999 	
+9.0 	9.0 	10.0 	14.0 	0.0* 	14.5 	-999 	-999 	15.0 	10.0 	-999 	-999 	14.5 	-999 	10.5 	-999 	-999 	20.5 	-999 	
+18.0 	18.0 	17.0 	23.5 	15.0 	20.0 	-999 	-999 	0.0* 	17.0 	-999 	-999 	19.5 	-999 	19.0 	-999 	-999 	24.0 	-999 	
+13.0 	13.0 	14.0 	11.0 	14.5 	0.0* 	-999 	-999 	20.0 	16.0 	-999 	-999 	20.0 	-999 	14.5 	-999 	-999 	27.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+23.0 	23.0 	22.0 	20.5 	20.5 	27.0 	-999 	-999 	24.0 	20.5 	-999 	-999 	22.0 	-999 	22.5 	-999 	-999 	0.0* 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	
+6.5 	6.5 	5.0 	12.0 	11.5 	15.5 	-999 	-999 	18.5 	9.0 	-999 	-999 	7.5 	-999 	1.0* 	-999 	-999 	22.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+10.0 	10.0 	9.0 	14.0 	13.5 	19.0 	-999 	-999 	18.5 	13.0 	-999 	-999 	1.0* 	-999 	7.5 	-999 	-999 	23.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+7.0 	7.0 	8.0 	14.0 	10.0 	16.0 	-999 	-999 	17.0 	0.0* 	-999 	-999 	14.0 	-999 	8.0 	-999 	-999 	20.5 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	
+
+NC_013411 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', '[16S, 23S, 5S, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Lys_AAA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCG, Ala_GCA, Met_AUG, Met_AUG, Ser_UCA, Thr_ACA, His_CAC, Gly_GGA, Ile_AUC, Asn_AAC, Ser_AGC, Glu_GAA]', ' Val_GUC', ' Arg_AGG', '[Pro_CCG, Ala_GCG, Ser_UCG]', ' -Ile_AUC', '-[Tyr_UAC, Thr_ACG, Ser_UCG, Leu_CUC, Ala_GCC, Val_GUC, 5S]', ' -Gln_CAA', ' Pro_CCC', '-[Arg_AGA, Gly_GGG, Arg_CGU, Gly_GGC, 23S, 16S]', ' Ala_GCC', ' -Arg_CG']NC_014206 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', ' -Ala_GCC', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[16S, 23S, Gly_GGC, Arg_CGU, Gly_GGG, Arg_AGA]', ' -Pro_CCC', ' Gln_CAA', '[5S, Val_GUC, Ala_GCC, Leu_CUC, Ser_UCG, Thr_ACG, Tyr_UAC, Ile_AUC]', ' -Ser_UCG', '-[Ala_GCG, Pro_CCG]', ' -Arg_AGG', ' -Val_GUC', '-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Thr_ACA, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCG, Arg_CGU, Leu_UUA, Gly_GGC, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Val_GUA, 5S, 23S, 16S]', ' -Arg_CG']
+This is the distance matrix for NC_013411 NC_014206
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+7.0 	7.0 	0.0* 	14.0 	10.0 	14.0 	-999 	-999 	17.0 	8.0 	-999 	-999 	10.0 	-999 	4.0 	-999 	-999 	22.0 	-999 	
+11.0 	11.0 	14.0 	0.0* 	14.0 	11.0 	-999 	-999 	23.5 	14.0 	-999 	-999 	15.0 	-999 	11.0 	-999 	-999 	20.5 	-999 	
+9.0 	9.0 	10.0 	14.0 	0.0* 	14.5 	-999 	-999 	15.0 	10.0 	-999 	-999 	14.5 	-999 	10.5 	-999 	-999 	20.5 	-999 	
+18.0 	18.0 	17.0 	23.5 	15.0 	20.0 	-999 	-999 	0.0* 	17.0 	-999 	-999 	19.5 	-999 	19.0 	-999 	-999 	24.0 	-999 	
+13.0 	13.0 	14.0 	11.0 	14.5 	0.0* 	-999 	-999 	20.0 	16.0 	-999 	-999 	20.0 	-999 	14.5 	-999 	-999 	27.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+23.0 	23.0 	22.0 	20.5 	20.5 	27.0 	-999 	-999 	24.0 	20.5 	-999 	-999 	22.0 	-999 	22.5 	-999 	-999 	0.0* 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	
+6.5 	6.5 	5.0 	12.0 	11.5 	15.5 	-999 	-999 	18.5 	9.0 	-999 	-999 	7.5 	-999 	1.0* 	-999 	-999 	22.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+10.0 	10.0 	9.0 	14.0 	13.5 	19.0 	-999 	-999 	18.5 	13.0 	-999 	-999 	1.0* 	-999 	7.5 	-999 	-999 	23.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+7.0 	7.0 	8.0 	14.0 	10.0 	16.0 	-999 	-999 	17.0 	0.0* 	-999 	-999 	14.0 	-999 	8.0 	-999 	-999 	20.5 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	
+
+NC_013411 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', '[16S, 23S, 5S, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Lys_AAA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCG, Ala_GCA, Met_AUG, Met_AUG, Ser_UCA, Thr_ACA, His_CAC, Gly_GGA, Ile_AUC, Asn_AAC, Ser_AGC, Glu_GAA]', ' Val_GUC', ' Arg_AGG', '[Pro_CCG, Ala_GCG, Ser_UCG]', ' -Ile_AUC', '-[Tyr_UAC, Thr_ACG, Ser_UCG, Leu_CUC, Ala_GCC, Val_GUC, 5S]', ' -Gln_CAA', ' Pro_CCC', '-[Arg_AGA, Gly_GGG, Arg_CGU, Gly_GGC, 23S, 16S]', ' Ala_GCC', ' -Arg_CG']NC_014206 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', ' -Ala_GCC', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[16S, 23S, Gly_GGC, Arg_CGU, Gly_GGG, Arg_AGA]', ' -Pro_CCC', ' Gln_CAA', '[5S, Val_GUC, Ala_GCC, Leu_CUC, Ser_UCG, Thr_ACG, Tyr_UAC, Ile_AUC]', ' -Ser_UCG', '-[Ala_GCG, Pro_CCG]', ' -Arg_AGG', ' -Val_GUC', '-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Thr_ACA, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCG, Arg_CGU, Leu_UUA, Gly_GGC, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Val_GUA, 5S, 23S, 16S]', ' -Arg_CG']
+This is the distance matrix for NC_013411 NC_014206
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+7.0 	7.0 	0.0* 	14.0 	10.0 	14.0 	-999 	-999 	17.0 	8.0 	-999 	-999 	10.0 	-999 	4.0 	-999 	-999 	22.0 	-999 	
+11.0 	11.0 	14.0 	0.0* 	14.0 	11.0 	-999 	-999 	23.5 	14.0 	-999 	-999 	15.0 	-999 	11.0 	-999 	-999 	20.5 	-999 	
+9.0 	9.0 	10.0 	14.0 	0.0* 	14.5 	-999 	-999 	15.0 	10.0 	-999 	-999 	14.5 	-999 	10.5 	-999 	-999 	20.5 	-999 	
+18.0 	18.0 	17.0 	23.5 	15.0 	20.0 	-999 	-999 	0.0* 	17.0 	-999 	-999 	19.5 	-999 	19.0 	-999 	-999 	24.0 	-999 	
+13.0 	13.0 	14.0 	11.0 	14.5 	0.0* 	-999 	-999 	20.0 	16.0 	-999 	-999 	20.0 	-999 	14.5 	-999 	-999 	27.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+23.0 	23.0 	22.0 	20.5 	20.5 	27.0 	-999 	-999 	24.0 	20.5 	-999 	-999 	22.0 	-999 	22.5 	-999 	-999 	0.0* 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	
+6.5 	6.5 	5.0 	12.0 	11.5 	15.5 	-999 	-999 	18.5 	9.0 	-999 	-999 	7.5 	-999 	1.0* 	-999 	-999 	22.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+10.0 	10.0 	9.0 	14.0 	13.5 	19.0 	-999 	-999 	18.5 	13.0 	-999 	-999 	1.0* 	-999 	7.5 	-999 	-999 	23.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+7.0 	7.0 	8.0 	14.0 	10.0 	16.0 	-999 	-999 	17.0 	0.0* 	-999 	-999 	14.0 	-999 	8.0 	-999 	-999 	20.5 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	
+
+NC_013411 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', '[16S, 23S, 5S, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Lys_AAA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCG, Ala_GCA, Met_AUG, Met_AUG, Ser_UCA, Thr_ACA, His_CAC, Gly_GGA, Ile_AUC, Asn_AAC, Ser_AGC, Glu_GAA]', ' Val_GUC', ' Arg_AGG', '[Pro_CCG, Ala_GCG, Ser_UCG]', ' -Ile_AUC', '-[Tyr_UAC, Thr_ACG, Ser_UCG, Leu_CUC, Ala_GCC, Val_GUC, 5S]', ' -Gln_CAA', ' Pro_CCC', '-[Arg_AGA, Gly_GGG, Arg_CGU, Gly_GGC, 23S, 16S]', ' Ala_GCC', ' -Arg_CG']NC_014206 : ['[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[16S, Ile_AUC, Ala_GCA, 23S, 5S]', '[Met_AUG, Glu_GAA]', '[5S, Val_GUA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]', '[16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA]', '[Asn_AAC, Ser_AGC, Glu_GAA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S]', ' 5S', ' -Ala_GCC', '[16S, 23S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACG, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG]', '[16S, 23S, Gly_GGC, Arg_CGU, Gly_GGG, Arg_AGA]', ' -Pro_CCC', ' Gln_CAA', '[5S, Val_GUC, Ala_GCC, Leu_CUC, Ser_UCG, Thr_ACG, Tyr_UAC, Ile_AUC]', ' -Ser_UCG', '-[Ala_GCG, Pro_CCG]', ' -Arg_AGG', ' -Val_GUC', '-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Thr_ACA, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCG, Arg_CGU, Leu_UUA, Gly_GGC, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Val_GUA, 5S, 23S, 16S]', ' -Arg_CG']
+This is the distance matrix for NC_013411 NC_014206
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+0.0* 	0.0* 	7.0 	11.0 	9.0 	13.0 	-999 	-999 	18.0 	7.0 	-999 	-999 	11.0 	-999 	5.5 	-999 	-999 	23.0 	-999 	
+7.0 	7.0 	0.0* 	14.0 	10.0 	14.0 	-999 	-999 	17.0 	8.0 	-999 	-999 	10.0 	-999 	4.0 	-999 	-999 	22.0 	-999 	
+11.0 	11.0 	14.0 	0.0* 	14.0 	11.0 	-999 	-999 	23.5 	14.0 	-999 	-999 	15.0 	-999 	11.0 	-999 	-999 	20.5 	-999 	
+9.0 	9.0 	10.0 	14.0 	0.0* 	14.5 	-999 	-999 	15.0 	10.0 	-999 	-999 	14.5 	-999 	10.5 	-999 	-999 	20.5 	-999 	
+18.0 	18.0 	17.0 	23.5 	15.0 	20.0 	-999 	-999 	0.0* 	17.0 	-999 	-999 	19.5 	-999 	19.0 	-999 	-999 	24.0 	-999 	
+13.0 	13.0 	14.0 	11.0 	14.5 	0.0* 	-999 	-999 	20.0 	16.0 	-999 	-999 	20.0 	-999 	14.5 	-999 	-999 	27.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+23.0 	23.0 	22.0 	20.5 	20.5 	27.0 	-999 	-999 	24.0 	20.5 	-999 	-999 	22.0 	-999 	22.5 	-999 	-999 	0.0* 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	
+6.5 	6.5 	5.0 	12.0 	11.5 	15.5 	-999 	-999 	18.5 	9.0 	-999 	-999 	7.5 	-999 	1.0* 	-999 	-999 	22.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+10.0 	10.0 	9.0 	14.0 	13.5 	19.0 	-999 	-999 	18.5 	13.0 	-999 	-999 	1.0* 	-999 	7.5 	-999 	-999 	23.0 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+7.0 	7.0 	8.0 	14.0 	10.0 	16.0 	-999 	-999 	17.0 	0.0* 	-999 	-999 	14.0 	-999 	8.0 	-999 	-999 	20.5 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	
+-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	-999 	0* 	
+
