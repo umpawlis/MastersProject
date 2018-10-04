@@ -717,54 +717,34 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
         endIndex = len(gap)
         
         #print('Current gap %s' % (gap))
-        while windowSize > 0:
+        while windowSize > 1:
             genes = gap[startIndex:endIndex]
             
             #print('Current Window %s' %(genes))
-            #TODO: perform search
             genesMatched = 0
-            '''
+            
             for x in range(0, len(alignedGenes)):
-                if genes[0] == alignedGenes[x] and genesMatched != len(genes):
-                    #reset
-                    genesMatched = 0
+                if len(genes) > 0 and genes[0] == alignedGenes[x] and genesMatched == 0:
                     for y in range(0, len(genes)):
-                        if y + x < len(alignedGenes) and genes[y] == alignedGenes[x]:
+                        if (x+y) < len(alignedGenes) and genes[y] == alignedGenes[x+y]:
                             genesMatched +=1
-            '''
+                    if genesMatched != len(genes):
+                        genesMatched = 0
+                        
             if genesMatched == len(genes):
                 print("Duplicate")
                 updateDuplicationCounter(len(genes))
-                del gap[startIndex:endIndex]
+                del gap[startIndex:endIndex]                
+                startIndex = endIndex 
             else:
                 startIndex+=1
-                if (startIndex + windowSize) > len(gap):
-                    #reduce and reset
-                    windowSize = min(windowSize-1, len(gap))
-                    startIndex = 0
-                endIndex = startIndex + windowSize
-
-    '''
-    numUniqueGenes = 0 #counts the number of unique genes
-    #Iterate through the array of gaps
-    for gap in arrayOfGaps:
-        indexesToRemove = [] #List of indexes to remove
-        #Iterate through the genes in the gap
-        for x in range(0, len(gap)):
-            #Check if there's a match
-            if gap[x] in alignedGenes:
-                indexesToRemove.append(x);
-            else:
-                numUniqueGenes += 1
-        #end for
-        if len(indexesToRemove) > 0:
-            indexesToRemove.sort()
-            indexesToRemove.reverse()
-            #Remove duplicate genes
-            for index in indexesToRemove:
-                gap.pop(index)
-            #end for
-    '''
+                
+            if (startIndex + windowSize) > len(gap):
+                #reduce and reset
+                windowSize = min(windowSize-1, len(gap))
+                startIndex = 0
+            endIndex = startIndex + windowSize
+            
     return arrayOfGaps, 0
 
 ######################################################
