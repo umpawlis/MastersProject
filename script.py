@@ -58,7 +58,7 @@ class Strain(object):
         self.hasData = hasData
     def getHasData(self):
         return self.hasData
-    
+
 ######################################################
 # processFileSequence
 # Parameters: sequence - sequence to get the operons from
@@ -90,7 +90,7 @@ def processFileSequence(sequence):
                 geneList.extend([gene.strip() for gene in sequence[startIndex+1:index-1].split(',')])
             else:
                 geneList.extend([gene.strip() for gene in sequence[startIndex+2:index-1].split(',')])
-                
+
         #Singleton
         if index < len(sequence) and sequence[index] == ',':
             geneIndex += 1
@@ -111,7 +111,7 @@ def processFileSequence(sequence):
         index += 1
 
     return operonList, operonPositions, singletonList, geneList
-    
+
 ######################################################
 # traverseNewickTree
 # Parameters: node - The node that we want to process
@@ -150,9 +150,9 @@ def traverseNewickTree(node):
                 strain.setGenes(allGenes)
                 strain.setHasData(True)
                 strains.append(strain)
-                
+
                 return strain
-            
+
             else:
                 print('No sequence file found for node: %s' % node.name)
         else:
@@ -160,15 +160,15 @@ def traverseNewickTree(node):
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
         print('These are the strains being compared: %s, %s'%(leftChildStrain.getName(), rightChildStrain.getName()))
-        ancestralOperons, trackingEvents = processStrains(leftChildStrain, rightChildStrain)        
-        
+        ancestralOperons, trackingEvents = processStrains(leftChildStrain, rightChildStrain)
+
         ancestralCounter += 1
         node.name = 'Ancestor %s' % (ancestralCounter)
         ancestor = Strain('Ancestor %s' % (ancestralCounter), ancestralOperons, [leftChildStrain.getName(), rightChildStrain.getName()], [], {})
         ancestor.setTrackingEvents(trackingEvents)
         ancestor.setHasData(False)
         strains.append(ancestor)
-        
+
         return ancestor
 
     #If the left child has a sequence, return it
@@ -182,12 +182,50 @@ def traverseNewickTree(node):
     #If neither has a sequence, return None
     else:
         return None
-    
+
+######################################################
+# processStrains
+# Parameters: Two descendants of the ancestor
+# Description:
+######################################################
+def processStrains(strain1, strain2):
+    coverageTracker1 = {}
+    coverageTracker2 = {}
+    sequence1 = strain1.getSequence()
+    sequence2 = strain2.getSequence()
+
+    for y in range(0, len(sequence1)):
+        coverageTracker1[y] = False
+
+    for x in range(0, len(sequence2)):
+        coverageTracker2[x] = False
+
+    #TODO Alignments
+
+    trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
+
+    return None, None
+
+######################################################
+# processStrains
+# Parameters:
+# Description: Prints the content of each respective tracker
+######################################################
+def trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2):
+    print('Remaining operons from each respective tracker:')
+    for x in range(0, len(coverageTracker1)):
+        if coverageTracker1[x] == False:
+            print ('Sequence 1, index: %s, Operon: %s' % (x, sequence1[x]))
+    for x in range (0, len(coverageTracker2)):
+        if coverageTracker2[x] == False:
+            print('Sequence 2, index: %s, Operon: %s' % (x, sequence2[x]))
+    print('Finished printing trackers\n')
+
 ######################################################
 #                       main
 ######################################################
 print('Reading in newick tree from file: %s...' % (newickFileName))
-newickTree = Phylo.read(newickFileName, 'newick')  
+newickTree = Phylo.read(newickFileName, 'newick')
 Phylo.draw(newickTree)
 
 #Traverses the newick tree to reconstruct the ancestral genomes
