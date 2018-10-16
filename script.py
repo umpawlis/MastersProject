@@ -296,9 +296,60 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
     ##End of Calculations
     ####################################
     print ('Done computing global alignment matrix for {%s, %s}\n' % (strain1Name, strain2Name))
-    #outputResultsToExcel(strain1Name, strain2Name, firstOperonList, secondOperonList, globalAlignmentMatrix)
+    outputResultsToExcel(strain1Name, strain2Name, firstOperonList, secondOperonList, globalAlignmentMatrix)
     
     return globalAlignmentMatrix, operonEventMatrix
+
+######################################################
+# outputResultsToExcel
+# Parameters: strain1, strain2, sequence1, sequence2, resultMatrix
+# Description: outputs the results into an excel file
+######################################################
+def outputResultsToExcel(strain1, strain2, sequence1, sequence2, resultMatrix):
+
+    rowIndex = 1
+
+    #Intialize the workbook
+    workbook = xlsxwriter.Workbook('excel_files/Comparison - %s & %s.xlsx' % (strain1, strain2))
+    worksheet = workbook.add_worksheet()
+    worksheet2 = workbook.add_worksheet()
+
+    #Used to emphasize potentially interesting operons
+    cellFormat = workbook.add_format()
+    cellFormat.set_pattern(1)
+    cellFormat.set_bg_color('lime')
+
+    #Write strain identifiers to the excel file
+    worksheet.write(5, 0, strain1)
+    worksheet.write(0, 5, strain2)
+    worksheet2.write(5, 0, strain1)
+    worksheet2.write(0, 5, strain2)
+
+    #Write the operons to the excel file
+    for x in range (0, len(sequence1)):
+        worksheet.write((x + 2), 1, sequence1[x])
+        worksheet2.write((x + 2), 1, sequence1[x])
+
+    for x in range (0, len(sequence2)):
+        worksheet.write(1, (x + 2), sequence2[x])
+        worksheet2.write(1, (x + 2), sequence2[x])
+
+    #Write the data from the matrix to the excel file
+    for row in resultMatrix:
+
+        #Track the excel indexes
+        rowIndex += 1
+        colIndex = 2
+
+        for value in row:
+            if '*' in str(value):
+                worksheet.write(rowIndex, colIndex, str(value), cellFormat)
+            else:
+                worksheet.write(rowIndex, colIndex, str(value))
+            colIndex += 1
+
+    #Close the excel file
+    workbook.close()
 
 ######################################################
 # reverseSequence
