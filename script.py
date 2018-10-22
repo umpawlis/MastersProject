@@ -430,7 +430,7 @@ def findMaxValueInMatrix(globalAlignmentMatrix):
 
 ######################################################
 # processStrains
-# Parameters: Two descendants of the ancestor
+# Parameters:
 # Description:
 ######################################################
 def processStrains(strain1, strain2):
@@ -453,6 +453,15 @@ def processStrains(strain1, strain2):
     if len(localAlignmentTrackingEvents) > 0:
         trackingEvents.append(localAlignmentTrackingEvents)
 
+    #Handle singleton genes
+    singletonDuplicatedG1, singletonLostG1, singletonTrackingEventsG1, coverageTracker1 = detectOrthologousSingletonGenes(coverageTracker1, strain1, strain1.getTrackingEvents())
+    singletonDuplicatedG2, singletonLostG2, singletonTrackingEventsG2, coverageTracker2 = detectOrthologousSingletonGenes(coverageTracker2, strain2, strain2.getTrackingEvents())
+    if len(singletonTrackingEventsG1) > 0:
+        trackingEvents.append(singletonTrackingEventsG1)
+    if len(singletonTrackingEventsG2) > 0:
+        trackingEvents.append(singletonTrackingEventsG2)
+
+    #Resolve remaining operons via self global alignment
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
 
     print('#' * 70)
@@ -461,10 +470,112 @@ def processStrains(strain1, strain2):
     print('Total number of operons and singletons for %s: %s' %(strain2.getName(), len(coverageTracker2)))
     print('Number of orthologs found through global alignment: %s' %(globalAlignmentCounter))
     print('Number of orthologs found through local alignment: %s' %(localAlignmentCounter))
+    print('Number of singletons identified as duplicates in %s: %s' %(strain1.getName(), singletonDuplicatedG1))
+    print('Number of singletons identified as duplicates in %s: %s' %(strain2.getName(), singletonDuplicatedG2))
+    print('Number of singletons lost in %s: %s' %(strain1.getName(), singletonLostG1))
+    print('Number of singletons lost in %s: %s' %(strain2.getName(), singletonLostG1))
     print('#' * 70)
 
     return None, None
 
+######################################################
+# detectOrthologousSingletonGenes
+# Parameters:
+# Description:
+######################################################
+def detectOrthologousSingletonGenes(coverageTracker, strain, descendantsTrackingEvents):
+    global trackingId
+    sequence = strain.getSequence()
+    genomeName = strain.getName()
+    singletonLost = 0
+    singletonDuplicated = 0
+    trackingEvents = []
+
+    for i in range(0, len(coverageTracker)):
+        if coverageTracker[i] == False and len(sequence[i].split(',')) == 1:
+            addToAncestor, matchIndex, coverageTracker = resolveSingleton(sequence, i, coverageTracker)
+
+            if addToAncestor:
+                #If no match found then it's a loss so add to ancestor
+                trackingId += 1
+                trackingEvent = TrackingEvent(trackingId, 0, genomeName, '', sequence[i], '', i, -1, sequence[i], "Singleton Alignment")
+                trackingEvent = trackLossEvents(trackingEvent, descendantsTrackingEvents)
+
+                #Indicates a loss
+                singletonLost += 1
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this singleton because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
+                trackingEvent.printTrackingEvent()
+            else:
+                #Increment Counter to indicate success in finding source
+                singletonDuplicated += 1
+    return singletonDuplicated, singletonLost, trackingEvents, coverageTracker
+
+######################################################
+# trackLossEvents
+# Parameters:
+# Description: Appends the previous tracking loss Ids to the current nodes tracking Id
+######################################################
+def trackLossEvents(currTrackingEvent, previousTrackingEvents):
+    if len(previousTrackingEvents) == 0:
+        #If there are no tracking events, then this is a leaf we're dealing with
+        lostEventIds = currTrackingEvent.getLostEventIds()
+        lostEventIds.append(currTrackingEvent.getTrackingEventId())
+        currTrackingEvent.setLostEventIds(lostEventIds)
+    else:
+        #If there are tracking events, then this is not a leaf. Two cases to consider, it was lost in the previous tracking events or not
+        for i in range(0, len(previousTrackingEvents)):
+            if previousTrackingEvents[i].getAncestralOperon().strip() == currTrackingEvent.getAncestralOperon().strip():
+                #We found the tracking event associated with the operon from the previous ancestral node
+                lostEventIds = previousTrackingEvents[i].getLostEventIds()
+                lostEventIds.append(currTrackingEvent.getTrackingEventId())
+                currTrackingEvent.setLostEventIds(lostEventIds)
+                #If there was a loss in the previous ancestor for the same operon, remove the operon from both the previous and current ancestor
+                #if len(lostEventIds) >= 2:
+                    #previousTrackingEvents.pop(i)
+
+    return currTrackingEvent
+
+######################################################
+# resolveSingleton
+# Parameters:
+# Description: Finds original copy of singleton
+######################################################
+def resolveSingleton(sequence, singletonIndex, coverageTracker):
+    addToAncestor = False
+    sourceIndex = -1
+    #Check if an exact gene exists in an operon
+    for o in range(0, len(sequence)):
+        #Don't compare to itself
+        if o != singletonIndex:
+            #Get a list of operon genes
+            setDifference, singletonGene, operonGenes, numDifferentGenes = formatAndComputeOperonDifferences(sequence[singletonIndex], sequence[o])
+            #If a match found and no other match found
+            if (singletonGene[0] in operonGenes) and sourceIndex == -1:
+                sourceIndex = o
+                distance = abs(o - singletonIndex)
+            #If a match found with smaller distance
+            elif (singletonGene[0] in operonGenes) and distance > abs(o - singletonIndex):
+                sourceIndex = o
+                distance = abs(o - singletonIndex)
+
+    coverageTracker[singletonIndex] = True
+    if sourceIndex != -1:
+        #TODO: Add Singleton Counter
+        #incrementDuplicateTracker(singletonGene)
+        print('\n##### Singleton Source Found!! (NOT ADDED TO ANCESTOR) #####')
+        print('The singleton gene %s was found in operon %s, index: %s' % (sequence[singletonIndex].strip(), sequence[sourceIndex].strip(), sourceIndex))
+        print('###################################\n')
+    else:
+        addToAncestor = True
+        print('\n##### No Singleton Source Found!!(ADDED TO ANCESTOR) #####')
+        print('Could not find source for the singleton gene: %s' % (sequence[singletonIndex].strip()))
+        print('###################################\n')
+
+    return addToAncestor, sourceIndex, coverageTracker
 ######################################################
 # formatAllOperons
 # Parameters: sequence
