@@ -461,6 +461,14 @@ def processStrains(strain1, strain2):
     if len(singletonTrackingEventsG2) > 0:
         trackingEvents.append(singletonTrackingEventsG2)
 
+    #Handle remaining operons
+    operonDuplicateG1, operonLossG1, operonTrackingEventsG1, coverageTracker1 = detectDuplicateOperons(coverageTracker1, strain1)
+    operonDuplicateG2, operonLossG2, operonTrackingEventsG2, coverageTracker2 = detectDuplicateOperons(coverageTracker2, strain2)
+    if len(operonTrackingEventsG1) > 0:
+        trackingEvents.append(operonTrackingEventsG1)
+    if len(operonTrackingEventsG2) > 0:
+        trackingEvents.append(operonTrackingEventsG2)
+
     #Resolve remaining operons via self global alignment
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
 
@@ -474,9 +482,118 @@ def processStrains(strain1, strain2):
     print('Number of singletons identified as duplicates in %s: %s' %(strain2.getName(), singletonDuplicatedG2))
     print('Number of singletons lost in %s: %s' %(strain1.getName(), singletonLostG1))
     print('Number of singletons lost in %s: %s' %(strain2.getName(), singletonLostG1))
+    print('Number of operons lost in %s: %s' %(strain1.getName(), operonLossG1))
+    print('Number of operons lost in %s: %s' %(strain2.getName(), operonLossG1))
+    print('Number of operons identified as duplicates in %s: %s' %(strain1.getName(), operonDuplicateG1))
+    print('Number of operons identified as duplicates in %s: %s' %(strain2.getName(), operonDuplicateG2))
     print('#' * 70)
 
     return None, None
+
+######################################################
+# detectDuplicateOperons
+# Parameters:
+# Description:
+######################################################
+def detectDuplicateOperons(coverageTracker, strain):
+    global trackingId
+
+    sequence = strain.getSequence()
+    genomeName = strain.getName()
+    operonDuplicate = 0
+    operonLoss = 0
+    numInvertedDuplicates = 0
+    trackingEvents = []
+
+    for i in range(0, len(coverageTracker)):
+        if coverageTracker[i] == False and len(sequence[i].split(',')) > 1:
+            print('\n&&&&&&&&&& Duplicate Alignment &&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+
+            duplicateEvent = duplicateAlignment(i, sequence[i], sequence, genomeName)
+            coverageTracker[i] = True
+
+            #checks if duplicate event is null
+            if duplicateEvent:
+                #Not null, we found a partner for this operon
+                print('Found a matching duplicate operon, therefore not adding to ancestor!')
+                duplicateEvent.printTrackingEvent()
+
+                #Increment counter to indicate we successfully found a match
+                operonDuplicate += 1
+
+                #Check if inverted duplicates
+                if ('-' in duplicateEvent.getGenome1Operon() and '-' not in duplicateEvent.getGenome2Operon()) or ('-' not in duplicateEvent.getGenome1Operon() and '-' in duplicateEvent.getGenome2Operon()):
+                    numInvertedDuplicates += 1
+
+            else:
+                print('No duplicate ortholog found for operon: %s, therefore it will be added to ancestor as it is a loss' % (sequence[i]))
+                trackingId += 1
+                trackingEvent = TrackingEvent(trackingId, 0, genomeName, '', sequence[i], '', i, -1, sequence[i], "Duplicate Alignment (No match found)")
+                trackingEvent = trackLossEvents(trackingEvent, strain.getTrackingEvents())
+
+                #Indicates operon is a loss
+                operonLoss += 1
+
+                #decides whether to add the event or not
+                if len(trackingEvent.getLostEventIds()) >= 2:
+                    print('Removing this operon because it was lost two times in a row')
+                else:
+                    trackingEvents.append(trackingEvent)
+                trackingEvent.printTrackingEvent()
+            print('\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n')
+
+    return operonDuplicate, operonLoss, trackingEvents, coverageTracker
+
+######################################################
+# duplicateAlignment
+# Parameters:
+# Description: Performs a global alignment on genome itself to find best source of duplicate
+######################################################
+def duplicateAlignment(g1OperonIndex, g1Operon, g1Sequence, genomeName1):
+    print('Duplicate Alignment')
+
+    optimalScore = -1
+    duplicateEvent = None
+
+    for x in range(0, len(g1Sequence)):
+        #Ignore global alignment on operon itself
+        if x != g1OperonIndex:
+            #Compute the set differences
+            setDifference, operon1, operon2, numDifferentGenes = formatAndComputeOperonDifferences(g1Operon, g1Sequence[x])
+
+            #Checks if either operons at in the - orientation
+            reverseOp1 = reverseSequence(g1Operon)
+            reverseOp2 = reverseSequence(g1Sequence[x])
+
+            #Reverse operons if needed to
+            if reverseOp1 and reverseOp2 == False:
+                operon1.reverse()
+            if reverseOp2 and reverseOp1 == False:
+                operon2.reverse()
+
+            #Threshold to check if the sequences are worth comparing
+            if setDifference <= (max(len(operon1), len(operon2))//3):
+                lowestScore, operonEvents = performGlobalAlignment(operon1, operon2)
+
+                if optimalScore == -1 or (lowestScore < optimalScore):
+                    optimalScore = lowestScore
+                    duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
+                    duplicateEvent.setOperonEvents(operonEvents)
+                    distance = abs(g1OperonIndex - x)
+                elif lowestScore == optimalScore and (abs(g1OperonIndex - x) < distance):
+                    optimalScore = lowestScore
+                    duplicateEvent = TrackingEvent(0, optimalScore, genomeName1, genomeName1, g1Operon, g1Sequence[x], g1OperonIndex, x, "", "Duplicate Alignment")
+                    duplicateEvent.setOperonEvents(operonEvents)
+                    distance = abs(g1OperonIndex - x)
+
+    #check if we found a duplicate event
+    if duplicateEvent:
+        #TODO: handle this
+        incrementDuplicateTracker(operon1)
+
+    return duplicateEvent
 
 ######################################################
 # detectOrthologousSingletonGenes
