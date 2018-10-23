@@ -468,7 +468,11 @@ def processStrains(strain1, strain2):
         trackingEvents.append(operonTrackingEventsG1)
     if len(operonTrackingEventsG2) > 0:
         trackingEvents.append(operonTrackingEventsG2)
-
+    
+    #create dot plot
+    if len(trackingEvents) > 0:
+        createDotPlot(trackingEvents, strain1, strain2)
+    
     #Resolve remaining operons via self global alignment
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
 
@@ -489,6 +493,61 @@ def processStrains(strain1, strain2):
     print('#' * 70)
 
     return None, None
+
+######################################################
+# detectDuplicateOperons
+# Parameters:
+# Description:
+######################################################
+def createDotPlot(trackingEvents, strain1, strain2):
+    #The green ones represent operons with no differences
+    green_x_coord = []
+    green_y_coord = []
+
+    #Yellow ones represent scores between 1 and 2
+    yellow_x_coord = []
+    yellow_y_coord = []
+
+    #Red ones represent scores between 3 and above
+    red_x_coord = []
+    red_y_coord = []
+
+    #Blue ones represent a local alignment
+    blue_x_coord = []
+    blue_y_coord = []
+    
+    print("x" * 70)
+    for i in range(0, len(trackingEvents)):
+        if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
+            #Assign the coords to the appropriate array
+            if trackingEvents[i].getTechnique() == 'Local Alignment':
+                blue_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                blue_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+            elif trackingEvents[i].getScore() == 0:
+                green_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                green_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+            elif trackingEvents[i].getScore() == 1 or trackingEvents[i].getScore() == 2:
+                yellow_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                yellow_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+            else:
+                red_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+
+            print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
+    
+    #If we have any coordinates to plot, display them
+    if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
+        f = plt.figure()
+        plt.title("Orthologous Operon Mapping")
+        plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
+        plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
+        plt.ylabel('Operon Position in Genome 1')
+        plt.xlabel('Operon Position in Genome 2')
+        plt.show()
+        f.savefig("%s %s.pdf" %(strain1.getName(), strain2.getName()), bbox_inches='tight')
+    else:
+        print('No plot to display!')
+    print("x" * 70)
 
 ######################################################
 # detectDuplicateOperons
