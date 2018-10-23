@@ -1343,7 +1343,7 @@ def findOrthologsWithAlignment(genomeName1, genomeName2, coverageTracker1, cover
             plt.ylabel('Operon Position in Genome 1')
             plt.xlabel('Operon Position in Genome 2')
             plt.show()
-            f.savefig("%s %s.pdf" %(genomeName1, genomeName2), bbox_inches='tight')
+            f.savefig("%s %s.svg" %(genomeName1, genomeName2), bbox_inches='tight')
         else:
             print('No plot to display!')
         print("x" * 70)
@@ -2561,11 +2561,11 @@ if len(duplicateOperonCounter) > 0:
     plt.yticks([0,1,2])
     plt.ylabel('Number of Events')
     plt.xlabel('Size of Sequence')
-    plt.title('Destribution of Duplications and Losses')
+    plt.title('Distribution of Duplications and Losses')
     #plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
     fig.set_size_inches(5, 8, forward=True)
     plt.show()
-    fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
+    fig.savefig("Duplicate_Tracker.svg", bbox_inches='tight')
     
     print("-" * 50)
 
