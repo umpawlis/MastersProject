@@ -2470,13 +2470,49 @@ def getCoordinates(mapper):
             value =  mapper.get(str(key))
             x_coords.append(key)
             y_coords.append(value)
-            print("Size: %s => Num Duplicates: %s" % (key, value))
+            print("Size: %s => Num Events: %s" % (key, value))
             itemsIterated+=1
         else:
             x_coords.append(key)
             y_coords.append(0)
         key+=1
     return x_coords, y_coords
+
+######################################################
+# drawDuplicationLossDistributionPlot
+# Parameters: 
+# Description: Constructs the Duplication and Loss Distribution Plot
+######################################################
+def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEventCounter, deletionEventCounter):
+    fig = plt.figure()
+    w = 0.1
+    print('Constructing Duplication and Loss Distribution Plot...')
+    if len(duplicateOperonCounter) > 0:
+        print('Total Duplicate Operon Results:')
+        operonDuplication_x_coords, operonDuplication_y_coords = getCoordinates(duplicateOperonCounter)
+        operonDuplication_x_coords = np.asarray(operonDuplication_x_coords)
+        plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='#e74c3c', align='center')
+    
+    if len(duplicationEventCounter) > 0:
+        print('Total Duplicate Gene Results:')
+        geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
+        geneDuplication_x_coords = np.asarray(geneDuplication_x_coords)
+        plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='#f1c40f', align='center')
+    
+    if len(deletionEventCounter) > 0:
+        print('Total Results of Loss Gene Tracker:')
+        geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
+        geneLoss_x_coords = np.asarray(geneLoss_x_coords)
+        plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='#3498db', align='center')
+    
+    #Formats the axis
+    plt.ylabel('Number of Events')
+    plt.xlabel('Size of Sequence')
+    plt.title('Destribution of Duplications and Losses')
+    fig.set_size_inches(5, 8, forward=True)
+    plt.show()
+    fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
+    print('Done Constructing Duplication and Loss Distribution Plot')
 
 ######################################################
 #                       main
@@ -2489,84 +2525,14 @@ open('localAlignmentResults.txt', 'w+').close()
 #Traverses, computes the ancestral genomes and returns the root node
 result = post_traversal(tree.clade)
 
-#Output the root node
-if result is not None:
-    print('This is the result:')
-    result.printStrain()
-    #Check if the sequence is resolved
-    if len(result.getSequence()) == 0:
-        seq = result.getSequence()
-        print('Printing Tracking Events since root needs to be resolved')
-        trackingEvents = result.getTrackingEvents()
-        for i in range(0, len(trackingEvents)):
-            #Resolve the Ancestral operons
-            if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
-                if trackingEvents[i].getScore() == 0:
-                    #Both operons the same
-                    seq.append(trackingEvents[i].getAncestralOperon())
-                else:
-                    #If set difference is zero then pick the short one else pick the long one
-                    setDifference, operon1, operon2, numDifferentGenes = computeSetDifference(trackingEvents[i].getGenome1Operon(), trackingEvents[i].getGenome2Operon())
-
-                    if setDifference == 0:
-                        #Pick the sortest one
-                        if len(trackingEvents[i].getGenome1Operon()) < len(trackingEvents[i].getGenome2Operon()):
-                            seq.append(trackingEvents[i].getGenome1Operon())
-                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
-                        else:
-                            seq.append(trackingEvents[i].getGenome2Operon())
-                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
-                    else:
-                        #Pick the longest one
-                        if len(trackingEvents[i].getGenome1Operon()) > len(trackingEvents[i].getGenome2Operon()):
-                            seq.append(trackingEvents[i].getGenome1Operon())
-                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome1Operon())
-                        else:
-                            seq.append(trackingEvents[i].getGenome2Operon())
-                            trackingEvents[i].setAncestralOperon(trackingEvents[i].getGenome2Operon())
-            else:
-                #Lost operon, nothing to compare to so just add it
-                seq.append(trackingEvents[i].getAncestralOperon())
-            trackingEvents[i].printTrackingEvent()
-            print('\n')
-
 #Draw tree to the console     
 Phylo.draw(tree)
 
-#Calculate number of events for each lineage
-global strains
-preOrderTraversal(tree.clade, strains, 0, 0)
+#Construct the distribution loss bar graph
+drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEventCounter, deletionEventCounter)
 
-if len(duplicateOperonCounter) > 0:
-    print("-" * 50)
-    print('Results of Duplicate Operon Tracker:')
-    operonDuplication_x_coords, operonDuplication_y_coords = getCoordinates(duplicateOperonCounter)
-    operonDuplication_x_coords = np.asarray(operonDuplication_x_coords)
-    
-    print('Distribution of Duplications')
-    geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
-    geneDuplication_x_coords = np.asarray(geneDuplication_x_coords)
-    
-    print('Results of Loss Gene Tracker:')
-    geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
-    geneLoss_x_coords = np.asarray(geneLoss_x_coords)
-    
-    fig = plt.figure()
-    txt = 'Figure 1: This figure presents the distribution of duplication and loss events within the phylogeny. The x axis indicates the size of the sequence on which the duplication or loss event occurred. The y axis indicates the number of times an event has occurred for that particular size. Blue bar: These bars represent whole operon duplication events throughout the phylogeny. The size indicates the size of the operon that was duplicated. However, for size 1 these are not considered operons, rather they are singleton genes dispersed throughout the genome that do not belong to any operon. Green bar: These bars represent all of the gene duplications within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was duplicated within an operon. Yellow bar: These bars represent all of the gene losses within the operons throughout the phylogeny. The size indicates the number of genes in a sequence that was lost within an operon.'
-    w = 0.1
-    plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='#e74c3c', align='center')
-    plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='#f1c40f', align='center')
-    plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='#3498db', align='center')
-    plt.xticks(geneLoss_x_coords)
-    plt.yticks([0,1,2])
-    plt.ylabel('Number of Events')
-    plt.xlabel('Size of Sequence')
-    plt.title('Distribution of Duplications and Losses')
-    #plt.figtext(0.25, 0, txt, wrap=True, horizontalalignment='center', fontsize=12)
-    fig.set_size_inches(5, 8, forward=True)
-    plt.show()
-    fig.savefig("Duplicate_Tracker.svg", bbox_inches='tight')
-    
-    print("-" * 50)
+#Calculate number of events for each lineage
+#global strains
+#preOrderTraversal(tree.clade, strains, 0, 0)
 
 print 'End of processing'
