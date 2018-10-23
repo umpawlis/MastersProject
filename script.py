@@ -471,12 +471,12 @@ def processStrains(strain1, strain2):
         trackingEvents.append(operonTrackingEventsG1)
     if len(operonTrackingEventsG2) > 0:
         trackingEvents.append(operonTrackingEventsG2)
-    
+
     #create dot plot
     if len(trackingEvents) > 0:
         createDotPlot(trackingEvents, strain1, strain2)
         updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
-    
+
     #Resolve remaining operons via self global alignment
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
 
@@ -504,10 +504,10 @@ def processStrains(strain1, strain2):
 # Description:
 ######################################################
 def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
-    
+
     formattedSequence1, operon1SequenceConversion = formatAllOperons(sequence1)
     formattedSequence2, operon2SequenceConversion = formatAllOperons(sequence2)
-    
+
     for i in range(0, len(trackingEvents)):
         if trackingEvents[i].getTechnique() == '2 Genome Global Alignment':
             opEvents = trackingEvents[i].getOperonEvents()
@@ -518,7 +518,7 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
             if opEvents and opEvents.getDuplicateSizesOp2() and len(opEvents.getDuplicateSizesOp2()) > 0:
                 for size in opEvents.getDuplicateSizesOp2():
                     updateDuplicationCounter(size)
-            
+
             #Computes losses and duplications for each set of gaps
             if opEvents and opEvents.getOperon1Gaps() and len(opEvents.getOperon1Gaps()) > 0:
                 gaps = opEvents.getOperon1Gaps()
@@ -526,7 +526,7 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
                 for gap in gaps:
                     if len(gap) > 0:
                         #Compute duplications and losses along with their sizes
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())                
+                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())
                         totalLosses += numUniqueFound
                         #Update duplication counter
                         if len(duplicationSizes) > 0:
@@ -535,10 +535,10 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
                         #Update loss counter
                         if len(deletionSizes) > 0:
                             for size in deletionSizes:
-                                updateDeletionCounter(size)                
+                                updateDeletionCounter(size)
                 #end for
                 opEvents.setLossesDueToSlidingWindowMethodOperon1(totalLosses)
-                
+
             if opEvents and opEvents.getOperon2Gaps() and len(opEvents.getOperon2Gaps()) > 0:
                 gaps = opEvents.getOperon2Gaps()
                 totalLosses = 0
@@ -554,7 +554,7 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
                         #Update loss counter
                         if len(deletionSizes) > 0:
                             for size in deletionSizes:
-                                updateDeletionCounter(size) 
+                                updateDeletionCounter(size)
                 #end for
                 opEvents.setLossesDueToSlidingWindowMethodOperon2(totalLosses)
 
@@ -579,7 +579,7 @@ def createDotPlot(trackingEvents, strain1, strain2):
     #Blue ones represent a local alignment
     blue_x_coord = []
     blue_y_coord = []
-    
+
     print("x" * 70)
     for i in range(0, len(trackingEvents)):
         if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
@@ -598,7 +598,7 @@ def createDotPlot(trackingEvents, strain1, strain2):
                 red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
 
             print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
-    
+
     #If we have any coordinates to plot, display them
     if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
         f = plt.figure()
@@ -729,7 +729,7 @@ def incrementDuplicateTracker(operon):
         duplicateOperonCounter[str(key)] = duplicateOperonCounter[str(key)] + 1
     else:
         duplicateOperonCounter[str(key)] = 1
-        
+
 ######################################################
 # detectOrthologousSingletonGenes
 # Parameters:
@@ -831,7 +831,7 @@ def resolveSingleton(sequence, singletonIndex, coverageTracker):
 ######################################################
 # updateDeletionCounter
 # Parameters: deletionSize
-# Description: Updates the deletion counter when a deletion event occurs. 
+# Description: Updates the deletion counter when a deletion event occurs.
 ######################################################
 def updateDeletionCounter(deletionSize):
     global deletionEventCounter
@@ -840,11 +840,11 @@ def updateDeletionCounter(deletionSize):
         deletionEventCounter[str(deletionSize)] += 1
     else:
         deletionEventCounter[str(deletionSize)] = 1
-        
+
 ######################################################
 # updateDuplicationCounter
 # Parameters: duplicationSize
-# Description: Updates the duplication counter when a duplication event occurs. 
+# Description: Updates the duplication counter when a duplication event occurs.
 ######################################################
 def updateDuplicationCounter(duplicationSize):
     global duplicationEventCounter
@@ -853,7 +853,7 @@ def updateDuplicationCounter(duplicationSize):
         duplicationEventCounter[str(duplicationSize)] += 1
     else:
         duplicationEventCounter[str(duplicationSize)] = 1
-        
+
 ######################################################
 # formatAllOperons
 # Parameters: sequence
@@ -1036,32 +1036,6 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
     print(operonEvents.toStringOperonEvents())
 
     return ancestor
-
-######################################################
-# updateDeletionCounter
-# Parameters: deletionSize
-# Description: Updates the deletion counter when a deletion event occurs.
-######################################################
-def updateDeletionCounter(deletionSize):
-    global deletionEventCounter
-
-    if str(deletionSize) in deletionEventCounter:
-        deletionEventCounter[str(deletionSize)] += 1
-    else:
-        deletionEventCounter[str(deletionSize)] = 1
-
-######################################################
-# updateDuplicationCounter
-# Parameters: duplicationSize
-# Description: Updates the duplication counter when a duplication event occurs.
-######################################################
-def updateDuplicationCounter(duplicationSize):
-    global duplicationEventCounter
-
-    if str(duplicationSize) in duplicationEventCounter:
-        duplicationEventCounter[str(duplicationSize)] += 1
-    else:
-        duplicationEventCounter[str(duplicationSize)] = 1
 
 ######################################################
 # findUniqueGenes
@@ -2017,7 +1991,7 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
 
 ######################################################
 # drawDuplicationLossDistributionPlot
-# Parameters: 
+# Parameters:
 # Description: Constructs the Duplication and Loss Distribution Plot
 ######################################################
 def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEventCounter, deletionEventCounter):
@@ -2029,19 +2003,19 @@ def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEvent
         operonDuplication_x_coords, operonDuplication_y_coords = getCoordinates(duplicateOperonCounter)
         operonDuplication_x_coords = np.asarray(operonDuplication_x_coords)
         plt.bar(operonDuplication_x_coords - w, operonDuplication_y_coords, width=w, color='#e74c3c', align='center')
-    
+
     if len(duplicationEventCounter) > 0:
         print('Total Duplicate Gene Results:')
         geneDuplication_x_coords, geneDuplication_y_coords = getCoordinates(duplicationEventCounter)
         geneDuplication_x_coords = np.asarray(geneDuplication_x_coords)
         plt.bar(geneDuplication_x_coords, geneDuplication_y_coords, width=w, color='#f1c40f', align='center')
-    
+
     if len(deletionEventCounter) > 0:
         print('Total Results of Loss Gene Tracker:')
         geneLoss_x_coords, geneLoss_y_coords = getCoordinates(deletionEventCounter)
         geneLoss_x_coords = np.asarray(geneLoss_x_coords)
         plt.bar(geneLoss_x_coords + w, geneLoss_y_coords, width=w, color='#3498db', align='center')
-    
+
     #Formats the axis
     plt.ylabel('Number of Events')
     plt.xlabel('Size of Sequence')
@@ -2050,7 +2024,7 @@ def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEvent
     plt.show()
     fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
     print('Done Constructing Duplication and Loss Distribution Plot')
-    
+
 
 ######################################################
 # getCoordinates
@@ -2060,7 +2034,7 @@ def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEvent
 def getCoordinates(mapper):
     x_coords = []
     y_coords = []
-    
+
     key = 1
     itemsIterated = 0
     while itemsIterated < len(mapper):
