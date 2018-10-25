@@ -4,6 +4,7 @@ import multiset
 import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as plt
+import copy
 
 newickFileName = 'Anc27_subtree.dnd'
 strains = []
@@ -476,6 +477,7 @@ def processStrains(strain1, strain2):
     if len(trackingEvents) > 0:
         createDotPlot(trackingEvents, strain1, strain2)
         updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
+        ancestralSequence = reconstructAncestralOperonSequence(trackingEvents)
 
     #Resolve remaining operons via self global alignment
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
@@ -496,7 +498,7 @@ def processStrains(strain1, strain2):
     print('Number of operons identified as duplicates in %s: %s' %(strain2.getName(), operonDuplicateG2))
     print('#' * 70)
 
-    return None, None
+    return ancestralSequence, trackingEvents
 
 ######################################################
 # updateGlobalTrackers
@@ -564,6 +566,11 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
 # Description:
 ######################################################
 def createDotPlot(trackingEvents, strain1, strain2):
+    
+    #Stores all of the coordinates
+    x_coord = []
+    y_coord = []
+    
     #The green ones represent operons with no differences
     green_x_coord = []
     green_y_coord = []
@@ -596,8 +603,12 @@ def createDotPlot(trackingEvents, strain1, strain2):
             else:
                 red_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                 red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+                
+            #Get all coordinates into a single array
+            x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+            y_coord.append(trackingEvents[i].getGenome2OperonIndex())
 
-            print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
+            #print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
 
     #If we have any coordinates to plot, display them
     if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
@@ -612,7 +623,27 @@ def createDotPlot(trackingEvents, strain1, strain2):
     else:
         print('No plot to display!')
     print("x" * 70)
-
+        
+######################################################
+# reconstructAncestralOperonSequence
+# Parameters:
+# Description:
+######################################################  
+def reconstructAncestralOperonSequence(trackingEvents):
+    ancestralOperonSequence = []
+    trackingEventsCopy = copy.deepcopy(trackingEvents)
+    
+    while len(trackingEventsCopy) > 0:
+        currentTrackingEvent = trackingEventsCopy.pop()
+        
+        consecutiveOperons = []
+        consecutiveOperons.append(currentTrackingEvent)        
+        #Try to find an operon that is close to it
+        
+        print('x-axis: %s, y-axis: %s' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
+        #end while
+        
+    return ancestralOperonSequence
 ######################################################
 # detectDuplicateOperons
 # Parameters:
