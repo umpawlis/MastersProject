@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import copy
 import math
 
-newickFileName = 'Anc27_subtree.dnd'
+newickFileName = 'Anc20_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
@@ -458,23 +458,23 @@ def processStrains(strain1, strain2):
     #Local Alignment
     localAlignmentTrackingEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = detectOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
     if len(localAlignmentTrackingEvents) > 0:
-        trackingEvents.append(localAlignmentTrackingEvents)
+        trackingEvents.extend(localAlignmentTrackingEvents)
 
     #Handle singleton genes
     singletonDuplicatedG1, singletonLostG1, singletonTrackingEventsG1, coverageTracker1 = detectOrthologousSingletonGenes(coverageTracker1, strain1, strain1.getTrackingEvents())
     singletonDuplicatedG2, singletonLostG2, singletonTrackingEventsG2, coverageTracker2 = detectOrthologousSingletonGenes(coverageTracker2, strain2, strain2.getTrackingEvents())
     if len(singletonTrackingEventsG1) > 0:
-        trackingEvents.append(singletonTrackingEventsG1)
+        trackingEvents.extend(singletonTrackingEventsG1)
     if len(singletonTrackingEventsG2) > 0:
-        trackingEvents.append(singletonTrackingEventsG2)
+        trackingEvents.extend(singletonTrackingEventsG2)
 
     #Handle remaining operons
     operonDuplicateG1, operonLossG1, operonTrackingEventsG1, coverageTracker1 = detectDuplicateOperons(coverageTracker1, strain1)
     operonDuplicateG2, operonLossG2, operonTrackingEventsG2, coverageTracker2 = detectDuplicateOperons(coverageTracker2, strain2)
     if len(operonTrackingEventsG1) > 0:
-        trackingEvents.append(operonTrackingEventsG1)
+        trackingEvents.extend(operonTrackingEventsG1)
     if len(operonTrackingEventsG2) > 0:
-        trackingEvents.append(operonTrackingEventsG2)
+        trackingEvents.extend(operonTrackingEventsG2)
 
     #create dot plot
     if len(trackingEvents) > 0:
@@ -1421,7 +1421,6 @@ def getUnaligned(operon, startPosition, endPosition):
 # Description: Performs local alignment on two operons
 ######################################################
 def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2):
-    global fullAlignmentCounter
     #print('\nPerforming local alignment..')
     #print(op1)
     #print(op2)
@@ -1505,7 +1504,6 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     #Only extend operons when the current alignment has no gaps
     if numGaps == 0 and genesStrain1 and genesStrain2:
         if len(aligned1) == shortestLength:
-            fullAlignmentCounter += 1
             #print("One operon is a SUBSET of the other. Trying extention..")
             extensionScore = extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2)
             returningScore = maxScore + extensionScore
@@ -1527,7 +1525,6 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
                     returningScore = maxScore + extensionScore
     #No extension but still qualifies because it has no gaps in alignment
     elif numGaps == 0 and len(aligned1) == shortestLength:
-        fullAlignmentCounter += 1
         printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after no extension due to missing gene list(s)")
         returningScore = maxScore
     #print("Final alignment:")
@@ -1698,7 +1695,7 @@ def traceback(operon1, operon2, scoreMatrix, startPosition):
     aligned_seq2.append(operon2[y - 1])
     endPosition = (x,y)
 
-    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, scoreMatrix, operon1Losses, operon2Losses, operon1Duplications, operon2Duplications)
+    operonEvents = OperonEvents(match, codonMismatch, mismatch, substitution, operon1, operon2, scoreMatrix)
 
     return list(reversed(aligned_seq1)), list(reversed(aligned_seq2)), numGaps, endPosition, operonEvents
 
@@ -2239,7 +2236,7 @@ def drawDuplicationLossDistributionPlot(duplicateOperonCounter, duplicationEvent
     #Formats the axis
     plt.ylabel('Number of Events')
     plt.xlabel('Size of Sequence')
-    plt.title('Destribution of Duplications and Losses')
+    plt.title('Distribution of Duplications and Losses')
     fig.set_size_inches(5, 8, forward=True)
     plt.show()
     fig.savefig("Duplicate_Tracker.pdf", bbox_inches='tight')
