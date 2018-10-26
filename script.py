@@ -5,7 +5,7 @@ import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
-import math 
+import math
 
 newickFileName = 'Anc27_subtree.dnd'
 strains = []
@@ -569,11 +569,11 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
 # Description:
 ######################################################
 def createDotPlot(trackingEvents, strain1, strain2):
-    
+
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
-    
+
     #The green ones represent operons with no differences
     green_x_coord = []
     green_y_coord = []
@@ -606,7 +606,7 @@ def createDotPlot(trackingEvents, strain1, strain2):
             else:
                 red_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                 red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
-                
+
             #Get all coordinates into a single array
             x_coord.append(trackingEvents[i].getGenome1OperonIndex())
             y_coord.append(trackingEvents[i].getGenome2OperonIndex())
@@ -626,52 +626,140 @@ def createDotPlot(trackingEvents, strain1, strain2):
     else:
         print('No plot to display!')
     print("x" * 70)
-        
+
 ######################################################
 # reconstructAncestralOperonSequence
 # Parameters:
 # Description:
-######################################################  
+######################################################
 def reconstructAncestralOperonSequence(trackingEvents):
-    
+
     global distanceThresoldForConservedPositions
     ancestralOperonSequence = []
     trackingEventsCopy = copy.deepcopy(trackingEvents)
     arrayOfConservedOperons = []
-    
+    arrayOFInvertedOperons = []
+
     while len(trackingEventsCopy) > 0:
         currentTrackingEvent = trackingEventsCopy.pop()
-        
+
         if abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < distanceThresoldForConservedPositions:
             print('The positions of these operons are conserved between geneomes')
             conservedOperons = []
             conservedOperons.append(currentTrackingEvent)
-            
+
             if len(trackingEventsCopy) > 0:
                 #Try extending right until we exhuast potential candidates
-                conservedOperons, trackingEventsCopy = extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy)
+                conservedOperons, trackingEventsCopy = extendConservedOperonSequenceToTheRight(conservedOperons, trackingEventsCopy)
             if len(trackingEventsCopy) > 0:
                 #Try extending left until we exhuast potential candidates
-                conservedOperons, trackingEventsCopy = extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy)
+                conservedOperons, trackingEventsCopy = extendConservedOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy)
             #At this point we can't extend the array anymore
             arrayOfConservedOperons.append(conservedOperons)
         else:
-            print('transposition operons')
-        
+            print('These operons must have undergone inversions at some point')
+            invertedOperons = []
+            invertedOperons.append(trackingEvents.pop())
+
+            if len(trackingEventsCopy) > 0:
+                #Try extending right until we exhuast potential candidates
+                invertedOperons, trackingEventsCopy = extendInvertedOperonSequenceToTheRight(invertedOperons, trackingEventsCopy)
+            if len(trackingEventsCopy) > 0:
+                #Try extending left until we exhuast potential candidates
+                invertedOperons, trackingEventsCopy = extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy)
+            #At this point we can't extend the array anymore
+            arrayOFInvertedOperons.append(invertedOperons)
+
         print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
         #end while
-        
+
     return ancestralOperonSequence
 
 ######################################################
-# extendOperonSequenceToTheRight
+# extendInvertedOperonSequenceToTheRight
 # Parameters:
 # Description:
 ######################################################
-def extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
+def extendInvertedOperonSequenceToTheRight(invertedOperons, trackingEventsCopy):
+    global distanceThresholdBetweenNeighbors
+
+    minDistance = 0
+    MAX_VAL = 999
+    while minDistance < MAX_VAL:
+        minDistance = MAX_VAL
+        #Get right most operon in current list
+        pos1 = invertedOperons[len(invertedOperons) - 1].getGenome1OperonIndex()
+        pos2 = invertedOperons[len(invertedOperons) - 1].getGenome2OperonIndex()
+
+        for x in range (0, len(trackingEventsCopy)):
+            nextTrackingEvent = trackingEventsCopy[x]
+            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
+            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
+
+            #Compute the distance between the points on graph
+            distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
+            #if distance is below threshold, distance is small than current min distance, if at least one of the points greater than current point
+            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
+                minDistance = distance
+                neighborPosition = x
+            #end if
+        #end for
+
+        #check if we found a neighbor
+        if minDistance < MAX_VAL:
+            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
+            invertedOperons.append(neighborTrackingEvent)
+    #end while
+
+    return invertedOperons, trackingEventsCopy
+
+######################################################
+# extendInvertedOperonSequenceToTheLeft
+# Parameters:
+# Description:
+######################################################
+def extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy):
+    global distanceThresholdBetweenNeighbors
+
+    minDistance = 0
+    MAX_VAL = 999
+    while minDistance < MAX_VAL:
+        minDistance = MAX_VAL
+        #Get left most operon in current list
+        pos1 = invertedOperons[0].getGenome1OperonIndex()
+        pos2 = invertedOperons[0].getGenome2OperonIndex()
+
+        for x in range (0, len(trackingEventsCopy)):
+            nextTrackingEvent = trackingEventsCopy[x]
+            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
+            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
+
+            #Compute the distance between the points on graph
+            distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
+            #if distance is below threshold, distance is small than current min distance
+            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
+                minDistance = distance
+                neighborPosition = x
+            #end if
+        #end for
+
+        #check if we found a neighbor
+        if minDistance < MAX_VAL:
+            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
+            invertedOperons.insert(0, neighborTrackingEvent)
+    #end while
+
+    return invertedOperons, trackingEventsCopy
+
+######################################################
+# extendConservedOperonSequenceToTheLeft
+# Parameters:
+# Description:
+######################################################
+def extendConservedOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
     global distanceThresoldForConservedPositions
     global distanceThresholdBetweenNeighbors
-    
+
     minDistance = 0
     MAX_VAL = 999
     while minDistance < MAX_VAL:
@@ -679,7 +767,7 @@ def extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
         #Get left most operon in current list
         pos1 = conservedOperons[0].getGenome1OperonIndex()
         pos2 = conservedOperons[0].getGenome2OperonIndex()
-                
+
         for x in range (0, len(trackingEventsCopy)):
             nextTrackingEvent = trackingEventsCopy[x]
             nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
@@ -701,18 +789,18 @@ def extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
             neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
             conservedOperons.insert(0, neighborTrackingEvent)
     #end while
-    
+
     return conservedOperons, trackingEventsCopy
 
 ######################################################
-# extendOperonSequenceToTheRight
+# extendConservedOperonSequenceToTheRight
 # Parameters:
 # Description:
 ######################################################
-def extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
+def extendConservedOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
     global distanceThresoldForConservedPositions
     global distanceThresholdBetweenNeighbors
-    
+
     minDistance = 0
     MAX_VAL = 999
     while minDistance < MAX_VAL:
@@ -720,12 +808,12 @@ def extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
         #Get right most operon in current list
         pos1 = conservedOperons[len(conservedOperons) - 1].getGenome1OperonIndex()
         pos2 = conservedOperons[len(conservedOperons) - 1].getGenome2OperonIndex()
-                
+
         for x in range (0, len(trackingEventsCopy)):
             nextTrackingEvent = trackingEventsCopy[x]
             nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
             nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
-                
+
             if abs(nextPos1 - nextPos2) < distanceThresoldForConservedPositions:
                 #Compute the distance between the points on graph
                 distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
@@ -742,7 +830,7 @@ def extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
             neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
             conservedOperons.append(neighborTrackingEvent)
     #end while
-    
+
     return conservedOperons, trackingEventsCopy
 
 ######################################################
