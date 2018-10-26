@@ -633,18 +633,18 @@ def createDotPlot(trackingEvents, strain1, strain2):
 # Description:
 ######################################################
 def reconstructAncestralOperonSequence(trackingEvents):
-
     global distanceThresoldForConservedPositions
+    
     ancestralOperonSequence = []
     trackingEventsCopy = copy.deepcopy(trackingEvents)
-    arrayOfConservedOperons = []
-    arrayOFInvertedOperons = []
+    arrayOfConservedRegions = []
+    arrayOfInvertedRegions = []
 
     while len(trackingEventsCopy) > 0:
         currentTrackingEvent = trackingEventsCopy.pop()
 
         if abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < distanceThresoldForConservedPositions:
-            print('The positions of these operons are conserved between geneomes')
+            #print('The positions of these operons are conserved between geneomes')
             conservedOperons = []
             conservedOperons.append(currentTrackingEvent)
 
@@ -655,9 +655,9 @@ def reconstructAncestralOperonSequence(trackingEvents):
                 #Try extending left until we exhuast potential candidates
                 conservedOperons, trackingEventsCopy = extendConservedOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy)
             #At this point we can't extend the array anymore
-            arrayOfConservedOperons.append(conservedOperons)
+            arrayOfConservedRegions.append(conservedOperons)
         else:
-            print('These operons must have undergone inversions at some point')
+            #print('These operons must have undergone inversions at some point')
             invertedOperons = []
             invertedOperons.append(trackingEvents.pop())
 
@@ -668,11 +668,14 @@ def reconstructAncestralOperonSequence(trackingEvents):
                 #Try extending left until we exhuast potential candidates
                 invertedOperons, trackingEventsCopy = extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy)
             #At this point we can't extend the array anymore
-            arrayOFInvertedOperons.append(invertedOperons)
-
-        print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
-        #end while
-
+            arrayOfInvertedRegions.append(invertedOperons)
+        #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
+    #end while
+    
+    print('Stats:')
+    print('Number of conserved regions %s' % (len(arrayOfConservedRegions)))
+    print('Number of inverted regions %s' % (len(arrayOfInvertedRegions)))
+    
     return ancestralOperonSequence
 
 ######################################################
@@ -699,7 +702,7 @@ def extendInvertedOperonSequenceToTheRight(invertedOperons, trackingEventsCopy):
             #Compute the distance between the points on graph
             distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
             #if distance is below threshold, distance is small than current min distance, if at least one of the points greater than current point
-            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
+            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 and pos2 > nextPos2):
                 minDistance = distance
                 neighborPosition = x
             #end if
@@ -737,7 +740,7 @@ def extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy):
             #Compute the distance between the points on graph
             distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
             #if distance is below threshold, distance is small than current min distance
-            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
+            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 > nextPos1 or pos2 < nextPos2):
                 minDistance = distance
                 neighborPosition = x
             #end if
