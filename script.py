@@ -5,6 +5,7 @@ import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
+import math 
 
 newickFileName = 'Anc27_subtree.dnd'
 strains = []
@@ -16,6 +17,8 @@ trackingId = 0
 duplicateOperonCounter = {}
 deletionEventCounter = {}
 duplicationEventCounter = {}
+distanceThresoldForConservedPositions = 4
+distanceThresholdBetweenNeighbors = 2
 
 ######################################################
 # Tracking Event
@@ -630,20 +633,118 @@ def createDotPlot(trackingEvents, strain1, strain2):
 # Description:
 ######################################################  
 def reconstructAncestralOperonSequence(trackingEvents):
+    
+    global distanceThresoldForConservedPositions
     ancestralOperonSequence = []
     trackingEventsCopy = copy.deepcopy(trackingEvents)
+    arrayOfConservedOperons = []
     
     while len(trackingEventsCopy) > 0:
         currentTrackingEvent = trackingEventsCopy.pop()
         
-        consecutiveOperons = []
-        consecutiveOperons.append(currentTrackingEvent)        
-        #Try to find an operon that is close to it
+        if abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < distanceThresoldForConservedPositions:
+            print('The positions of these operons are conserved between geneomes')
+            conservedOperons = []
+            conservedOperons.append(currentTrackingEvent)
+            
+            if len(trackingEventsCopy) > 0:
+                #Try extending right until we exhuast potential candidates
+                conservedOperons, trackingEventsCopy = extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy)
+            if len(trackingEventsCopy) > 0:
+                #Try extending left until we exhuast potential candidates
+                conservedOperons, trackingEventsCopy = extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy)
+            #At this point we can't extend the array anymore
+            arrayOfConservedOperons.append(conservedOperons)
+        else:
+            print('transposition operons')
         
-        print('x-axis: %s, y-axis: %s' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
+        print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
         #end while
         
     return ancestralOperonSequence
+
+######################################################
+# extendOperonSequenceToTheRight
+# Parameters:
+# Description:
+######################################################
+def extendOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
+    global distanceThresoldForConservedPositions
+    global distanceThresholdBetweenNeighbors
+    
+    minDistance = 0
+    MAX_VAL = 999
+    while minDistance < MAX_VAL:
+        minDistance = MAX_VAL
+        #Get left most operon in current list
+        pos1 = conservedOperons[0].getGenome1OperonIndex()
+        pos2 = conservedOperons[0].getGenome2OperonIndex()
+                
+        for x in range (0, len(trackingEventsCopy)):
+            nextTrackingEvent = trackingEventsCopy[x]
+            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
+            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
+
+            if abs(nextPos1 - nextPos2) < distanceThresoldForConservedPositions:
+                #Compute the distance between the points on graph
+                distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
+                #if distance is below threshold, distance is small than current min distance, if at least one of the points less than current point
+                if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 > nextPos1 or pos2 > nextPos2):
+                    minDistance = distance
+                    neighborPosition = x
+                #end if
+            #end if
+        #end for
+
+        #check if we found a neighbor
+        if minDistance < MAX_VAL:
+            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
+            conservedOperons.insert(0, neighborTrackingEvent)
+    #end while
+    
+    return conservedOperons, trackingEventsCopy
+
+######################################################
+# extendOperonSequenceToTheRight
+# Parameters:
+# Description:
+######################################################
+def extendOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
+    global distanceThresoldForConservedPositions
+    global distanceThresholdBetweenNeighbors
+    
+    minDistance = 0
+    MAX_VAL = 999
+    while minDistance < MAX_VAL:
+        minDistance = MAX_VAL
+        #Get right most operon in current list
+        pos1 = conservedOperons[len(conservedOperons) - 1].getGenome1OperonIndex()
+        pos2 = conservedOperons[len(conservedOperons) - 1].getGenome2OperonIndex()
+                
+        for x in range (0, len(trackingEventsCopy)):
+            nextTrackingEvent = trackingEventsCopy[x]
+            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
+            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
+                
+            if abs(nextPos1 - nextPos2) < distanceThresoldForConservedPositions:
+                #Compute the distance between the points on graph
+                distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
+                #if distance is below threshold, distance is small than current min distance, if at least one of the points greater than current point
+                if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
+                    minDistance = distance
+                    neighborPosition = x
+                #end if
+            #end if
+        #end for
+
+        #check if we found a neighbor
+        if minDistance < MAX_VAL:
+            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
+            conservedOperons.append(neighborTrackingEvent)
+    #end while
+    
+    return conservedOperons, trackingEventsCopy
+
 ######################################################
 # detectDuplicateOperons
 # Parameters:
