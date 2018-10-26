@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import copy
 import math
 
-newickFileName = 'Anc20_subtree.dnd'
+newickFileName = 'Anc27_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
