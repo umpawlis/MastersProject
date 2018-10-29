@@ -18,7 +18,7 @@ duplicateOperonCounter = {}
 deletionEventCounter = {}
 duplicationEventCounter = {}
 distanceThresoldForConservedPositions = 4
-distanceThresholdBetweenNeighbors = 2
+distanceThresholdBetweenNeighbors = 6
 
 ######################################################
 # Tracking Event
@@ -659,7 +659,7 @@ def reconstructAncestralOperonSequence(trackingEvents):
         else:
             #print('These operons must have undergone inversions at some point')
             invertedOperons = []
-            invertedOperons.append(trackingEvents.pop())
+            invertedOperons.append(currentTrackingEvent)
 
             if len(trackingEventsCopy) > 0:
                 #Try extending right until we exhuast potential candidates
@@ -672,10 +672,87 @@ def reconstructAncestralOperonSequence(trackingEvents):
         #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
     #end while
     
-    print('Stats:')
-    print('Number of conserved regions %s' % (len(arrayOfConservedRegions)))
-    print('Number of inverted regions %s' % (len(arrayOfInvertedRegions)))
+    #print('Stats:')
+    #print('Total number of tracking events: %s' % (len(trackingEvents)))
+    #print('Number of conserved regions %s' % (len(arrayOfConservedRegions)))
+    #print('Number of inverted regions %s' % (len(arrayOfInvertedRegions)))
     
+    #for item in arrayOfConservedRegions:
+        #print('Conserved list')
+        #for x in range(0, len(item)):
+            #print('%s, %s' %(item[x].getGenome1OperonIndex(), item[x].getGenome2OperonIndex()))
+    #for item in arrayOfInvertedRegions:
+        #print('Inverted list')
+        #for x in range(0, len(item)):
+            #print('%s, %s' %(item[x].getGenome1OperonIndex(), item[x].getGenome2OperonIndex()))
+    ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
+    
+    return ancestralOperonSequence
+
+######################################################
+# constructSequence
+# Parameters:
+# Description:
+######################################################
+def constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions):
+    ancestralOperonSequence = []
+    alignedEvents = []
+    
+    #We want to minimize the number of inversions    
+    if len(arrayOfConservedRegions) > len(arrayOfInvertedRegions):
+        # x-coords won't change so sort by x-coords
+        while len(arrayOfConservedRegions) > 0 or len(arrayOfInvertedRegions) > 0:
+            conservedMin = 999
+            invertedMin = 999
+            for i in range(0, len(arrayOfConservedRegions)):
+                region = arrayOfConservedRegions[i]
+                if region[0].getGenome1OperonIndex() < conservedMin:
+                    conservedMin = region[0].getGenome1OperonIndex()
+                    conservedIndex = i
+            for j in range(0, len(arrayOfInvertedRegions)):
+                region = arrayOfInvertedRegions[j]
+                if region[0].getGenome1OperonIndex() < invertedMin:
+                    invertedMin = region[0].getGenome1OperonIndex()
+                    invertedIndex = j
+            #Add the event with the lowest x-coord
+            if conservedMin < invertedMin:
+                tempTrackingEvent = arrayOfConservedRegions.pop(conservedIndex)
+                alignedEvents.append(tempTrackingEvent)
+            else:
+                tempTrackingEvent = arrayOfInvertedRegions.pop(invertedIndex)
+                alignedEvents.append(tempTrackingEvent)
+    else:
+        # y-coords won't change so sort by y-coords
+        while len(arrayOfConservedRegions) > 0 or len(arrayOfInvertedRegions) > 0:
+            conservedMin = 999
+            invertedMin = 999
+            for i in range(0, len(arrayOfConservedRegions)):
+                region = arrayOfConservedRegions[i]
+                if region[0].getGenome2OperonIndex() < conservedMin:
+                    conservedMin = region[0].getGenome2OperonIndex()
+                    conservedIndex = i
+            for j in range(0, len(arrayOfInvertedRegions)):
+                region = arrayOfInvertedRegions[j]
+                if region[0].getGenome2OperonIndex() < invertedMin:
+                    invertedMin = region[0].getGenome2OperonIndex()
+                    invertedIndex = j
+            #Add the event with the lowest x-coord
+            if conservedMin < invertedMin:
+                tempTrackingEvent = arrayOfConservedRegions.pop(conservedIndex)
+                alignedEvents.append(tempTrackingEvent)
+            else:
+                tempTrackingEvent = arrayOfInvertedRegions.pop(invertedIndex)
+                alignedEvents.append(tempTrackingEvent)
+    #print('Reconstruction:')
+    #Generate the ancestral sequence
+    for elements in alignedEvents:
+        for element in elements:
+            if len(element.getAncestralOperon()) > 0:
+                ancestralOperonSequence.append(element.getAncestralOperon())
+                #print(element.getAncestralOperon())
+            else:
+                print('NO ANCESTRAL OPERON')
+        
     return ancestralOperonSequence
 
 ######################################################
