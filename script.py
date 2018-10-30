@@ -637,7 +637,8 @@ def reconstructAncestralOperonSequence(trackingEvents):
     global yDistanceThreshold
 
     ancestralOperonSequence = []
-    arrayofConsecutiveRegions = []
+    arrayOfForwardRegions = []
+    arrayOfInvertedRegions = []
 
     #Sort Tracking Events on x-coords
     trackingEventsCopy = copy.deepcopy(trackingEvents)
@@ -649,6 +650,8 @@ def reconstructAncestralOperonSequence(trackingEvents):
         consecutiveRegion.append(currentTrackingEvent)
 
         foundNeighbor = True
+        yIncreaseCount = 0
+        yDecreaseCount = 0
         while foundNeighbor:
             foundNeighbor = False;
             if len(trackingEventsCopy) > 0:
@@ -660,22 +663,33 @@ def reconstructAncestralOperonSequence(trackingEvents):
                     #Consecutive point
                     consecutiveRegion.append(trackingEventsCopy.pop(0))
                     foundNeighbor = True
+                    if previousPoint.getGenome2OperonIndex() < currentPoint.getGenome2OperonIndex():
+                        yIncreaseCount += 1
+                    else:
+                        yDecreaseCount +=1
         #Store the region into an array of regions
-        arrayofConsecutiveRegions.append(consecutiveRegion)
+        if yIncreaseCount > yDecreaseCount or (yIncreaseCount == 0 and yDecreaseCount == 0):
+            arrayOfForwardRegions.append(consecutiveRegion)
+        else:
+            arrayOfInvertedRegions.append(consecutiveRegion)
         #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
     #end while
 
     print('Stats:')
     print('Total number of tracking events: %s' % (len(trackingEvents)))
+    print('Total number of forward regions: %s' % len(arrayOfForwardRegions))
+    print('Total number of inverted regions: %s' % len(arrayOfInvertedRegions))
 
-    for region in arrayofConsecutiveRegions:
-        print('Next Region')
+    for region in arrayOfForwardRegions:
+        print('Forward Region')
         for x in range(0, len(region)):
             print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
-    #for item in arrayOfInvertedRegions:
-        #print('Inverted list')
-        #for x in range(0, len(item)):
-            #print('%s, %s' %(item[x].getGenome1OperonIndex(), item[x].getGenome2OperonIndex()))
+
+    for region in arrayOfInvertedRegions:
+        print('Inverted Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
+
     #ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
 
     return ancestralOperonSequence
