@@ -640,6 +640,7 @@ def reconstructAncestralOperonSequence(trackingEvents):
     arrayOfConservedForwardRegions = []
     arrayOfTransposedForwardRegions = []
     arrayOfInvertedRegions = []
+    arrayOfInvertedTranspositionRegions = []
 
     #Sort Tracking Events on x-coords
     trackingEventsCopy = copy.deepcopy(trackingEvents)
@@ -653,6 +654,9 @@ def reconstructAncestralOperonSequence(trackingEvents):
         foundNeighbor = True
         yIncreaseCount = 0
         yDecreaseCount = 0
+        above = False
+        below = False
+
         minMainDiagonalDistance = abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex())
 
         while foundNeighbor:
@@ -671,27 +675,38 @@ def reconstructAncestralOperonSequence(trackingEvents):
                     if currentMainDiagonalDistance < minMainDiagonalDistance:
                         minMainDiagonalDistance = currentMainDiagonalDistance
 
+                    #Checks if main diagonal is crossed
+                    if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) < 0:
+                        above = True
+                    if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) > 0:
+                        below = True
+
                     if previousPoint.getGenome2OperonIndex() < currentPoint.getGenome2OperonIndex():
                         yIncreaseCount += 1
                     else:
                         yDecreaseCount +=1
-        #Store the region into an array of regions
-        if yIncreaseCount > yDecreaseCount or (yIncreaseCount == 0 and yDecreaseCount == 0):
+        #Store the region into appropriate array
+        if yIncreaseCount > yDecreaseCount or (len(consecutiveRegion) == 1):
             if minMainDiagonalDistance == 0:
                 arrayOfConservedForwardRegions.append(consecutiveRegion)
             else:
                 arrayOfTransposedForwardRegions.append(consecutiveRegion)
         else:
-            arrayOfInvertedRegions.append(consecutiveRegion)
+            if above == True and below == True:
+                arrayOfInvertedRegions.append(consecutiveRegion)
+            else:
+                arrayOfInvertedTranspositionRegions.append(consecutiveRegion)
         #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
     #end while
 
     print('Stats:')
     print('Total number of tracking events: %s' % (len(trackingEvents)))
+
     print('Total number of forward conserved regions: %s' % len(arrayOfConservedForwardRegions))
     print('Total number of forward transposed regions: %s' % len(arrayOfTransposedForwardRegions))
 
     print('Total number of inverted regions: %s' % len(arrayOfInvertedRegions))
+    print('Total number of inverted transposed regions: %s' % len(arrayOfInvertedTranspositionRegions))
 
     for region in arrayOfConservedForwardRegions:
         print('Forward Conserved Region')
@@ -704,6 +719,10 @@ def reconstructAncestralOperonSequence(trackingEvents):
 
     for region in arrayOfInvertedRegions:
         print('Inverted Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
+    for region in arrayOfInvertedTranspositionRegions:
+        print('Inverted Transposed Region')
         for x in range(0, len(region)):
             print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
 
