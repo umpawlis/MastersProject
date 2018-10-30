@@ -17,6 +17,7 @@ trackingId = 0
 duplicateOperonCounter = {}
 deletionEventCounter = {}
 duplicationEventCounter = {}
+yDistanceThreshold = 5
 distanceThresoldForConservedPositions = 4
 distanceThresholdBetweenNeighbors = 6
 
@@ -633,60 +634,50 @@ def createDotPlot(trackingEvents, strain1, strain2):
 # Description:
 ######################################################
 def reconstructAncestralOperonSequence(trackingEvents):
-    global distanceThresoldForConservedPositions
-    
+    global yDistanceThreshold
+
     ancestralOperonSequence = []
+    arrayofConsecutiveRegions = []
+
+    #Sort Tracking Events on x-coords
     trackingEventsCopy = copy.deepcopy(trackingEvents)
-    arrayOfConservedRegions = []
-    arrayOfInvertedRegions = []
+    trackingEventsCopy.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
 
     while len(trackingEventsCopy) > 0:
-        currentTrackingEvent = trackingEventsCopy.pop()
+        currentTrackingEvent = trackingEventsCopy.pop(0) #Get first item in list
+        consecutiveRegion = []
+        consecutiveRegion.append(currentTrackingEvent)
 
-        if abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < distanceThresoldForConservedPositions:
-            #print('The positions of these operons are conserved between geneomes')
-            conservedOperons = []
-            conservedOperons.append(currentTrackingEvent)
+        foundNeighbor = True
+        while foundNeighbor:
+            foundNeighbor = False;
+            if len(trackingEventsCopy) > 0:
+                previousPoint = consecutiveRegion[len(consecutiveRegion) - 1]
+                currentPoint = trackingEventsCopy[0]
+                distance = abs(previousPoint.getGenome2OperonIndex() - currentPoint.getGenome2OperonIndex())
 
-            if len(trackingEventsCopy) > 0:
-                #Try extending right until we exhuast potential candidates
-                conservedOperons, trackingEventsCopy = extendConservedOperonSequenceToTheRight(conservedOperons, trackingEventsCopy)
-            if len(trackingEventsCopy) > 0:
-                #Try extending left until we exhuast potential candidates
-                conservedOperons, trackingEventsCopy = extendConservedOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy)
-            #At this point we can't extend the array anymore
-            arrayOfConservedRegions.append(conservedOperons)
-        else:
-            #print('These operons must have undergone inversions at some point')
-            invertedOperons = []
-            invertedOperons.append(currentTrackingEvent)
-
-            if len(trackingEventsCopy) > 0:
-                #Try extending right until we exhuast potential candidates
-                invertedOperons, trackingEventsCopy = extendInvertedOperonSequenceToTheRight(invertedOperons, trackingEventsCopy)
-            if len(trackingEventsCopy) > 0:
-                #Try extending left until we exhuast potential candidates
-                invertedOperons, trackingEventsCopy = extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy)
-            #At this point we can't extend the array anymore
-            arrayOfInvertedRegions.append(invertedOperons)
+                if distance < yDistanceThreshold:
+                    #Consecutive point
+                    consecutiveRegion.append(trackingEventsCopy.pop(0))
+                    foundNeighbor = True
+        #Store the region into an array of regions
+        arrayofConsecutiveRegions.append(consecutiveRegion)
         #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
     #end while
-    
-    #print('Stats:')
-    #print('Total number of tracking events: %s' % (len(trackingEvents)))
-    #print('Number of conserved regions %s' % (len(arrayOfConservedRegions)))
-    #print('Number of inverted regions %s' % (len(arrayOfInvertedRegions)))
-    
-    #for item in arrayOfConservedRegions:
-        #print('Conserved list')
-        #for x in range(0, len(item)):
-            #print('%s, %s' %(item[x].getGenome1OperonIndex(), item[x].getGenome2OperonIndex()))
+
+    print('Stats:')
+    print('Total number of tracking events: %s' % (len(trackingEvents)))
+
+    for region in arrayofConsecutiveRegions:
+        print('Next Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
     #for item in arrayOfInvertedRegions:
         #print('Inverted list')
         #for x in range(0, len(item)):
             #print('%s, %s' %(item[x].getGenome1OperonIndex(), item[x].getGenome2OperonIndex()))
-    ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
-    
+    #ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
+
     return ancestralOperonSequence
 
 ######################################################
@@ -697,8 +688,8 @@ def reconstructAncestralOperonSequence(trackingEvents):
 def constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions):
     ancestralOperonSequence = []
     alignedEvents = []
-    
-    #We want to minimize the number of inversions    
+
+    #We want to minimize the number of inversions
     if len(arrayOfConservedRegions) > len(arrayOfInvertedRegions):
         # x-coords won't change so sort by x-coords
         while len(arrayOfConservedRegions) > 0 or len(arrayOfInvertedRegions) > 0:
@@ -752,7 +743,7 @@ def constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions):
                 #print(element.getAncestralOperon())
             else:
                 print('NO ANCESTRAL OPERON')
-        
+
     return ancestralOperonSequence
 
 ######################################################
