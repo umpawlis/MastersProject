@@ -17,9 +17,7 @@ trackingId = 0
 duplicateOperonCounter = {}
 deletionEventCounter = {}
 duplicationEventCounter = {}
-yDistanceThreshold = 5
-distanceThresoldForConservedPositions = 4
-distanceThresholdBetweenNeighbors = 6
+yDistanceThreshold = 3
 
 ######################################################
 # Tracking Event
@@ -658,6 +656,10 @@ def reconstructAncestralOperonSequence(trackingEvents):
         below = False
 
         minMainDiagonalDistance = abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex())
+        if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < 0:
+            above = True
+        if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) > 0:
+            below = True
 
         while foundNeighbor:
             foundNeighbor = False;
@@ -687,7 +689,7 @@ def reconstructAncestralOperonSequence(trackingEvents):
                         yDecreaseCount +=1
         #Store the region into appropriate array
         if yIncreaseCount > yDecreaseCount or (len(consecutiveRegion) == 1):
-            if minMainDiagonalDistance == 0:
+            if minMainDiagonalDistance < 3:
                 arrayOfConservedForwardRegions.append(consecutiveRegion)
             else:
                 arrayOfTransposedForwardRegions.append(consecutiveRegion)
@@ -729,230 +731,6 @@ def reconstructAncestralOperonSequence(trackingEvents):
     #ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
 
     return ancestralOperonSequence
-
-######################################################
-# constructSequence
-# Parameters:
-# Description:
-######################################################
-def constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions):
-    ancestralOperonSequence = []
-    alignedEvents = []
-
-    #We want to minimize the number of inversions
-    if len(arrayOfConservedRegions) > len(arrayOfInvertedRegions):
-        # x-coords won't change so sort by x-coords
-        while len(arrayOfConservedRegions) > 0 or len(arrayOfInvertedRegions) > 0:
-            conservedMin = 999
-            invertedMin = 999
-            for i in range(0, len(arrayOfConservedRegions)):
-                region = arrayOfConservedRegions[i]
-                if region[0].getGenome1OperonIndex() < conservedMin:
-                    conservedMin = region[0].getGenome1OperonIndex()
-                    conservedIndex = i
-            for j in range(0, len(arrayOfInvertedRegions)):
-                region = arrayOfInvertedRegions[j]
-                if region[0].getGenome1OperonIndex() < invertedMin:
-                    invertedMin = region[0].getGenome1OperonIndex()
-                    invertedIndex = j
-            #Add the event with the lowest x-coord
-            if conservedMin < invertedMin:
-                tempTrackingEvent = arrayOfConservedRegions.pop(conservedIndex)
-                alignedEvents.append(tempTrackingEvent)
-            else:
-                tempTrackingEvent = arrayOfInvertedRegions.pop(invertedIndex)
-                alignedEvents.append(tempTrackingEvent)
-    else:
-        # y-coords won't change so sort by y-coords
-        while len(arrayOfConservedRegions) > 0 or len(arrayOfInvertedRegions) > 0:
-            conservedMin = 999
-            invertedMin = 999
-            for i in range(0, len(arrayOfConservedRegions)):
-                region = arrayOfConservedRegions[i]
-                if region[0].getGenome2OperonIndex() < conservedMin:
-                    conservedMin = region[0].getGenome2OperonIndex()
-                    conservedIndex = i
-            for j in range(0, len(arrayOfInvertedRegions)):
-                region = arrayOfInvertedRegions[j]
-                if region[0].getGenome2OperonIndex() < invertedMin:
-                    invertedMin = region[0].getGenome2OperonIndex()
-                    invertedIndex = j
-            #Add the event with the lowest x-coord
-            if conservedMin < invertedMin:
-                tempTrackingEvent = arrayOfConservedRegions.pop(conservedIndex)
-                alignedEvents.append(tempTrackingEvent)
-            else:
-                tempTrackingEvent = arrayOfInvertedRegions.pop(invertedIndex)
-                alignedEvents.append(tempTrackingEvent)
-    #print('Reconstruction:')
-    #Generate the ancestral sequence
-    for elements in alignedEvents:
-        for element in elements:
-            if len(element.getAncestralOperon()) > 0:
-                ancestralOperonSequence.append(element.getAncestralOperon())
-                #print(element.getAncestralOperon())
-            else:
-                print('NO ANCESTRAL OPERON')
-
-    return ancestralOperonSequence
-
-######################################################
-# extendInvertedOperonSequenceToTheRight
-# Parameters:
-# Description:
-######################################################
-def extendInvertedOperonSequenceToTheRight(invertedOperons, trackingEventsCopy):
-    global distanceThresholdBetweenNeighbors
-
-    minDistance = 0
-    MAX_VAL = 999
-    while minDistance < MAX_VAL:
-        minDistance = MAX_VAL
-        #Get right most operon in current list
-        pos1 = invertedOperons[len(invertedOperons) - 1].getGenome1OperonIndex()
-        pos2 = invertedOperons[len(invertedOperons) - 1].getGenome2OperonIndex()
-
-        for x in range (0, len(trackingEventsCopy)):
-            nextTrackingEvent = trackingEventsCopy[x]
-            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
-            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
-
-            #Compute the distance between the points on graph
-            distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
-            #if distance is below threshold, distance is small than current min distance, if at least one of the points greater than current point
-            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 and pos2 > nextPos2):
-                minDistance = distance
-                neighborPosition = x
-            #end if
-        #end for
-
-        #check if we found a neighbor
-        if minDistance < MAX_VAL:
-            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
-            invertedOperons.append(neighborTrackingEvent)
-    #end while
-
-    return invertedOperons, trackingEventsCopy
-
-######################################################
-# extendInvertedOperonSequenceToTheLeft
-# Parameters:
-# Description:
-######################################################
-def extendInvertedOperonSequenceToTheLeft(invertedOperons, trackingEventsCopy):
-    global distanceThresholdBetweenNeighbors
-
-    minDistance = 0
-    MAX_VAL = 999
-    while minDistance < MAX_VAL:
-        minDistance = MAX_VAL
-        #Get left most operon in current list
-        pos1 = invertedOperons[0].getGenome1OperonIndex()
-        pos2 = invertedOperons[0].getGenome2OperonIndex()
-
-        for x in range (0, len(trackingEventsCopy)):
-            nextTrackingEvent = trackingEventsCopy[x]
-            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
-            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
-
-            #Compute the distance between the points on graph
-            distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
-            #if distance is below threshold, distance is small than current min distance
-            if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 > nextPos1 or pos2 < nextPos2):
-                minDistance = distance
-                neighborPosition = x
-            #end if
-        #end for
-
-        #check if we found a neighbor
-        if minDistance < MAX_VAL:
-            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
-            invertedOperons.insert(0, neighborTrackingEvent)
-    #end while
-
-    return invertedOperons, trackingEventsCopy
-
-######################################################
-# extendConservedOperonSequenceToTheLeft
-# Parameters:
-# Description:
-######################################################
-def extendConservedOperonSequenceToTheLeft(conservedOperons, trackingEventsCopy):
-    global distanceThresoldForConservedPositions
-    global distanceThresholdBetweenNeighbors
-
-    minDistance = 0
-    MAX_VAL = 999
-    while minDistance < MAX_VAL:
-        minDistance = MAX_VAL
-        #Get left most operon in current list
-        pos1 = conservedOperons[0].getGenome1OperonIndex()
-        pos2 = conservedOperons[0].getGenome2OperonIndex()
-
-        for x in range (0, len(trackingEventsCopy)):
-            nextTrackingEvent = trackingEventsCopy[x]
-            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
-            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
-
-            if abs(nextPos1 - nextPos2) < distanceThresoldForConservedPositions:
-                #Compute the distance between the points on graph
-                distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
-                #if distance is below threshold, distance is small than current min distance, if at least one of the points less than current point
-                if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 > nextPos1 or pos2 > nextPos2):
-                    minDistance = distance
-                    neighborPosition = x
-                #end if
-            #end if
-        #end for
-
-        #check if we found a neighbor
-        if minDistance < MAX_VAL:
-            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
-            conservedOperons.insert(0, neighborTrackingEvent)
-    #end while
-
-    return conservedOperons, trackingEventsCopy
-
-######################################################
-# extendConservedOperonSequenceToTheRight
-# Parameters:
-# Description:
-######################################################
-def extendConservedOperonSequenceToTheRight(conservedOperons, trackingEventsCopy):
-    global distanceThresoldForConservedPositions
-    global distanceThresholdBetweenNeighbors
-
-    minDistance = 0
-    MAX_VAL = 999
-    while minDistance < MAX_VAL:
-        minDistance = MAX_VAL
-        #Get right most operon in current list
-        pos1 = conservedOperons[len(conservedOperons) - 1].getGenome1OperonIndex()
-        pos2 = conservedOperons[len(conservedOperons) - 1].getGenome2OperonIndex()
-
-        for x in range (0, len(trackingEventsCopy)):
-            nextTrackingEvent = trackingEventsCopy[x]
-            nextPos1 = nextTrackingEvent.getGenome1OperonIndex()
-            nextPos2 = nextTrackingEvent.getGenome2OperonIndex()
-
-            if abs(nextPos1 - nextPos2) < distanceThresoldForConservedPositions:
-                #Compute the distance between the points on graph
-                distance = math.sqrt((pos1 - nextPos1)**2 + (pos2 - nextPos2)**2)
-                #if distance is below threshold, distance is small than current min distance, if at least one of the points greater than current point
-                if distance < distanceThresholdBetweenNeighbors and distance < minDistance and (pos1 < nextPos1 or pos2 < nextPos2):
-                    minDistance = distance
-                    neighborPosition = x
-                #end if
-            #end if
-        #end for
-
-        #check if we found a neighbor
-        if minDistance < MAX_VAL:
-            neighborTrackingEvent = trackingEventsCopy.pop(neighborPosition)
-            conservedOperons.append(neighborTrackingEvent)
-    #end while
-
-    return conservedOperons, trackingEventsCopy
 
 ######################################################
 # detectDuplicateOperons
