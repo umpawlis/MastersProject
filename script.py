@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import copy
 import math
 
-newickFileName = 'Anc27_subtree.dnd'
+newickFileName = 'Anc27v2_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
@@ -531,7 +531,7 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
                 for gap in gaps:
                     if len(gap) > 0:
                         #Compute duplications and losses along with their sizes
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, trackingEvents[i].getGenome1OperonIndex())
+                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence1, operon2SequenceConversion[trackingEvents[i].getGenome2OperonIndex()])
                         totalLosses += numUniqueFound
                         #Update duplication counter
                         if len(duplicationSizes) > 0:
@@ -550,7 +550,7 @@ def updateGlobalTrackers(trackingEvents, sequence1, sequence2):
                 for gap in gaps:
                     if len(gap) > 0:
                         #Uniques tells us number of losses
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence2, trackingEvents[i].getGenome2OperonIndex())
+                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(gap, formattedSequence2, operon1SequenceConversion[trackingEvents[i].getGenome1OperonIndex()])
                         totalLosses += numUniqueFound
                         #Update duplication counter
                         if len(duplicationSizes) > 0:
@@ -1317,25 +1317,24 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
         comparisonSize -= 1
 
     deletionSizes = []
-    if genesNotFound:
-        inSet = True
-        deletionSize = 0
+    inSet = True
+    deletionSize = 0
 
-        for index in reversed(range(len(geneList))):
-            if not checkOverlap((index,index), geneRanges):
-                if not inSet:
-                    inSet = True
-                deletionSize += 1
-            else:
-                geneList.pop(index)
-                inSet = False
-                if deletionSize != 0:
-                    deletionSizes.append(deletionSize)
-                    deletionSize = 0
-        #Special case if all genes in list are losses
-        if deletionSize != 0:
-            deletionSizes.append(deletionSize)
-            deletionSize = 0
+    for index in reversed(range(len(geneList))):
+        if not checkOverlap((index,index), geneRanges):
+            if not inSet:
+                inSet = True
+            deletionSize += 1
+        else:
+            geneList.pop(index)
+            inSet = False
+            if deletionSize != 0:
+                deletionSizes.append(deletionSize)
+                deletionSize = 0
+    #Special case if all genes in list are losses
+    if deletionSize != 0:
+        deletionSizes.append(deletionSize)
+        deletionSize = 0
 
     return numGeneMatches, deletionSizes, duplicationSizes
 
@@ -1578,7 +1577,7 @@ def printStats():
 # Description: Tries to extend the alignment of two operons by using their gene lists.
 ######################################################
 def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opGenePosition1, opGenePosition2, leftAdjustment1, leftAdjustment2, reverseOp1, reverseOp2, aligned1, aligned2, singletonDict1, singletonDict2):
-    global extensionCounter
+    # global extensionCounter
     mismatch = False
     operonRange1 = range(opGenePosition1, opGenePosition1+len(operon1))
     operonRange2 = range(opGenePosition2, opGenePosition2+len(operon2))
@@ -1638,7 +1637,7 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
 
                     aligned1.insert(0, gene1)
                     aligned2.insert(0, gene2)
-                    extensionCounter += 1
+                    # extensionCounter += 1
                 else:
                     mismatch = True
         else:
@@ -2081,30 +2080,30 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         #Case 1: Perfect match
         if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
             match += 1
+            alignmentSequence1.append(operon1[i-1])
+            alignmentSequence2.append(operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
         #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
+            alignmentSequence1.append(operon1[i-1])
+            alignmentSequence2.append(operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
         #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
+            alignmentSequence1.append(operon1[i-1])
+            alignmentSequence2.append(operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
         #Case 4: Mismatch- Gap in operon 2
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + deletionCost):
             index = i-1
@@ -2113,13 +2112,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon1ConsecutiveGap = False
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon2ConsecutiveGap:
-                operon2Gap.append(operon1[index])
+                operon2Gap.insert(0, operon1[index])
                 operon2ConsecutiveGap = True
             else:
                 if len(operon2Gap) > 0:
                     operon2Gaps.append(operon2Gap)
                 operon2Gap = []
-                operon2Gap.append(operon1[index])
+                operon2Gap.insert(0, operon1[index])
                 operon2ConsecutiveGap = True
 
         #Case 5: Mismatch - Gap in operon 1
@@ -2130,13 +2129,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
             operon2ConsecutiveGap = False
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon1ConsecutiveGap:
-                operon1Gap.append(operon2[index])
+                operon1Gap.insert(0, operon2[index])
                 operon1ConsecutiveGap = True
             else:
                 if len(operon1Gap) > 0:
                     operon1Gaps.append(operon1Gap)
                 operon1Gap = []
-                operon1Gap.append(operon2[index])
+                operon1Gap.insert(0, operon2[index])
                 operon1ConsecutiveGap = True
 
     #Empty any remaining gaps
@@ -2146,6 +2145,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     if len(operon2Gap) > 0:
         operon2Gaps.append(operon2Gap)
         operon2Gap = []
+
+    alignmentSequence1 = list(reversed(alignmentSequence1))
+    alignmentSequence2 = list(reversed(alignmentSequence2))
 
     #Computes number of unique genes and if the genes are not unique then they are removed from the gap
     operon1Gaps, geneDuplicateSizesInOperon1 = checkForMatchesInAlignment(operon1Gaps, alignmentSequence1)
