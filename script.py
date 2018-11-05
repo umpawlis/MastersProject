@@ -741,9 +741,62 @@ def reconstructAncestralOperonSequence(trackingEvents):
         print('Lost operon')
         print('%s, %s' %(operon.getGenome1OperonIndex(), operon.getGenome2OperonIndex()))
 
-    #ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
+    ancestralOperonSequence = assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons)
 
     return ancestralOperonSequence
+
+######################################################
+# constructSequence
+# Parameters:
+# Description:
+######################################################
+def assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons):    
+    ancestralSequence = []
+    trackingEventsAssembled = []
+    
+    #Put all events into a single array
+    if len(arrayOfConservedForwardRegions) > 0:
+        for region in arrayOfConservedForwardRegions:
+            for x in range(0, len(region)):
+                trackingEventsAssembled.append(region[x])
+                
+    if len(arrayOfTransposedForwardRegions) > 0:
+        for region in arrayOfTransposedForwardRegions:
+            for x in range(0, len(region)):
+                trackingEventsAssembled.append(region[x])
+                
+    if len(arrayOfInvertedRegions) > 0:
+        for region in arrayOfInvertedRegions:
+            for x in range(0, len(region)):
+                trackingEventsAssembled.append(region[x])
+                
+    if len(arrayOfInvertedTranspositionRegions) > 0:
+        for region in arrayOfInvertedTranspositionRegions:
+            for x in range(0, len(region)):
+                trackingEventsAssembled.append(region[x])
+                
+    #Determine which direction to build the sequence
+    numForwardRegions = len(arrayOfConservedForwardRegions) + len(arrayOfTransposedForwardRegions)
+    numInvertedRegions = len(arrayOfInvertedRegions) + len(arrayOfInvertedTranspositionRegions)
+    
+    if (numInvertedRegions > numForwardRegions):
+        #Assemble into inverted sequence, sort by y-coordinate
+        trackingEventsAssembled.sort(key=lambda x: x.genome2OperonIndex, reverse=True)
+    else:
+        #Assemble into forward region, sort by x-coordinate
+         trackingEventsAssembled.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
+    
+    #Need to insert the lost operons
+    arrayOfLostOperons.sort(key=lambda x: x.genome1OperonIndex, reverse=True)
+    while len(arrayOfLostOperons) > 0:
+        curr = arrayOfLostOperons.pop(0)
+        trackingEventsAssembled.insert(curr.getGenome1OperonIndex(), curr)
+        
+    #Create sequence
+    for event in trackingEventsAssembled:
+        ancestralSequence.append(event.getAncestralOperon())
+    
+    return ancestralSequence
 
 ######################################################
 # detectDuplicateOperons
