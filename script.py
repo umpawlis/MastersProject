@@ -5,9 +5,8 @@ import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
-import math
 
-newickFileName = 'Anc27v2_subtree.dnd'
+newickFileName = 'Anc27_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
@@ -639,6 +638,7 @@ def reconstructAncestralOperonSequence(trackingEvents):
     arrayOfTransposedForwardRegions = []
     arrayOfInvertedRegions = []
     arrayOfInvertedTranspositionRegions = []
+    arrayOfLostOperons = []
 
     #Sort Tracking Events on x-coords
     trackingEventsCopy = copy.deepcopy(trackingEvents)
@@ -646,58 +646,65 @@ def reconstructAncestralOperonSequence(trackingEvents):
 
     while len(trackingEventsCopy) > 0:
         currentTrackingEvent = trackingEventsCopy.pop(0) #Get first item in list
-        consecutiveRegion = []
-        consecutiveRegion.append(currentTrackingEvent)
 
-        foundNeighbor = True
-        yIncreaseCount = 0
-        yDecreaseCount = 0
-        above = False
-        below = False
-
-        minMainDiagonalDistance = abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex())
-        if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < 0:
-            above = True
-        if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) > 0:
-            below = True
-
-        while foundNeighbor:
-            foundNeighbor = False;
-            if len(trackingEventsCopy) > 0:
-                previousPoint = consecutiveRegion[len(consecutiveRegion) - 1]
-                currentPoint = trackingEventsCopy[0]
-                distance = abs(previousPoint.getGenome2OperonIndex() - currentPoint.getGenome2OperonIndex())
-
-                if distance < yDistanceThreshold:
-                    #Consecutive point
-                    consecutiveRegion.append(trackingEventsCopy.pop(0))
-                    foundNeighbor = True
-
-                    currentMainDiagonalDistance = abs(currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex())
-                    if currentMainDiagonalDistance < minMainDiagonalDistance:
-                        minMainDiagonalDistance = currentMainDiagonalDistance
-
-                    #Checks if main diagonal is crossed
-                    if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) < 0:
-                        above = True
-                    if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) > 0:
-                        below = True
-
-                    if previousPoint.getGenome2OperonIndex() < currentPoint.getGenome2OperonIndex():
-                        yIncreaseCount += 1
-                    else:
-                        yDecreaseCount +=1
-        #Store the region into appropriate array
-        if yIncreaseCount > yDecreaseCount or (len(consecutiveRegion) == 1):
-            if minMainDiagonalDistance < 3:
-                arrayOfConservedForwardRegions.append(consecutiveRegion)
-            else:
-                arrayOfTransposedForwardRegions.append(consecutiveRegion)
+        #Handle lost operons
+        if currentTrackingEvent.getGenome1OperonIndex() == -1 or currentTrackingEvent.getGenome2OperonIndex() == -1:
+            arrayOfLostOperons.append(currentTrackingEvent)
         else:
-            if above == True and below == True:
-                arrayOfInvertedRegions.append(consecutiveRegion)
+            consecutiveRegion = []
+            consecutiveRegion.append(currentTrackingEvent)
+
+            foundNeighbor = True
+            yIncreaseCount = 0
+            yDecreaseCount = 0
+            above = False
+            below = False
+
+            minMainDiagonalDistance = abs(currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex())
+            if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) < 0:
+                above = True
+            if (currentTrackingEvent.getGenome1OperonIndex() - currentTrackingEvent.getGenome2OperonIndex()) > 0:
+                below = True
+
+            while foundNeighbor:
+                foundNeighbor = False;
+                if len(trackingEventsCopy) > 0:
+                    previousPoint = consecutiveRegion[len(consecutiveRegion) - 1]
+                    currentPoint = trackingEventsCopy[0]
+                    distance = abs(previousPoint.getGenome2OperonIndex() - currentPoint.getGenome2OperonIndex())
+
+                    if distance < yDistanceThreshold:
+                        #Consecutive point
+                        consecutiveRegion.append(trackingEventsCopy.pop(0))
+                        foundNeighbor = True
+
+                        currentMainDiagonalDistance = abs(currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex())
+                        if currentMainDiagonalDistance < minMainDiagonalDistance:
+                            minMainDiagonalDistance = currentMainDiagonalDistance
+
+                        #Checks if main diagonal is crossed
+                        if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) < 0:
+                            above = True
+                        if (currentPoint.getGenome1OperonIndex() - currentPoint.getGenome2OperonIndex()) > 0:
+                            below = True
+
+                        if previousPoint.getGenome2OperonIndex() < currentPoint.getGenome2OperonIndex():
+                            yIncreaseCount += 1
+                        else:
+                            yDecreaseCount +=1
+
+            #Store forward regions
+            if yIncreaseCount > yDecreaseCount or (len(consecutiveRegion) == 1):
+                if minMainDiagonalDistance < 3:
+                    arrayOfConservedForwardRegions.append(consecutiveRegion)
+                else:
+                    arrayOfTransposedForwardRegions.append(consecutiveRegion)
+            #Store Inverted regions
             else:
-                arrayOfInvertedTranspositionRegions.append(consecutiveRegion)
+                if above == True and below == True:
+                    arrayOfInvertedRegions.append(consecutiveRegion)
+                else:
+                    arrayOfInvertedTranspositionRegions.append(consecutiveRegion)
         #print('x-axis: %s, y-axis: %s\n' %(currentTrackingEvent.getGenome1OperonIndex(), currentTrackingEvent.getGenome2OperonIndex()))
     #end while
 
@@ -709,6 +716,8 @@ def reconstructAncestralOperonSequence(trackingEvents):
 
     print('Total number of inverted regions: %s' % len(arrayOfInvertedRegions))
     print('Total number of inverted transposed regions: %s' % len(arrayOfInvertedTranspositionRegions))
+
+    print('Total number of lost operons: %s' % len(arrayOfLostOperons))
 
     for region in arrayOfConservedForwardRegions:
         print('Forward Conserved Region')
@@ -727,6 +736,10 @@ def reconstructAncestralOperonSequence(trackingEvents):
         print('Inverted Transposed Region')
         for x in range(0, len(region)):
             print('%s, %s' %(region[x].getGenome1OperonIndex(), region[x].getGenome2OperonIndex()))
+
+    for operon in arrayOfLostOperons:
+        print('Lost operon')
+        print('%s, %s' %(operon.getGenome1OperonIndex(), operon.getGenome2OperonIndex()))
 
     #ancestralOperonSequence = constructSequence(arrayOfConservedRegions, arrayOfInvertedRegions)
 
