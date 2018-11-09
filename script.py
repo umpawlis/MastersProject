@@ -6,7 +6,7 @@ import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
 
-newickFileName = 'test_subtree.dnd'
+newickFileName = '3_leaf_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
@@ -395,6 +395,7 @@ def traverseNewickTree(node, parentNode):
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
         print('These are the strains being compared: %s, %s'%(leftChildStrain.getName(), rightChildStrain.getName()))
         
+        neighborStrain = None
         if not (parentNode is None):
             node.name = 'Processing'
             #Determine which side we need to traverse
@@ -402,10 +403,8 @@ def traverseNewickTree(node, parentNode):
                 neighborStrain = findNeighboringStrain(parentNode.clades[0])
             elif len(parentNode.clades) > 1 and parentNode.clades[1].name != "Processing":
                 neighborStrain = findNeighboringStrain(parentNode.clades[1])
-        if not (neighborStrain is None):
-            print('The following neighbor has been selected: %s' % (neighborStrain.getName()))
 
-        ancestralOperons, trackingEvents = processStrains(leftChildStrain, rightChildStrain)
+        ancestralOperons, trackingEvents = processStrains(leftChildStrain, rightChildStrain, neighborStrain)
 
         ancestralCounter += 1
         node.name = 'Ancestor %s' % (ancestralCounter)
@@ -501,26 +500,50 @@ def findMaxValueInMatrix(globalAlignmentMatrix):
 # Parameters:
 # Description:
 ######################################################
-def processStrains(strain1, strain2):
+def processStrains(strain1, strain2, neighborStrain):
+    
+    if not (neighborStrain is None):
+        print('Constructing the tracking events for neighboring strain: %s' % (neighborStrain.getName()))
+        neighborTrackingEvents = constructTrackingEvents(strain1, neighborStrain, False)
+        if len(neighborTrackingEvents) > 0:
+            createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
+            
+    print('Constructing tracking events for cherry pair: %s, %s' %(strain1.getName(), strain2.getName()))
+    trackingEvents = constructTrackingEvents(strain1, strain2, True)
+
+    #create dot plot
+    if len(trackingEvents) > 0:
+        createDotPlot(trackingEvents, strain1, strain2)
+        updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
+        ancestralSequence = reconstructAncestralOperonSequence(trackingEvents)
+        
+    return ancestralSequence, trackingEvents
+
+######################################################
+# constructTrackingEvents
+# Parameters:
+# Description: Constructs the tracking events between two provided strains
+######################################################
+def constructTrackingEvents(strain1, strain2, printStats):
     coverageTracker1 = {}
     coverageTracker2 = {}
     sequence1 = strain1.getSequence()
     sequence2 = strain2.getSequence()
-
+    
     for y in range(0, len(sequence1)):
         coverageTracker1[y] = False
 
     for x in range(0, len(sequence2)):
         coverageTracker2[x] = False
-
+        
     #Global Alignment
     trackingEvents, coverageTracker1, coverageTracker2, globalAlignmentCounter = detectOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
-
+    
     #Local Alignment
     localAlignmentTrackingEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = detectOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
     if len(localAlignmentTrackingEvents) > 0:
         trackingEvents.extend(localAlignmentTrackingEvents)
-
+        
     #Handle singleton genes
     singletonDuplicatedG1, singletonLostG1, singletonTrackingEventsG1, coverageTracker1 = detectOrthologousSingletonGenes(coverageTracker1, strain1, strain1.getTrackingEvents())
     singletonDuplicatedG2, singletonLostG2, singletonTrackingEventsG2, coverageTracker2 = detectOrthologousSingletonGenes(coverageTracker2, strain2, strain2.getTrackingEvents())
@@ -528,7 +551,7 @@ def processStrains(strain1, strain2):
         trackingEvents.extend(singletonTrackingEventsG1)
     if len(singletonTrackingEventsG2) > 0:
         trackingEvents.extend(singletonTrackingEventsG2)
-
+        
     #Handle remaining operons
     operonDuplicateG1, operonLossG1, operonTrackingEventsG1, coverageTracker1 = detectDuplicateOperons(coverageTracker1, strain1)
     operonDuplicateG2, operonLossG2, operonTrackingEventsG2, coverageTracker2 = detectDuplicateOperons(coverageTracker2, strain2)
@@ -536,33 +559,27 @@ def processStrains(strain1, strain2):
         trackingEvents.extend(operonTrackingEventsG1)
     if len(operonTrackingEventsG2) > 0:
         trackingEvents.extend(operonTrackingEventsG2)
-
-    #create dot plot
-    if len(trackingEvents) > 0:
-        createDotPlot(trackingEvents, strain1, strain2)
-        updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
-        ancestralSequence = reconstructAncestralOperonSequence(trackingEvents)
-
-    #Resolve remaining operons via self global alignment
+        
     trackerDebugger(coverageTracker1, coverageTracker2, sequence1, sequence2)
-
-    print('#' * 70)
-    print('Statistics for the following strains: %s, %s' %(strain1.getName(), strain2.getName()))
-    print('Total number of operons and singletons for %s: %s' %(strain1.getName(), len(coverageTracker1)))
-    print('Total number of operons and singletons for %s: %s' %(strain2.getName(), len(coverageTracker2)))
-    print('Number of orthologs found through global alignment: %s' %(globalAlignmentCounter))
-    print('Number of orthologs found through local alignment: %s' %(localAlignmentCounter))
-    print('Number of singletons identified as duplicates in %s: %s' %(strain1.getName(), singletonDuplicatedG1))
-    print('Number of singletons identified as duplicates in %s: %s' %(strain2.getName(), singletonDuplicatedG2))
-    print('Number of singletons lost in %s: %s' %(strain1.getName(), singletonLostG1))
-    print('Number of singletons lost in %s: %s' %(strain2.getName(), singletonLostG1))
-    print('Number of operons lost in %s: %s' %(strain1.getName(), operonLossG1))
-    print('Number of operons lost in %s: %s' %(strain2.getName(), operonLossG1))
-    print('Number of operons identified as duplicates in %s: %s' %(strain1.getName(), operonDuplicateG1))
-    print('Number of operons identified as duplicates in %s: %s' %(strain2.getName(), operonDuplicateG2))
-    print('#' * 70)
-
-    return ancestralSequence, trackingEvents
+    
+    if printStats:
+        print('#' * 70)
+        print('Statistics for the following strains: %s, %s' %(strain1.getName(), strain2.getName()))
+        print('Total number of operons and singletons for %s: %s' %(strain1.getName(), len(coverageTracker1)))
+        print('Total number of operons and singletons for %s: %s' %(strain2.getName(), len(coverageTracker2)))
+        print('Number of orthologs found through global alignment: %s' %(globalAlignmentCounter))
+        print('Number of orthologs found through local alignment: %s' %(localAlignmentCounter))
+        print('Number of singletons identified as duplicates in %s: %s' %(strain1.getName(), singletonDuplicatedG1))
+        print('Number of singletons identified as duplicates in %s: %s' %(strain2.getName(), singletonDuplicatedG2))
+        print('Number of singletons lost in %s: %s' %(strain1.getName(), singletonLostG1))
+        print('Number of singletons lost in %s: %s' %(strain2.getName(), singletonLostG1))
+        print('Number of operons lost in %s: %s' %(strain1.getName(), operonLossG1))
+        print('Number of operons lost in %s: %s' %(strain2.getName(), operonLossG1))
+        print('Number of operons identified as duplicates in %s: %s' %(strain1.getName(), operonDuplicateG1))
+        print('Number of operons identified as duplicates in %s: %s' %(strain2.getName(), operonDuplicateG2))
+        print('#' * 70)
+    
+    return trackingEvents
 
 ######################################################
 # updateGlobalTrackers
@@ -1226,6 +1243,8 @@ def detectOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1,
 def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2, operonEvents):
     chooseOp1 = True
     ancestor = []
+    deletionSizes = None
+    duplicationSizes = None
 
     if len(op1) > len(op2):
         unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
@@ -1269,11 +1288,11 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
         chooseOp1 = False
         operonEvents.setOperon1GeneLosses(numUnique)
 
-        if deletionSizes:
+        if not (deletionSizes is None):
             for size in deletionSizes:
                 updateDeletionCounter(size)
 
-        if duplicationSizes:
+        if not (duplicationSizes is None):
             for size in duplicationSizes:
                 updateDuplicationCounter(size)
 
