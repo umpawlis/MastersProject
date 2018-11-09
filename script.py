@@ -6,7 +6,7 @@ import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
 
-newickFileName = 'Anc27_subtree.dnd'
+newickFileName = 'test_subtree.dnd'
 strains = []
 ancestralCounter = 0
 deletionCost = 1
@@ -351,7 +351,7 @@ def processFileSequence(sequence):
 # Parameters: node - The node that we want to process
 # Description: Traverses a provided newick tree and reads in sequences if any (uses post traversal)
 ######################################################
-def traverseNewickTree(node):
+def traverseNewickTree(node, parentNode):
     #Global variables
     global strains
     global ancestralCounter
@@ -361,9 +361,9 @@ def traverseNewickTree(node):
 
     #Check if the clade has children
     if len(node.clades) > 0:
-        leftChildStrain = traverseNewickTree(node.clades[0])
+        leftChildStrain = traverseNewickTree(node.clades[0], node)
         if len(node.clades) > 1:
-            rightChildStrain = traverseNewickTree(node.clades[1])
+            rightChildStrain = traverseNewickTree(node.clades[1], node)
 
     #Check if the clade has a name, if it does, check if it has a directory for its sequence
     if node.name is not None and len(node.name) > 0:
@@ -394,6 +394,17 @@ def traverseNewickTree(node):
 
     if leftChildStrain is not None and leftChildStrain.getHasData() and rightChildStrain is not None and rightChildStrain.getHasData():
         print('These are the strains being compared: %s, %s'%(leftChildStrain.getName(), rightChildStrain.getName()))
+        
+        if not (parentNode is None):
+            node.name = 'Processing'
+            #Determine which side we need to traverse
+            if len(parentNode.clades) > 0 and parentNode.clades[0].name != "Processing":
+                neighborStrain = findNeighboringStrain(parentNode.clades[0])
+            elif len(parentNode.clades) > 1 and parentNode.clades[1].name != "Processing":
+                neighborStrain = findNeighboringStrain(parentNode.clades[1])
+        if not (neighborStrain is None):
+            print('The following neighbor has been selected: %s' % (neighborStrain.getName()))
+
         ancestralOperons, trackingEvents = processStrains(leftChildStrain, rightChildStrain)
 
         ancestralCounter += 1
@@ -416,6 +427,58 @@ def traverseNewickTree(node):
     #If neither has a sequence, return None
     else:
         return None
+
+######################################################
+# findNeighboringStrain
+# Parameters:
+# Description: Finds the first available strain with data
+######################################################
+def findNeighboringStrain(currNode):
+    global strains
+    neighbor = None
+
+    if neighbor is None and currNode.name is not None and len(currNode.name) > 0:
+        if currNode.is_terminal:
+            neighbor = createStrainFromFile(currNode)
+        elif 'Ancestor' in currNode.name:
+            filteredList = filter(lambda x: x.name == currNode.name, strains)
+            neighbor = next(filteredList)
+    if neighbor is None and len(currNode.clades) > 0:
+        neighbor = findNeighboringStrain(currNode.clades[0])
+    if neighbor is None and len(currNode.clades) > 1:
+        neighbor = findNeighboringStrain(currNode.clades[1])
+
+    return neighbor
+
+######################################################
+# createStrainFromFile
+# Parameters:
+# Description: creates strain from file
+######################################################
+def createStrainFromFile(node):
+    strain = None
+    if os.path.isdir(node.name):
+        if os.path.isfile(node.name + '/sequence.txt'):
+            fileGeneSequence = open(node.name + '/sequence.txt', 'r').read()
+            operons, operonPositions, singletonDict, allGenes = processFileSequence(fileGeneSequence)
+
+            #Random newline characters in file are causing the alignment scores to be messed up
+            for x in range(0, len(operons)):
+                operons[x] = (operons[x]).replace('\r', '').replace('\n', '')
+            for x in range(0, len(allGenes)):
+                allGenes[x] = (allGenes[x]).replace('\r', '').replace('\n', '')
+            for key in singletonDict.keys():
+                singletonDict[key] = (singletonDict[key]).replace('\r', '').replace('\n', '')
+
+            strain = Strain(node.name, operons, [], operonPositions, singletonDict)
+            strain.setGenes(allGenes)
+            strain.setHasData(True)
+        else:
+            print('No sequence file found for node: %s' % node.name)
+    else:
+        print('No directory found for node: %s' % node.name)
+
+    return strain
 
 ######################################################
 # findMaxValueInMatrix
@@ -750,52 +813,52 @@ def reconstructAncestralOperonSequence(trackingEvents):
 # Parameters:
 # Description:
 ######################################################
-def assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons):    
+def assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons):
     ancestralSequence = []
     trackingEventsAssembled = []
-    
+
     #Put all events into a single array
     if len(arrayOfConservedForwardRegions) > 0:
         for region in arrayOfConservedForwardRegions:
             for x in range(0, len(region)):
                 trackingEventsAssembled.append(region[x])
-                
+
     if len(arrayOfTransposedForwardRegions) > 0:
         for region in arrayOfTransposedForwardRegions:
             for x in range(0, len(region)):
                 trackingEventsAssembled.append(region[x])
-                
+
     if len(arrayOfInvertedRegions) > 0:
         for region in arrayOfInvertedRegions:
             for x in range(0, len(region)):
                 trackingEventsAssembled.append(region[x])
-                
+
     if len(arrayOfInvertedTranspositionRegions) > 0:
         for region in arrayOfInvertedTranspositionRegions:
             for x in range(0, len(region)):
                 trackingEventsAssembled.append(region[x])
-                
+
     #Determine which direction to build the sequence
     numForwardRegions = len(arrayOfConservedForwardRegions) + len(arrayOfTransposedForwardRegions)
     numInvertedRegions = len(arrayOfInvertedRegions) + len(arrayOfInvertedTranspositionRegions)
-    
+
     if (numInvertedRegions > numForwardRegions):
         #Assemble into inverted sequence, sort by y-coordinate
         trackingEventsAssembled.sort(key=lambda x: x.genome2OperonIndex, reverse=True)
     else:
         #Assemble into forward region, sort by x-coordinate
          trackingEventsAssembled.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
-    
+
     #Need to insert the lost operons
     arrayOfLostOperons.sort(key=lambda x: x.genome1OperonIndex, reverse=True)
     while len(arrayOfLostOperons) > 0:
         curr = arrayOfLostOperons.pop(0)
         trackingEventsAssembled.insert(curr.getGenome1OperonIndex(), curr)
-        
+
     #Create sequence
     for event in trackingEventsAssembled:
         ancestralSequence.append(event.getAncestralOperon())
-    
+
     return ancestralSequence
 
 ######################################################
@@ -2242,7 +2305,7 @@ newickTree = Phylo.read(newickFileName, 'newick')
 Phylo.draw(newickTree)
 
 #Traverses the newick tree to reconstruct the ancestral genomes
-result = traverseNewickTree(newickTree.clade)
+result = traverseNewickTree(newickTree.clade, None)
 
 #Construct the distribution loss bar graph
 global duplicateOperonCounter
