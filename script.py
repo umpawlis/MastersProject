@@ -2119,13 +2119,17 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     #Track the alignment
     alignmentSequence1 = []
     alignmentSequence2 = []
-
+    
+    #Tracks where the extra genes are from
+    gap1Indexes = []
+    gap2Indexes = []
+    
     while i > 0 or j > 0:
         #Case 1: Perfect match
         if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
             match += 1
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
+            alignmentSequence1.insert(0, operon1[i-1])
+            alignmentSequence2.insert(0, operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
@@ -2133,8 +2137,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
+            alignmentSequence1.insert(0, operon1[i-1])
+            alignmentSequence2.insert(0, operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
@@ -2142,8 +2146,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
         #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + substitutionCost):
             substitution += 1
-            alignmentSequence1.append(operon1[i-1])
-            alignmentSequence2.append(operon2[j-1])
+            alignmentSequence1.insert(0, operon1[i-1])
+            alignmentSequence2.insert(0, operon2[j-1])
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
@@ -2160,9 +2164,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon2ConsecutiveGap = True
             else:
                 if len(operon2Gap) > 0:
-                    operon2Gaps.append(operon2Gap)
+                    operon2Gaps.insert(0, operon2Gap)
                 operon2Gap = []
                 operon2Gap.insert(0, operon1[index])
+                gap2Indexes.insert(0, len(alignmentSequence1))
                 operon2ConsecutiveGap = True
 
         #Case 5: Mismatch - Gap in operon 1
@@ -2177,22 +2182,39 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                 operon1ConsecutiveGap = True
             else:
                 if len(operon1Gap) > 0:
-                    operon1Gaps.append(operon1Gap)
+                    operon1Gaps.insert(0, operon1Gap)
                 operon1Gap = []
                 operon1Gap.insert(0, operon2[index])
+                gap1Indexes.insert(0, len(alignmentSequence1))
                 operon1ConsecutiveGap = True
 
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
-        operon1Gaps.append(operon1Gap)
+        operon1Gaps.insert(0, operon1Gap)
+        gap1Indexes.insert(0, len(alignmentSequence1))
         operon1Gap = []
     if len(operon2Gap) > 0:
-        operon2Gaps.append(operon2Gap)
+        operon2Gaps.insert(0, operon2Gap)
+        gap2Indexes.insert(0, len(alignmentSequence1))
         operon2Gap = []
-
-    alignmentSequence1 = list(reversed(alignmentSequence1))
-    alignmentSequence2 = list(reversed(alignmentSequence2))
-
+        
+    #Need to swap the gap lists since the gaps refer to extra genes
+    temp = operon1Gaps
+    operon1Gaps = operon2Gaps
+    operon2Gaps = temp
+    
+    temp = gap1Indexes
+    gap1Indexes = gap2Indexes
+    gap2Indexes = temp
+    
+    #Used for debugging
+    #print('These are the operons being compared: %s, %s' %(operon1, operon2))
+    #print('This is the resulting alignment: %s, %s' %(alignmentSequence1, alignmentSequence2))
+    #print('These are the extra genes for operon 1: %s' %(operon1Gaps))
+    #print('These are the indexes for extra genes in operon 1: %s' %(gap1Indexes))
+    #print('These are the extra genes for operon 2: %s' %(operon2Gaps))
+    #print('These are the indexes for extra genes in operon 2: %s' %(gap2Indexes))
+    
     #Computes number of unique genes and if the genes are not unique then they are removed from the gap
     operon1Gaps, geneDuplicateSizesInOperon1 = checkForMatchesInAlignment(operon1Gaps, alignmentSequence1)
     operon2Gaps, geneDuplicateSizesInOperon2 = checkForMatchesInAlignment(operon2Gaps, alignmentSequence2)
