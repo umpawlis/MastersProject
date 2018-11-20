@@ -52,7 +52,7 @@ class TrackingEvent(object):
 
     def printTrackingEvent(self):
         if self.operonEvents != None:
-            operonEventsString = self.operonEvents.toStringAlignmentResults()
+            operonEventsString = self.operonEvents.outputOperonEvent()
             print("{ Tracking Event Id: %s, \nAlignment Score: %s, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %s, \nGenome 2 Operon Index: %s, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s, \nOperon Events: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds, operonEventsString))
         else:
             print("{ Tracking Event Id: %s, \nAlignment Score: %s, \nGenome 1: %s, \nGenome 2: %s, \nGenome 1 Operon: %s, \nGenome 2 Operon: %s, \nGenome 1 Operon Index: %s, \nGenome 2 Operon Index: %s, \nAncestral Operon: %s, \nTechnique: %s, \nLost Event Ids: %s}"%(self.trackingEventId, self.score, self.genome1Name, self.genome2Name, self.genome1Operon, self.genome2Operon, self.genome1OperonIndex, self.genome2OperonIndex, self.ancestralOperon, self.technique, self.lostEventIds))
@@ -139,6 +139,8 @@ class OperonEvents(object):
     lossesDueToSlidingWindowMethodOperon2 = 0
     duplicationsDueToSlidingWindowMethodOperon1 = 0
     duplicationsDueToSlidingWindowMethodOperon2 = 0
+    operon1GapIndexes = []
+    operon2GapIndexes = []
 
     def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
         self.numMatches = numMatches
@@ -155,6 +157,9 @@ class OperonEvents(object):
     def toStringAlignmentResults(self):
         return "Results of Alignment: (Num Matches = %s,\nNum Codon Mismatches = %s,\nNum Mismatches = %s,\nNum Substitutions = %s,\nOperon 1 = %s,\nOperon 2 = %s)" % (self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1, self.operon2)
 
+    def outputOperonEvent(self):
+        return ("(Operons Compared = %s, %s\nNumber of Matches = %s\nNumber of Codon Mismatches = %s\nNumber of Mismatches = %s\nNumber of Substitutions = %s\nExtra Genes In Operon 1 = %s\nExtra Genes in Operon 2 = %s\nAlignment in Operon 1 = %s\nAlignment in Operon 2 = %s)" % (self.operon1, self.operon2, self.numMatches, self.numCodonMismatches, self.numMismatches, self.numSubstitutions, self.operon1Gaps, self.operon2Gaps, self.alignedGenesInOperon1, self.alignedGenesInOperon2) )
+        
     #####Getters#####
     def getNumMatches(self):
         return self.numMatches
@@ -198,7 +203,11 @@ class OperonEvents(object):
         return self.duplicationsDueToSlidingWindowMethodOperon1
     def getDuplicationsDueToSlidingWindowMethodOperon2(self):
         return self.duplicationsDueToSlidingWindowMethodOperon2
-
+    def getOperon1GapIndexes(self):
+        return self.operon1GapIndexes
+    def getOperon2GapIndexes(self):
+        return self.operon2GapIndexes
+    
     #####Setters#####
     def setNumMatches(self, numMatches):
         self.numMatches = numMatches
@@ -242,6 +251,10 @@ class OperonEvents(object):
         self.duplicationsDueToSlidingWindowMethodOperon1 = duplicationsDueToSlidingWindowMethodOperon1
     def setDuplicationsDueToSlidingWindowMethodOperon2(self, duplicationsDueToSlidingWindowMethodOperon2):
         self.duplicationsDueToSlidingWindowMethodOperon2 = duplicationsDueToSlidingWindowMethodOperon2
+    def setOperon1GapIndexes(self, operon1GapIndexes):
+        self.operon1GapIndexes = operon1GapIndexes
+    def setOperon2GapIndexes(self, operon2GapIndexes):
+        self.operon2GapIndexes = operon2GapIndexes
 
 ######################################################
 # Strain
@@ -1821,6 +1834,7 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, operonEventMatr
                         #Add the event to the tracking events list
                         trackingEvent.setOperonEvents(operonEventMatrix[i][j])
                         trackingEvents.append(trackingEvent)
+                        #TODO
                         trackingEvent.printTrackingEvent()
                         print('###################################\n')
 
@@ -2232,6 +2246,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     operonEvents.setAlignedGenesInOperon2(alignmentSequence2)
     operonEvents.setOperon1Gaps(operon1Gaps)
     operonEvents.setOperon2Gaps(operon2Gaps)
+    operonEvents.setOperon1GapIndexes(gap1Indexes)
+    operonEvents.setOperon2GapIndexes(gap2Indexes)
     operonEvents.setDuplicateSizesOp1(geneDuplicateSizesInOperon1)
     operonEvents.setDuplicateSizesOp2(geneDuplicateSizesInOperon2)
 
