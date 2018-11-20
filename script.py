@@ -2167,7 +2167,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
                     operon2Gaps.insert(0, operon2Gap)
                 operon2Gap = []
                 operon2Gap.insert(0, operon1[index])
-                gap2Indexes.insert(0, len(alignmentSequence1))
+                gap2Indexes.insert(0, len(alignmentSequence2))
                 operon2ConsecutiveGap = True
 
         #Case 5: Mismatch - Gap in operon 1
@@ -2191,12 +2191,18 @@ def globalAlignmentTraceback(matrix, operon1, operon2):
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
-        gap1Indexes.insert(0, len(alignmentSequence1))
         operon1Gap = []
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
-        gap2Indexes.insert(0, len(alignmentSequence1))
         operon2Gap = []
+        
+    #The indexes values need to be flipped b/c right now they're oriented from right to left
+    if len(gap1Indexes) > 0:
+        for x in range(0, len(gap1Indexes)):
+            gap1Indexes[x] = len(alignmentSequence1) - gap1Indexes[x]
+    if len(gap2Indexes) > 0:
+        for x in range(0, len(gap2Indexes)):
+            gap2Indexes[x] = len(alignmentSequence2) - gap2Indexes[x]
         
     #Need to swap the gap lists since the gaps refer to extra genes
     temp = operon1Gaps
