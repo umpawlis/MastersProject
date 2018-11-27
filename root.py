@@ -123,9 +123,9 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
                 if currentIndex+comparisonSize <= len(geneList):
                     gene = geneList[currentIndex:currentIndex+comparisonSize]
                     newSet = True
-                elif not missedGene:
-                    gene = geneList[currentIndex:len(geneList)]
-                    newSet = True
+                # elif not missedGene:
+                #     gene = geneList[currentIndex:len(geneList)]
+                #     newSet = True
 
                 if newSet:
                     if geneInSequence(gene, sequence, len(gene), opIndex, alignedRange):
@@ -1587,12 +1587,12 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2):
                     #Get the biggest index
                     if i == -1 and len(operon2Gaps[j]) > 0:
                         #Ran out of elements in Gaps 1
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
+                        # print('Gap being processed: %s' % (operon2Gaps[j]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
+                        # print('Gap being processed: %s' % (operon2Gaps[j]))
+                        # print('Number of unique genes found: %s' %(numUniqueFound))
+                        # print('Number of deletion genes found: %s' %(deletionSizes))
+                        # print('Number of duplicate genes found: %s' %(duplicationSizes))
                         if len(operon2Gaps[j]) > 0:
                             #Insert gap into operon
                             operon2Gaps[j].reverse()
@@ -1600,12 +1600,12 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2):
                                 ancestralOperon.insert(operon2GapIndexes[j], gene)
                     elif j == -1 and len(operon1Gaps[i]) > 0:
                         #Ran out of elements in Gaps 2
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
+                        # print('Gap being processed: %s' % (operon1Gaps[i]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
+                        # print('Gap being processed: %s' % (operon1Gaps[i]))
+                        # print('Number of unique genes found: %s' %(numUniqueFound))
+                        # print('Number of deletion genes found: %s' %(deletionSizes))
+                        # print('Number of duplicate genes found: %s' %(duplicationSizes))
                         if len(operon1Gaps[i]) > 0:
                             #Insert gap into operon
                             operon1Gaps[i].reverse()
@@ -1613,12 +1613,12 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2):
                                 ancestralOperon.insert(operon1GapIndexes[i], gene)
                     elif operon1GapIndexes[i] > operon2GapIndexes[j]:
                         #Operon 1 index is bigger
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
+                        # print('Gap being processed: %s' % (operon1Gaps[i]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
+                        # print('Gap being processed: %s' % (operon1Gaps[i]))
+                        # print('Number of unique genes found: %s' %(numUniqueFound))
+                        # print('Number of deletion genes found: %s' %(deletionSizes))
+                        # print('Number of duplicate genes found: %s' %(duplicationSizes))
                         if len(operon1Gaps[i]) > 0:
                             #Insert gap into operon
                             operon1Gaps[i].reverse()
@@ -1626,12 +1626,12 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2):
                                 ancestralOperon.insert(operon1GapIndexes[i], gene)
                     elif operon1GapIndexes[i] < operon2GapIndexes[j]:
                         #Operon 2 index is bigger
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
+                        # print('Gap being processed: %s' % (operon2Gaps[j]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
+                        # print('Gap being processed: %s' % (operon2Gaps[j]))
+                        # print('Number of unique genes found: %s' %(numUniqueFound))
+                        # print('Number of deletion genes found: %s' %(deletionSizes))
+                        # print('Number of duplicate genes found: %s' %(duplicationSizes))
                         if len(operon2Gaps[j]) > 0:
                             #Insert gap into operon
                             operon2Gaps[j].reverse()
