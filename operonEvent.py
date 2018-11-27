@@ -27,6 +27,8 @@ class OperonEvents(object):
     duplicationsDueToSlidingWindowMethodOperon2 = 0
     operon1GapIndexes = []
     operon2GapIndexes = []
+    substitutionDict = {}
+    operon1IndexToAlignment2Index = {}
 
     def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
         self.numMatches = numMatches
@@ -93,6 +95,10 @@ class OperonEvents(object):
         return self.operon1GapIndexes
     def getOperon2GapIndexes(self):
         return self.operon2GapIndexes
+    def getSubstitutionDict(self):
+        return self.substitutionDict
+    def getOperon1IndexToAlignment2Index(self):
+        return self.operon1IndexToAlignment2Index
     
     #####Setters#####
     def setNumMatches(self, numMatches):
@@ -141,3 +147,7 @@ class OperonEvents(object):
         self.operon1GapIndexes = operon1GapIndexes
     def setOperon2GapIndexes(self, operon2GapIndexes):
         self.operon2GapIndexes = operon2GapIndexes
+    def setSubstitutionDict(self, substitutionDict):
+        self.substitutionDict = substitutionDict
+    def setOperon1IndexToAlignment2Index(self, operon1IndexToAlignment2Index):
+        self.operon1IndexToAlignment2Index = operon1IndexToAlignment2Index

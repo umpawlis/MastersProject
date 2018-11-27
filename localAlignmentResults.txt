@@ -1884,3 +1884,183 @@ Alignment Result (after left extension):
 ['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
 ['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
 
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  4: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  5: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+
+Strain 1 Operon 4: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Glu_GAA', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Ala_GCA']
+Strain 2 Operon  7: ['16S', '23S', '5S']
+Alignment Result (after left and right extension):
+['16S', '23S', '5S']
+['16S', '23S', '5S']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
+Strain 1 Operon 11: ['Pro_CCG', 'Ala_GCG', 'Ser_UCG']
+Strain 2 Operon  10: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Tyr_UAC', 'Gln_CAA', 'Lys_AAA', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Glu_GAA']
+Alignment Result (after left extension):
+['Arg_AGG', 'Pro_CCG', 'Pro_CCG', 'Ala_GCG']
+['Arg_CGU', 'Pro_CCA', 'Pro_CCA', 'Ala_GCA']
+
