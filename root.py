@@ -8,6 +8,7 @@ import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as plt
 import copy
+import time
 
 #Parameters for script
 newickFileName = '3_leaf_subtree.dnd'
@@ -17,7 +18,7 @@ debug = True
 strains = []
 ancestralCounter = 0
 deletionCost = 1
-substitutionCost = 2
+substitutionCost = 1
 codonCost = 0.5
 trackingId = 0
 duplicateOperonCounter = {}
@@ -1529,7 +1530,9 @@ def detectOrthologousSingletonGenes(coverageTracker, strain, descendantsTracking
 # Description: Takes two related strains and a close neighbor and constructs the events for both comparisons
 ######################################################
 def processStrains(strain1, strain2, neighborStrain):
-
+    
+    ancestralSequence = []
+    
     neighborTrackingEvents = None
     if not (neighborStrain is None):
         print('Constructing the tracking events for neighboring strain: %s' % (neighborStrain.getName()))
@@ -1540,19 +1543,47 @@ def processStrains(strain1, strain2, neighborStrain):
     
     if len(trackingEvents) > 0:
         trackingEvents = reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents)
-
-        #if len(neighborTrackingEvents) > 0:
-            #createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
-
-    #create dot plot
-    if len(trackingEvents) > 0:
         createDotPlot(trackingEvents, strain1, strain2)
-        updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
-        ancestralSequence = reconstructAncestralOperonSequence(trackingEvents)
-
+        CFR, TFR, IR, ITR, LO = reconstructAncestralOperonSequence(trackingEvents)
+        
+        for trackingEvent in trackingEvents:
+            stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
+            ancestralSequence.append(stringAncestralOperon)
+            trackingEvent.setAncestralOperon(stringAncestralOperon)
+            
+        #if len(neighborTrackingEvents) > 0:
+            #NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
+            #Construct Alignment
+            #alignedTrackingEvents = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
+            #Create sequence Array
+            
+        #updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
+            #createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
+    
     return ancestralSequence, trackingEvents
 
-
+######################################################
+# formatAncestralOperontoString
+# Parameters:
+# Description: formats the operon into a string
+######################################################
+def formatAncestralOperontoString(ancestralOperon):
+    stringOperon = ""
+    
+    if len(ancestralOperon) > 0:
+        if len(ancestralOperon) == 1:
+            stringOperon = '[' + ancestralOperon[0] + ']'
+        else:
+            for x in range(0, len(ancestralOperon)):
+                if x == 0:    
+                    stringOperon += '[' + ancestralOperon[x] + ', '
+                elif x == len(ancestralOperon) -1:
+                    stringOperon += ancestralOperon[x] + ']'
+                else:
+                    stringOperon += ancestralOperon[x] + ','
+    
+    return stringOperon
+    
 ######################################################
 # reconstructAncestralOperon
 # Parameters:
@@ -1573,7 +1604,7 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                 operon1GapIndexes = currentOperonEvent.getOperon1GapIndexes()
                 operon2Gaps = currentOperonEvent.getOperon2Gaps()
                 operon2GapIndexes = currentOperonEvent.getOperon2GapIndexes()
-
+                
                 #Used for debugging
 #                print('These are the operons being compared: %s, %s' %(trackingEvent.getGenome1Operon(), trackingEvent.getGenome2Operon()))
 #                print('This is the resulting alignment: %s, %s' %(currentOperonEvent.getAlignedGenesInOperon1(), currentOperonEvent.getAlignedGenesInOperon2()))
@@ -1585,56 +1616,56 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                 #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
                 operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, currentOperonEvent.getAlignedGenesInOperon1())
                 operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, currentOperonEvent.getAlignedGenesInOperon2())
-                
+                ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
                 #Decide which ancestral operon to pick
-                subsDict = currentOperonEvent.getSubstitutionDict()
-                if trackingEvent.getScore() > 0 and len(neighborTrackingEvents) > 0 and len(subsDict) > 0:
-                    #Get the neighbors mapper
-                    currentNeighborTrackingEvent = None
-                    for neighborTrackingEvent in neighborTrackingEvents:
-                        if neighborTrackingEvent.getGenome1OperonIndex() == trackingEvent.getGenome1OperonIndex():
-                            currentNeighborTrackingEvent = neighborTrackingEvent
-                            break
-                    
-                    if currentNeighborTrackingEvent != None:
-                        indexMapper = currentNeighborTrackingEvent.getOperon1IndexToAlignment2Index()
-                        
-                        ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
-                        
-                        for key, value in subsDict.items():
-                            if indexMapper[key] != None and currentNeighborTrackingEvent.getOperonEvents() != None:
-                                neighborOperonEvent = currentNeighborTrackingEvent.getOperonEvents()
-                                
-                                neighborAlignment = neighborOperonEvent.getAlignedGenesInOperon2()
-                                neighborGene  = neighborAlignment[indexMapper[key]]
-                                
-                                operonAlignment = currentOperonEvent.getAlignedGenesInOperon1()
-                                operonGene = operonAlignment[subsDict[key]]
-                                
-                                #Switch genes if the genes don't match
-                                if operonGene != neighborGene:
-                                    siblingAlignment = currentOperonEvent.getAlignedGenesInOperon2()
-                                    ancestralOperon[subsDict[key]] = siblingAlignment[subsDict[key]]
-                else:
-                    ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
+#                subsDict = currentOperonEvent.getSubstitutionDict()
+#                if trackingEvent.getScore() > 0 and len(neighborTrackingEvents) > 0 and len(subsDict) > 0:
+#                    #Get the neighbors mapper
+#                    currentNeighborTrackingEvent = None
+#                    for neighborTrackingEvent in neighborTrackingEvents:
+#                        if neighborTrackingEvent.getGenome1OperonIndex() == trackingEvent.getGenome1OperonIndex():
+#                            currentNeighborTrackingEvent = neighborTrackingEvent
+#                            break
+#                    
+#                    if currentNeighborTrackingEvent != None:
+#                        indexMapper = currentNeighborTrackingEvent.getOperon1IndexToAlignment2Index()
+#                        
+#                        ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
+#                        
+#                        for key, value in subsDict.items():
+#                            if indexMapper[key] != None and currentNeighborTrackingEvent.getOperonEvents() != None:
+#                                neighborOperonEvent = currentNeighborTrackingEvent.getOperonEvents()
+#                                
+#                                neighborAlignment = neighborOperonEvent.getAlignedGenesInOperon2()
+#                                neighborGene  = neighborAlignment[indexMapper[key]]
+#                                
+#                                operonAlignment = currentOperonEvent.getAlignedGenesInOperon1()
+#                                operonGene = operonAlignment[subsDict[key]]
+#                                
+#                                #Switch genes if the genes don't match
+#                                if operonGene != neighborGene:
+#                                    siblingAlignment = currentOperonEvent.getAlignedGenesInOperon2()
+#                                    ancestralOperon[subsDict[key]] = siblingAlignment[subsDict[key]]
+#                else:
+#                    ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
                 
                 formattedSequence1, operon1SequenceConversion = formatAllOperons(strain1.getSequence())
                 formattedSequence2, operon2SequenceConversion = formatAllOperons(strain2.getSequence())
                 #print(formattedSequence1)
                 
-                i = len(operon1Gaps)
-                j = len(operon2Gaps)
+                i = len(operon1Gaps) - 1
+                j = len(operon2Gaps) - 1
                 #Testing by inserting more genes
 #                if len(operon1Gaps) > 0:
 #                    operon1Gaps[0].insert(0, 'Ala_GCA')
 #                    operon1Gaps[0].insert(0, 'Gly_GGC')
                     
                 while (i > 0) or (j > 0):
-                    i = i -1
-                    j = j - 1
-                    
+
                     #Get the biggest index
-                    if i == -1 and len(operon2Gaps[j]) > 0:
+                    print(i)
+                    print(j)
+                    if i < 0:
                         #Ran out of elements in Gaps 1
 #                        print('Gap being processed: %s' % (operon2Gaps[j]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
@@ -1647,7 +1678,8 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                             operon2Gaps[j].reverse()
                             for gene in operon2Gaps[j]:
                                 ancestralOperon.insert(operon2GapIndexes[j], gene)
-                    elif j == -1 and len(operon1Gaps[i]) > 0:
+                        j = j - 1
+                    elif j < 0:
                         #Ran out of elements in Gaps 2
 #                        print('Gap being processed: %s' % (operon1Gaps[i]))
                         numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
@@ -1660,6 +1692,7 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                             operon1Gaps[i].reverse()
                             for gene in operon1Gaps[i]:
                                 ancestralOperon.insert(operon1GapIndexes[i], gene)
+                        i = i - 1
                     elif operon1GapIndexes[i] > operon2GapIndexes[j]:
                         #Operon 1 index is bigger
 #                        print('Gap being processed: %s' % (operon1Gaps[i]))
@@ -1673,6 +1706,7 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                             operon1Gaps[i].reverse()
                             for gene in operon1Gaps[i]:
                                 ancestralOperon.insert(operon1GapIndexes[i], gene)
+                        i = i - 1
                     elif operon1GapIndexes[i] < operon2GapIndexes[j]:
                         #Operon 2 index is bigger
 #                        print('Gap being processed: %s' % (operon2Gaps[j]))
@@ -1686,6 +1720,9 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                             operon2Gaps[j].reverse()
                             for gene in operon2Gaps[j]:
                                 ancestralOperon.insert(operon2GapIndexes[j], gene)
+                        j = j - 1
+                #Set ancestral operon
+                trackingEvent.setAncestralOperon(ancestralOperon)
 #                print('This is the resulting ancestral operon: %s' % (ancestralOperon))
 #                print('\n\n')    
 #                print('These are the extra genes remaining for operon 1: %s' %(operon1Gaps))
@@ -1702,8 +1739,7 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
 ######################################################
 def reconstructAncestralOperonSequence(trackingEvents):
     global yDistanceThreshold
-
-    ancestralOperonSequence = []
+    
     arrayOfConservedForwardRegions = []
     arrayOfTransposedForwardRegions = []
     arrayOfInvertedRegions = []
@@ -1811,10 +1847,9 @@ def reconstructAncestralOperonSequence(trackingEvents):
         print('Lost operon')
         print('%s, %s' %(operon.getGenome1OperonIndex(), operon.getGenome2OperonIndex()))
 
-    ancestralOperonSequence = []
     #ancestralOperonSequence = assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons)
 
-    return ancestralOperonSequence
+    return arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons
 
 ######################################################
 # updateGlobalTrackers
@@ -2115,9 +2150,14 @@ def traverseNewickTree(node, parentNode):
 ######################################################
 #                       main
 ######################################################
+start = time.time()
 print('Reading in newick tree from file: %s...' % (newickFileName))
 newickTree = Phylo.read(newickFileName, 'newick')
 Phylo.draw(newickTree)
 
 #Traverses the newick tree to reconstruct the ancestral genomes
 result = traverseNewickTree(newickTree.clade, None)
+
+end = time.time()
+print(end - start)
+print('Done')
