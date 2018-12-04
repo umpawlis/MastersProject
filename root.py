@@ -11,7 +11,7 @@ import copy
 import time
 
 #Parameters for script
-newickFileName = '3_leaf_subtree.dnd'
+newickFileName = 'Bacillus_Tree.dnd'
 debug = True
 
 #Global Variables
@@ -1543,8 +1543,11 @@ def processStrains(strain1, strain2, neighborStrain):
     
     if len(trackingEvents) > 0:
         trackingEvents = reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents)
+        if len(neighborTrackingEvents):
+            createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
         createDotPlot(trackingEvents, strain1, strain2)
         CFR, TFR, IR, ITR, LO = reconstructAncestralOperonSequence(trackingEvents)
+        NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
         
         for trackingEvent in trackingEvents:
             stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
@@ -1552,13 +1555,10 @@ def processStrains(strain1, strain2, neighborStrain):
             trackingEvent.setAncestralOperon(stringAncestralOperon)
             
         #if len(neighborTrackingEvents) > 0:
-            #NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
             #Construct Alignment
             #alignedTrackingEvents = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
             #Create sequence Array
-            
         #updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
-            #createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
     
     return ancestralSequence, trackingEvents
 
@@ -1967,8 +1967,8 @@ def createDotPlot(trackingEvents, strain1, strain2):
         plt.title("Orthologous Operon Mapping")
         plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
         plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
-        plt.ylabel('Operon Position in Genome 1')
-        plt.xlabel('Operon Position in Genome 2')
+        plt.ylabel('Operon Position in %s' % (strain1.getName()))
+        plt.xlabel('Operon Position in %s' % (strain2.getName()))
         plt.show()
         f.savefig("%s %s.pdf" %(strain1.getName(), strain2.getName()), bbox_inches='tight')
     else:
