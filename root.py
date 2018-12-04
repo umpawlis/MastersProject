@@ -1931,20 +1931,20 @@ def createDotPlot(trackingEvents, strain1, strain2):
     yellow_y_coord = []
 
     #Red ones represent scores between 3 and above
-    red_x_coord = []
-    red_y_coord = []
+    orange_x_coord = []
+    orange_y_coord = []
 
     #Blue ones represent a local alignment
-    blue_x_coord = []
-    blue_y_coord = []
+    red_x_coord = []
+    red_y_coord = []
 
     print("x" * 70)
     for i in range(0, len(trackingEvents)):
         if trackingEvents[i].getTechnique() == '2 Genome Global Alignment' or trackingEvents[i].getTechnique() == 'Local Alignment':
             #Assign the coords to the appropriate array
             if trackingEvents[i].getTechnique() == 'Local Alignment':
-                blue_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
-                blue_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+                red_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
             elif trackingEvents[i].getScore() == 0:
                 green_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                 green_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
@@ -1952,8 +1952,8 @@ def createDotPlot(trackingEvents, strain1, strain2):
                 yellow_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
                 yellow_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
             else:
-                red_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
-                red_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
+                orange_x_coord.append(trackingEvents[i].getGenome1OperonIndex())
+                orange_y_coord.append(trackingEvents[i].getGenome2OperonIndex())
 
             #Get all coordinates into a single array
             x_coord.append(trackingEvents[i].getGenome1OperonIndex())
@@ -1962,10 +1962,13 @@ def createDotPlot(trackingEvents, strain1, strain2):
             #print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
 
     #If we have any coordinates to plot, display them
-    if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(red_x_coord) > 0 or len(blue_x_coord) > 0:
+    if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(orange_x_coord) > 0 or len(red_x_coord) > 0:
         f = plt.figure()
         plt.title("Orthologous Operon Mapping")
-        plt.plot(green_x_coord, green_y_coord, 'go', yellow_x_coord, yellow_y_coord, 'yo', red_x_coord, red_y_coord, 'ro', blue_x_coord, blue_y_coord, 'bo')
+        plt.plot(green_x_coord, green_y_coord, 'o', color = 'green')
+        plt.plot( yellow_x_coord, yellow_y_coord, 'o', color = 'yellow')
+        plt.plot(orange_x_coord, orange_y_coord, 'o', color = 'orange')
+        plt.plot(red_x_coord, red_y_coord, 'o', color = 'red')
         plt.axis([0, len(trackingEvents)+5, 0, len(trackingEvents)+5])
         plt.ylabel('Operon Position in %s' % (strain1.getName()))
         plt.xlabel('Operon Position in %s' % (strain2.getName()))
