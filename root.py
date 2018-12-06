@@ -2105,6 +2105,7 @@ def traverseNewickTree(node, parentNode):
 
     #Check if the clade has a name, if it does, create Strain object for it
     if not(node.name == None) and len(node.name) > 0:
+        print('%s' % (node.name))
         newStrain = createStrainFromFile(node)
         if not(newStrain == None):
             strains.append(newStrain)
