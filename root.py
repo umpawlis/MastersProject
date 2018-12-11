@@ -1161,7 +1161,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
     #initialize the matrix to store the global alignment scores
     globalAlignmentMatrix = [[ 0.0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
     operonEventMatrix = [[None for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
-
+    
     ####################################
     ##Calculations
     ####################################
@@ -1176,18 +1176,30 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             #Checks if either operons at in the - orientation
             reverseOp1 = reverseSequence(op1)
             reverseOp2 = reverseSequence(op2)
-
+            
+            operon1Reversed = False
+            operon2Reversed = False
+            
             #Reverse operons if needed to
             if reverseOp1 and reverseOp2 == False:
                 operon1.reverse()
+                operon1Reversed = True
             if reverseOp2 and reverseOp1 == False:
                 operon2.reverse()
-
+                operon2Reversed = True
+                
             #Case 1: We have two singleton operons
             if len(operon1) == 1 and len(operon2) == 1:
                 #Perfect match
                 if operon1 == operon2:
                     globalAlignmentMatrix[x][y] =  str(0) + '*'
+                    
+                    #We need this information track whether a singleton was reversed or not
+                    operonEvents = OperonEvents(1, 0, 0, 0, operon1, operon2, None)
+                    operonEvents.setOperon1Reversed(operon1Reversed)
+                    operonEvents.setOperon2Reversed(operon2Reversed)
+                    operonEventMatrix[x][y] = operonEvents
+                    
                 #Mismatch
                 else:
                     globalAlignmentMatrix[x][y] = -999
@@ -1199,7 +1211,11 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
                 score, operonEvents = performGlobalAlignment(operon1, operon2)
-
+                
+                #We need this information track whether an operon was reversed
+                operonEvents.setOperon1Reversed(operon1Reversed)
+                operonEvents.setOperon2Reversed(operon2Reversed)
+                
                 globalAlignmentMatrix[x][y] = score
                 operonEventMatrix[x][y] = operonEvents
 
@@ -1530,16 +1546,17 @@ def detectOrthologousSingletonGenes(coverageTracker, strain, descendantsTracking
 # Description: Takes two related strains and a close neighbor and constructs the events for both comparisons
 ######################################################
 def processStrains(strain1, strain2, neighborStrain):
-
     ancestralSequence = []
-
+    
+    print('Constructing tracking events for siblings: %s, %s' %(strain1.getName(), strain2.getName()))
+    trackingEvents = constructTrackingEvents(strain1, strain2, True)
+    
     neighborTrackingEvents = None
     if not (neighborStrain is None):
-        print('Constructing the tracking events for neighboring strain: %s' % (neighborStrain.getName()))
+        print('Constructing the tracking events for neighboring strains: %s, %s' % (strain1.getName(), neighborStrain.getName()))
         neighborTrackingEvents = constructTrackingEvents(strain1, neighborStrain, False)
 
-    print('Constructing tracking events for cherry pair: %s, %s' %(strain1.getName(), strain2.getName()))
-    trackingEvents = constructTrackingEvents(strain1, strain2, True)
+    
 
     if len(trackingEvents) > 0:
         trackingEvents = reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents)
@@ -1547,10 +1564,18 @@ def processStrains(strain1, strain2, neighborStrain):
             createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
         createDotPlot(trackingEvents, strain1, strain2)
         CFR, TFR, IR, ITR, LO = reconstructAncestralOperonSequence(trackingEvents)
+        
+        regionCount = len(TFR) + len(IR) + len(ITR)
+        
+        
         NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
-
+        
+        trackingEvents.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
         for trackingEvent in trackingEvents:
-            stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
+            if (trackingEvent.getTechnique() == 'Duplicate Alignment (No match found)'):
+                stringAncestralOperon = trackingEvent.getAncestralOperon()
+            else:
+                stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
             ancestralSequence.append(stringAncestralOperon)
             trackingEvent.setAncestralOperon(stringAncestralOperon)
 
@@ -1663,8 +1688,6 @@ def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackin
                 while (i > 0) or (j > 0):
 
                     #Get the biggest index
-                    print(i)
-                    print(j)
                     if i < 0:
                         #Ran out of elements in Gaps 1
 #                        print('Gap being processed: %s' % (operon2Gaps[j]))

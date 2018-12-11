@@ -29,6 +29,8 @@ class OperonEvents(object):
     operon2GapIndexes = []
     substitutionDict = {}
     operon1IndexToAlignment2Index = {}
+    operon1Reversed = False
+    operon2Reversed = False
 
     def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
         self.numMatches = numMatches
@@ -99,6 +101,10 @@ class OperonEvents(object):
         return self.substitutionDict
     def getOperon1IndexToAlignment2Index(self):
         return self.operon1IndexToAlignment2Index
+    def isOperon1Reversed(self):
+        return self.operon1Reversed
+    def isOperon2Reversed(self):
+        return self.operon2Reversed
     
     #####Setters#####
     def setNumMatches(self, numMatches):
@@ -151,3 +157,7 @@ class OperonEvents(object):
         self.substitutionDict = substitutionDict
     def setOperon1IndexToAlignment2Index(self, operon1IndexToAlignment2Index):
         self.operon1IndexToAlignment2Index = operon1IndexToAlignment2Index
+    def setOperon1Reversed(self, operon1Reversed):
+        self.operon1Reversed = operon1Reversed
+    def setOperon2Reversed(self, operon2Reversed):
+        self.operon2Reversed = operon2Reversed
