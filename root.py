@@ -1567,18 +1567,21 @@ def processStrains(strain1, strain2, neighborStrain):
         
         regionCount = len(TFR) + len(IR) + len(ITR)
         
-        
-        NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
-        
-        trackingEvents.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
-        for trackingEvent in trackingEvents:
-            if (trackingEvent.getTechnique() == 'Duplicate Alignment (No match found)'):
-                stringAncestralOperon = trackingEvent.getAncestralOperon()
-            else:
-                stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
-            ancestralSequence.append(stringAncestralOperon)
-            trackingEvent.setAncestralOperon(stringAncestralOperon)
-
+        #All regions are Forward Conservered so just sort them
+        if regionCount != 0 and not (neighborTrackingEvents is None) and len(neighborTrackingEvents) > 0:
+            NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
+            ancestralSequence = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
+        else:
+            #Just sort by x -coordinate since they're all FC regions or no neigbor
+            trackingEvents.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
+            for trackingEvent in trackingEvents:
+                if (trackingEvent.getTechnique() == 'Duplicate Alignment (No match found)'):
+                    stringAncestralOperon = trackingEvent.getAncestralOperon()
+                else:
+                    stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
+                ancestralSequence.append(stringAncestralOperon)
+                trackingEvent.setAncestralOperon(stringAncestralOperon)
+                
         #if len(neighborTrackingEvents) > 0:
             #Construct Alignment
             #alignedTrackingEvents = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
@@ -1586,6 +1589,18 @@ def processStrains(strain1, strain2, neighborStrain):
         #updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
 
     return ancestralSequence, trackingEvents
+
+
+######################################################
+# constructAlignment
+# Parameters:
+# Description: Takes regions detected from the siblings and compares and arranges those regions based on the neighbor
+######################################################
+def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
+    ancestralSequence = []
+    
+    
+    return ancestralSequence
 
 ######################################################
 # formatAncestralOperontoString
@@ -1869,8 +1884,6 @@ def reconstructAncestralOperonSequence(trackingEvents):
     for operon in arrayOfLostOperons:
         print('Lost operon')
         print('%s, %s' %(operon.getGenome1OperonIndex(), operon.getGenome2OperonIndex()))
-
-    #ancestralOperonSequence = assembleSequence(arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons)
 
     return arrayOfConservedForwardRegions, arrayOfTransposedForwardRegions, arrayOfInvertedRegions, arrayOfInvertedTranspositionRegions, arrayOfLostOperons
 
