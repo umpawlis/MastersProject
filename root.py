@@ -1161,7 +1161,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
     #initialize the matrix to store the global alignment scores
     globalAlignmentMatrix = [[ 0.0 for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
     operonEventMatrix = [[None for x in range(0, len(secondOperonList))] for y in range(0, len(firstOperonList))]
-    
+
     ####################################
     ##Calculations
     ####################################
@@ -1176,10 +1176,10 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             #Checks if either operons at in the - orientation
             reverseOp1 = reverseSequence(op1)
             reverseOp2 = reverseSequence(op2)
-            
+
             operon1Reversed = False
             operon2Reversed = False
-            
+
             #Reverse operons if needed to
             if reverseOp1 and reverseOp2 == False:
                 operon1.reverse()
@@ -1187,19 +1187,19 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             if reverseOp2 and reverseOp1 == False:
                 operon2.reverse()
                 operon2Reversed = True
-                
+
             #Case 1: We have two singleton operons
             if len(operon1) == 1 and len(operon2) == 1:
                 #Perfect match
                 if operon1 == operon2:
                     globalAlignmentMatrix[x][y] =  str(0) + '*'
-                    
+
                     #We need this information track whether a singleton was reversed or not
                     operonEvents = OperonEvents(1, 0, 0, 0, operon1, operon2, None)
                     operonEvents.setOperon1Reversed(operon1Reversed)
                     operonEvents.setOperon2Reversed(operon2Reversed)
                     operonEventMatrix[x][y] = operonEvents
-                    
+
                 #Mismatch
                 else:
                     globalAlignmentMatrix[x][y] = -999
@@ -1211,11 +1211,11 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             #Case 3: None of them are singleton operons, perform a global alignment
             elif len(op1) > 1 and len(op2) > 1:
                 score, operonEvents = performGlobalAlignment(operon1, operon2)
-                
+
                 #We need this information track whether an operon was reversed
                 operonEvents.setOperon1Reversed(operon1Reversed)
                 operonEvents.setOperon2Reversed(operon2Reversed)
-                
+
                 globalAlignmentMatrix[x][y] = score
                 operonEventMatrix[x][y] = operonEvents
 
@@ -1547,16 +1547,16 @@ def detectOrthologousSingletonGenes(coverageTracker, strain, descendantsTracking
 ######################################################
 def processStrains(strain1, strain2, neighborStrain):
     ancestralSequence = []
-    
+
     print('Constructing tracking events for siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     trackingEvents = constructTrackingEvents(strain1, strain2, True)
-    
+
     neighborTrackingEvents = None
     if not (neighborStrain is None):
         print('Constructing the tracking events for neighboring strains: %s, %s' % (strain1.getName(), neighborStrain.getName()))
         neighborTrackingEvents = constructTrackingEvents(strain1, neighborStrain, False)
 
-    
+
 
     if len(trackingEvents) > 0:
         trackingEvents = reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents)
@@ -1564,9 +1564,9 @@ def processStrains(strain1, strain2, neighborStrain):
             createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
         createDotPlot(trackingEvents, strain1, strain2)
         CFR, TFR, IR, ITR, LO = reconstructAncestralOperonSequence(trackingEvents)
-        
+
         regionCount = len(TFR) + len(IR) + len(ITR)
-        
+
         #All regions are Forward Conservered so just sort them
         if regionCount != 0 and not (neighborTrackingEvents is None) and len(neighborTrackingEvents) > 0:
             NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
@@ -1581,7 +1581,7 @@ def processStrains(strain1, strain2, neighborStrain):
                     stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
                 ancestralSequence.append(stringAncestralOperon)
                 trackingEvent.setAncestralOperon(stringAncestralOperon)
-                
+
         #if len(neighborTrackingEvents) > 0:
             #Construct Alignment
             #alignedTrackingEvents = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
@@ -1597,9 +1597,37 @@ def processStrains(strain1, strain2, neighborStrain):
 # Description: Takes regions detected from the siblings and compares and arranges those regions based on the neighbor
 ######################################################
 def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
+
     ancestralSequence = []
+    dictionary = {}
+
+    #Handle the lost operons
+    if not (LO is None) and len(LO) > 0:
+        for operon in LO:
+            if operon.getGenome1OperonIndex() in dictionary:
+                dictionary[operon.getGenome1OperonIndex()].append(operon)
+            else:
+                dictionary[operon.getGenome1OperonIndex()] = [operon]
+
+    #Handle forward conserved regions
+    if not (CFR is None) and len(CFR) > 0:
+        for region in CFR:
+            for x in range(0, len(region)):
+                if region[x].getGenome1OperonIndex() in dictionary:
+                    dictionary[region[x].getGenome1OperonIndex()].append(region[x])
+                else:
+                    dictionary[region[x].getGenome1OperonIndex()] = [region[x]]
+
+    #Handle Transposed Forward Regions
+    if not (TFR is None) and len(TFR) > 0:
+        for region in TFR:
+            print(region)
     
-    
+
+    #Handle Inversed Regions
+
+    #Handle Inversed Transposed Regions
+
     return ancestralSequence
 
 ######################################################
