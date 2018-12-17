@@ -1556,40 +1556,37 @@ def processStrains(strain1, strain2, neighborStrain):
         print('Constructing the tracking events for neighboring strains: %s, %s' % (strain1.getName(), neighborStrain.getName()))
         neighborTrackingEvents = constructTrackingEvents(strain1, neighborStrain, False)
 
-
-
     if len(trackingEvents) > 0:
         trackingEvents = reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents)
-        if len(neighborTrackingEvents):
-            createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
         createDotPlot(trackingEvents, strain1, strain2)
+        
+        #Add the ancestral operon
+        for trackingEvent in trackingEvents:
+            if (trackingEvent.getTechnique() == 'Duplicate Alignment (No match found)'):
+                stringAncestralOperon = trackingEvent.getAncestralOperon()
+            else:
+                stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
+            trackingEvent.setAncestralOperon(stringAncestralOperon)
+            
         CFR, TFR, IR, ITR, LO = reconstructAncestralOperonSequence(trackingEvents)
-
         regionCount = len(TFR) + len(IR) + len(ITR)
-
-        #All regions are Forward Conservered so just sort them
+        
         if regionCount != 0 and not (neighborTrackingEvents is None) and len(neighborTrackingEvents) > 0:
+            createDotPlot(neighborTrackingEvents, strain1, neighborStrain)
             NCFR, NTFR, NIR, NITR, NLO = reconstructAncestralOperonSequence(neighborTrackingEvents)
             ancestralSequence = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
+            
         else:
             #Just sort by x -coordinate since they're all FC regions or no neigbor
             trackingEvents.sort(key=lambda x: x.genome1OperonIndex, reverse=False)
             for trackingEvent in trackingEvents:
-                if (trackingEvent.getTechnique() == 'Duplicate Alignment (No match found)'):
-                    stringAncestralOperon = trackingEvent.getAncestralOperon()
-                else:
-                    stringAncestralOperon = formatAncestralOperontoString(trackingEvent.getAncestralOperon())
-                ancestralSequence.append(stringAncestralOperon)
-                trackingEvent.setAncestralOperon(stringAncestralOperon)
+                ancestralSequence.append(trackingEvent.getAncestralOperon())
+    else:
+        print('No tracking events computed!')
 
-        #if len(neighborTrackingEvents) > 0:
-            #Construct Alignment
-            #alignedTrackingEvents = constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO)
-            #Create sequence Array
-        #updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
+     #updateGlobalTrackers(trackingEvents, strain1.getSequence(), strain2.getSequence())
 
     return ancestralSequence, trackingEvents
-
 
 ######################################################
 # constructAlignment
@@ -1600,7 +1597,6 @@ def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
 
     ancestralSequence = []
     dictionary = {}
-
     #Handle the lost operons
     if not (LO is None) and len(LO) > 0:
         for operon in LO:
@@ -1608,7 +1604,6 @@ def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
                 dictionary[operon.getGenome1OperonIndex()].append(operon)
             else:
                 dictionary[operon.getGenome1OperonIndex()] = [operon]
-
     #Handle forward conserved regions
     if not (CFR is None) and len(CFR) > 0:
         for region in CFR:
@@ -1617,18 +1612,75 @@ def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
                     dictionary[region[x].getGenome1OperonIndex()].append(region[x])
                 else:
                     dictionary[region[x].getGenome1OperonIndex()] = [region[x]]
-
     #Handle Transposed Forward Regions
-    if not (TFR is None) and len(TFR) > 0:
-        for region in TFR:
-            print(region)
-    
-
+    dictionary = processRegion(TFR, dictionary, NTFR, NIR, NITR)
     #Handle Inversed Regions
-
+    dictionary = processRegion(IR, dictionary, NTFR, NIR, NITR)
     #Handle Inversed Transposed Regions
-
+    dictionary = processRegion(ITR, dictionary, NTFR, NIR, NITR)
+    #Now add the operons from the dictionary to the ancestral sequence
+    keys = dictionary.keys()
+    keys.sort()
+    for key in keys:
+        operons = dictionary[key]
+        if not(operons is None) and len(operons) > 0:
+            for operon in operons:
+                if (operon.getTechnique() == 'Duplicate Alignment (No match found)'):
+                    stringAncestralOperon = operon.getAncestralOperon()
+                else:
+                    stringAncestralOperon = formatAncestralOperontoString(operon.getAncestralOperon())
+                ancestralSequence.append(stringAncestralOperon)
     return ancestralSequence
+
+######################################################
+# processRegion
+# Parameters: list of regions, dictionary which stores the position of the regions, neighbors regions
+# Description: Takes an array of regions and checks if the postion of that region is conserved in the neighbor and adds them to the dictionary appropriately
+######################################################
+def processRegion(regions, dictionary, NTFR, NIR, NITR):
+    if not (regions is None) and len(regions) > 0:
+        for region in regions:
+            count = 0
+            for x in range(0, len(region)):
+                currentTrackingEvent = region[x]
+                #need to check neighbor if the same exists
+                found = checkNeighorRegion(currentTrackingEvent.getGenome1OperonIndex(), NTFR)
+                if found == True:
+                    count += 1
+                else:
+                    found = checkNeighorRegion(currentTrackingEvent.getGenome1OperonIndex(), NIR)
+                    if found == True:
+                        count += 1
+                    else:
+                        found = checkNeighorRegion(currentTrackingEvent.getGenome1OperonIndex(), NITR)
+                        if found:
+                            count += 1
+            if count > 0:
+                for x in range (0, len(region)):
+                    if region[x].getGenome1OperonIndex() in dictionary:
+                        dictionary[region[x].getGenome1OperonIndex()].append(region[x])
+                    else:
+                        dictionary[region[x].getGenome1OperonIndex()] = [region[x]]
+            else:
+                for x in range (0, len(region)):
+                    if region[x].getGenome2OperonIndex() in dictionary:
+                        dictionary[region[x].getGenome2OperonIndex()].append(region[x])
+                    else:
+                        dictionary[region[x].getGenome2OperonIndex()] = [region[x]]
+    return dictionary
+######################################################
+# checkNeighorRegion
+# Parameters: index of operon, list of regions
+# Description: Checks if the given operon(index) exists in a given array of regions
+######################################################
+def checkNeighorRegion(index, arrayOfRegions):
+    if not(arrayOfRegions is None) and len(arrayOfRegions) > 0:
+        for region in arrayOfRegions:
+            for x in range(0, len(region)):
+                currentTrackingEvent = region[x]
+                if currentTrackingEvent.getGenome1OperonIndex() == index:
+                    return True
+    return False
 
 ######################################################
 # formatAncestralOperontoString
@@ -1660,141 +1712,106 @@ def formatAncestralOperontoString(ancestralOperon):
 def reconstructAncestralOperon(trackingEvents, strain1, strain2, neighborTrackingEvents):
     print('Reconstructing ancestral operons')
     for trackingEvent in trackingEvents:
-        if trackingEvent.getTechnique() == '2 Genome Global Alignment' and trackingEvent.getOperonEvents() != None:
+        
+        #If the operons are identical, it doesn't matter which one we pick
+        if trackingEvent.getScore() == 0:
+            trackingEvent.setAncestralOperon(trackingEvent.getGenome1Operon())
+        else:
             currentOperonEvent = trackingEvent.getOperonEvents()
+            #Need to check whether these gaps are losses or duplicates
+            operon1Gaps = currentOperonEvent.getOperon1Gaps()
+            operon1GapIndexes = currentOperonEvent.getOperon1GapIndexes()
+            operon2Gaps = currentOperonEvent.getOperon2Gaps()
+            operon2GapIndexes = currentOperonEvent.getOperon2GapIndexes()
+            
+            #Used for debugging
+            #print('These are the operons being compared: %s, %s' %(trackingEvent.getGenome1Operon(), trackingEvent.getGenome2Operon()))
+#           print('This is the resulting alignment: %s, %s' %(currentOperonEvent.getAlignedGenesInOperon1(), currentOperonEvent.getAlignedGenesInOperon2()))
+#           print('These are the extra genes for operon 1: %s' %(operon1Gaps))
+#           print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
+#           print('These are the extra genes for operon 2: %s' %(operon2Gaps))
+#           print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
 
-            if trackingEvent.getScore() == 0:
-                #Pefect matches, doesn't matter which one we pick
-                trackingEvent.setAncestralOperon(currentOperonEvent.getAlignedGenesInOperon1())
-            else:
-                #Need to check whether these gaps are losses or duplicates
-                operon1Gaps = currentOperonEvent.getOperon1Gaps()
-                operon1GapIndexes = currentOperonEvent.getOperon1GapIndexes()
-                operon2Gaps = currentOperonEvent.getOperon2Gaps()
-                operon2GapIndexes = currentOperonEvent.getOperon2GapIndexes()
+            #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
+            operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, currentOperonEvent.getAlignedGenesInOperon1())
+            operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, currentOperonEvent.getAlignedGenesInOperon2())
+            ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
+            
+            formattedSequence1, operon1SequenceConversion = formatAllOperons(strain1.getSequence())
+            formattedSequence2, operon2SequenceConversion = formatAllOperons(strain2.getSequence())
+            #print(formattedSequence1)
+            
+            i = len(operon1Gaps) - 1
+            j = len(operon2Gaps) - 1
 
-                #Used for debugging
-#                print('These are the operons being compared: %s, %s' %(trackingEvent.getGenome1Operon(), trackingEvent.getGenome2Operon()))
-#                print('This is the resulting alignment: %s, %s' %(currentOperonEvent.getAlignedGenesInOperon1(), currentOperonEvent.getAlignedGenesInOperon2()))
-#                print('These are the extra genes for operon 1: %s' %(operon1Gaps))
-#                print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
-#                print('These are the extra genes for operon 2: %s' %(operon2Gaps))
-#                print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
-
-                #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
-                operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, currentOperonEvent.getAlignedGenesInOperon1())
-                operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, currentOperonEvent.getAlignedGenesInOperon2())
-                ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
-                #Decide which ancestral operon to pick
-#                subsDict = currentOperonEvent.getSubstitutionDict()
-#                if trackingEvent.getScore() > 0 and len(neighborTrackingEvents) > 0 and len(subsDict) > 0:
-#                    #Get the neighbors mapper
-#                    currentNeighborTrackingEvent = None
-#                    for neighborTrackingEvent in neighborTrackingEvents:
-#                        if neighborTrackingEvent.getGenome1OperonIndex() == trackingEvent.getGenome1OperonIndex():
-#                            currentNeighborTrackingEvent = neighborTrackingEvent
-#                            break
-#
-#                    if currentNeighborTrackingEvent != None:
-#                        indexMapper = currentNeighborTrackingEvent.getOperon1IndexToAlignment2Index()
-#
-#                        ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
-#
-#                        for key, value in subsDict.items():
-#                            if indexMapper[key] != None and currentNeighborTrackingEvent.getOperonEvents() != None:
-#                                neighborOperonEvent = currentNeighborTrackingEvent.getOperonEvents()
-#
-#                                neighborAlignment = neighborOperonEvent.getAlignedGenesInOperon2()
-#                                neighborGene  = neighborAlignment[indexMapper[key]]
-#
-#                                operonAlignment = currentOperonEvent.getAlignedGenesInOperon1()
-#                                operonGene = operonAlignment[subsDict[key]]
-#
-#                                #Switch genes if the genes don't match
-#                                if operonGene != neighborGene:
-#                                    siblingAlignment = currentOperonEvent.getAlignedGenesInOperon2()
-#                                    ancestralOperon[subsDict[key]] = siblingAlignment[subsDict[key]]
-#                else:
-#                    ancestralOperon = currentOperonEvent.getAlignedGenesInOperon1()
-
-                formattedSequence1, operon1SequenceConversion = formatAllOperons(strain1.getSequence())
-                formattedSequence2, operon2SequenceConversion = formatAllOperons(strain2.getSequence())
-                #print(formattedSequence1)
-
-                i = len(operon1Gaps) - 1
-                j = len(operon2Gaps) - 1
-                #Testing by inserting more genes
-#                if len(operon1Gaps) > 0:
-#                    operon1Gaps[0].insert(0, 'Ala_GCA')
-#                    operon1Gaps[0].insert(0, 'Gly_GGC')
-
-                while (i > 0) or (j > 0):
-
-                    #Get the biggest index
-                    if i < 0:
-                        #Ran out of elements in Gaps 1
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
-                        if len(operon2Gaps[j]) > 0:
-                            #Insert gap into operon
-                            operon2Gaps[j].reverse()
-                            for gene in operon2Gaps[j]:
-                                ancestralOperon.insert(operon2GapIndexes[j], gene)
-                        j = j - 1
-                    elif j < 0:
-                        #Ran out of elements in Gaps 2
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
+            while (i > 0) or (j > 0):
+                
+                #Get the biggest index
+                if i < 0:
+                    #Ran out of elements in Gaps 1
+                    #print('Gap being processed: %s' % (operon2Gaps[j]))
+                    numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
+                    #print('Gap being processed: %s' % (operon2Gaps[j]))
+                    #print('Number of unique genes found: %s' %(numUniqueFound))
+                    #print('Number of deletion genes found: %s' %(deletionSizes))
+                    #print('Number of duplicate genes found: %s' %(duplicationSizes))
+                    
+                    if len(operon2Gaps[j]) > 0:
+                        #Insert gap into operon
+                        operon2Gaps[j].reverse()
+                        for gene in operon2Gaps[j]:
+                            ancestralOperon.insert(operon2GapIndexes[j], gene)
+                    j = j - 1
+                elif j < 0:
+                    #Ran out of elements in Gaps 2
+#                   print('Gap being processed: %s' % (operon1Gaps[i]))
+                    numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
 #                        print('Gap being processed: %s' % (operon1Gaps[i]))
 #                        print('Number of unique genes found: %s' %(numUniqueFound))
 #                        print('Number of deletion genes found: %s' %(deletionSizes))
 #                        print('Number of duplicate genes found: %s' %(duplicationSizes))
-                        if len(operon1Gaps[i]) > 0:
-                            #Insert gap into operon
-                            operon1Gaps[i].reverse()
-                            for gene in operon1Gaps[i]:
-                                ancestralOperon.insert(operon1GapIndexes[i], gene)
-                        i = i - 1
-                    elif operon1GapIndexes[i] > operon2GapIndexes[j]:
-                        #Operon 1 index is bigger
-#                        print('Gap being processed: %s' % (operon1Gaps[i]))
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
+                    if len(operon1Gaps[i]) > 0:
+                        #Insert gap into operon
+                        operon1Gaps[i].reverse()
+                        for gene in operon1Gaps[i]:
+                            ancestralOperon.insert(operon1GapIndexes[i], gene)
+                    i = i - 1
+                elif operon1GapIndexes[i] > operon2GapIndexes[j]:
+                    #Operon 1 index is bigger
+#                   print('Gap being processed: %s' % (operon1Gaps[i]))
+                    numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i], formattedSequence1, operon1SequenceConversion[trackingEvent.getGenome1OperonIndex()])
 #                        print('Gap being processed: %s' % (operon1Gaps[i]))
 #                        print('Number of unique genes found: %s' %(numUniqueFound))
 #                        print('Number of deletion genes found: %s' %(deletionSizes))
 #                        print('Number of duplicate genes found: %s' %(duplicationSizes))
-                        if len(operon1Gaps[i]) > 0:
-                            #Insert gap into operon
-                            operon1Gaps[i].reverse()
-                            for gene in operon1Gaps[i]:
-                                ancestralOperon.insert(operon1GapIndexes[i], gene)
-                        i = i - 1
-                    elif operon1GapIndexes[i] < operon2GapIndexes[j]:
-                        #Operon 2 index is bigger
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-                        numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
-#                        print('Gap being processed: %s' % (operon2Gaps[j]))
-#                        print('Number of unique genes found: %s' %(numUniqueFound))
-#                        print('Number of deletion genes found: %s' %(deletionSizes))
-#                        print('Number of duplicate genes found: %s' %(duplicationSizes))
-                        if len(operon2Gaps[j]) > 0:
-                            #Insert gap into operon
-                            operon2Gaps[j].reverse()
-                            for gene in operon2Gaps[j]:
-                                ancestralOperon.insert(operon2GapIndexes[j], gene)
-                        j = j - 1
-                #Set ancestral operon
-                trackingEvent.setAncestralOperon(ancestralOperon)
-#                print('This is the resulting ancestral operon: %s' % (ancestralOperon))
-#                print('\n\n')
-#                print('These are the extra genes remaining for operon 1: %s' %(operon1Gaps))
-#                print('These are the extra genes remaining for operon 2: %s' %(operon2Gaps))
-#                print('These are the duplicate sizes operon 1: %s' %(duplicateSizesWithinAlignment1))
-#                print('These are the duplicate sizes operon 2: %s\n\n' %(duplicateSizesWithinAlignment2))
+                    if len(operon1Gaps[i]) > 0:
+                        #Insert gap into operon
+                        operon1Gaps[i].reverse()
+                        for gene in operon1Gaps[i]:
+                            ancestralOperon.insert(operon1GapIndexes[i], gene)
+                    i = i - 1
+                elif operon1GapIndexes[i] < operon2GapIndexes[j]:
+                    #Operon 2 index is bigger
+#                   print('Gap being processed: %s' % (operon2Gaps[j]))
+                    numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j], formattedSequence2, operon2SequenceConversion[trackingEvent.getGenome2OperonIndex()])
+#                   print('Gap being processed: %s' % (operon2Gaps[j]))
+#                   print('Number of unique genes found: %s' %(numUniqueFound))
+#                   print('Number of deletion genes found: %s' %(deletionSizes))
+#                   print('Number of duplicate genes found: %s' %(duplicationSizes))
+                    if len(operon2Gaps[j]) > 0:
+                        #Insert gap into operon
+                        operon2Gaps[j].reverse()
+                        for gene in operon2Gaps[j]:
+                            ancestralOperon.insert(operon2GapIndexes[j], gene)
+                    j = j - 1
+            #Set ancestral operon
+            trackingEvent.setAncestralOperon(ancestralOperon)
+#           print('This is the resulting ancestral operon: %s' % (ancestralOperon))
+#           print('\n\n')
+#           print('These are the extra genes remaining for operon 1: %s' %(operon1Gaps))
+#           print('These are the extra genes remaining for operon 2: %s' %(operon2Gaps))
+#           print('These are the duplicate sizes operon 1: %s' %(duplicateSizesWithinAlignment1))
+#           print('These are the duplicate sizes operon 2: %s\n\n' %(duplicateSizesWithinAlignment2))
 
     return trackingEvents
 
