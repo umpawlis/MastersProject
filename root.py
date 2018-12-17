@@ -483,7 +483,11 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     #Check if we need to reverse any of the operons
     reverseOp1 = reverseSequence(op1)
     reverseOp2 = reverseSequence(op2)
-
+    operon1NegativeOrientation = reverseOp1
+    operon2NegativeOrientation = reverseOp2
+    operon1Reversed = False
+    operon2Reversed = False
+    
     #Compute the set differences between the two operons
     setDifference, operon1, operon2, numberOfDifferentGenes = formatAndComputeOperonDifferences(op1, op2)
 
@@ -494,8 +498,10 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     #Reverse operons if needed to
     if reverseOp1:
         operon1.reverse()
+        operon1Reversed = True
     if reverseOp2:
         operon2.reverse()
+        operon2Reversed = True
 
     #Initialize the distance matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
@@ -525,7 +531,13 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
 
     #Trace back score matrix to get alignment
     aligned1, aligned2, numGaps, endPosition, operonEvents = traceback(operon1, operon2, scoreMatrix, maxPosition)
-
+    
+    #Store information about the orientation of the operons
+    operonEvents.setOperon1NegativeOrientation(operon1NegativeOrientation)
+    operonEvents.setOperon2NegativeOrientation(operon2NegativeOrientation)
+    operonEvents.setOperon1Reversed(operon1Reversed)
+    operonEvents.setOperon2Reversed(operon2Reversed)
+    
     if len(operon1) <= len(operon2):
         shortestLength = len(operon1)
     else:
@@ -1176,7 +1188,10 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             #Checks if either operons at in the - orientation
             reverseOp1 = reverseSequence(op1)
             reverseOp2 = reverseSequence(op2)
-
+            
+            #Tracks whether the operon is in the negative orientation and if it was flipped
+            operon1NegativeOrientation = reverseOp1
+            operon2NegativeOrientation = reverseOp2
             operon1Reversed = False
             operon2Reversed = False
 
@@ -1194,10 +1209,13 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 if operon1 == operon2:
                     globalAlignmentMatrix[x][y] =  str(0) + '*'
 
-                    #We need this information track whether a singleton was reversed or not
+                    #We need this information to track whether the operon was in the negative orientation and if it was flipped
                     operonEvents = OperonEvents(1, 0, 0, 0, operon1, operon2, None)
                     operonEvents.setOperon1Reversed(operon1Reversed)
                     operonEvents.setOperon2Reversed(operon2Reversed)
+                    operonEvents.setOperon1NegativeOrientation(operon1NegativeOrientation)
+                    operonEvents.setOperon2NegativeOrientation(operon2NegativeOrientation)
+                    
                     operonEventMatrix[x][y] = operonEvents
 
                 #Mismatch
@@ -1212,9 +1230,11 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             elif len(op1) > 1 and len(op2) > 1:
                 score, operonEvents = performGlobalAlignment(operon1, operon2)
 
-                #We need this information track whether an operon was reversed
+                #We need this information to track whether the operon was in the negative orientation and if it was flipped
                 operonEvents.setOperon1Reversed(operon1Reversed)
                 operonEvents.setOperon2Reversed(operon2Reversed)
+                operonEvents.setOperon1NegativeOrientation(operon1NegativeOrientation)
+                operonEvents.setOperon2NegativeOrientation(operon2NegativeOrientation)
 
                 globalAlignmentMatrix[x][y] = score
                 operonEventMatrix[x][y] = operonEvents

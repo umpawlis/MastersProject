@@ -31,6 +31,8 @@ class OperonEvents(object):
     operon1IndexToAlignment2Index = {}
     operon1Reversed = False
     operon2Reversed = False
+    operon1NegativeOrientation = False
+    operon2NegativeOrientation = False
 
     def __init__(self, numMatches, numCodonMismatches, numMismatches, numSubstitutions, operon1, operon2, matrix):
         self.numMatches = numMatches
@@ -105,6 +107,10 @@ class OperonEvents(object):
         return self.operon1Reversed
     def isOperon2Reversed(self):
         return self.operon2Reversed
+    def isOperon1NegativeOrientation(self):
+        return self.operon1NegativeOrientation
+    def isOperon2NegativeOrientation(self):
+        return self.operon2NegativeOrientation
     
     #####Setters#####
     def setNumMatches(self, numMatches):
@@ -161,3 +167,7 @@ class OperonEvents(object):
         self.operon1Reversed = operon1Reversed
     def setOperon2Reversed(self, operon2Reversed):
         self.operon2Reversed = operon2Reversed
+    def setOperon1NegativeOrientation(self, operon1NegativeOrientation):
+        self.operon1NegativeOrientation = operon1NegativeOrientation
+    def setOperon2NegativeOrientation(self, operon2NegativeOrientation):
+        self.operon2NegativeOrientation = operon2NegativeOrientation
