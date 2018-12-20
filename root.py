@@ -1645,11 +1645,7 @@ def constructAlignment(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
         operons = dictionary[key]
         if not(operons is None) and len(operons) > 0:
             for operon in operons:
-                if (operon.getTechnique() == 'Duplicate Alignment (No match found)'):
-                    stringAncestralOperon = operon.getAncestralOperon()
-                else:
-                    stringAncestralOperon = formatAncestralOperontoString(operon.getAncestralOperon())
-                ancestralSequence.append(stringAncestralOperon)
+                ancestralSequence.append(operon.getAncestralOperon())
     return ancestralSequence
 
 ######################################################
@@ -1711,7 +1707,10 @@ def formatAncestralOperontoString(ancestralOperon):
     stringOperon = ""
 
     if type(ancestralOperon) == str:
-        stringOperon = '[' + ancestralOperon + ']'
+        if not('[' in ancestralOperon):
+            stringOperon = '[' + ancestralOperon.strip() + ']'
+        else:
+            stringOperon = ancestralOperon
     elif type(ancestralOperon) == list:
         for x in range(0, len(ancestralOperon)):
             if x == 0:
