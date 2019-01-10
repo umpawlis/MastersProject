@@ -1,0 +1,136 @@
+X:[o],16S,23S,5S,16S,23S,5S,16S,Ile,Ala,23S,5S,Val,Thr,Lys,Leu,Gly,Leu,Arg,Pro,Ala,16S,23S,5S,Asn,Asn,Asn,Thr,Glu,Gln,Lys,Ala,Asn,Ser,Glu,Val,Asp,Leu,Leu,Arg,Pro,Gly,Ile,16S,23S,5S,16S,23S,5S,Asn,Ser,Glu,Val,Met,Asp,Phe,Thr,Tyr,Trp,His,Gln,Gly,Cys,Leu,Leu,-Asn,Gly,Met,Met,Ser,-Gln,Arg,16S,23S,5S,-Sec,-Sec,[t],-5S,-23S,-16S,-5S,-23S,-16S,Val,-Trp,-Arg,-Gly,-Ala,-Lys,-Glu,-Ser,-Asn,-Ile,-Gly,-Arg,-Gly,-Gln,-His,-Trp,-Tyr,-Asp,-Ser,-Met,-Ala,-5S,-23S,-16S,-Thr,-Phe,-Asp,-Met,-Glu
+Y:[o],16S,23S,5S,16S,23S,5S,16S,Ile,Ala,23S,5S,Val,Thr,Lys,Leu,Gly,Leu,Arg,Pro,Ala,16S,23S,5S,-Arg,5S,Asn,Thr,Glu,Gln,Asn,Ser,Glu,Val,Asp,Leu,Leu,Pro,Gly,16S,23S,5S,16S,23S,5S,Asn,Ser,Glu,Val,Met,Asp,Phe,Thr,Tyr,His,Gln,Gly,Cys,Leu,Met,Met,Ser,Arg,[t],Sec,-Val,-Arg,-Ala,-Lys,-Glu,-Asn,-Ile,-Gly,-Arg,-Gly,-Gln,-His,-Trp,-Tyr,-Asp,-Ser,-Met,-Ala,-5S,-23S,-16S,-Thr,-Phe,-Asp,-Met,-Glu,-Lys
+------------------------
+**********************************************************
+LP running time: 0 hour(s), 00 minutes(s) and 00 second(s)
+**********************************************************
+
+Detailed Results
+****************
+   Genome X         Genome Y   Operation
+   ========         ========   =========
+    [o]_1     ---   [o]_114    
+    16S_2     ---   16S_115    
+    23S_3     ---   23S_116    
+     5S_4     ---    5S_117    
+    16S_5     ---   16S_118    
+    23S_6     ---   23S_119    
+     5S_7     ---    5S_120    
+    16S_8     ---   16S_121    
+    Ile_9     ---   Ile_122    
+    Ala_10    ---   Ala_123    
+    23S_11    ---   23S_124    
+    5S_12     ---    5S_125    
+    Val_13    ---   Val_126    
+    Thr_14    ---   Thr_127    
+    Lys_15    ---   Lys_128    
+    Leu_16    ---   Leu_129    
+    Gly_17    ---   Gly_130    
+    Leu_18    ---   Leu_131    
+    Arg_19    ---   Arg_132    
+    Pro_20    ---   Pro_133    
+    Ala_21    ---   Ala_134    
+    16S_22    ---   16S_135    
+    23S_23    ---   23S_136    
+      .       ---    5S_137    Loss of 5S_137     --> ok
+      .       ---   -Arg_138   Loss of -Arg_138  --> dup or i-dup
+    5S_24     ---    5S_139    
+    Asn_25    ---      .       Loss of Asn_25  --> dup of Asn_26
+    Asn_26    ---   Asn_140    
+    Asn_27    ---      .       Loss of Asn_27  --> dup of Asn_26
+    Thr_28    ---   Thr_141    
+    Glu_29    ---   Glu_142    
+    Gln_30    ---   Gln_143    
+    Lys_31    ---      .       Inverted Duplication of Lys_31 to Ala_32 copied from -Ala_89 to -Lys_90  --> block loss
+    Ala_32    ---      .       
+    Asn_33    ---   Asn_144    
+    Ser_34    ---   Ser_145    
+    Glu_35    ---   Glu_146    
+    Val_36    ---   Val_147    
+    Asp_37    ---   Asp_148    
+    Leu_38    ---   Leu_149    
+    Leu_39    ---   Leu_150    
+    Arg_40    ---      .       Loss of Arg_40  --> ok
+    Pro_41    ---   Pro_151    
+    Gly_42    ---   Gly_152    
+    Ile_43    ---      .       Loss of Ile_43  --> ok
+    16S_44    ---   16S_153    
+    23S_45    ---   23S_154    
+    5S_46     ---    5S_155    
+    16S_47    ---   16S_156    
+    23S_48    ---   23S_157    
+    5S_49     ---    5S_158    
+    Asn_50    ---   Asn_159    
+    Ser_51    ---   Ser_160    
+    Glu_52    ---   Glu_161    
+    Val_53    ---   Val_162    
+    Met_54    ---   Met_163    
+    Asp_55    ---   Asp_164    
+    Phe_56    ---   Phe_165    
+    Thr_57    ---   Thr_166    
+    Tyr_58    ---   Tyr_167    
+    Trp_59    ---      .       Loss of Trp_59  --> ok
+    His_60    ---   His_168    
+    Gln_61    ---   Gln_169    
+    Gly_62    ---   Gly_170    
+    Cys_63    ---   Cys_171    
+    Leu_64    ---   Leu_172    
+    Leu_65    ---      .       Loss of Leu_65	--> 
+   -Asn_66    ---      .       Loss of -Asn_66  --> block loss
+    Gly_67    ---      .       Loss of Gly_67  	--> 
+    Met_68    ---   Met_173    
+    Met_69    ---   Met_174    
+    Ser_70    ---   Ser_175    
+   -Gln_71    ---      .       Loss of -Gln_71  --> ok
+    Arg_72    ---   Arg_176    
+    16S_73    ---      .       Duplication of 16S_73 to 5S_75 copied from 16S_2 to 5S_4  --> ok
+    23S_74    ---      .       
+    5S_75     ---      .       
+   -Sec_76    ---      .       Loss of -Sec_76   --> with inversion of Sec_76 around [t], we could infer only one dup and we'll match Sec_76 with Sec_178
+   -Sec_77    ---      .       Loss of -Sec_77   --> So, one dup here.
+    [t]_78    ---   [t]_177    
+    -5S_79    ---      .       Inverted Duplication of -5S_79 to -16S_84 copied from 16S_44 to 5S_49  --> ok
+   -23S_80    ---      .       
+   -16S_81    ---      .       
+    -5S_82    ---      .       
+   -23S_83    ---      .       
+   -16S_84    ---      .       
+    Val_85    ---      .       Loss of Val_85   --> can be matched with an inversion (don't count it twice! --> see -Val_179)
+   -Trp_86    ---      .       Loss of -Trp_86  --> should be a dup (of -Trp_100 maybe)
+      .       ---   Sec_178    Loss of Sec_178  --> match with Sec_76 after the inversion around [t]
+      .       ---   -Val_179   Loss of -Val_179  --> one inversion (in place) to match Val_85 (we'll leave it -Val in the ancestor)
+   -Arg_87    ---   -Arg_180   
+   -Gly_88    ---      .       Loss of -Gly_88  --> ok
+   -Ala_89    ---   -Ala_181   
+   -Lys_90    ---   -Lys_182   
+   -Glu_91    ---   -Glu_183   
+   -Ser_92    ---      .       Loss of -Ser_92  --> ok
+   -Asn_93    ---   -Asn_184   
+   -Ile_94    ---   -Ile_185   
+   -Gly_95    ---   -Gly_186   
+   -Arg_96    ---   -Arg_187   
+   -Gly_97    ---   -Gly_188   
+   -Gln_98    ---   -Gln_189   
+   -His_99    ---   -His_190   
+   -Trp_100   ---   -Trp_191   
+   -Tyr_101   ---   -Tyr_192   
+   -Asp_102   ---   -Asp_193   
+   -Ser_103   ---   -Ser_194   
+   -Met_104   ---   -Met_195   
+   -Ala_105   ---   -Ala_196   
+   -5S_106    ---   -5S_197    
+   -23S_107   ---   -23S_198   
+   -16S_108   ---   -16S_199   
+   -Thr_109   ---   -Thr_200   
+   -Phe_110   ---   -Phe_201   
+   -Asp_111   ---   -Asp_202   
+   -Met_112   ---   -Met_203   
+   -Glu_113   ---   -Glu_204   
+      .       ---   -Lys_205   Loss of -Lys_205  --> ok
+
+Total Cost = 23.0
+
+Genome X: [o] , 16S , 23S , 5S , 16S , 23S , 5S , 16S , Ile , Ala , 23S , 5S , Val , Thr , Lys , Leu , Gly , Leu , Arg , Pro , Ala , 16S , 23S , 5S , Asn , Asn , Asn , Thr , Glu , Gln , Lys , Ala , Asn , Ser , Glu , Val , Asp , Leu , Leu , Arg , Pro , Gly , Ile , 16S , 23S , 5S , 16S , 23S , 5S , Asn , Ser , Glu , Val , Met , Asp , Phe , Thr , Tyr , Trp , His , Gln , Gly , Cys , Leu , Leu , -Asn , Gly , Met , Met , Ser , -Gln , Arg , 16S , 23S , 5S , -Sec , -Sec , [t] , -5S , -23S , -16S , -5S , -23S , -16S , Val , -Trp , -Arg , -Gly , -Ala , -Lys , -Glu , -Ser , -Asn , -Ile , -Gly , -Arg , -Gly , -Gln , -His , -Trp , -Tyr , -Asp , -Ser , -Met , -Ala , -5S , -23S , -16S , -Thr , -Phe , -Asp , -Met , -Glu
+Genome Y: [o] , 16S , 23S , 5S , 16S , 23S , 5S , 16S , Ile , Ala , 23S , 5S , Val , Thr , Lys , Leu , Gly , Leu , Arg , Pro , Ala , 16S , 23S , 5S , -Arg , 5S , Asn , Thr , Glu , Gln , Asn , Ser , Glu , Val , Asp , Leu , Leu , Pro , Gly , 16S , 23S , 5S , 16S , 23S , 5S , Asn , Ser , Glu , Val , Met , Asp , Phe , Thr , Tyr , His , Gln , Gly , Cys , Leu , Met , Met , Ser , Arg , [t] , Sec , -Val , -Arg , -Ala , -Lys , -Glu , -Asn , -Ile , -Gly , -Arg , -Gly , -Gln , -His , -Trp , -Tyr , -Asp , -Ser , -Met , -Ala , -5S , -23S , -16S , -Thr , -Phe , -Asp , -Met , -Glu , -Lys
+>Ancestor 
+[o],16S,23S,5S,16S,23S,5S,16S,Ile,Ala,23S,5S,Val,Thr,Lys,Leu,Gly,Leu,Arg,Pro,Ala,16S,23S,5S,-Arg,5S,Asn,Asn,Asn,Thr,Glu,Gln,Asn,Ser,Glu,Val,Asp,Leu,Leu,Arg,Pro,Gly,Ile,16S,23S,5S,16S,23S,5S,Asn,Ser,Glu,Val,Met,Asp,Phe,Thr,Tyr,Trp,His,Gln,Gly,Cys,Leu,Leu,-Asn,Gly,Met,Met,Ser,-Gln,Arg,-Sec,-Sec,[t],Val,-Trp,Sec,-Val,-Arg,-Gly,-Ala,-Lys,-Glu,-Ser,-Asn,-Ile,-Gly,-Arg,-Gly,-Gln,-His,-Trp,-Tyr,-Asp,-Ser,-Met,-Ala,-5S,-23S,-16S,-Thr,-Phe,-Asp,-Met,-Glu,-Lys
