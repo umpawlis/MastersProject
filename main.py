@@ -15,6 +15,36 @@ ancestralCounter = 0 #Counter used to create a unique name for the ancestor
 #################################################
 
 ######################################################
+# processStrains
+# Parameters:
+# Description: Takes two related strains and a close neighbor and constructs the events for both comparisons
+######################################################
+def processStrains(strain1, strain2, neighborStrain):
+    ancestralSequence = []
+    
+    print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
+    events = constructEvents(strain1, strain2)
+    
+    return ancestralSequence
+
+######################################################
+# constructEvents
+# Parameters:
+# Description: Constructs the tracking events between two provided strains
+######################################################
+def constructEvents(strain1, strain2):
+    coverageTracker1 = {}
+    coverageTracker2 = {}
+    sequence1 = strain1.getSequence()
+    sequence2 = strain2.getSequence()
+
+    for y in range(0, len(sequence1)):
+        coverageTracker1[y] = False
+
+    for x in range(0, len(sequence2)):
+        coverageTracker2[x] = False
+
+######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode -  direct ancestor of node
 # Description: Traverses a provided newick tree in post order traversal
@@ -50,8 +80,8 @@ def traverseNewickTree(node, parentNode):
 
     if not(leftSibling == None) and len(leftSibling.getSequence()) > 0 and not(rightSibling == None) and len(rightSibling.getSequence()) > 0:
         print('Strains compared: %s, %s' % (leftSibling.getName(), rightSibling.getName()))
+        
         neighborStrain = None
-
         if parentNode != None:
             node.name = 'Processing'
             #Helps determine which side we need to traverse
@@ -62,11 +92,14 @@ def traverseNewickTree(node, parentNode):
             #Put the name back the way it was
             node.name = None
 
-        if neighborStrain == None:
-            print('No neighbor found!')
+        if neighborStrain != None:
+            print('The following neighbor will be used during the comparison: %s' % (neighborStrain.getName()))            
         else:
-            print('The following neighbor will be used during the comparison: %s' % (neighborStrain.getName()))
+            print('No neighbor found!')
 
+        #TODO: Add the ancestral code
+        ancestralOperons, trackingEvents = processStrains(leftSibling, rightSibling, neighborStrain)
+        
         return None
 
     #If the left child has a sequence, return it
@@ -102,10 +135,10 @@ def getNeighborStrain(currNode):
                 print('Successfully created new strain from data file while looking for neighbor: %s' % (neighbor.getName()))
                 strains.append(neighbor)
 
-    if neighbor is None and len(currNode.clades) > 0:
+    if neighbor == None and len(currNode.clades) > 0:
         neighbor = getNeighborStrain(currNode.clades[0])
 
-    if neighbor is None and len(currNode.clades) > 1:
+    if neighbor == None and len(currNode.clades) > 1:
         neighbor = getNeighborStrain(currNode.clades[1])
 
     return neighbor
@@ -172,7 +205,8 @@ def processFileSequence(sequence):
             else:
                 geneList.extend([gene.strip() for gene in sequence[startIndex+2:index-1].split(',')])
 
-        #Singleton
+        #Singleton 
+        #TODO need to verify this code (what happens if singleton first instead of an operon?)
         if index < len(sequence) and sequence[index] == ',':
             geneIndex += 1
             if sequence[index+2] != '[' and sequence[index+2] != '<' and sequence[index+3] != '[':
