@@ -2,6 +2,7 @@ from Bio import Phylo
 from strain import Strain
 from operonEvent import OperonEvents
 from trackingEvents import TrackingEvent
+from LineageData import LineageData
 import os.path
 import multiset
 import numpy as np
