@@ -3,6 +3,7 @@ import os.path
 from Bio import Phylo
 from strain import Strain
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
+import globals
 
 #Parameters that user will pass in
 newickFileName = 'Bacillus_Tree.dnd'
@@ -10,6 +11,10 @@ newickFileName = 'Bacillus_Tree.dnd'
 #Global variables used in script
 strains = [] #Global variable that stores all of the strains in the phylogeny
 ancestralCounter = 0 #Counter used to create a unique name for the ancestor
+deletionCost = 1
+substitutionCost = 1
+codonCost = 0.5
+
 
 #################################################
 ########Functions used in this script############
@@ -23,10 +28,10 @@ ancestralCounter = 0 #Counter used to create a unique name for the ancestor
 def processStrains(strain1, strain2, neighborStrain):
     ancestralSequence = []
     events = []
-    
+
     print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     events = constructEvents(strain1, strain2)
-    
+
     return ancestralSequence, events
 
 ######################################################
@@ -40,16 +45,16 @@ def constructEvents(strain1, strain2):
     coverageTracker2 = {}
     sequence1 = strain1.getSequence()
     sequence2 = strain2.getSequence()
-    
+
     for y in range(0, len(sequence1)):
         coverageTracker1[y] = False
 
     for x in range(0, len(sequence2)):
         coverageTracker2[x] = False
-        
+
     #Global Alignment operation
     event, coverageTracker1, coverageTracker2, globalAlignmentCounter = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
-        
+
     return events
 
 ######################################################
@@ -88,7 +93,7 @@ def traverseNewickTree(node, parentNode):
 
     if not(leftSibling == None) and len(leftSibling.getSequence()) > 0 and not(rightSibling == None) and len(rightSibling.getSequence()) > 0:
         print('Strains compared: %s, %s' % (leftSibling.getName(), rightSibling.getName()))
-        
+
         neighborStrain = None
         if parentNode != None:
             node.name = 'Processing'
@@ -101,13 +106,13 @@ def traverseNewickTree(node, parentNode):
             node.name = None
 
         if neighborStrain != None:
-            print('The following neighbor will be used during the comparison: %s' % (neighborStrain.getName()))            
+            print('The following neighbor will be used during the comparison: %s' % (neighborStrain.getName()))
         else:
             print('No neighbor found!')
 
         #TODO: Add the ancestral code
         ancestralOperons, events = processStrains(leftSibling, rightSibling, neighborStrain)
-        
+
         return None
 
     #If the left child has a sequence, return it
@@ -213,7 +218,7 @@ def processFileSequence(sequence):
             else:
                 geneList.extend([gene.strip() for gene in sequence[startIndex+2:index-1].split(',')])
 
-        #Singleton 
+        #Singleton
         #TODO need to verify this code (what happens if singleton first instead of an operon?)
         if index < len(sequence) and sequence[index] == ',':
             geneIndex += 1
@@ -238,6 +243,7 @@ def processFileSequence(sequence):
 ######################################################
 #                       main
 ######################################################
+globals.initialize() 
 startTime = time.time()
 
 print('Reading in newick tree from file: %s...' % (newickFileName))
