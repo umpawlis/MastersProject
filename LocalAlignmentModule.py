@@ -13,11 +13,9 @@ import numpy as np
 # Description:
 ######################################################
 def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2):
-    global trackingId
-
     #Finding optimal orthologs using local alignment
     minValue = min(len(coverageTracker1), len(coverageTracker2))
-    trackingEvents = []
+    events = []
     localAlignmentCounter = 0
     sequence1 = strain1.getSequence()
     sequence2 = strain2.getSequence()
@@ -87,7 +85,7 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
             print('\n**************************************')
             print('**************************************\n\n')
 
-    return trackingEvents, coverageTracker1, coverageTracker2, localAlignmentCounter
+    return events, coverageTracker1, coverageTracker2, localAlignmentCounter
 
 ######################################################
 # localAlignment
