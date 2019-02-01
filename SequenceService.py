@@ -54,3 +54,38 @@ def reverseSequence(operon):
     if '-' in operon:
         return True
     return False
+
+######################################################
+# formatAllOperons
+# Parameters: sequence
+# Description: Formats all operons to correct orientation.
+######################################################
+def formatAllOperons(sequence):
+    sequenceList = []
+    operonIndexConversions = []
+    operonIndex = 0
+
+    for operon1 in sequence:
+        reverseOp = reverseSequence(operon1)
+
+        operon1 = operon1.replace('-', '')
+        operon1 = operon1.replace('[', '')
+        operon1 = operon1.replace(']', '')
+
+        operon1List = operon1.split(',')
+
+        if len(operon1List) > 1:
+            noWhiteSpaceOperon1List = []
+
+            for op in operon1List:
+                noWhiteSpaceOperon1List.append(op.strip())
+
+            if reverseOp:
+                noWhiteSpaceOperon1List.reverse()
+            sequenceList.append(noWhiteSpaceOperon1List)
+            operonIndexConversions.append(operonIndex)
+            operonIndex += 1
+        else:
+            operonIndexConversions.append(-1)
+
+    return sequenceList, operonIndexConversions

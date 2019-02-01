@@ -3,6 +3,7 @@ import os.path
 from Bio import Phylo
 from strain import Strain
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
+from LocalAlignmentModule import findOrthologsByLocalAlignment
 import globals
 
 #Parameters that user will pass in
@@ -32,7 +33,22 @@ def processStrains(strain1, strain2, neighborStrain):
     print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     events = constructEvents(strain1, strain2)
 
+
+
+
     return ancestralSequence, events
+
+######################################################
+#countRemainingOperons
+#Parameters: tracker - array of booleans that tracks whether an operon was paired (ortholog)
+#Description: Takes an array of booleans and returns a count of the number of False values in the list
+######################################################
+def countRemainingOperons(tracker):
+    count = 0
+    for x in range(0, len(tracker)):
+        if tracker[x] == False:
+            count += 1
+    return count
 
 ######################################################
 # constructEvents
@@ -53,7 +69,23 @@ def constructEvents(strain1, strain2):
         coverageTracker2[x] = False
 
     #Global Alignment operation
-    event, coverageTracker1, coverageTracker2, globalAlignmentCounter = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
+    events, coverageTracker1, coverageTracker2, globalAlignmentCounter = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
+    print('Number of orthologous operons identified using Global Alignment %s' % (globalAlignmentCounter))
+
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+
+    if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
+        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
+        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+
+        numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+        numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+        print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+
+        if len(localAlignmentEvents) > 0:
+            events.extend(localAlignmentEvents)
 
     return events
 
@@ -243,7 +275,7 @@ def processFileSequence(sequence):
 ######################################################
 #                       main
 ######################################################
-globals.initialize() 
+globals.initialize()
 startTime = time.time()
 
 print('Reading in newick tree from file: %s...' % (newickFileName))

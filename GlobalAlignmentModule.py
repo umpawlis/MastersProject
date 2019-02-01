@@ -331,7 +331,7 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
         #Prioritize the selection of operons with the same sign
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
-                #Check if this is a * score, if both operons have not been marked off and if both are the same sign
+                #Check if this is a * score, if both operons have not been marked off and if both are the same orientation
                 if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False) and (('-' in sequence1[i] and '-' in sequence2[j]) or ('-' not in sequence1[i] and '-' not in sequence2[j])):
                     score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
                     #Check if the score matches the scores we're currently looking for
@@ -347,13 +347,6 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
                         event = eventMatrix[i][j]
                         event.trackingEventId = globals.trackingId
-
-                        if score == 0:
-                            #We found a perfect match, easily reconstruct the ancestral operon
-                            event = event
-                        else:
-                            #We found orthologs that are not a perfect match, reconstructing the ancestral operon will be trickier
-                            event = event
                         event.printEvent()
 
                         #Add the event to the tracking events list
@@ -378,12 +371,6 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
                         event = eventMatrix[i][j]
                         event.trackingEventId = globals.trackingId
-
-                        if score == 0:
-                            #We found a perfect match, easily reconstruct the ancestral operon
-                            event = event
-                        else:
-                            event = event
                         event.printEvent()
 
                         #Add the event to the tracking events list
