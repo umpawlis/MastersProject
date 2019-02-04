@@ -68,6 +68,9 @@ class Event(object):
 
     def setTechnique(self, technique):
         self.technique = technique
+        
+    def setAncestralOperonGeneSequence(self, ancestralOperonGeneSequence):
+        self.ancestralOperonGeneSequence = ancestralOperonGeneSequence
 
     def printEvent(self):
-        print('Tracking Id: %s\nTwo strains compared: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2: %s\nOperon 1 position: %s\nOperon 2 position: %s' % (self.trackingEventId, self.genome1Name, self.genome2Name, self.score, self.genome1Operon, self.genome2Operon, self.operon1Index, self.operon2Index))
+        print('Tracking Id: %s\nTwo strains compared: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2: %s\nOperon 1 position: %s\nOperon 2 position: %s\nAncestral Operon Sequence: %s' % (self.trackingEventId, self.genome1Name, self.genome2Name, self.score, self.genome1Operon, self.genome2Operon, self.operon1Index, self.operon2Index, self.ancestralOperonGeneSequence))

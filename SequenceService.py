@@ -89,3 +89,139 @@ def formatAllOperons(sequence):
             operonIndexConversions.append(-1)
 
     return sequenceList, operonIndexConversions
+
+######################################################
+# findUniqueGenes
+# Parameters: geneList, sequence
+# Description: Tries to find the list of genes in another operon of the genome.
+######################################################
+def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
+    comparisonSize = len(geneList)
+    startIndex = 0
+    currentIndex = 0
+    genesNotFound = True
+    endOfList = False
+    missedGene = False
+    newSet = False
+    geneRanges = []
+    numGeneMatches = 0
+    duplicationSizes = []
+
+    while (comparisonSize >= 2) and genesNotFound:
+        #Slide the window across the gene list, one gene at a time
+        while (startIndex < comparisonSize) and (startIndex+comparisonSize <= len(geneList)) and genesNotFound:
+
+            currentIndex = startIndex
+            #Slide the window across the gene list by comparison size
+            while currentIndex < len(geneList):
+                if currentIndex+comparisonSize <= len(geneList):
+                    gene = geneList[currentIndex:currentIndex+comparisonSize]
+                    newSet = True
+                # elif not missedGene:
+                #     gene = geneList[currentIndex:len(geneList)]
+                #     newSet = True
+
+                if newSet:
+                    if geneInSequence(gene, sequence, len(gene), opIndex, alignedRange):
+                        newRange = (currentIndex, currentIndex+comparisonSize-1)
+                        if not checkOverlap(newRange, geneRanges):
+                            geneRanges.append(newRange)
+                            numGeneMatches += len(gene)
+                            duplicationSizes.append(len(gene))
+                            # updateDuplicationCounter(len(gene))
+                        if numGeneMatches == len(geneList):
+                            genesNotFound = False
+                    else:
+                        missedGene = True
+
+                currentIndex += comparisonSize
+                newSet = False
+
+            missedGene = False
+            startIndex += 1
+
+        currentIndex = 0
+        startIndex = 0
+        endOfList = False
+        #Decrement the window size
+        comparisonSize -= 1
+
+    deletionSizes = []
+    inSet = True
+    deletionSize = 0
+
+    for index in reversed(range(len(geneList))):
+        if not checkOverlap((index,index), geneRanges):
+            if not inSet:
+                inSet = True
+            deletionSize += 1
+        else:
+            geneList.pop(index)
+            inSet = False
+            if deletionSize != 0:
+                deletionSizes.append(deletionSize)
+                deletionSize = 0
+    #Special case if all genes in list are losses
+    if deletionSize != 0:
+        deletionSizes.append(deletionSize)
+        deletionSize = 0
+
+    return numGeneMatches, deletionSizes, duplicationSizes
+
+######################################################
+# geneInSequence
+# Parameters: gene, sequence, comparisonSize, opIndex
+# Description: Determines if the list of genes appear somewhere else in the operon.
+######################################################
+def geneInSequence(gene, sequence, comparisonSize, opIndex, alignedRange):
+    geneFound = False
+    currentOpIndex = 0
+    currentIndex = 0
+    searchOperon = True
+    checkRange = False
+    rangeList = []
+    rangeList.append(alignedRange)
+
+    while currentOpIndex < len(sequence) and not geneFound:
+        checkRange = False
+        operon = sequence[currentOpIndex]
+        if currentOpIndex != opIndex:
+            searchOperon = True
+        else:
+            if alignedRange[0] == 0 and alignedRange[1] == 0:
+                searchOperon = False
+            else:
+                searchOperon = True
+                checkRange = True
+
+        if searchOperon:
+            while currentIndex+comparisonSize <= len(operon) and not geneFound:
+                checkGene = True
+                if checkRange:
+                    if (currentIndex < alignedRange[0]) or ((currentIndex+comparisonSize-1) > alignedRange[1]):
+                        checkGene = False
+
+                if checkGene:
+                    operonGene = operon[currentIndex:currentIndex+comparisonSize]
+                    if operonGene == gene:
+                        geneFound = True
+
+                currentIndex += 1
+            currentIndex = 0
+        currentOpIndex += 1
+
+    return geneFound
+
+######################################################
+# checkOverlap
+# Parameters: newRange, rangeList
+# Description: Checks if the newly matched genes were already matched within another set.
+######################################################
+def checkOverlap(newRange, rangeList):
+    overlap = False
+
+    for ranges in rangeList:
+        if (newRange[0] <= ranges[1]) and (ranges[0] <= newRange[1]):
+            overlap = True
+
+    return overlap
