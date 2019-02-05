@@ -432,7 +432,11 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
         #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
         operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, event.operon1Alignment)
         operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, event.operon2Alignment)
-
+        
+        #increment the duplicate counters
+        incrementDuplicateSizeCounters(duplicateSizesWithinAlignment1)
+        incrementDuplicateSizeCounters(duplicateSizesWithinAlignment2)
+        
         i = len(operon1Gaps)
         j = len(operon2Gaps)
 
@@ -442,6 +446,8 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
                 numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
+                incrementDuplicateSizeCounters(duplicationSizes)
+                incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
                 #print('Number of unique genes found: %s' %(numUniqueFound))
                 #print('Number of deletion genes found: %s' %(deletionSizes))
@@ -456,6 +462,8 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
+                incrementDuplicateSizeCounters(duplicationSizes)
+                incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 #print('Number of unique genes found: %s' %(numUniqueFound))
                 #print('Number of deletion genes found: %s' %(deletionSizes))
@@ -470,6 +478,8 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
                 numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
+                incrementDuplicateSizeCounters(duplicationSizes)
+                incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
                 #print('Number of unique genes found: %s' %(numUniqueFound))
                 #print('Number of deletion genes found: %s' %(deletionSizes))
@@ -484,6 +494,8 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
+                incrementDuplicateSizeCounters(duplicationSizes)
+                incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 #print('Number of unique genes found: %s' %(numUniqueFound))
                 #print('Number of deletion genes found: %s' %(deletionSizes))
@@ -504,6 +516,46 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
         #print('These are the duplicate sizes operon 2: %s\n\n' %(duplicateSizesWithinAlignment2))
 
     return event
+
+######################################################
+# incrementDuplicateSizeCounters
+# Parameters:
+# Description: Increments the counters for the duplicate size counters
+######################################################
+def incrementDuplicateSizeCounters(duplicationSizes):
+    if len(duplicationSizes) > 0:
+        for x in range(0, len(duplicationSizes)):
+            #Increment the counter for the entire phylogeny
+            if duplicationSizes[x] in globals.sizeDuplications:
+                globals.sizeDuplications[duplicationSizes[x]] += 1
+            else:
+                globals.sizeDuplications[duplicationSizes[x]] = 1
+
+            #Increment the local duplicate counter
+            if duplicationSizes[x] in globals.localSizeDuplications:
+                globals.localSizeDuplications[duplicationSizes[x]] += 1
+            else:
+                globals.localSizeDuplications[duplicationSizes[x]] = 1
+
+######################################################
+# incrementDeletionSizeCounters
+# Parameters:
+# Description: Increments the counters for the deletion size counters
+######################################################
+def incrementDeletionSizeCounters(deletionSizes):
+    if len(deletionSizes) > 0:
+        for x in range(0, len(deletionSizes)):
+            #Increment the deletion counter for the entire phylogeny
+            if deletionSizes[x] in globals.sizeDeletions:
+                globals.sizeDeletions[deletionSizes[x]] += 1
+            else:
+                globals.sizeDeletions[deletionSizes[x]] = 1
+
+            #Increment the local duplicate counter
+            if deletionSizes[x] in globals.localSizeDeletions:
+                globals.localSizeDeletions[deletionSizes[x]] += 1
+            else:
+                globals.localSizeDeletions[deletionSizes[x]] = 1
 
 ######################################################
 # checkForMatchesInAlignment

@@ -13,3 +13,15 @@ def initialize():
 
     global substitutionCost
     substitutionCost = 1
+    
+    global sizeDuplications
+    sizeDuplications = {}
+    
+    global sizeDeletions
+    sizeDeletions = {}
+    
+    global localSizeDuplications
+    localSizeDuplications = {}
+    
+    global localSizeDeletions
+    localSizeDeletions = {}

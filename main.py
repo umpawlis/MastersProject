@@ -56,6 +56,9 @@ def countRemainingOperons(tracker):
 # Description: Constructs the tracking events between two provided strains
 ######################################################
 def constructEvents(strain1, strain2):
+    globals.localSizeDuplications.clear()
+    globals.localSizeDeletions.clear()
+    
     events = []
     coverageTracker1 = {}
     coverageTracker2 = {}
@@ -86,6 +89,8 @@ def constructEvents(strain1, strain2):
 
         if len(localAlignmentEvents) > 0:
             events.extend(localAlignmentEvents)
+            
+    #Construct local and global duplication and deletion size distributions
 
     return events
 
