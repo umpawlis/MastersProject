@@ -4,6 +4,7 @@ from Bio import Phylo
 from strain import Strain
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from LocalAlignmentModule import findOrthologsByLocalAlignment
+from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 import globals
 
 #Parameters that user will pass in
@@ -32,10 +33,7 @@ def processStrains(strain1, strain2, neighborStrain):
 
     print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     events = constructEvents(strain1, strain2)
-
-
-
-
+    
     return ancestralSequence, events
 
 ######################################################
@@ -58,7 +56,7 @@ def countRemainingOperons(tracker):
 def constructEvents(strain1, strain2):
     globals.localSizeDuplications.clear()
     globals.localSizeDeletions.clear()
-    
+
     events = []
     coverageTracker1 = {}
     coverageTracker2 = {}
@@ -79,6 +77,7 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 
+    #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
         localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
         print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
@@ -89,8 +88,30 @@ def constructEvents(strain1, strain2):
 
         if len(localAlignmentEvents) > 0:
             events.extend(localAlignmentEvents)
+
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+    
+    #Self Global Alignment
+    if numRemainingOperons1 > 0:
+        duplicationEvents1, lossEvents1, coverageTracker1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1)
+        if len(lossEvents1) > 0:
+            events.extend(lossEvents1)
+    if numRemainingOperons2 > 0:
+        duplicationEvents2, lossEvents2, coverageTracker2 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2)
+        if len(lossEvents2) > 0:
+            events.extend(lossEvents2)
             
-    #Construct local and global duplication and deletion size distributions
+    #Verify there's no unmarked operons at this point
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
+        print('Error! There are unmarked operons remaining!')
+
+    #Loop through the Events list here and reconstruct the operon here
+
+    #Loop through the Events list here and build the sequence array
 
     return events
 
