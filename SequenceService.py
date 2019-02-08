@@ -225,3 +225,43 @@ def checkOverlap(newRange, rangeList):
             overlap = True
 
     return overlap
+
+######################################################
+# incrementDuplicateSizeCounters
+# Parameters:
+# Description: Increments the counters for the duplicate size counters
+######################################################
+def incrementDuplicateSizeCounters(duplicationSizes):
+    if len(duplicationSizes) > 0:
+        for x in range(0, len(duplicationSizes)):
+            #Increment the counter for the entire phylogeny
+            if duplicationSizes[x] in globals.sizeDuplications:
+                globals.sizeDuplications[duplicationSizes[x]] += 1
+            else:
+                globals.sizeDuplications[duplicationSizes[x]] = 1
+
+            #Increment the local duplicate counter
+            if duplicationSizes[x] in globals.localSizeDuplications:
+                globals.localSizeDuplications[duplicationSizes[x]] += 1
+            else:
+                globals.localSizeDuplications[duplicationSizes[x]] = 1
+
+######################################################
+# incrementDeletionSizeCounters
+# Parameters:
+# Description: Increments the counters for the deletion size counters
+######################################################
+def incrementDeletionSizeCounters(deletionSizes):
+    if len(deletionSizes) > 0:
+        for x in range(0, len(deletionSizes)):
+            #Increment the deletion counter for the entire phylogeny
+            if deletionSizes[x] in globals.sizeDeletions:
+                globals.sizeDeletions[deletionSizes[x]] += 1
+            else:
+                globals.sizeDeletions[deletionSizes[x]] = 1
+
+            #Increment the local duplicate counter
+            if deletionSizes[x] in globals.localSizeDeletions:
+                globals.localSizeDeletions[deletionSizes[x]] += 1
+            else:
+                globals.localSizeDeletions[deletionSizes[x]] = 1
