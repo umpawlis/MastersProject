@@ -79,15 +79,15 @@ def constructEvents(strain1, strain2):
 
     #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        #localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
-        #print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
+        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
         
         numRemainingOperons1 = countRemainingOperons(coverageTracker1)
         numRemainingOperons2 = countRemainingOperons(coverageTracker2)
         print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 
-        #if len(localAlignmentEvents) > 0:
-            #events.extend(localAlignmentEvents)
+        if len(localAlignmentEvents) > 0:
+            events.extend(localAlignmentEvents)
 
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
