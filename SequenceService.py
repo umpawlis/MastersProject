@@ -1,4 +1,5 @@
 import multiset
+import globals
 
 ####################################
 ##Sequence Service Functions########
@@ -232,7 +233,7 @@ def checkOverlap(newRange, rangeList):
 # Description: Increments the counters for the duplicate size counters
 ######################################################
 def incrementDuplicateSizeCounters(duplicationSizes):
-    if len(duplicationSizes) > 0:
+    if duplicationSizes!= None and len(duplicationSizes) > 0:
         for x in range(0, len(duplicationSizes)):
             #Increment the counter for the entire phylogeny
             if duplicationSizes[x] in globals.sizeDuplications:
@@ -252,7 +253,7 @@ def incrementDuplicateSizeCounters(duplicationSizes):
 # Description: Increments the counters for the deletion size counters
 ######################################################
 def incrementDeletionSizeCounters(deletionSizes):
-    if len(deletionSizes) > 0:
+    if deletionSizes != None and  len(deletionSizes) > 0:
         for x in range(0, len(deletionSizes)):
             #Increment the deletion counter for the entire phylogeny
             if deletionSizes[x] in globals.sizeDeletions:
