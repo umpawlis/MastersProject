@@ -153,7 +153,6 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 globals.trackingId +=1
                 event = Event(globals.trackingId)
                 event.setScore(-1)
-                event.setGenome1Operon(sequence[x])
                 event.setGenome2Operon('None')
                 event.setGenome1Name(strain.getName())
                 event.setGenome2Name('None')
@@ -175,6 +174,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 for gene in operonGenesList:
                     ancestralGenes.append(gene.strip())
                 event.setAncestralOperonGeneSequence(ancestralGenes)
+                event.setGenome1Operon(copy.deepcopy(ancestralGenes))
                 lossEvents.append(event)
 
                 #Increment the loss counter with the size of the operon since the operon is a loss

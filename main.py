@@ -6,6 +6,7 @@ from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 import globals
+import matplotlib.pyplot as plt
 
 #Parameters that user will pass in
 newickFileName = 'Bacillus_Tree.dnd'
@@ -23,6 +24,73 @@ codonCost = 0.5
 #################################################
 
 ######################################################
+# createDotPlot
+# Parameters:
+# Description:
+######################################################
+def createDotPlot(events, strain1, strain2):
+
+    #Stores all of the coordinates
+    x_coord = []
+    y_coord = []
+
+    #The green ones represent operons with no differences
+    green_x_coord = []
+    green_y_coord = []
+
+    #Yellow ones represent scores between 1 and 2
+    yellow_x_coord = []
+    yellow_y_coord = []
+
+    #Red ones represent scores between 3 and above
+    orange_x_coord = []
+    orange_y_coord = []
+
+    #Blue ones represent a local alignment
+    red_x_coord = []
+    red_y_coord = []
+
+    print("x" * 70)
+    for i in range(0, len(events)):
+        if events[i].technique == 'Global Alignment' or events[i].technique == 'Local Alignment':
+            #Assign the coords to the appropriate array
+            if events[i].technique == 'Local Alignment':
+                red_x_coord.append(events[i].operon1Index)
+                red_y_coord.append(events[i].operon2Index)
+            elif events[i].score == 0:
+                green_x_coord.append(events[i].operon1Index)
+                green_y_coord.append(events[i].operon2Index)
+            elif events[i].score == 1 or events[i].score == 2:
+                yellow_x_coord.append(events[i].operon1Index)
+                yellow_y_coord.append(events[i].operon2Index)
+            else:
+                orange_x_coord.append(events[i].operon1Index)
+                orange_y_coord.append(events[i].operon2Index)
+
+            #Get all coordinates into a single array
+            x_coord.append(events[i].operon1Index)
+            y_coord.append(events[i].operon2Index)
+
+            #print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
+
+    #If we have any coordinates to plot, display them
+    if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(orange_x_coord) > 0 or len(red_x_coord) > 0:
+        f = plt.figure()
+        plt.title("Orthologous Operon Mapping")
+        plt.plot(green_x_coord, green_y_coord, 'o', color = 'green')
+        plt.plot( yellow_x_coord, yellow_y_coord, 'o', color = 'yellow')
+        plt.plot(orange_x_coord, orange_y_coord, 'o', color = 'orange')
+        plt.plot(red_x_coord, red_y_coord, 'o', color = 'red')
+        plt.axis([0, len(events)+5, 0, len(events)+5])
+        plt.ylabel('Operon Position in %s' % (strain1.getName()))
+        plt.xlabel('Operon Position in %s' % (strain2.getName()))
+        plt.show()
+        f.savefig("%s %s.pdf" %(strain1.getName(), strain2.getName()), bbox_inches='tight')
+    else:
+        print('No plot to display!')
+    print("x" * 70)
+
+######################################################
 # processStrains
 # Parameters:
 # Description: Takes two related strains and a close neighbor and constructs the events for both comparisons
@@ -33,7 +101,13 @@ def processStrains(strain1, strain2, neighborStrain):
 
     print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     events = constructEvents(strain1, strain2)
-
+    print('Constructing dot plot for the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
+    createDotPlot(events, strain1, strain2)
+    
+    #TODO: bar graphs
+    #TODO: determine orientation of the ancestral operon
+    #TODO: determine the position of each operon in the genome
+    print('Done')
     return ancestralSequence, events
 
 ######################################################
@@ -91,22 +165,20 @@ def constructEvents(strain1, strain2):
     #Self Global Alignment
     if numRemainingOperons1 > 0:
         duplicationEvents1, lossEvents1, coverageTracker1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1)
+        print('%s, duplicates identified %s and losses identified %s' % (strain1.getName(), len(duplicationEvents1), len(lossEvents1)))
         if len(lossEvents1) > 0:
             events.extend(lossEvents1)
     if numRemainingOperons2 > 0:
         duplicationEvents2, lossEvents2, coverageTracker2 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2)
+        print('%s, duplicates identified %s and losses identified %s' % (strain2.getName(), len(duplicationEvents2), len(lossEvents2)))
         if len(lossEvents2) > 0:
             events.extend(lossEvents2)
-
+    
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
         print('Error! There are unmarked operons remaining!')
-
-    #Loop through the Events list here and reconstruct the operon here
-
-    #Loop through the Events list here and build the sequence array
 
     return events
 
