@@ -7,6 +7,7 @@ from LocalAlignmentModule import findOrthologsByLocalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 import globals
 import matplotlib.pyplot as plt
+import numpy as np
 
 #Parameters that user will pass in
 newickFileName = 'Bacillus_Tree.dnd'
@@ -24,12 +25,35 @@ codonCost = 0.5
 #################################################
 
 ######################################################
+# createBarGraph
+# Parameters:
+# Description:
+######################################################
+def createBarGraph(events, strain1, strain2, dictionary, title):
+    
+    if dictionary != None and len(dictionary) > 0:
+        keys = list(dictionary.keys())
+        keys.sort()
+        
+        y_pos = np.arange(len(keys))
+        
+        performance = []
+        for key in keys:
+            performance.append(dictionary[key])
+            
+        plt.bar(y_pos, performance, align='center', alpha=0.5)
+        plt.xticks(y_pos, keys)
+        plt.ylabel('Number of Occurrences')
+        plt.xlabel('Size of Occurrence')
+        plt.title(title)
+        plt.show()
+    
+######################################################
 # createDotPlot
 # Parameters:
 # Description:
 ######################################################
 def createDotPlot(events, strain1, strain2):
-
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
@@ -103,8 +127,9 @@ def processStrains(strain1, strain2, neighborStrain):
     events = constructEvents(strain1, strain2)
     print('Constructing dot plot for the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     createDotPlot(events, strain1, strain2)
+    createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
+    createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
     
-    #TODO: bar graphs
     #TODO: determine orientation of the ancestral operon
     #TODO: determine the position of each operon in the genome
     print('Done')
