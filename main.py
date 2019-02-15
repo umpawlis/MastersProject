@@ -115,6 +115,16 @@ def createDotPlot(events, strain1, strain2):
         print('No plot to display!')
     print("x" * 70)
 
+
+######################################################
+# formatAndOrientOperon
+# Parameters:
+# Description: Formats the operon into a string with the correct orientation
+######################################################
+def formatAndOrientOperon(events, neighborEvents):
+    if events != None and len(events) > 0:
+        print('test')
+
 ######################################################
 # processStrains
 # Parameters:
@@ -134,6 +144,9 @@ def processStrains(strain1, strain2, neighborStrain):
     createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
     
     #TODO: determine orientation of the ancestral operon
+    neighborEvents = constructEvents(strain1, neighborStrain)
+    formatAndOrientOperon(events, neighborEvents)
+    
     #TODO: determine the position of each operon in the genome
     
     #Clear out the global trackers since they'll have comparisons from the neighbor alignment
