@@ -8,6 +8,7 @@ from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 import globals
 import matplotlib.pyplot as plt
 import numpy as np
+import copy
 
 #Parameters that user will pass in
 newickFileName = 'Bacillus_Tree.dnd'
@@ -125,6 +126,8 @@ def processStrains(strain1, strain2, neighborStrain):
 
     print('Constructing events of the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     events = constructEvents(strain1, strain2)
+    temp1 = copy.deepcopy(globals.sizeDuplications)
+    temp2 = copy.deepcopy(globals.sizeDeletions)
     print('Constructing dot plot for the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     createDotPlot(events, strain1, strain2)
     createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
@@ -132,7 +135,17 @@ def processStrains(strain1, strain2, neighborStrain):
     
     #TODO: determine orientation of the ancestral operon
     #TODO: determine the position of each operon in the genome
-    print('Done')
+    
+    #Clear out the global trackers since they'll have comparisons from the neighbor alignment
+    globals.localSizeDuplications.clear()
+    globals.localSizeDeletions.clear()
+    globals.sizeDuplications.clear()
+    globals.sizeDeletions.clear()
+    
+    #Set the global trackers of the phylogeny to what it was when we compared the siblings b/c at that point the dictionary is not messed up with neighbor data
+    globals.sizeDuplications = temp1
+    globals.sizeDeletions = temp2
+    
     return ancestralSequence, events
 
 ######################################################
