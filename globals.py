@@ -25,3 +25,6 @@ def initialize():
     
     global localSizeDeletions
     localSizeDeletions = {}
+    
+    global yDistanceThreshold
+    yDistanceThreshold = 3

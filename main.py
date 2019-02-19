@@ -20,7 +20,6 @@ deletionCost = 1
 substitutionCost = 1
 codonCost = 0.5
 
-
 #################################################
 ########Functions used in this script############
 #################################################
@@ -31,24 +30,24 @@ codonCost = 0.5
 # Description:
 ######################################################
 def createBarGraph(events, strain1, strain2, dictionary, title):
-    
+
     if dictionary != None and len(dictionary) > 0:
         keys = list(dictionary.keys())
         keys.sort()
-        
+
         y_pos = np.arange(len(keys))
-        
+
         performance = []
         for key in keys:
             performance.append(dictionary[key])
-            
+
         plt.bar(y_pos, performance, align='center', alpha=0.5)
         plt.xticks(y_pos, keys)
         plt.ylabel('Number of Occurrences')
         plt.xlabel('Size of Occurrence')
         plt.title(title)
         plt.show()
-    
+
 ######################################################
 # createDotPlot
 # Parameters:
@@ -115,7 +114,6 @@ def createDotPlot(events, strain1, strain2):
         print('No plot to display!')
     print("x" * 70)
 
-
 ######################################################
 # formatAndOrientOperon
 # Parameters:
@@ -123,7 +121,169 @@ def createDotPlot(events, strain1, strain2):
 ######################################################
 def formatAndOrientOperon(events, neighborEvents):
     if events != None and len(events) > 0:
-        print('test')
+        for event in events:
+            if event.reversedOp1 == False and event.reversedOp2 == False: #Operons can be left as is
+                print('These operons were not reversed')
+                if event.originallyNegativeOrientationOp1:
+                    stringAncestralOperon = formatOperonIntoString(event, True)
+                    event.setStringAncestralOperon(stringAncestralOperon)
+                    print('This is the - ancestral operon reconstucted %s' %(stringAncestralOperon))
+                else:
+                    stringAncestralOperon = formatOperonIntoString(event, False)
+                    event.setStringAncestralOperon(stringAncestralOperon)
+                    print('This is the + ancestral operon reconstucted %s' %(stringAncestralOperon))
+            else:
+                print('These operons have opposite orientation!') #Need to check neighbor to determine orientation
+                filteredList = iter(filter(lambda x: x.genome1Operon == event.genome1Operon, neighborEvents))
+                neighborEvent = next(filteredList, None)
+                if neighborEvent != None:
+                    print('Found same operon in neighbor')
+                    if neighborEvent.originallyNegativeOrientationOp2 == True and (event.originallyNegativeOrientationOp1 == True or event.originallyNegativeOrientationOp2 == True):
+                        stringAncestralOperon = formatOperonIntoString(event, True) #Neighbor operon and 1 other operon is - so - majority wins
+                        event.setStringAncestralOperon(stringAncestralOperon)
+                        print('This is the - ancestral operon reconstucted %s' %(stringAncestralOperon))
+                    else:
+                        stringAncestralOperon = formatOperonIntoString(event, False) #Neighbor operon and 1 other operon is + so + majority wins
+                        event.setStringAncestralOperon(stringAncestralOperon)
+                        print('This is the + ancestral operon reconstucted %s' %(stringAncestralOperon))
+                else:
+                    print('Operon not found in neighbor strain') #No matching operon found in neighbor, just assign an orientation
+                    stringAncestralOperon = formatOperonIntoString(event, True)
+                    event.setStringAncestralOperon(stringAncestralOperon)
+                    print('This is the - ancestral operon reconstucted %s' %(stringAncestralOperon))
+    return events
+
+######################################################
+# formatOperonIntoString
+# Parameters:
+# Description: Formats the operon into either a postive or negative oriented string
+######################################################
+def formatOperonIntoString(event, isNegativeOrientation):
+    ancestralOperonString = ''
+    genes = event.ancestralOperonGeneSequence
+
+    if len(genes) == 1: #We are dealing with a singleton
+        if isNegativeOrientation:
+            print('This is a singleton in the - orientation')
+            stringAncestralOperon = '-' + str(genes[0])
+        else:
+            print('This is a singleton in the + orientation')
+            stringAncestralOperon = str(genes[0])
+    else: #We are dealing with an operon
+        if isNegativeOrientation:
+            print('This is an operon in the - orientation')
+            stringAncestralOperon = '-['
+            for x in range(0, len(genes)):
+                if x == len(genes) - 1:
+                    stringAncestralOperon += genes[x] + ']'
+                else:
+                    stringAncestralOperon += genes[x] + ', '
+        else:
+            print('This is an operon in the + orientation')
+            stringAncestralOperon = '['
+            for x in range(0, len(genes)):
+                if x == len(genes) - 1:
+                    stringAncestralOperon += genes[x] + ']'
+                else:
+                    stringAncestralOperon += genes[x] + ', '
+    return ancestralOperonString
+
+######################################################
+# computeOperonArrangements
+# Parameters:
+# Description: Takes a list of events and computes Forward Conserved, Transposed Forward, Inverted, Inverted Transposed, and Lost regions
+######################################################
+def computeOperonArrangements(events):
+    conservedForwardRegions = []
+    transposedForwardRegions = []
+    invertedRegions = []
+    invertedTransposedRegions = []
+    lostRegions = []
+    
+    #Sort events by x coordinates
+    eventsCopy = copy.deepcopy(events)
+    eventsCopy.sort(key=lambda x : x.operon1Index, reverse=False)
+    
+    while len(eventsCopy) > 0:
+        currEvent = eventsCopy.pop(0)
+        
+        if currEvent.operon1Index == -1 or currEvent.operon2Index == -1: #We are dealing with a lost operon
+            lostRegions.append(currEvent)
+        else:
+            consecutiveRegion = []
+            consecutiveRegion.append(currEvent)
+            foundNeighbor = True
+            yIncreaseCount = 0
+            yDecreaseCount = 0
+            aboveMainDiagonal = False
+            belowMainDiagonal = False
+            minMainDiagonalDistance = abs(currEvent.operon1Index - currEvent.operon2Index)
+            if currEvent.operon1Index - currEvent.operon2Index < 0:
+                aboveMainDiagonal = True
+            if currEvent.opeorn1Index - currEvent.operon2Index > 0:
+                belowMainDiagonal = True
+            while foundNeighbor:
+                foundNeighbor = False
+                if len(eventsCopy) > 0:
+                    prevEvent = consecutiveRegion[len(consecutiveRegion)-1]
+                    currEvent = eventsCopy[0]
+                    distance = abs(currEvent.operon2Index - prevEvent.operon2Index)
+                    if distance < globals.yDistanceThreshold:
+                        consecutiveRegion.append(eventsCopy.pop(0))
+                        foundNeighbor = True
+                        currMainDiagonalDistance = abs(currEvent.operon1Index - currEvent.operon2Index)
+                        #Tracks whether this is a transposition
+                        if currMainDiagonalDistance < minMainDiagonalDistance:
+                            minMainDiagonalDistance = currMainDiagonalDistance
+                        #Tracks whether we cross the main diagonal
+                        if currEvent.operon1Index - currEvent.operon2Index < 0:
+                            aboveMainDiagonal = True
+                        if currEvent.operon1Index - currEvent.operon2Index > 0:
+                            aboveMainDiagonal = True
+                        #Tracks if the points are moving up or down
+                        if prevEvent.operon2Index < currEvent.operon2Index:
+                            yIncreaseCount += 1
+                        else:
+                            yDecreaseCount += 1
+            if yIncreaseCount > yDecreaseCount or len(consecutiveRegion) == 1:
+                if minMainDiagonalDistance < globals.yDistanceThreshold:
+                    conservedForwardRegions.append(consecutiveRegion)
+                else:
+                    transposedForwardRegions.append(consecutiveRegion)
+            else:
+                if aboveMainDiagonal == True and belowMainDiagonal == True:
+                    invertedRegions.append(consecutiveRegion)
+                else:
+                    invertedTransposedRegions.append(consecutiveRegion)
+    print('Stats:')
+    print('Total number of tracking events: %s' % (len(events)))
+    print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
+    print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
+    print('Total number of inverted regions: %s' % len(invertedRegions))
+    print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
+    print('Total number of lost operons: %s' % len(lostRegions))
+
+    for region in conservedForwardRegions:
+        print('Forward Conserved Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].operon1Index, region[x].operon2Index))
+    for region in transposedForwardRegions:
+        print('Forward Transposed Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].operon1Index, region[x].operon2Index))
+    for region in invertedRegions:
+        print('Inverted Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].operon1Index, region[x].operon2Index))
+    for region in invertedTransposedRegions:
+        print('Inverted Transposed Region')
+        for x in range(0, len(region)):
+            print('%s, %s' %(region[x].operon1Index, region[x].operon2Index))
+    for operon in lostRegions:
+        print('Lost operon')
+        print('%s, %s' %(operon.operon1Index, operon.operon2Index))
+        
+    return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions, lostRegions
 
 ######################################################
 # processStrains
@@ -142,23 +302,23 @@ def processStrains(strain1, strain2, neighborStrain):
     createDotPlot(events, strain1, strain2)
     createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
     createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
-    
-    #TODO: determine orientation of the ancestral operon
+
     neighborEvents = constructEvents(strain1, neighborStrain)
     formatAndOrientOperon(events, neighborEvents)
-    
+
     #TODO: determine the position of each operon in the genome
-    
+    FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
+
     #Clear out the global trackers since they'll have comparisons from the neighbor alignment
     globals.localSizeDuplications.clear()
     globals.localSizeDeletions.clear()
     globals.sizeDuplications.clear()
     globals.sizeDeletions.clear()
-    
+
     #Set the global trackers of the phylogeny to what it was when we compared the siblings b/c at that point the dictionary is not messed up with neighbor data
     globals.sizeDuplications = temp1
     globals.sizeDeletions = temp2
-    
+
     return ancestralSequence, events
 
 ######################################################
@@ -224,7 +384,7 @@ def constructEvents(strain1, strain2):
         print('%s, duplicates identified %s and losses identified %s' % (strain2.getName(), len(duplicationEvents2), len(lossEvents2)))
         if len(lossEvents2) > 0:
             events.extend(lossEvents2)
-    
+
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)

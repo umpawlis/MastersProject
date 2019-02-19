@@ -153,7 +153,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 globals.trackingId +=1
                 event = Event(globals.trackingId)
                 event.setScore(-1)
-                event.setGenome2Operon('None')
+                event.setGenome2Operon([])
                 event.setGenome1Name(strain.getName())
                 event.setGenome2Name('None')
                 event.isOriginallyNegativeOrientationOp1(reverseSequence(sequence[x]))
