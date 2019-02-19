@@ -165,27 +165,27 @@ def formatOperonIntoString(event, isNegativeOrientation):
     if len(genes) == 1: #We are dealing with a singleton
         if isNegativeOrientation:
             print('This is a singleton in the - orientation')
-            stringAncestralOperon = '-' + str(genes[0])
+            ancestralOperonString = '-' + str(genes[0])
         else:
             print('This is a singleton in the + orientation')
-            stringAncestralOperon = str(genes[0])
+            ancestralOperonString = str(genes[0])
     else: #We are dealing with an operon
         if isNegativeOrientation:
             print('This is an operon in the - orientation')
-            stringAncestralOperon = '-['
+            ancestralOperonString = '-['
             for x in range(0, len(genes)):
                 if x == len(genes) - 1:
-                    stringAncestralOperon += genes[x] + ']'
+                    ancestralOperonString += genes[x] + ']'
                 else:
-                    stringAncestralOperon += genes[x] + ', '
+                    ancestralOperonString += genes[x] + ', '
         else:
             print('This is an operon in the + orientation')
-            stringAncestralOperon = '['
+            ancestralOperonString = '['
             for x in range(0, len(genes)):
                 if x == len(genes) - 1:
-                    stringAncestralOperon += genes[x] + ']'
+                    ancestralOperonString += genes[x] + ']'
                 else:
-                    stringAncestralOperon += genes[x] + ', '
+                    ancestralOperonString += genes[x] + ', '
     return ancestralOperonString
 
 ######################################################
@@ -220,7 +220,7 @@ def computeOperonArrangements(events):
             minMainDiagonalDistance = abs(currEvent.operon1Index - currEvent.operon2Index)
             if currEvent.operon1Index - currEvent.operon2Index < 0:
                 aboveMainDiagonal = True
-            if currEvent.opeorn1Index - currEvent.operon2Index > 0:
+            if currEvent.operon1Index - currEvent.operon2Index > 0:
                 belowMainDiagonal = True
             while foundNeighbor:
                 foundNeighbor = False
@@ -364,14 +364,14 @@ def constructEvents(strain1, strain2):
 
     #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
-        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+        #localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
+        #print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
 
         numRemainingOperons1 = countRemainingOperons(coverageTracker1)
         numRemainingOperons2 = countRemainingOperons(coverageTracker2)
         print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
-        if len(localAlignmentEvents) > 0:
-            events.extend(localAlignmentEvents)
+        #if len(localAlignmentEvents) > 0:
+            #events.extend(localAlignmentEvents)
 
     #Self Global Alignment
     if numRemainingOperons1 > 0:
