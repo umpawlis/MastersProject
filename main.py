@@ -302,12 +302,26 @@ def processStrains(strain1, strain2, neighborStrain):
     createDotPlot(events, strain1, strain2)
     createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
     createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
+    
+    neighborEvents = []
+    if neighborStrain != None:#Had to put this check in since it was causing it crash for root
+        neighborEvents = constructEvents(strain1, neighborStrain)
+    events = formatAndOrientOperon(events, neighborEvents) #Inserts into each event an ancestral operon in a string format
 
-    neighborEvents = constructEvents(strain1, neighborStrain)
-    formatAndOrientOperon(events, neighborEvents)
-
-    #TODO: determine the position of each operon in the genome
     FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
+    regionCount = len(TFCR) + len(IR) + len(ITR)
+    if regionCount != 0 and len(neighborEvents) != 0:
+        NFCR, NTFCR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
+        ancestralSequence = constructGenome(FCR, TFCR, IR, ITR, LR, NFCR, NTFCR, NIR, NITR, NLR)
+    else: #Sort events by x coordinate and reconstruct the genome
+        if regionCount == 0:
+            print('No inverted or transposed regions!')
+        elif len(neighborEvents):
+            print('No neighboring events!')
+        eventsCopy = copy.deepcopy(events)
+        eventsCopy.sort(key=lambda x : x.operon1Index, reverse=False)
+        for event in eventsCopy:
+            ancestralSequence.append(event.stringAncestralOperon)
 
     #Clear out the global trackers since they'll have comparisons from the neighbor alignment
     globals.localSizeDuplications.clear()
@@ -320,6 +334,97 @@ def processStrains(strain1, strain2, neighborStrain):
     globals.sizeDeletions = temp2
 
     return ancestralSequence, events
+
+######################################################
+# constructGenome
+# Parameters:
+# Description: Takes regions detected from the siblings and compares and arranges those regions based on the neighbor
+######################################################
+def constructGenome(CFR, TFR, IR, ITR, LO, NCFR, NTFR, NIR, NITR, NLO):
+
+    ancestralSequence = []
+    dictionary = {}
+    
+    if LO != None and len(LO) > 0: #Deal with the lost operons
+        for operon in LO:
+            if operon.operon1Index in dictionary:
+                dictionary[operon.operon1Index].append(operon)
+            else:
+                dictionary[operon.operon1Index] = [operon]
+                
+    if CFR != None and len(CFR) > 0: #Deal with the Forward Conserved Regions
+        for region in CFR:
+            for x in range(0, len(region)):
+                if region[x].operon1Index in dictionary:
+                    dictionary[region[x].operon1Index].append(region[x])
+                else:
+                    dictionary[region[x].operon1Index] = [region[x]]
+    #Handle Transposed Forward Regions
+    dictionary = processRegion(TFR, dictionary, NTFR, NIR, NITR)
+    #Handle Inversed Regions
+    dictionary = processRegion(IR, dictionary, NTFR, NIR, NITR)
+    #Handle Inversed Transposed Regions
+    dictionary = processRegion(ITR, dictionary, NTFR, NIR, NITR)
+    #Now add the operons from the dictionary to the ancestral sequence
+    keys = dictionary.keys()
+    keys.sort()
+    for key in keys:
+        operons = dictionary[key]
+        if not(operons is None) and len(operons) > 0:
+            for operon in operons:
+                ancestralSequence.append(operon.stringAncestralOperon)
+    return ancestralSequence
+
+######################################################
+# processRegion
+# Parameters: list of regions, dictionary which stores the position of the regions, neighbors regions
+# Description: Takes an array of regions and checks if the postion of that region is conserved in the neighbor and adds them to the dictionary appropriately
+######################################################
+def processRegion(regions, dictionary, NTFR, NIR, NITR):
+    if regions != None and len(regions) > 0:
+        for region in regions:
+            count = 0
+            for x in range(0, len(region)):
+                currEvent = region[x]
+                #need to check neighbor if the same exists
+                found = checkNeighorRegion(currEvent.operon1Index, NTFR)
+                if found == True:
+                    count += 1
+                else:
+                    found = checkNeighorRegion(currEvent.operon1Index, NIR)
+                    if found == True:
+                        count += 1
+                    else:
+                        found = checkNeighorRegion(currEvent.operon1Index, NITR)
+                        if found:
+                            count += 1
+            if count > 0:
+                for x in range (0, len(region)):
+                    if region[x].operon1Index in dictionary:
+                        dictionary[region[x].operon1Index].append(region[x])
+                    else:
+                        dictionary[region[x].operon1Index] = [region[x]]
+            else:
+                for x in range (0, len(region)):
+                    if region[x].operon2Index in dictionary:
+                        dictionary[region[x].operon2Index].append(region[x])
+                    else:
+                        dictionary[region[x].operon2Index] = [region[x]]
+    return dictionary
+
+######################################################
+# checkNeighorRegion
+# Parameters: index of operon, list of regions
+# Description: Checks if the given operon(index) exists in a given array of regions
+######################################################
+def checkNeighorRegion(index, arrayOfRegions):
+    if arrayOfRegions != None and len(arrayOfRegions) > 0:
+        for region in arrayOfRegions:
+            for x in range(0, len(region)):
+                currEvent = region[x]
+                if currEvent.operon1Index == index:
+                    return True
+    return False
 
 ######################################################
 #countRemainingOperons
@@ -364,14 +469,14 @@ def constructEvents(strain1, strain2):
 
     #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        #localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
-        #print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
+        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
 
         numRemainingOperons1 = countRemainingOperons(coverageTracker1)
         numRemainingOperons2 = countRemainingOperons(coverageTracker2)
         print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
-        #if len(localAlignmentEvents) > 0:
-            #events.extend(localAlignmentEvents)
+        if len(localAlignmentEvents) > 0:
+            events.extend(localAlignmentEvents)
 
     #Self Global Alignment
     if numRemainingOperons1 > 0:
@@ -427,7 +532,7 @@ def traverseNewickTree(node, parentNode):
                 strains.append(newStrain)
                 return newStrain
 
-    if not(leftSibling == None) and len(leftSibling.getSequence()) > 0 and not(rightSibling == None) and len(rightSibling.getSequence()) > 0:
+    if leftSibling != None and leftSibling.getSequence() != None and len(leftSibling.getSequence()) > 0 and rightSibling != None and rightSibling.getSequence() != None and len(rightSibling.getSequence()) > 0:
         print('Strains compared: %s, %s' % (leftSibling.getName(), rightSibling.getName()))
 
         neighborStrain = None
@@ -445,11 +550,16 @@ def traverseNewickTree(node, parentNode):
             print('The following neighbor will be used during the comparison: %s' % (neighborStrain.getName()))
         else:
             print('No neighbor found!')
-
-        #TODO: Add the ancestral code
+            
         ancestralOperons, events = processStrains(leftSibling, rightSibling, neighborStrain)
+        globals.ancestralCounter += 1
+        node.name = 'Ancestor %s' % (globals.ancestralCounter)
+        
+        ancestor = Strain('Ancestor %s' % (globals.ancestralCounter), ancestralOperons, [leftSibling.getName(), rightSibling.getName()], [], {})
+        ancestor.setEvents(events)
+        strains.append(ancestor)
 
-        return None
+        return ancestor
 
     #If the left child has a sequence, return it
     elif not(leftSibling == None) and len(leftSibling.getSequence()) > 0:

@@ -458,7 +458,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                     #Insert gap into operon
                     operon1Gaps[i-1].reverse()
                     for gene in operon1Gaps[i-1]:
-                        ancestralOperon.insert(operon1GapIndexes[i], gene)
+                        ancestralOperon.insert(operon1GapIndexes[i-1], gene)
                 i = i - 1
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first

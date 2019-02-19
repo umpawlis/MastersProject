@@ -10,7 +10,7 @@ class Strain(object):
     descendants = []
     operonPositions = []
     singletonDict = {}
-    trackingEvents = []
+    events = []
 
     #Class constructor
     def __init__(self, name, sequence, descendants, operonPositions, singletonDict):
@@ -38,8 +38,8 @@ class Strain(object):
         return self.operonPositions
     def getSingletonDict(self):
         return self.singletonDict
-    def getTrackingEvents(self):
-        return self.trackingEvents
+    def getEvents(self):
+        return self.events
 
-    def setTrackingEvents(self, trackingEvents):
-        self.trackingEvents = trackingEvents
+    def setEvents(self, events):
+        self.events = events
