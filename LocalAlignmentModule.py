@@ -2,7 +2,13 @@ from SequenceService import formatAllOperons
 from SequenceService import reverseSequence
 from SequenceService import formatAndComputeOperonDifferences
 from SequenceService import findUniqueGenes
+from SequenceService import incrementDuplicateSizeCounters
+from SequenceService import incrementDeletionSizeCounters
+from GlobalAlignmentModule import checkForMatchesInAlignment
+from Event import Event
+import globals
 import numpy as np
+import copy
 
 ################################
 ###Local Alignment Functions####
@@ -18,14 +24,22 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
     localAlignmentCounter = 0
     minValue = min(len(coverageTracker1), len(coverageTracker2))
     sequence1 = strain1.getSequence()
+    print "\nSequence:--\n"
+    print sequence1
     sequence2 = strain2.getSequence()
+    print sequence2
     genesStrain1 = strain1.getGenes()
+    # print "\nGene Strain:-- \n"
+    # print genesStrain1
     genesStrain2 = strain2.getGenes()
     operonPositionList1 = strain1.getOperonPositions()
     operonPositionList2 = strain2.getOperonPositions()
     singletonDict1 = strain1.getSingletonDict()
     singletonDict2 = strain2.getSingletonDict()
     formattedSequence1, operonIndexes1 = formatAllOperons(strain1.getSequence())
+    # print "\nFormatted Sequence:--\n"
+    # print formattedSequence1
+    # print operonIndexes1
     formattedSequence2, operonIndexes2 = formatAllOperons(strain2.getSequence())
     
     #Scan the matrix x times to find optimal local alignments everytime an entire matrix is computed
@@ -48,7 +62,7 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
                     if coverageTracker2[j] == False and len(sequence2[j].split(',')) > 1:
                         op1 = sequence1[i]
                         op2 = sequence2[j]
-                        score, formattedOperon1, formattedOperon2, endPosition, startPosition, aligned1, aligned2, operonEvents = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
+                        score, formattedOperon1, formattedOperon2, endPosition, startPosition, aligned1, aligned2, operonEvent = localAlignment(op1, op2, i, j, genesStrain1, genesStrain2, operonPositionList1, operonPositionList2, singletonDict1, singletonDict2)
                         
                         if (score > highestScore) or (score == highestScore and (abs(i - j)) < distance):
                             highestScore = score
@@ -56,23 +70,64 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
                             colIndex = j
                             distance = abs(i - j)
 
+                            # Testing delete next two line later
+                            # chosenOp1 = op1
+                            # chosenOp2 = op2
+
                             chosenOperon1 = formattedOperon1
                             chosenOperon2 = formattedOperon2
                             chosenStart = startPosition
                             chosenEnd = endPosition
                             chosenAligned1 = aligned1
                             chosenAligned2 = aligned2
-                            chosenOpEvents = operonEvents
+                            chosenOpEvent = operonEvent
+
+                            chosenOpEvent.setOperon1Index(i)
+                            chosenOpEvent.setOperon2Index(j)
+
+                            # printAlignments(i, j, formattedOperon1, formattedOperon2, aligned1, aligned2, "after extension")
         #After scanning the whole matrix if we found a best score, then store it
         if highestScore > -1:
             print('\n******** Local Alignment ***********')
             print('**************************************\n')
 
+            # print "\nLa Operon 1: \n"
+            # print chosenOp1
+            # print rowIndex
+            print operonPositionList1
+            # print singletonDict1
+
+            # print chosenOp2
+            # print colIndex
+            print operonPositionList2
+
+            # print chosenStart
+            # print chosenEnd
+
+            globals.trackingId += 1
             localAlignmentCounter+=1
             coverageTracker1[rowIndex] = True
             coverageTracker2[colIndex] = True
 
-            ancestralOperon = determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex], chosenOpEvents)
+            chosenOpEvent.setGenome1Name(strain1.getName())
+            chosenOpEvent.setGenome2Name(strain2.getName())
+            chosenOpEvent.setScore(highestScore)
+            chosenOpEvent.trackingEventId = globals.trackingId
+
+            ancestralOperon = determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex], chosenOpEvent)
+            chosenOpEvent.setAncestralOperonGeneSequence(ancestralOperon)
+            chosenOpEvent.printEvent()
+            # print "\n Operon Alignments \n"
+            # print chosenOpEvent.operon1Alignment
+            # print chosenOpEvent.operon2Alignment
+            # print "\n Operon Gaps \n"
+            # print chosenOpEvent.operon1Gaps
+            # print chosenOpEvent.operon2Gaps
+            # print "\n Operon Indexes \n"
+            # print chosenOpEvent.operon1GapIndexes
+            # print chosenOpEvent.operon2GapIndexes
+
+            # events.append(chosenOpEvent)
 
             #TODO: Create Event
 
@@ -109,6 +164,14 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
     
     #Format and compute the operon differences
     setDifference, operon1, operon2, numberOfDifferentGenes = formatAndComputeOperonDifferences(op1, op2)
+
+    #Create event for this comparison
+    event = Event(0)
+    event.setGenome1Operon(operon1)
+    event.setGenome2Operon(operon2)
+    event.isOriginallyNegativeOrientationOp1(negativeOrientationOp1) #This tracks the original orientation of op1
+    event.isOriginallyNegativeOrientationOp2(negativeOrientationOp2) #This tracks the original orientation of op2
+    event.setTechnique('Local Alignment')
     
     #If the orientation of the operons does not match, then flip the operon in the negative orientation to the positive orientation
     if negativeOrientationOp1 != negativeOrientationOp2:
@@ -124,6 +187,10 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
             
     if negativeOrientationOp1 != negativeOrientationOp2:
         print('Check code! These operons should be in the same orientation!')
+
+    #Track whether these operons were reversed
+    event.isReversedOp1(operon1Reversed) #This tracks whether op1 was reversed
+    event.isReversedOp2(operon2Reversed) #This tracks whether op2 was reversed
         
     #Initialize the distance matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
@@ -151,7 +218,10 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
                 maxPosition = (a, b)
                 
     #Trace back score matrix to get alignment
-    aligned1, aligned2, numGaps, endPosition = traceback(operon1, operon2, scoreMatrix, maxPosition)
+    aligned1, aligned2, numGaps, endPosition = traceback(operon1, operon2, scoreMatrix, maxPosition, event)
+    # print aligned1
+    # print aligned2
+
     shortestLength = min(len(operon1), len(operon2))
     
     #Adjust gene position we are looking at for extension based on the orienation of the operon
@@ -174,43 +244,43 @@ def localAlignment(op1, op2, op1Position, op2Position, genesStrain1, genesStrain
         rightAdjustment2 -= (len(operon2) - (maxPosition[1]))
 
     #Only extend operons when the current alignment has no gaps
-    if numGaps == 0 and genesStrain1 and genesStrain2:
-        if len(aligned1) == shortestLength:
-            #print("One operon is a SUBSET of the other. Trying extention..")
-            extensionScore = extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
-            returningScore = maxScore + extensionScore
-            extensionScore = extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
-            returningScore += extensionScore
-            printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left and right extension")
-        elif len(aligned1) < shortestLength:
-            if maxPosition[0] == len(scoreMatrix)-1 or maxPosition[1] == len(scoreMatrix[0])-1:
-                #print("Trying right extension..")
-                extensionScore = extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
-                if len(aligned1) >= shortestLength:
-                    printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after right extension")
-                    returningScore = maxScore + extensionScore
-            elif endPosition[0] == 1 or endPosition[1] == 1:
-                #print("Trying left extension..")
-                extensionScore = extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
-                if len(aligned1) >= shortestLength:
-                    printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left extension")
-                    returningScore = maxScore + extensionScore
+    # if genesStrain1 and genesStrain2:
+    #     if len(aligned1) == shortestLength:
+    #         #print("One operon is a SUBSET of the other. Trying extention..")
+    #         extensionScore = extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+    #         returningScore = maxScore + extensionScore
+    #         extensionScore = extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+    #         returningScore += extensionScore
+    #         printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left and right extension")
+    #     elif len(aligned1) < shortestLength:
+    #         if maxPosition[0] == len(scoreMatrix)-1 or maxPosition[1] == len(scoreMatrix[0])-1:
+    #             #print("Trying right extension..")
+    #             extensionScore = extendAlignment("right", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], rightAdjustment1, rightAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+    #             if len(aligned1) >= shortestLength:
+    #                 printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after right extension")
+    #                 returningScore = maxScore + extensionScore
+    #         elif endPosition[0] == 1 or endPosition[1] == 1:
+    #             #print("Trying left extension..")
+    #             extensionScore = extendAlignment("left", operon1, operon2, genesStrain1, genesStrain2, operonPositionList1[op1Position], operonPositionList2[op2Position], leftAdjustment1, leftAdjustment2, negativeOrientationOp1, negativeOrientationOp2, aligned1, aligned2, singletonDict1, singletonDict2)
+    #             if len(aligned1) >= shortestLength:
+    #                 printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after left extension")
+    #                 returningScore = maxScore + extensionScore
     #No extension but still qualifies because it has no gaps in alignment
-    elif numGaps == 0 and len(aligned1) == shortestLength:
+    if len(aligned1) >= (0.75 * shortestLength):
         printAlignments(op1Position, op2Position, operon1, operon2, aligned1, aligned2, "after no extension due to missing gene list(s)")
         returningScore = maxScore
     #print("Final alignment:")
     #print(aligned1)
     #print(aligned2)
 
-    return returningScore, operon1, operon2, maxPosition, endPosition, aligned1, aligned2
+    return returningScore, operon1, operon2, maxPosition, endPosition, aligned1, aligned2, event
 
 ######################################################
 # traceback
 # Parameters: operon1, operon2, scoreMatrix, startPosition
 # Description: treaverses score matrix to determine optimal alignment
 ######################################################
-def traceback(operon1, operon2, scoreMatrix, startPosition):
+def traceback(operon1, operon2, scoreMatrix, startPosition, event):
     match = 1
     codonMismatch = 0
     mismatch = 0
@@ -222,6 +292,18 @@ def traceback(operon1, operon2, scoreMatrix, startPosition):
     move = nextMove(scoreMatrix, x, y)
     numGaps = 0
 
+    op1Gaps = []
+    op1Gap = []
+    op1ConsecutiveGap = False #Tracks consecutive gaps
+
+    op2Gaps = []
+    op2Gap = []
+    op2ConsecutiveGap = False #Tracks consecutive gaps
+
+    #Tracks where the extra genes are from
+    gap1Indexes = []
+    gap2Indexes = []
+
     while move != END:
         if move == DIAG:
             if operon1[x-1] == operon2[y-1]:
@@ -231,28 +313,90 @@ def traceback(operon1, operon2, scoreMatrix, startPosition):
             else:
                 mismatch += 1
 
-            aligned_seq1.append(operon1[x - 1])
-            aligned_seq2.append(operon2[y - 1])
+            aligned_seq1.insert(0, operon1[x - 1])
+            aligned_seq2.insert(0, operon2[y - 1])
             x -= 1
             y -= 1
+
         elif move == UP:
-            aligned_seq1.append(operon1[x - 1])
-            aligned_seq2.append('-')
+            index = x - 1
+            # aligned_seq1.insert(0, operon1[x - 1])
+            # aligned_seq2.insert(0, ' - ')
             x -= 1
             numGaps += 1
+
+            op1ConsecutiveGap = False
+            #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
+            if op2ConsecutiveGap:
+                op2Gap.insert(0, operon1[index])
+                op2ConsecutiveGap = True
+            else:
+                if len(op2Gap) > 0:
+                    op2Gaps.insert(0, op2Gap)
+                op2Gap = []
+                op2Gap.insert(0, operon1[index])
+                gap2Indexes.insert(0, len(aligned_seq2))
+                op2ConsecutiveGap = True
+
         else:
-            aligned_seq1.append('-')
-            aligned_seq2.append(operon2[y - 1])
+            index = y - 1
+            # aligned_seq1.insert(0, ' - ')
+            # aligned_seq2.insert(0, operon2[y - 1])
             y -= 1
             numGaps += 1
+
+            op2ConsecutiveGap = False
+            #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
+            if op1ConsecutiveGap:
+                op1Gap.insert(0, operon2[index])
+                op1ConsecutiveGap = True
+            else:
+                if len(op1Gap) > 0:
+                    op1Gaps.insert(0, op1Gap)
+                op1Gap = []
+                op1Gap.insert(0, operon2[index])
+                gap1Indexes.insert(0, len(aligned_seq1))
+                op1ConsecutiveGap = True
 
         move = nextMove(scoreMatrix, x, y)
 
-    aligned_seq1.append(operon1[x - 1])
-    aligned_seq2.append(operon2[y - 1])
+    aligned_seq1.insert(0, operon1[x - 1])
+    aligned_seq2.insert(0, operon2[y - 1])
     endPosition = (x,y)
 
-    return list(reversed(aligned_seq1)), list(reversed(aligned_seq2)), numGaps, endPosition
+    #Empty any remaining gaps
+    if len(op1Gap) > 0:
+        op1Gaps.insert(0, op1Gap)
+    if len(op2Gap) > 0:
+        op2Gaps.insert(0, op2Gap)
+
+    #The indexes values need to be flipped b/c right now they're oriented from right to left
+    if len(gap1Indexes) > 0:
+        for x in range(0, len(gap1Indexes)):
+            gap1Indexes[x] = len(aligned_seq1) - gap1Indexes[x]
+    if len(gap2Indexes) > 0:
+        for x in range(0, len(gap2Indexes)):
+            gap2Indexes[x] = len(aligned_seq2) - gap2Indexes[x]
+
+    event.setNumMatches(match)
+    event.setNumCodonMismatches(codonMismatch)
+    event.setNumGeneMismatches(mismatch)
+    # event.setNumSubstitutions(substitution)
+    # print " Operons: "
+    # print operon1
+    # print operon2
+    # print " Alignment: "
+    # print aligned_seq1
+    # print aligned_seq2
+    event.setOperon1Alignment(aligned_seq1)
+    event.setOperon2Alignment(aligned_seq2)
+    # The gaps we found in op2, we will use to look for duplicates/losses in op1, and vice versa
+    event.setOperon1Gaps(op2Gaps)
+    event.setOperon2Gaps(op1Gaps)
+    event.setOperon1GapIndexes(gap2Indexes)
+    event.setOperon2GapIndexes(gap1Indexes)
+
+    return aligned_seq1, aligned_seq2, numGaps, endPosition
 
 ######################################################
 # extendAlignment
@@ -270,6 +414,16 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
     extensionScore = 0
     matchWithCodon = 1.0
     matchWithoutCodon = 0.5
+
+    # print ("Performing " + direction + " extension: ")
+    # print operon1
+    # print operon2
+    # print ("With following alignment ")
+    # print aligned1
+    # print aligned2
+    # print ("Gene Positions")
+    # print opGenePosition1
+    # print opGenePosition2
 
     while not mismatch:
         if direction == "left":
@@ -298,14 +452,18 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
             if (str(opGenePosition1) in singletonDict1 and str(opGenePosition2) in singletonDict2):
                 if (('-' in singletonDict1[str(opGenePosition1)]) != reverseOp1) or (('-' in singletonDict2[str(opGenePosition2)]) != reverseOp2):
                     mismatch = True
+                    # print("Both singletons")
             elif (str(opGenePosition1) in singletonDict1 and opGenePosition2 in operonRange2):
                 if (('-' in singletonDict1[str(opGenePosition1)]) != reverseOp1):
                     mismatch = True
+                    # print("gene1 is singletons")
             elif (str(opGenePosition2) in singletonDict2 and opGenePosition1 in operonRange1):
                 if (('-' in singletonDict2[str(opGenePosition2)]) != reverseOp2):
                     mismatch = True
+                    # print("gene2 is singletons")
             else:
                 mismatch = True
+                # print ("One or both in a separate operon")
 
             if not mismatch:
                 gene1 = genesStrain1[opGenePosition1]
@@ -320,6 +478,9 @@ def extendAlignment(direction, operon1, operon2, genesStrain1, genesStrain2, opG
 
                     aligned1.insert(0, gene1)
                     aligned2.insert(0, gene2)
+                    # print ("Inserting genes:")
+                    # print aligned1
+                    # print aligned2
                     # extensionCounter += 1
                 else:
                     mismatch = True
@@ -352,69 +513,173 @@ def nextMove(scoreMatrix, x, y):
 # Parameters: op1, op2, startPosition, endPosition, aligned1, aligned2
 # Description: Determines which ancestor to pick from local alignment results.
 ######################################################
-def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2, operonEvents):
-    chooseOp1 = True
-    ancestor = []
+def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, sequence1, sequence2, opIndex1, opIndex2, event):
+    ancestralOperon = copy.deepcopy(event.operon1Alignment)
+    updatedUnaligned = []
+    unaligned1 = []
+    unaligned2 = []
     deletionSizes = None
     duplicationSizes = None
 
-    if len(op1) > len(op2):
-        unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
-        #numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned2, unaligned)
-        numUnique = len(op1)-len(aligned2)
-        numDuplicateFound = 0
-        alignedRange = (startPosition[0]-1, endPosition[0]-1)
+    print "Aligned Sections"
+    print aligned1
+    print aligned2
 
-        for geneList in unaligned:
-            if geneList:
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(geneList, sequence1, opIndex1, alignedRange)
-                numUnique -= numUniqueFound
-                numDuplicateFound += numUniqueFound
 
-        chooseOp1 = False
+    unaligned = getUnaligned(op1, startPosition[0]-1, endPosition[0]-1)
+    print "Unaligned sections"
+    print unaligned
+    #numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned2, unaligned)
+    numUnique = len(op1)-len(aligned2)
+    numDuplicateFound = 0
+    alignedRange = (startPosition[0]-1, endPosition[0]-1)
 
-        if duplicationSizes:
-            for size in duplicationSizes:
-                updateDuplicationCounter(size)
+    for geneList in unaligned:
+        if geneList:
+            numUniqueFound, deletionSizes, duplicationSizes, updatedGeneList = findUniqueGenes(geneList, sequence1, opIndex1, alignedRange)
+            numUnique -= numUniqueFound
+            numDuplicateFound += numUniqueFound
+            updatedUnaligned.append(updatedGeneList)
+        else:
+            updatedUnaligned.append([])
 
-        operonEvents.setOperon1GeneDuplicates(numDuplicateFound)
-        operonEvents.setOperon2GeneLosses(numUnique)
+    unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
+    print "Unaligned sections"
+    print unaligned
+    # numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned1, unaligned)
+    numUnique = len(op2)-len(aligned1)
+    numDuplicateFound = 0
+    alignedRange = (startPosition[1]-1, endPosition[1]-1)
 
-        if deletionSizes:
-            for size in deletionSizes:
-                updateDeletionCounter(size)
+    for geneList in unaligned:
+        if geneList:
+            numUniqueFound, deletionSizes, duplicationSizes, updatedGeneList = findUniqueGenes(geneList, sequence2, opIndex2, alignedRange)
+            numUnique -= numUniqueFound
+            numDuplicateFound += numUniqueFound
+            updatedUnaligned.append(updatedGeneList)
+        else:
+            updatedUnaligned.append([])
 
-    else:
-        unaligned = getUnaligned(op2, startPosition[1]-1, endPosition[1]-1)
-        # numUnique, unaligned, numDuplicateFound = compareDuplicates(aligned1, unaligned)
-        numUnique = len(op2)-len(aligned1)
-        numDuplicateFound = 0
-        alignedRange = (startPosition[1]-1, endPosition[1]-1)
+    print updatedUnaligned
 
-        for geneList in unaligned:
-            if geneList:
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(geneList, sequence2, opIndex2, alignedRange)
-                numUnique -= numUniqueFound
-                numDuplicateFound += numUniqueFound
+    while updatedUnaligned[0] or updatedUnaligned[2]:
+        if updatedUnaligned[0]:
+            gene = updatedUnaligned[0].pop()
+            if gene != '-':
+                unaligned1.insert(0, gene)
+        if updatedUnaligned[2]:
+            gene = updatedUnaligned[2].pop()
+            if gene != '-':
+                unaligned1.insert(0, gene)
 
-        chooseOp1 = False
-        operonEvents.setOperon1GeneLosses(numUnique)
+    while updatedUnaligned[1] or updatedUnaligned[3]:
+        if updatedUnaligned[1]:
+            gene = updatedUnaligned[1].pop()
+            if gene != '-':
+                unaligned2.insert(0, gene)
+        if updatedUnaligned[3]:
+            gene = updatedUnaligned[3].pop()
+            if gene != '-':
+                unaligned2.insert(0, gene)
 
-        if not (deletionSizes is None):
-            for size in deletionSizes:
-                updateDeletionCounter(size)
+    print('Differences detected between these two operons!')
+    operon1Gaps = event.operon1Gaps
+    operon2Gaps = event.operon2Gaps
+    operon1GapIndexes = event.operon1GapIndexes
+    operon2GapIndexes = event.operon2GapIndexes
 
-        if not (duplicationSizes is None):
-            for size in duplicationSizes:
-                updateDuplicationCounter(size)
+    print operon1Gaps
+    print operon1GapIndexes
+    print operon2Gaps
+    print operon2GapIndexes
 
-        operonEvents.setOperon2GeneDuplicates(numDuplicateFound)
+    print('These are the extra genes for operon 1: %s' %(operon1Gaps))
+    print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
+    print('These are the extra genes for operon 2: %s' %(operon2Gaps))
+    print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
 
-    ancestor = unaligned[0] + aligned1 + unaligned[1]
+    #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
+    operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, event.operon1Alignment)
+    operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, event.operon2Alignment)
+    
+    #increment the duplicate counters
+    incrementDuplicateSizeCounters(duplicateSizesWithinAlignment1)
+    incrementDuplicateSizeCounters(duplicateSizesWithinAlignment2)
+    
+    i = len(operon1Gaps)
+    j = len(operon2Gaps)
 
-    print(operonEvents.toStringOperonEvents())
+    while (i > 0) or (j > 0):
+        #Select the gap with the biggest index b/c we will be performing the insertion rear to front of operon to avoid messing up the indexes of the other gaps
+        if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
+            #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
+            #print('Gap being processed: %s' % (operon1Gaps[i]))
+            numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon1Gaps[i-1], sequence1, opIndex1)
+            incrementDuplicateSizeCounters(duplicationSizes)
+            incrementDeletionSizeCounters(deletionSizes)
+            #print('Gap being processed: %s' % (operon1Gaps[i-1]))
+            #print('Number of unique genes found: %s' %(numUniqueFound))
+            #print('Number of deletion genes found: %s' %(deletionSizes))
+            #print('Number of duplicate genes found: %s' %(duplicationSizes))
+            if len(operon1Gaps[i-1]) > 0:
+                #Insert gap into operon
+                operon1Gaps[i-1].reverse()
+                for gene in operon1Gaps[i-1]:
+                    ancestralOperon.insert(operon1GapIndexes[i-1], gene)
+            i = i - 1
+        elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
+            #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
+            #print('Gap being processed: %s' % (operon2Gaps[j-1]))
+            numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon2Gaps[j-1], sequence2, opIndex2)
+            incrementDuplicateSizeCounters(duplicationSizes)
+            incrementDeletionSizeCounters(deletionSizes)
+            #print('Gap being processed: %s' % (operon2Gaps[j-1]))
+            #print('Number of unique genes found: %s' %(numUniqueFound))
+            #print('Number of deletion genes found: %s' %(deletionSizes))
+            #print('Number of duplicate genes found: %s' %(duplicationSizes))
+            if len(operon2Gaps[j-1]) > 0:
+                #Insert gap into operon
+                operon2Gaps[j-1].reverse()
+                for gene in operon2Gaps[j-1]:
+                    ancestralOperon.insert(operon2GapIndexes[j-1], gene)
+            j = j - 1
+        elif i > 0:
+            #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
+            #print('Gap being processed: %s' % (operon1Gaps[i-1]))
+            numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon1Gaps[i-1], sequence1, opIndex1)
+            incrementDuplicateSizeCounters(duplicationSizes)
+            incrementDeletionSizeCounters(deletionSizes)
+            #print('Gap being processed: %s' % (operon1Gaps[i-1]))
+            #print('Number of unique genes found: %s' %(numUniqueFound))
+            #print('Number of deletion genes found: %s' %(deletionSizes))
+            #print('Number of duplicate genes found: %s' %(duplicationSizes))
+            if len(operon1Gaps[i-1]) > 0:
+                #Insert gap into operon
+                operon1Gaps[i-1].reverse()
+                for gene in operon1Gaps[i-1]:
+                    ancestralOperon.insert(operon1GapIndexes[i-1], gene)
+            i = i - 1
+        elif j > 0:
+            #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
+            #print('Gap being processed: %s' % (operon2Gaps[j-1]))
+            numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon2Gaps[j-1], sequence2, opIndex2)
+            incrementDuplicateSizeCounters(duplicationSizes)
+            incrementDeletionSizeCounters(deletionSizes)
+            #print('Gap being processed: %s' % (operon2Gaps[j-1]))
+            #print('Number of unique genes found: %s' %(numUniqueFound))
+            #print('Number of deletion genes found: %s' %(deletionSizes))
+            #print('Number of duplicate genes found: %s' %(duplicationSizes))
+            if len(operon2Gaps[j-1]) > 0:
+                #Insert gap into operon
+                operon2Gaps[j-1].reverse()
+                for gene in operon2Gaps[j-1]:
+                    ancestralOperon.insert(operon2GapIndexes[j-1], gene)
+            j = j - 1
+    #Set ancestral operon
+    ancestralOperon = unaligned1 + ancestralOperon + unaligned2
+    event.setAncestralOperonGeneSequence(ancestralOperon)
 
-    return ancestor
+    return ancestralOperon
 
 ######################################################
 # getUnaligned
@@ -442,13 +707,6 @@ def getUnaligned(operon, startPosition, endPosition):
 # Parameters:
 # Description: Prints a summary of the local alignments.
 ######################################################
-def printStrains(strain1, strain2):
-    file  = open('localAlignmentResults.txt', 'a+')
-
-    file.write("\nResults of Local Alignment: %s & %s\n" %(strain1, strain2))
-    file.write("...\n")
-    file.close()
-
 def printAlignments(op1Position, op2Position, operon1, operon2, alignment1, alignment2, message):
     file  = open('localAlignmentResults.txt', 'a+')
 
@@ -459,16 +717,3 @@ def printAlignments(op1Position, op2Position, operon1, operon2, alignment1, alig
     file.write("%s\n\n" %alignment2)
 
     file.close()
-
-def printStats():
-    global fullAlignmentCounter
-    global extensionCounter
-    file  = open('localAlignmentResults.txt', 'a+')
-
-    file.write("\nTotals:\n")
-    file.write("Number of full alignments that occurred: %s\n" %fullAlignmentCounter)
-    file.write("Number of extensions performed: %s\n\n" %extensionCounter)
-
-    file.close()
-    fullAlignmentCounter = 0
-    extensionCounter = 0

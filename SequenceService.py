@@ -107,6 +107,7 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
     geneRanges = []
     numGeneMatches = 0
     duplicationSizes = []
+    updatedGeneList = []
 
     while (comparisonSize >= 2) and genesNotFound:
         #Slide the window across the gene list, one gene at a time
@@ -156,18 +157,20 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
             if not inSet:
                 inSet = True
             deletionSize += 1
+            updatedGeneList.insert(0, geneList[index])
         else:
             geneList.pop(index)
             inSet = False
             if deletionSize != 0:
                 deletionSizes.append(deletionSize)
                 deletionSize = 0
+            updatedGeneList.insert(0, '-')
     #Special case if all genes in list are losses
     if deletionSize != 0:
         deletionSizes.append(deletionSize)
         deletionSize = 0
 
-    return numGeneMatches, deletionSizes, duplicationSizes
+    return numGeneMatches, deletionSizes, duplicationSizes, updatedGeneList
 
 ######################################################
 # geneInSequence

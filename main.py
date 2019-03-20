@@ -646,8 +646,22 @@ def processFileSequence(sequence):
     operonPositions = []
 
     while index < len(sequence):
+
+        #get the origin and termus (remove if not needed)
+        if sequence[index] == '<':
+            startIndex = index
+
+            while sequence[index] != '>':
+                index += 1
+
+            #increment the index to include the >
+            index += 1
+            # operonList.append(sequence[startIndex:index])
+            #decrement the geneIndex to not include <> values
+            geneIndex -= 1
+
         #Operon
-        if (sequence[index] == '[') or (sequence[index] == '-' and sequence[index + 1] == '['):
+        elif (sequence[index] == '[') or (sequence[index] == '-' and sequence[index + 1] == '['):
             startIndex = index
             operonPositions.append(geneIndex)
 

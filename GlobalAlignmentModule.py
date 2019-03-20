@@ -447,7 +447,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
             if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
                 incrementDuplicateSizeCounters(duplicationSizes)
                 incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
@@ -463,7 +463,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
                 incrementDuplicateSizeCounters(duplicationSizes)
                 incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
@@ -479,7 +479,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
                 incrementDuplicateSizeCounters(duplicationSizes)
                 incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
@@ -495,7 +495,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
                 incrementDuplicateSizeCounters(duplicationSizes)
                 incrementDeletionSizeCounters(deletionSizes)
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
