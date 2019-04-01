@@ -32,7 +32,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
             if len(sequence[x].split(',')) > 1: #This is an operon
                 for y in range(0, len(sequence)):
                     #make sure we're not comparing the same operons and that the second operon is NOT  a singleton
-                    if x != y and len(sequence[y].split(',')) > 1:
+                    if x != y and len(sequence[y].split(',')) > 1 and coverageTracker[y] == True:
                         op1 = sequence[x]
                         op2 = sequence[y]
 
@@ -86,7 +86,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                             bestEvent = event
             else: #This is a singleton gene
                 for y in range(0, len(sequence)):
-                    if x != y: #Make sure we're not comparing the same singleton genes
+                    if x != y and coverageTracker[y] == True: #Make sure we're not comparing the same singleton genes
                         op1 = sequence[x]
                         op2 = sequence[y]
 
