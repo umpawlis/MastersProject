@@ -131,7 +131,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                         event.isReversedOp2(operon2Reversed) #This tracks whether op2 was reversed
                         event.setAncestralOperonGeneSequence(copy.deepcopy(operon1)) #Set the ancestral operon sequence
 
-                        if op1 in op2 and abs(x-y) < minDistance: #Checks if the singleton gene is located in the operon and if the distance is smaller
+                        if operon1[0] in operon2 and abs(x-y) < minDistance: #Checks if the singleton gene is located in the operon and if the distance is smaller
                             minDistance = abs(x-y)
                             event.setScore(0)
                             bestEvent = event
