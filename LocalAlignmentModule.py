@@ -127,7 +127,7 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
             # print chosenOpEvent.operon1GapIndexes
             # print chosenOpEvent.operon2GapIndexes
 
-            # events.append(chosenOpEvent)
+            events.append(chosenOpEvent)
 
             #TODO: Create Event
 
