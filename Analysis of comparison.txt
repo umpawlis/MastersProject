@@ -1,0 +1,73 @@
+NC_014219, CP002394
+
+Global Alignment
+[16S, 23S, 5S]
+[16S, 23S, 5S]
+
+[16S, 23S, 5S]
+[16S, 23S, 5S]
+
+Val_GUC
+Val_GUC
+
+Sec_UGA
+Sec_UGA
+
+Ala_GCC
+Ala_GCC
+
+Arg_CGA
+Arg_CGA
+
+[Met_AUG, Met_AUG, Ser_UCA]
+[Met_AUG, Met_AUG, Ser_UCA]
+
+[16S, Ile_AUC, Ala_GCA, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUG, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+[16S, Ile_AUC, Ala_GCA, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+
+['Thr_ACA', 'Phe_UUC', 'Asp_GAC', 'Met_AUG', 'Glu_GAA', 'Lys_AAA']
+['Thr_ACA', 'Phe_UUC', 'Asp_GAC', 'Met_AUG', 'Glu_GAA'			 ] Lys was included
+
+['16S', '23S', '5S', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Asp_GAC', 'Tyr_UAC', 'Trp_UGG', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 'Arg_CGU', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 		   'Glu_GAA', 'Lys_AAA']
+['16S', '23S', '5S', 'Ala_GCA', 'Met_AUG', 'Ser_UCA', 'Asp_GAC', 'Tyr_UAC', 'Trp_UGG', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 'Arg_CGU', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA', 'Lys_AAA'] Ser was included
+
+[Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Leu_CUA, Leu_CUC, 		 Pro_CCA, Gly_GGA, 			16S, 23S, 5S]
+[Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Leu_CUA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, Ile_AUC, 16S, 23S, 5S] Both Ile and Arg included
+
+['16S', '23S', '5S', 'Asn_AAC', 'Ser_UCC', 'Glu_GAA', 'Val_GUA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'Thr_ACA', 'Tyr_UAC', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 			'Cys_UGC', 			  'Leu_UUG']
+['16S', '23S', '5S', 'Asn_AAC', 'Ser_UCC', 'Glu_GAA', 'Val_GUA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'Thr_ACA', 'Tyr_UAC', 'Trp_UGG', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 'Cys_UGC', 'Leu_UUA', 'Leu_UUG'] Gly and Leu both included
+
+Local Alignment
+[5S, 	  		  	  Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA				  ]
+[	Asn_AAC, Asn_AAC, Asn_AAC, Thr_ACC, Glu_GAA, Gln_CAA, Lys_AAA, Ala_GCA] 5S 2xAsn Lys, Gln all included
+
+Extras(Not mapped by global or local alignment):
+NC_014219
+Arg_AGG (Lost) 
+Arg_AGA (Lost)
+
+CP002394
+Asn_AAC (Duplicate)
+Gly_GGA (Duplicate)
+Gln_CAA (Duplicate)
+[16S, 23S, 5S] (Duplicate)
+Sec_UGA (Duplicate)
+[5S, 23S, 16S] (Duplicate)
+[5S, 23S, 16S] (Duplicate)
+Trp_NNN (Lost)
+[Arg_AGA, Gly_GGA] (Lost)
+
+Results Duplications:
+4 for size 1
+3 for size 3
+
+Results Deletions:
+9 for size 1
+2 for size 2
+
+Bugs fixed:
+For self global alignment map only with marked operons
+Checks if singleton exists in operon has been fixed
+
+Question:
+Distribution graphs are including counts for genes within operons?
