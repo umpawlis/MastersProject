@@ -6,6 +6,7 @@ from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FileService import createFile
+from FileService import appendToFile
 import globals
 import matplotlib.pyplot as plt
 import numpy as np
@@ -300,13 +301,13 @@ def processStrains(strain1, strain2, neighborStrain):
     events = constructEvents(strain1, strain2)
     temp1 = copy.deepcopy(globals.sizeDuplications)
     temp2 = copy.deepcopy(globals.sizeDeletions)
+    
     print('Constructing dot plot for the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     createDotPlot(events, strain1, strain2)
     createBarGraph(strain1.duplicationSizes, 'Distribution of Duplications for %s'%(strain1.getName()))
     createBarGraph(strain2.duplicationSizes, 'Distribution of Duplications for %s'%(strain2.getName()))
     createBarGraph(strain1.deletionSizes, 'Distribution of Deletions for %s'%(strain1.getName()))
     createBarGraph(strain2.deletionSizes, 'Distribution of Deletions for %s'%(strain2.getName()))
-
     #createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
     #createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
     
@@ -339,7 +340,12 @@ def processStrains(strain1, strain2, neighborStrain):
     #Set the global trackers of the phylogeny to what it was when we compared the siblings b/c at that point the dictionary is not messed up with neighbor data
     globals.sizeDuplications = temp1
     globals.sizeDeletions = temp2
-
+    
+    #Add content to output file
+    appendToFile(outputFile, "%s\n" % (strain1.getName()))
+    
+    appendToFile(outputFile, "%s\n" % (strain2.getName()))
+    
     return ancestralSequence, events
 
 ######################################################
