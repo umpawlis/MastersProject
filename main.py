@@ -29,7 +29,7 @@ codonCost = 0.5
 # Parameters:
 # Description:
 ######################################################
-def createBarGraph(events, strain1, strain2, dictionary, title):
+def createBarGraph(dictionary, title):
 
     if dictionary != None and len(dictionary) > 0:
         keys = list(dictionary.keys())
@@ -300,12 +300,17 @@ def processStrains(strain1, strain2, neighborStrain):
     temp2 = copy.deepcopy(globals.sizeDeletions)
     print('Constructing dot plot for the following siblings: %s, %s' %(strain1.getName(), strain2.getName()))
     createDotPlot(events, strain1, strain2)
-    createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
-    createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
+    createBarGraph(strain1.duplicationSizes, 'Distribution of Duplications for %s'%(strain1.getName()))
+    createBarGraph(strain2.duplicationSizes, 'Distribution of Duplications for %s'%(strain2.getName()))
+    createBarGraph(strain1.deletionSizes, 'Distribution of Deletions for %s'%(strain1.getName()))
+    createBarGraph(strain2.deletionSizes, 'Distribution of Deletions for %s'%(strain2.getName()))
+
+    #createBarGraph(events, strain1, strain2, globals.localSizeDuplications, 'Distribution of Duplications %s vs %s' % (strain1.getName(), strain2.getName()))
+    #createBarGraph(events, strain1, strain2, globals.localSizeDeletions, 'Distribution of Deletions %s vs %s' % (strain1.getName(), strain2.getName()))
     
     neighborEvents = []
     if neighborStrain != None:#Had to put this check in since it was causing it crash for root
-        neighborEvents = constructEvents(strain1, neighborStrain)
+        neighborEvents = constructEvents(copy.deepcopy(strain1), neighborStrain)
     events = formatAndOrientOperon(events, neighborEvents) #Inserts into each event an ancestral operon in a string format
 
     FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)

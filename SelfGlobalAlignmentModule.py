@@ -1,6 +1,8 @@
 from SequenceService import formatAndComputeOperonDifferences
-from SequenceService import incrementDuplicateSizeCounters
-from SequenceService import incrementDeletionSizeCounters
+#from SequenceService import incrementDuplicateSizeCounters
+#from SequenceService import incrementDeletionSizeCounters
+from SequenceService import addDuplicationEventsToStrain
+from SequenceService import addDeletionEventsToStrain
 from GlobalAlignmentModule import performGlobalAlignment
 from SequenceService import reverseSequence
 from Event import Event
@@ -142,9 +144,11 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 bestEvent.trackingEventId = globals.trackingId
                 coverageTracker[x] = True
                 duplicationEvents.append(bestEvent)
+                
                 #Increment the duplicate counter with size of operon since the operon is a duplication
-                incrementDuplicateSizeCounters([len(event.genome1Operon)])
-
+                #incrementDuplicateSizeCounters([len(event.genome1Operon)])
+                addDuplicationEventsToStrain([len(event.genome1Operon)], strain)
+                
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 bestEvent.printEvent()
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
@@ -178,7 +182,9 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 lossEvents.append(event)
 
                 #Increment the loss counter with the size of the operon since the operon is a loss
-                incrementDeletionSizeCounters([len(event.genome1Operon)])
+                #incrementDeletionSizeCounters([len(event.genome1Operon)])
+                addDeletionEventsToStrain([len(event.genome1Operon)], strain)
+                
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 event.printEvent()
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')

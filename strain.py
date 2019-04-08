@@ -11,6 +11,8 @@ class Strain(object):
     operonPositions = []
     singletonDict = {}
     events = []
+    deletionSizes = {}
+    duplicationSizes = {}
 
     #Class constructor
     def __init__(self, name, sequence, descendants, operonPositions, singletonDict):
@@ -43,3 +45,7 @@ class Strain(object):
 
     def setEvents(self, events):
         self.events = events
+    def setDeletionSizes(self, deletionSizes):
+        self.deletionSizes = deletionSizes
+    def setDuplicationSizes(self, duplicationSizes):
+        self.duplicationSizes = duplicationSizes
