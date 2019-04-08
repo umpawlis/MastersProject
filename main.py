@@ -360,6 +360,14 @@ def appendStrainToFile(strain):
         for size, count in strain.deletionSizes.items():
             temp += str(size) + ":" + str(count) + ","
     appendToFile(outputFile, "%s\n" %(temp)) #Deletions
+    
+    temp = "Duplications;"
+    if strain.duplicationSizes != None and len(strain.duplicationSizes):
+        for size, count in strain.duplicationSizes.items():
+            temp += str(size) + ":" + str(count) + ","
+    appendToFile(outputFile, "%s\n" %(temp)) #Duplications
+    
+    #Substitutions
 
 ######################################################
 # constructGenome
