@@ -342,11 +342,24 @@ def processStrains(strain1, strain2, neighborStrain):
     globals.sizeDeletions = temp2
     
     #Add content to output file
-    appendToFile(outputFile, "%s\n" % (strain1.getName()))
-    
-    appendToFile(outputFile, "%s\n" % (strain2.getName()))
+    appendStrainToFile(strain1)
+    appendStrainToFile(strain2)
     
     return ancestralSequence, events
+
+######################################################
+# appendStrainToFile
+# Parameters:
+# Description: Adds content to the output file based on the strain's data
+######################################################
+def appendStrainToFile(strain):
+    appendToFile(outputFile, "%s\n" % (strain.getName())) #Name of the strain
+    
+    temp = "Deletions;"
+    if strain.deletionSizes != None and len(strain.deletionSizes):
+        for size, count in strain.deletionSizes.items():
+            temp += str(size) + ":" + str(count) + ","
+    appendToFile(outputFile, "%s\n" %(temp)) #Deletions
 
 ######################################################
 # constructGenome
