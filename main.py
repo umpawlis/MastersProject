@@ -494,7 +494,7 @@ def constructEvents(strain1, strain2):
         coverageTracker2[x] = False
 
     #Global Alignment operation
-    events, coverageTracker1, coverageTracker2, globalAlignmentCounter = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
+    events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
     print('Number of orthologous operons identified using Global Alignment %s' % (globalAlignmentCounter))
 
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)

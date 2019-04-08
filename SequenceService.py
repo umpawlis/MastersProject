@@ -237,15 +237,12 @@ def checkOverlap(newRange, rangeList):
 ######################################################
 def addDuplicationEventsToStrain(duplicationSizes, strain):
     if duplicationSizes != None and len(duplicationSizes) > 0:
-        #Initialize the dictionary
-        if strain.duplicationSizes == None:
-            temp = {}
-            strain.setDuplicationSizes(temp)
         for x in range(0, len(duplicationSizes)):
             if duplicationSizes[x] in strain.duplicationSizes:
                 strain.duplicationSizes[duplicationSizes[x]] += 1
             else:
                 strain.duplicationSizes[duplicationSizes[x]] = 1
+    return strain
                 
 ######################################################
 # addDeletionEventsToStrain
@@ -254,15 +251,12 @@ def addDuplicationEventsToStrain(duplicationSizes, strain):
 ######################################################
 def addDeletionEventsToStrain(deletionSizes, strain):
     if deletionSizes != None and len(deletionSizes) > 0:
-        #Initialize the dictionary
-        if strain.deletionSizes == None:
-            temp = {}
-            strain.setDeletionSizes(temp)
         for x in range(0, len(deletionSizes)):
             if deletionSizes[x] in strain.deletionSizes:
                 strain.deletionSizes[deletionSizes[x]] += 1
             else:
                 strain.deletionSizes[deletionSizes[x]] = 1
+    return strain
                 
 ######################################################
 # incrementDuplicateSizeCounters
