@@ -5,6 +5,7 @@ from strain import Strain
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
+from FileService import createFile
 import globals
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,6 +20,7 @@ ancestralCounter = 0 #Counter used to create a unique name for the ancestor
 deletionCost = 1
 substitutionCost = 1
 codonCost = 0.5
+outputFile = 'ApplicationOutput.txt'
 
 #################################################
 ########Functions used in this script############
@@ -709,6 +711,8 @@ def processFileSequence(sequence):
 #                       main
 ######################################################
 globals.initialize()
+createFile(outputFile)
+
 startTime = time.time()
 
 print('Reading in newick tree from file: %s...' % (newickFileName))
