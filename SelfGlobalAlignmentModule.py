@@ -18,7 +18,7 @@ import copy
 # Parameters:
 # Description: Performs a self global alignment to identify duplicate operons
 ######################################################
-def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
+def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, targetStrain):
     print('Performing self-global alignment on strain: %s' %(strain.getName()))
     lossEvents = []
     duplicationEvents = []
@@ -147,7 +147,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
                 #incrementDuplicateSizeCounters([len(event.genome1Operon)])
-                addDuplicationEventsToStrain([len(event.genome1Operon)], strain)
+                targetStrain = addDuplicationEventsToStrain([len(event.genome1Operon)], targetStrain)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 bestEvent.printEvent()
@@ -183,10 +183,10 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
 
                 #Increment the loss counter with the size of the operon since the operon is a loss
                 #incrementDeletionSizeCounters([len(event.genome1Operon)])
-                addDeletionEventsToStrain([len(event.genome1Operon)], strain)
+                targetStrain = addDeletionEventsToStrain([len(event.genome1Operon)], targetStrain)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 event.printEvent()
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
 
-    return duplicationEvents, lossEvents, coverageTracker
+    return duplicationEvents, lossEvents, coverageTracker, targetStrain
