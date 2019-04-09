@@ -359,12 +359,14 @@ def appendStrainToFile(strain):
     if strain.deletionSizes != None and len(strain.deletionSizes):
         for size, count in strain.deletionSizes.items():
             temp += str(size) + ":" + str(count) + ","
+        temp = temp[:-1]
     appendToFile(outputFile, "%s\n" %(temp)) #Deletions
     
     temp = "Duplications;"
     if strain.duplicationSizes != None and len(strain.duplicationSizes):
         for size, count in strain.duplicationSizes.items():
             temp += str(size) + ":" + str(count) + ","
+        temp = temp[:-1]
     appendToFile(outputFile, "%s\n" %(temp)) #Duplications
     
     #Substitutions, Codon Mismatches
