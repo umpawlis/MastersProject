@@ -367,10 +367,32 @@ def appendStrainToFile(strain):
         for size, count in strain.duplicationSizes.items():
             temp += str(size) + ":" + str(count) + ","
         temp = temp[:-1]
-    appendToFile(outputFile, "%s\n" %(temp)) #Duplications
+    appendToFile(outputFile, "%s\n" % (temp)) #Duplications
     
-    #Substitutions, Codon Mismatches
-
+    temp = "Codon Mismatches;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Codon Mismatches
+    
+    temp = "Substitutions;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Substitutions
+    
+    temp = "Num Forward Conserved Regions;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Forward Conserved Regions
+    
+    temp = "Num Inversions;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Inverted Regions
+    
+    temp = "Num Transpositions;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Transpositions
+    
+    temp = "Num Inverted Transpositions;"
+    #TODO
+    appendToFile(outputFile, "%s\n" % (temp)) #Inverted Transpositions
+    
 ######################################################
 # constructGenome
 # Parameters:
