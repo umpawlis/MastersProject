@@ -116,7 +116,7 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
             chosenOpEvent.setScore(highestScore)
             chosenOpEvent.trackingEventId = globals.trackingId
 
-            ancestralOperon = determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex], chosenOpEvent, strain1, strain2)
+            ancestralOperon, strain1, strain2 = determineAncestor(chosenOperon1, chosenOperon2, chosenStart, chosenEnd, chosenAligned1, chosenAligned2, formattedSequence1, formattedSequence2, operonIndexes1[rowIndex], operonIndexes2[colIndex], chosenOpEvent, strain1, strain2)
             chosenOpEvent.setAncestralOperonGeneSequence(ancestralOperon)
             chosenOpEvent.printEvent()
             # print "\n Operon Alignments \n"
@@ -137,7 +137,7 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
             print('\n**************************************')
             print('**************************************\n\n')
                         
-    return events, coverageTracker1, coverageTracker2, localAlignmentCounter
+    return events, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2
 
 ######################################################
 # localAlignment
@@ -607,8 +607,8 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
     #increment the duplicate counters
     #incrementDuplicateSizeCounters(duplicateSizesWithinAlignment1)
     #incrementDuplicateSizeCounters(duplicateSizesWithinAlignment2)
-    addDuplicationEventsToStrain(duplicateSizesWithinAlignment1, strain1)
-    addDuplicationEventsToStrain(duplicateSizesWithinAlignment2, strain2)
+    strain1 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment1, strain1)
+    strain2 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment2, strain2)
     
     
     i = len(operon1Gaps)
@@ -620,8 +620,8 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
             #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
             #print('Gap being processed: %s' % (operon1Gaps[i]))
             numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon1Gaps[i-1], sequence1, opIndex1)
-            addDuplicationEventsToStrain(duplicationSizes, strain1)
-            addDeletionEventsToStrain(deletionSizes, strain1)
+            strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
+            strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
             
             #incrementDuplicateSizeCounters(duplicationSizes)
             #incrementDeletionSizeCounters(deletionSizes)
@@ -639,8 +639,8 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
             #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
             #print('Gap being processed: %s' % (operon2Gaps[j-1]))
             numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon2Gaps[j-1], sequence2, opIndex2)
-            addDuplicationEventsToStrain(duplicationSizes, strain2)
-            addDeletionEventsToStrain(deletionSizes, strain2)
+            strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
+            strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
             
             #incrementDuplicateSizeCounters(duplicationSizes)
             #incrementDeletionSizeCounters(deletionSizes)
@@ -658,8 +658,8 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
             #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
             #print('Gap being processed: %s' % (operon1Gaps[i-1]))
             numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon1Gaps[i-1], sequence1, opIndex1)
-            addDuplicationEventsToStrain(duplicationSizes, strain1)
-            addDeletionEventsToStrain(deletionSizes, strain1)
+            strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
+            strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
             
             #incrementDuplicateSizeCounters(duplicationSizes)
             #incrementDeletionSizeCounters(deletionSizes)
@@ -677,8 +677,8 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
             #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
             #print('Gap being processed: %s' % (operon2Gaps[j-1]))
             numUniqueFound, deletionSizes, duplicationSizes, _ = findUniqueGenes(operon2Gaps[j-1], sequence2, opIndex2)
-            addDuplicationEventsToStrain(duplicationSizes, strain2)
-            addDeletionEventsToStrain(deletionSizes, strain2)
+            strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
+            strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
                 
             #incrementDuplicateSizeCounters(duplicationSizes)
             #incrementDeletionSizeCounters(deletionSizes)
@@ -696,7 +696,7 @@ def determineAncestor(op1, op2, startPosition, endPosition, aligned1, aligned2, 
     ancestralOperon = unaligned1 + ancestralOperon + unaligned2
     event.setAncestralOperonGeneSequence(ancestralOperon)
 
-    return ancestralOperon
+    return ancestralOperon, strain1, strain2
 
 ######################################################
 # getUnaligned

@@ -440,8 +440,8 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
         #increment the duplicate counters
         #incrementDuplicateSizeCounters(duplicateSizesWithinAlignment1)
         #incrementDuplicateSizeCounters(duplicateSizesWithinAlignment2)
-        strain2 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment1, strain2)
-        strain1 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment2, strain1)
+        strain1 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment1, strain1)
+        strain2 = addDuplicationEventsToStrain(duplicateSizesWithinAlignment2, strain2)
         
         i = len(operon1Gaps)
         j = len(operon2Gaps)
@@ -452,7 +452,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
                 numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
-                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
+                strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
                 strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
                 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -471,7 +471,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
-                strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
+                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
                 strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
                 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -490,7 +490,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
                 numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], formattedSequence1, operon1SequenceConversion[event.operon1Index])
-                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
+                strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
                 strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
                 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -509,7 +509,7 @@ def reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversi
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
                 numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], formattedSequence2, operon2SequenceConversion[event.operon2Index])
-                strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
+                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
                 strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
                 
                 #incrementDuplicateSizeCounters(duplicationSizes)

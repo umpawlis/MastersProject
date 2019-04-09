@@ -147,7 +147,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, targetStrain):
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
                 #incrementDuplicateSizeCounters([len(event.genome1Operon)])
-                targetStrain = addDuplicationEventsToStrain([len(event.genome1Operon)], targetStrain)
+                strain = addDuplicationEventsToStrain([len(event.genome1Operon)], strain)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 bestEvent.printEvent()
@@ -189,4 +189,4 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, targetStrain):
                 event.printEvent()
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
 
-    return duplicationEvents, lossEvents, coverageTracker, targetStrain
+    return duplicationEvents, lossEvents, coverageTracker, targetStrain, strain
