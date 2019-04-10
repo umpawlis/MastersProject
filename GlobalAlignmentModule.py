@@ -194,7 +194,12 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     codonMismatch = 0
     mismatch = 0
     substitution = 0
-
+    
+    codonMismatchIndexesStrain1 = ''
+    codonMismatchIndexesStrain2 = ''
+    substitutionIndexesStrain1 = ''
+    substitutionIndexesStrain2 = ''
+    
     operon1Gaps = []
     operon1Gap = []
     operon1ConsecutiveGap = False #Tracks consecutive gaps
@@ -224,6 +229,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
         #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             codonMismatch += 1
+            codonMismatchIndexesStrain1 += str(i-1) + ', '
+            codonMismatchIndexesStrain2 += str(j-1) + ', '
+            
             alignmentSequence1.insert(0, operon1[i-1])
             alignmentSequence2.insert(0, operon2[j-1])
 
@@ -234,6 +242,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
         #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.substitutionCost):
             substitution += 1
+            substitutionIndexesStrain1 += str(i-1) + ', '
+            substitutionIndexesStrain2 += str(j-1) + ', '
+            
             alignmentSequence1.insert(0, operon1[i-1])
             alignmentSequence2.insert(0, operon2[j-1])
             i -= 1
@@ -302,13 +313,22 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     gap2Indexes = temp
 
     event.setNumMatches(match)
-    event.setNumCodonMismatches(codonMismatch)
     event.setNumGeneMismatches(mismatch)
+    
+    event.setNumCodonMismatches(codonMismatch)
+    event.setCodonMismatchIndexesStrain1(codonMismatchIndexesStrain1)
+    event.setCodonMismatchIndexesStrain2(codonMismatchIndexesStrain2)
+    
     event.setNumSubstitutions(substitution)
+    event.setSubstitutionIndexesStrain1(substitutionIndexesStrain1)
+    event.setSubstitutionIndexesStrain2(substitutionIndexesStrain2)
+    
     event.setOperon1Alignment(alignmentSequence1)
     event.setOperon2Alignment(alignmentSequence2)
+    
     event.setOperon1Gaps(operon1Gaps)
     event.setOperon2Gaps(operon2Gaps)
+    
     event.setOperon1GapIndexes(gap1Indexes)
     event.setOperon2GapIndexes(gap2Indexes)
 
@@ -362,6 +382,9 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         event = eventMatrix[i][j]
                         event.trackingEventId = globals.trackingId
                         event, strain1, strain2 = reconstructOperonSequence(event, formattedSequence1, operon1SequenceConversion, formattedSequence2, operon2SequenceConversion, strain1, strain2)
+                        
+                        
+                        
                         event.printEvent()
 
                         #Add the event to the tracking events list

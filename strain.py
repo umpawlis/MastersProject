@@ -21,6 +21,7 @@ class Strain(object):
         self.singletonDict = singletonDict
         self.deletionSizes = {}
         self.duplicationSizes = {}
+        self.numCodonMismatches = 0
 
     #Prints the Strain content
     def printStrain(self):
@@ -49,3 +50,5 @@ class Strain(object):
         self.deletionSizes = deletionSizes
     def setDuplicationSizes(self, duplicationSizes):
         self.duplicationSizes = duplicationSizes
+    def addCodonMismatch(self, codonMismatch):
+        self.numCondonMismatches += codonMismatch

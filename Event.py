@@ -80,6 +80,18 @@ class Event(object):
         
     def setStringAncestralOperon(self, stringAncestralOperon):
         self.stringAncestralOperon = stringAncestralOperon
-
+    
+    def setCodonMismatchIndexesStrain1(self, codonMismatchIndexesStrain1):
+        self.codonMismatchIndexesStrain1 = codonMismatchIndexesStrain1
+        
+    def setCodonMismatchIndexesStrain2(self, codonMismatchIndexesStrain2):
+        self.codonMismatchIndexesStrain2 = codonMismatchIndexesStrain2
+        
+    def setSubstitutionIndexesStrain1(self, substitutionIndexesStrain1):
+        self.substitutionIndexesStrain1 = substitutionIndexesStrain1
+    
+    def setSubstitutionIndexesStrain2(self, substitutionIndexesStrain2):
+        self.substitutionIndexesStrain2 = substitutionIndexesStrain2
+        
     def printEvent(self):
         print('Tracking Id: %s\nTwo strains compared: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2: %s\nOperon 1 position: %s\nOperon 2 position: %s\nAncestral Operon Sequence: %s' % (self.trackingEventId, self.genome1Name, self.genome2Name, self.score, self.genome1Operon, self.genome2Operon, self.operon1Index, self.operon2Index, self.ancestralOperonGeneSequence))

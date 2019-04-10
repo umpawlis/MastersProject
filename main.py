@@ -353,45 +353,45 @@ def processStrains(strain1, strain2, neighborStrain):
 # Description: Adds content to the output file based on the strain's data
 ######################################################
 def appendStrainToFile(strain):
-    appendToFile(outputFile, "%s\n" % (strain.getName())) #Name of the strain
+    appendToFile(outputFile, "%s\n" % ("Strain:" + strain.getName())) #Name of the strain
     
-    temp = "Deletions;"
-    if strain.deletionSizes != None and len(strain.deletionSizes):
-        for size, count in strain.deletionSizes.items():
-            temp += str(size) + ":" + str(count) + ","
-        temp = temp[:-1]
-    appendToFile(outputFile, "%s\n" %(temp)) #Deletions
+    #temp = "Deletions:"
+    #if strain.deletionSizes != None and len(strain.deletionSizes):
+        #for size, count in strain.deletionSizes.items():
+            #temp += str(size) + ":" + str(count) + ","
+        #temp = temp[:-1]
+    #appendToFile(outputFile, "%s\n" %(temp)) #Deletions
     
-    temp = "Duplications;"
-    if strain.duplicationSizes != None and len(strain.duplicationSizes):
-        for size, count in strain.duplicationSizes.items():
-            temp += str(size) + ":" + str(count) + ","
-        temp = temp[:-1]
-    appendToFile(outputFile, "%s\n" % (temp)) #Duplications
+    #temp = "Duplications:"
+    #if strain.duplicationSizes != None and len(strain.duplicationSizes):
+        #for size, count in strain.duplicationSizes.items():
+            #temp += str(size) + ":" + str(count) + ","
+        #temp = temp[:-1]
+    #appendToFile(outputFile, "%s\n" % (temp)) #Duplications
     
-    temp = "Codon Mismatches;"
+    #temp = "Codon Mismatches;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Codon Mismatches
+    #appendToFile(outputFile, "%s\n" % (temp)) #Codon Mismatches
     
-    temp = "Substitutions;"
+    #temp = "Substitutions;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Substitutions
+    #appendToFile(outputFile, "%s\n" % (temp)) #Substitutions
     
-    temp = "Num Forward Conserved Regions;"
+    #temp = "Num Forward Conserved Regions;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Forward Conserved Regions
+    #appendToFile(outputFile, "%s\n" % (temp)) #Forward Conserved Regions
     
-    temp = "Num Inversions;"
+    #temp = "Num Inversions;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Inverted Regions
+    #appendToFile(outputFile, "%s\n" % (temp)) #Inverted Regions
     
-    temp = "Num Transpositions;"
+    #temp = "Num Transpositions;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Transpositions
+    #appendToFile(outputFile, "%s\n" % (temp)) #Transpositions
     
-    temp = "Num Inverted Transpositions;"
+    #temp = "Num Inverted Transpositions;"
     #TODO
-    appendToFile(outputFile, "%s\n" % (temp)) #Inverted Transpositions
+    #appendToFile(outputFile, "%s\n" % (temp)) #Inverted Transpositions
     
 ######################################################
 # constructGenome
