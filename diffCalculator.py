@@ -26,6 +26,21 @@ if file1.mode == "r" and file2.mode == "r":
     
     while line1 and line2:
         #Each loop processes data for one strain
+        
+        if 'Strain' in line1 and 'Strain' in line2:
+            strain1 = line1.replace('Strain:', '').strip()
+            strain2 = line2.replace('Strain:', '').strip()
+            
+            if strain1 == strain2:
+                print('Processing strain: %s' % (strain1))
+                
+            else:
+                print('Error! The strains being compared do not match! %s, %s' % (strain1, strain2))
+        else:
+            print('This line does not contain strain data!')
+                
+        
+        
         if line1.strip() == line2.strip():
             currStrain = line1.strip()
             
