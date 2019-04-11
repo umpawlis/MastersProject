@@ -355,12 +355,12 @@ def processStrains(strain1, strain2, neighborStrain):
 def appendStrainToFile(strain):
     appendToFile(outputFile, "%s\n" % ("Strain:" + strain.getName())) #Name of the strain
     
-    #temp = "Deletions:"
-    #if strain.deletionSizes != None and len(strain.deletionSizes):
-        #for size, count in strain.deletionSizes.items():
-            #temp += str(size) + ":" + str(count) + ","
-        #temp = temp[:-1]
-    #appendToFile(outputFile, "%s\n" %(temp)) #Deletions
+    temp = "Deletions:"
+    if strain.deletionSizes != None and len(strain.deletionSizes):
+        for size, count in strain.deletionSizes.items():
+            temp += str(size) + ":" + str(count) + ","
+        temp = temp[:-1]
+    appendToFile(outputFile, "%s\n" %(temp)) #Deletions
     
     #temp = "Duplications:"
     #if strain.duplicationSizes != None and len(strain.duplicationSizes):
