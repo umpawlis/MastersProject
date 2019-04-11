@@ -41,7 +41,7 @@ if file1.mode == "r" and file2.mode == "r":
                     line1 = line1.replace('Deletions:', '').strip()
                     line2 = line2.replace('Deletions:', '').strip()
                     
-                    #Parse
+                    #Parse data
                     
                     #Calculations
                     
