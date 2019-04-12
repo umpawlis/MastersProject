@@ -41,8 +41,24 @@ def processSequence(name, genome):
         
         #Case 1: It's either a < o > or a < t > (we remove these at the time being)
         if genome[index] == '<':
+            startIndex = index
+            originOrTerminusPosition = genomePosition
+            
             while genome[index] != '>':
                 index+=1
+            index+=1 #Increment the index to include the >
+            genomePosition+=1 #Increment the genome position
+            
+            originOrTerminus = genome[startIndex:index]
+            
+            if 't' in originOrTerminus:
+                description = 'Terminus'
+            else:
+                description = 'Origin'
+            
+            fragment = GenomeFragment(originOrTerminus, originOrTerminus.split(','), originOrTerminusPosition, description, False)
+            fragments.append(fragment)
+        
         #Case 2: It's an operon
         elif (genome[index] == '[') or (genome[index] == '-' and genome[index + 1] == '['):
             startIndex = index
