@@ -59,13 +59,25 @@ def createStrainFromFile(node):
     return strain
 
 ######################################################
+# computeAncestor
+# Parameters:
+# Description: Takes two sibling strains and a neighbor and attempts to reconstruct the ancestor
+######################################################
+def computeAncestor(strain1, strain2, neighborStrain):
+
+    events = constructEvents(strain1, strain2)
+
+
+    return None
+
+######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node
 # Description: Traverses a provided newick tree in post order traversal
 ######################################################
 def traverseNewickTree(node, parentNode):
     global strains
-    
+
     leftSibling = None
     rightSibling = None
 
@@ -74,10 +86,9 @@ def traverseNewickTree(node, parentNode):
         leftSibling = traverseNewickTree(node.clades[0], node)
         if len(node.clades) > 1:
             rightSibling = traverseNewickTree(node.clades[1], node)
-            
+
     #Retrieve strain or create one from the data file
     if node.name != None and len(node.name) > 0:
-        
         #This code attempts to retrieve the strain from the strain list
         filteredList = iter(filter(lambda x: x.name == node.name, strains))
         foundStrain = next(filteredList, None)
@@ -91,11 +102,11 @@ def traverseNewickTree(node, parentNode):
                 print('Successfully created the following strain from data file: %s' % (newStrain.name))
                 strains.append(newStrain)
                 return newStrain
-            
+
     #Case 1: Both siblings exist therefore we need to construct their ancestor
     if leftSibling != None and rightSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0 and rightSibling.genomeFragments != None and len(rightSibling.genomeFragments) > 0:
-        print('The following strains will be compared, %s, %s...' % (leftSibling.name, rightSibling.name))
-        
+        print('The following siblings will be compared, %s, %s...' % (leftSibling.name, rightSibling.name))
+
         neighborStrain = None #Neighbor strain
         if parentNode != None:
             node.name = 'Processing' #Helps determine whether we go left or right to get the neighbor
@@ -106,14 +117,13 @@ def traverseNewickTree(node, parentNode):
             node.name = None #Put the name back the way it was so we don't mess up anything
 
         if neighborStrain != None:
-            print('The following neighbor will be used during the comparison, %s' % (neighborStrain.name))
+            print('In addition the following neighbor will be used during the comparison, %s' % (neighborStrain.name))
         else:
             print('No neighbor found!')
-        
-        #TODO process the strains
-        
-        return None
-    
+
+        ancestor = computeAncestor(leftSibling, rightSibling, neighborStrain)
+
+        return ancestor
     #Case 2: Only the left sibling exists so return it
     elif leftSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0:
         return leftSibling
@@ -123,7 +133,7 @@ def traverseNewickTree(node, parentNode):
     #Case 4: None of the siblings exist so return NULL
     else:
         return None
-    
+
 ######################################################
 #                       main
 ######################################################
