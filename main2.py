@@ -1,8 +1,10 @@
 import time
 import os.path
+import globals
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
+from GlobalAlignmentModule2 import findOrthologsByGlobalAlignment
 
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
 
@@ -59,12 +61,55 @@ def createStrainFromFile(node):
     return strain
 
 ######################################################
-# computeAncestor
+#countRemainingOperons
+#Parameters: tracker - array of booleans that tracks whether an operon was paired (ortholog)
+#Description: Takes an array of booleans and returns a count of the number of False values in the list
+######################################################
+def countRemainingOperons(tracker):
+    count = 0
+    for x in range(0, len(tracker)):
+        if tracker[x] == False:
+            count += 1
+    return count
+
+######################################################
+# constructEvents
+# Parameters:
+# Description: Identifies all of the orthologous operons between the strains being commpared
+######################################################
+def constructEvents(strain1, strain2):
+    events = []
+    coverageTracker1 = {}
+    coverageTracker2 = {}
+    
+    sequence1 = strain1.genomeFragments #Genome fragments of left sibling
+    sequence2 = strain2.genomeFragments #Genome fragments of right sibling
+    
+    for y in range(0, len(sequence1)):
+        coverageTracker1[y] = False
+    for x in range(0, len(sequence2)):
+        coverageTracker2[x] = False
+
+    #Global Alignment operation
+    events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
+    print('Number of orthologous operons identified using Global Alignment %s' % (globalAlignmentCounter))
+
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+    
+    return events
+
+######################################################
+# processStrains
 # Parameters:
 # Description: Takes two sibling strains and a neighbor and attempts to reconstruct the ancestor
 ######################################################
-def computeAncestor(strain1, strain2, neighborStrain):
-
+def processStrains(strain1, strain2, neighborStrain):
+    ancestralSequence = []
+    events = []
+    
+    print('Computing orthologous operons for strains: %s, %s' % (strain1, strain2))
     events = constructEvents(strain1, strain2)
 
 
@@ -121,7 +166,7 @@ def traverseNewickTree(node, parentNode):
         else:
             print('No neighbor found!')
 
-        ancestor = computeAncestor(leftSibling, rightSibling, neighborStrain)
+        ancestor = processStrains(leftSibling, rightSibling, neighborStrain)
 
         return ancestor
     #Case 2: Only the left sibling exists so return it
@@ -140,6 +185,7 @@ def traverseNewickTree(node, parentNode):
 print('Starting application...')
 startTime = time.time()
 
+globals.initialize()
 createFile(outputFileName) #Creates file where data will be output
 
 print('Reading newick tree from file: %s...' % (newickFileName))

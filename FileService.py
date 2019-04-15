@@ -1,6 +1,7 @@
 import copy
 from GenomeFragment import GenomeFragment
 from BacterialStrain import BacterialStrain
+from SequenceService import formatAllOperons
 
 ####################################
 ######File Service Functions########
@@ -85,6 +86,9 @@ def processSequence(name, genome):
             for gene in data:
                 genes.append(gene.strip())
             
+            if negativeOrientation: #Make positive orientation if negative so all operons are in the same orientation when performing the alignment
+                genes.reverse()
+            
             fragment = GenomeFragment(operon, genes, operonStart, 'Operon', negativeOrientation)
             fragments.append(fragment)
             
@@ -110,4 +114,5 @@ def processSequence(name, genome):
         
         index+=1
         
-    return BacterialStrain(name, fragments)
+    formattedSequence, sequenceConversion = formatAllOperons(genome)
+    return BacterialStrain(name, fragments, formattedSequence, sequenceConversion)

@@ -6,6 +6,12 @@
 class BacterialStrain(object):
 
     #Class constructor
-    def __init__(self, name, genomeFragments):
+    def __init__(self, name, genomeFragments, formattedSequence, sequenceConversion):
         self.name = name
         self.genomeFragments = genomeFragments
+        self.formattedSequence = formattedSequence
+        self.sequenceConversion = sequenceConversion
+        self.deletionSizes = {}
+        self.duplicationSizes = {}
+        self.deletionInfo = "Deletion:"
+        self.duplicationInfo = "Duplication:"
