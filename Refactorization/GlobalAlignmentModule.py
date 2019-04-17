@@ -57,7 +57,6 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 event.setOperon2Alignment(copy.deepcopy(op2.sequence))
                 
                 eventMatrix[x][y] = event
-                
                 globalAlignmentMatrix[x][y] = str(0) + '*'
 
             #Case 2: Two singleton genes are being compared
@@ -68,21 +67,14 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                     event.setScore(0.0)
                     event.setFragmentDetails1(op1)
                     event.setFragmentDetails2(op2)
-                    
-                    event.setGenome1Operon(op1.sequence)
-                    event.setGenome2Operon(op2.sequence)
-                    event.setGenome1Name(strain1Name)
-                    event.setGenome2Name(strain2Name)
-                    event.isOriginallyNegativeOrientationOp1(op1.isNegativeOrientation)
-                    event.isOriginallyNegativeOrientationOp2(op2.isNegativeOrientation)
-                    event.setOperon1Index(x)
-                    event.setOperon2Index(y)
+                    event.setGenome1Name(strain1.name)
+                    event.setGenome2Name(strain2.name)
                     event.setTechnique('Global Alignment')
                     event.setOperon1Alignment(copy.deepcopy(op1.sequence))
                     event.setOperon2Alignment(copy.deepcopy(op2.sequence))
-                    
+                
                     eventMatrix[x][y] = event
-                    globalAlignmentMatrix[x][y] = str(0) + '*' #Singletons are a perfect match
+                    globalAlignmentMatrix[x][y] = str(0) + '*'
                 else:
                     globalAlignmentMatrix[x][y] = -999 #Singletons don't match
 
@@ -91,17 +83,9 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 event = Event(0)
                 event.setFragmentDetails1(op1)
                 event.setFragmentDetails2(op2)
-                
-                event.setGenome1Operon(op1.sequence)
-                event.setGenome2Operon(op2.sequence)
-                event.setGenome1Name(strain1Name)
-                event.setGenome2Name(strain2Name)
-                event.isOriginallyNegativeOrientationOp1(op1.isNegativeOrientation)
-                event.isOriginallyNegativeOrientationOp2(op2.isNegativeOrientation)
-                event.setOperon1Index(x)
-                event.setOperon2Index(y)
+                event.setGenome1Name(strain1.name)
+                event.setGenome2Name(strain2.name)
                 event.setTechnique('Global Alignment')
-                
 
                 score, event = performGlobalAlignment(op1.sequence, op2.sequence, event)
 
