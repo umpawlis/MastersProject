@@ -15,3 +15,5 @@ class BacterialStrain(object):
         self.duplicationSizes = {}
         self.deletionInfo = "Deletion:"
         self.duplicationInfo = "Duplication:"
+        self.codonMismatchDetails = "Codon Mismatch:"
+        self.numCodonMismatches = 0

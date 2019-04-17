@@ -2,6 +2,9 @@ class Event(object):
 
     def __init__(self, trackingEventId):
         self.trackingEventId = trackingEventId
+        self.numCodonMismatches = 0
+        self.codonMismatchIndexesStrain1 = []
+        self.codonMismatchIndexesStrain2 = []
         
     def setScore(self, score):
         self.score = score

@@ -194,6 +194,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     codonMismatch = 0
     mismatch = 0
     substitution = 0
+    
+    #Tracks codon mismatches in the two strains
+    codonMismatchIndexesStrain1 = []
+    codonMismatchIndexesStrain2 = []
 
     operon1Gaps = []
     operon1Gap = []
@@ -227,6 +231,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
 
             alignmentSequence1.insert(0, operon1[i-1])
             alignmentSequence2.insert(0, operon2[j-1])
+            
+            codonMismatchIndexesStrain1.append(i-1)
+            codonMismatchIndexesStrain2.append(j-1)
 
             i -= 1
             j -= 1
@@ -305,8 +312,12 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
 
     event.setNumMatches(match)
     event.setNumGeneMismatches(mismatch)
-
+    
+    #Details about the codon mismatches
     event.setNumCodonMismatches(codonMismatch)
+    event.setCodonMismatchIndexesStrain1(codonMismatchIndexesStrain1)
+    event.setCodonMismatchIndexesStrain2(codonMismatchIndexesStrain2)
+    
     event.setNumSubstitutions(substitution)
 
     event.setOperon1Alignment(alignmentSequence1)
@@ -363,7 +374,15 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         event.trackingEventId = globals.trackingId
                         event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
                         event.printEvent()
-
+                        
+                        #Add codon mismatch details to the strain
+                        strain1.numCodonMismatches = event.numCodonMismatches #Count
+                        strain2.numCodonMismatches = event.numCodonMismatches #Count                        
+                        for x in range(0, len(event.codonMismatchIndexesStrain1)):
+                            #Change index to reflect index at the genome level
+                            strain1.codonMismatchDetails += str(event.codonMismatchIndexesStrain1[x] + int(event.fragmentDetails1.startPositionInGenome)) + ';'
+                            strain2.codonMismatchDetails += str(event.codonMismatchIndexesStrain2[x] + int(event.fragmentDetails1.startPositionInGenome)) + ';'
+                            
                         #Add the event to the tracking events list
                         events.append(event)
                         print('###################################\n')

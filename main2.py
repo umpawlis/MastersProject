@@ -3,6 +3,7 @@ import os.path
 import globals
 from Bio import Phylo
 from FileService import createFile
+from FileService import appendToFile
 from FileService import processSequence
 from GlobalAlignmentModule2 import findOrthologsByGlobalAlignment
 
@@ -98,7 +99,7 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
     
-    return events
+    return events, strain1, strain2
 
 ######################################################
 # processStrains
@@ -110,10 +111,22 @@ def processStrains(strain1, strain2, neighborStrain):
     events = []
     
     print('Computing orthologous operons for strains: %s, %s' % (strain1, strain2))
-    events = constructEvents(strain1, strain2)
+    events, strain1, strain2 = constructEvents(strain1, strain2)
 
-
+    #Add content to output file
+    appendStrainToFile(strain1)
+    appendStrainToFile(strain2)
+    
     return None
+
+######################################################
+# appendStrainToFile
+# Parameters:
+# Description: Adds content to the output file based on the strain's data
+######################################################
+def appendStrainToFile(strain):
+    appendToFile(outputFileName, "%s\n" % ("Strain:" + strain.name)) #Name of the strain
+    appendToFile(outputFileName, "%s\n" % (strain.codonMismatchDetails)) #Codon Mismatches
 
 ######################################################
 # traverseNewickTree
