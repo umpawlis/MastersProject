@@ -3,6 +3,7 @@ import os.path
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
+from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -15,6 +16,48 @@ outputFileName = 'ApplicationOutput.txt' #Name of output file
 ################# Main Fuctions ################################
 ################################################################
 
+######################################################
+# createAncestor
+# Parameters:
+# Description: Takes two related strains and a close neighbor and constructs the ancestral node
+######################################################
+def createAncestor(strain1, strain2, neighborStrain):
+    ancestor = None
+    
+    print('Computing orthologous events: %s, %s' % (strain1.name, strain2.name))
+    orthologousEvents = constructEvents(strain1, strain2)
+    
+    return ancestor
+
+######################################################
+# initializeTracker
+# Parameters: Strain
+# Description: Initializes an array to False for all genome fragments which will be used to track which fragments have been marked
+######################################################
+def initializeTracker(strain):
+    coverageTracker = {}
+    for x in range(0, len(strain.genomeFragments)):
+        coverageTracker[x] = False
+    return coverageTracker
+
+######################################################
+# constructEvents
+# Parameters:
+# Description: Constructs the orthologous events between two provided strains
+######################################################
+def constructEvents(strain1, strain2):
+    
+    events = [] #Stores all of the orthologous events also keeps track of deletions and duplications
+    coverageTracker1 = initializeTracker(strain1) #Tracks which operons have been marked off in strain 1
+    coverageTracker2 = initializeTracker(strain2) #Tracks which operons have been marked off in strain 2
+    
+    print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
+    events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
+
+    
+    
+    
+    return events
 ######################################################
 # getNeighborStrain
 # Parameters:
@@ -114,9 +157,11 @@ def traverseNewickTree(node, parentNode):
         else:
             print('No neighbor found!')
 
-        #ancestor = processStrains(leftSibling, rightSibling, neighborStrain)
-
-        return None
+        ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
+        strains.append(ancestor)
+        
+        return ancestor
+    
     #Case 2: Only the left sibling exists so return it
     elif leftSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0:
         return leftSibling
