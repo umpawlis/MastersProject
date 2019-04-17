@@ -127,7 +127,9 @@ def processStrains(strain1, strain2, neighborStrain):
 def appendStrainToFile(strain):
     appendToFile(outputFileName, "%s\n" % ("Strain:" + strain.name)) #Name of the strain
     appendToFile(outputFileName, "%s\n" % (strain.codonMismatchDetails)) #Codon Mismatches
-
+    appendToFile(outputFileName, "%s\n" % (strain.duplicationInfo)) #Duplication
+    appendToFile(outputFileName, "%s\n" % (strain.deletionInfo)) #Deletion
+    
 ######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node

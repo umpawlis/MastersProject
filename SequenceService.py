@@ -114,7 +114,7 @@ def formatAllOperons(sequence):
 # Parameters: geneList, sequence
 # Description: Tries to find the list of genes in another operon of the genome.
 ######################################################
-def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
+def findUniqueGenes(geneList, sequence, opIndex, gapPositions, strainDup, strainDel, operonDupPosition, operonDelPosition, alignedRange=(0,0)):
     comparisonSize = len(geneList)
     startIndex = 0
     currentIndex = 0
@@ -148,6 +148,13 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
                             geneRanges.append(newRange)
                             numGeneMatches += len(gene)
                             duplicationSizes.append(len(gene))
+                            
+                            #Position of duplication
+                            duplicationLocation = gapPositions[newRange[0]:(newRange[1] + 1)]
+                            for num in duplicateLocation:
+                                strainDup.duplicationInfo+= str(num + operonDupPosition) + ' '
+                            strainDup.duplicationInfo+= ';'
+                            
                             # updateDuplicationCounter(len(gene))
                         if numGeneMatches == len(geneList):
                             genesNotFound = False
@@ -175,6 +182,7 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
             if not inSet:
                 inSet = True
             deletionSize += 1
+            strainDel.deletionInfo+= str(gapPositions[index] + operonDelPosition) + ' '
             updatedGeneList.insert(0, geneList[index])
         else:
             geneList.pop(index)
@@ -183,12 +191,18 @@ def findUniqueGenes(geneList, sequence, opIndex, alignedRange=(0,0)):
                 deletionSizes.append(deletionSize)
                 deletionSize = 0
             updatedGeneList.insert(0, '-')
+    strainDel.deletionInfo+=';'
+    
     #Special case if all genes in list are losses
     if deletionSize != 0:
         deletionSizes.append(deletionSize)
         deletionSize = 0
-
-    return numGeneMatches, deletionSizes, duplicationSizes, updatedGeneList
+        
+        for num in gapPositions:
+            strainDel.deletionInfo+= str(num + operonDelPosition) + ' '
+        strainDel.deletionInfo+= ';'
+        
+    return numGeneMatches, deletionSizes, duplicationSizes, updatedGeneList, strainDup, strainDel
 
 ######################################################
 # geneInSequence

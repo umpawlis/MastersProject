@@ -1,5 +1,4 @@
 from SequenceService import computeOperonDifferences
-from SequenceService import formatAllOperons
 from SequenceService import findUniqueGenes
 from SequenceService import addDuplicationEventsToStrain
 from SequenceService import addDeletionEventsToStrain
@@ -214,6 +213,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     #Tracks where the extra genes are from
     gap1Indexes = []
     gap2Indexes = []
+    
+    #Tracks the positions of the gaps. Will make computing the position of events a lot easier later
+    gap1Position = []
+    gap2Position = []
+    
+    gap1Positions = []
+    gap2Positions = []
 
     while i > 0 or j > 0:
         #Case 1: Perfect match
@@ -258,12 +264,18 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon2ConsecutiveGap:
                 operon2Gap.insert(0, operon1[index])
+                gap2Position.insert(0, index)
                 operon2ConsecutiveGap = True
             else:
                 if len(operon2Gap) > 0:
                     operon2Gaps.insert(0, operon2Gap)
+                    gap2Positions.insert(0, gap2Position)
                 operon2Gap = []
+                gap2Position = []
+                
                 operon2Gap.insert(0, operon1[index])
+                gap2Position.insert(0, index)
+                
                 gap2Indexes.insert(0, len(alignmentSequence2))
                 operon2ConsecutiveGap = True
 
@@ -276,23 +288,37 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon1ConsecutiveGap:
                 operon1Gap.insert(0, operon2[index])
+                gap1Position.insert(0, index)
                 operon1ConsecutiveGap = True
             else:
                 if len(operon1Gap) > 0:
                     operon1Gaps.insert(0, operon1Gap)
+                    gap1Positions.insert(0, gap1Position)
                 operon1Gap = []
+                gap1Position = []
+                
                 operon1Gap.insert(0, operon2[index])
+                gap1Position.insert(0, index)
+                
                 gap1Indexes.insert(0, len(alignmentSequence1))
                 operon1ConsecutiveGap = True
 
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
+        gap1Positions.insert(0, gap1Position)
+        
         operon1Gap = []
+        gap1Position = []
+    
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
+        gap2Positions.insert(0, gap2Position)
+        
         operon2Gap = []
-
+        gap2Position = []
+    
+    #TODO keep an eye on this b/c I think this might be wrong... I'm thinking I need to use whole operon length but not sure at this point
     #The indexes values need to be flipped b/c right now they're oriented from right to left
     if len(gap1Indexes) > 0:
         for x in range(0, len(gap1Indexes)):
@@ -300,7 +326,16 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     if len(gap2Indexes) > 0:
         for x in range(0, len(gap2Indexes)):
             gap2Indexes[x] = len(alignmentSequence2) - gap2Indexes[x]
-
+            
+    #if len(gap1Positions) > 0:
+        #for gap1Pos in gap1Positions:
+            #for x in range(0, len(gap1Pos)):
+                #gap1Pos[x] = len(alignmentSequence1) - gap1Pos[x]
+    #if len(gap2Positions) > 0:
+        #for gap2Pos in gap2Positions:
+            #for x in range(0, len(gap2Pos)):
+                #gap2Pos[x] = len(alignmentSequence2) - gap2Pos[x]
+                
     #Need to swap the gap lists since the gaps refer to extra genes
     temp = operon1Gaps
     operon1Gaps = operon2Gaps
@@ -309,6 +344,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     temp = gap1Indexes
     gap1Indexes = gap2Indexes
     gap2Indexes = temp
+    
+    temp = gap1Positions
+    gap1Positions = gap2Positions
+    gap2Positions = temp
 
     event.setNumMatches(match)
     event.setNumGeneMismatches(mismatch)
@@ -328,6 +367,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
 
     event.setOperon1GapIndexes(gap1Indexes)
     event.setOperon2GapIndexes(gap2Indexes)
+    
+    event.setGap1Positions(gap1Positions)
+    event.setGap2Positions(gap2Positions)
 
     #Used for debugging
     #print('These are the operons being compared: %s, %s' %(operon1, operon2))
@@ -442,19 +484,28 @@ def reconstructOperonSequence(event, strain1, strain2):
         event.setAncestralOperonGeneSequence(ancestralOperon)
     else:
         print('Differences detected between these two operons!')
+        #Position of operon's first gene in genome 
+        operon1GenomePosition = event.fragmentDetails1.startPositionInGenome
+        operon2GenomePosition = event.fragmentDetails2.startPositionInGenome
+        
         operon1Gaps = event.operon1Gaps
         operon2Gaps = event.operon2Gaps
         operon1GapIndexes = event.operon1GapIndexes
         operon2GapIndexes = event.operon2GapIndexes
+        gap1Positions = event.gap1Positions
+        gap2Positions = event.gap2Positions
 
         print('These are the extra genes for operon 1: %s' %(operon1Gaps))
         print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
+        print('These are the positions of the genes in operon1: %s' %(gap1Positions))
+        
         print('These are the extra genes for operon 2: %s' %(operon2Gaps))
         print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
+        print('These are the positions of the genes in operon 2: %s' %(gap2Positions))
 
         #Checks if these extra genes are duplicates by checking if they exist within the alignment and removes them if they do
-        operon1Gaps, duplicateSizesWithinAlignment1 = checkForMatchesInAlignment(operon1Gaps, event.operon1Alignment)
-        operon2Gaps, duplicateSizesWithinAlignment2 = checkForMatchesInAlignment(operon2Gaps, event.operon2Alignment)
+        operon1Gaps, duplicateSizesWithinAlignment1, strain1, gap1Positions = checkForMatchesInAlignment(operon1Gaps, event.operon1Alignment, strain1, gap1Positions, operon1GenomePosition)
+        operon2Gaps, duplicateSizesWithinAlignment2, strain2, gap2positions = checkForMatchesInAlignment(operon2Gaps, event.operon2Alignment, strain2, gap2Positions, operon2GenomePosition)
 
         #increment the duplicate counters
         #incrementDuplicateSizeCounters(duplicateSizesWithinAlignment1)
@@ -470,7 +521,7 @@ def reconstructOperonSequence(event, strain1, strain2):
             if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], strain1.formattedSequence, strain1.sequenceConversion[event.operon1Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned, strain1, strain2 = findUniqueGenes(operon1Gaps[i-1], strain1.formattedSequence, strain1.sequenceConversion[event.operon1Index], gap1Positions[i-1], strain1, strain2, operon1GenomePosition, operon2GenomePosition)
                 strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
                 strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
 
@@ -489,7 +540,7 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned, strain2, strain1 = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index], gap2Positions[j-1], strain2, strain1, operon2GenomePosition, operon1GenomePosition)
                 strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
                 strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
 
@@ -508,7 +559,7 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], strain1.formattedSequence, strain1.sequenceConversion[event.operon1Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned, strain1, strain2 = findUniqueGenes(operon1Gaps[i-1], strain1.formattedSequence, strain1.sequenceConversion[event.operon1Index], gap1Positions[i-1], strain1, strain2, operon1GenomePosition, operon2GenomePosition)
                 strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
                 strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
 
@@ -527,7 +578,7 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index])
+                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned, strain2, strain1 = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index], gap2Positions[j-1], strain2, strain1, operon2GenomePosition, operon1GenomePosition)
                 strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
                 strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
 
@@ -560,10 +611,13 @@ def reconstructOperonSequence(event, strain1, strain2):
 # Description: Takes an array of gaps and an alignment, then checks if the genes in the gap match any of the genes in the alignment, if they do then genes are popped off the gap array
 # returns an array of duplicate sizes
 ######################################################
-def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
+def checkForMatchesInAlignment(arrayOfGaps, alignedGenes, strain, gapPositions, genomePosition):
     geneDuplicateSizes = []
+    
+    for x in range(0, len(arrayOfGaps)):
+        gap = arrayOfGaps[x]
+        gapPosition = gapPositions[x]
 
-    for gap in arrayOfGaps:
         #Initialize Window
         windowSize = len(gap)
         startIndex = 0
@@ -589,6 +643,14 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
                 #updateDuplicationCounter(len(genes))
                 geneDuplicateSizes.append(len(genes))
                 del gap[startIndex:endIndex]
+                
+                #Updates the strain with the appropriate data
+                duplicateLocation = gapPosition[startIndex:endIndex]
+                for num in duplicateLocation:
+                    strain.duplicationInfo+= str(num + genomePosition) + ' '
+                strain.duplicationInfo+= ';'
+                del gapPosition[startIndex:endIndex]
+                
                 startIndex = endIndex
             else:
                 startIndex+=1
@@ -599,4 +661,4 @@ def checkForMatchesInAlignment(arrayOfGaps, alignedGenes):
                 startIndex = 0
             endIndex = startIndex + windowSize
 
-    return arrayOfGaps, geneDuplicateSizes
+    return arrayOfGaps, geneDuplicateSizes, strain, gapPositions

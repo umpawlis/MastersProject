@@ -101,6 +101,12 @@ class Event(object):
 
     def setFragmentDetails2(self, fragmentDetails2):
         self.fragmentDetails2 = fragmentDetails2
+        
+    def setGap1Positions(self, gap1Positions):
+        self.gap1Positions = gap1Positions
+        
+    def setGap2Positions(self, gap2Positions):
+        self.gap2Positions = gap2Positions
 
     def printEvent(self):
         print('Tracking Id: %s\nTwo strains compared: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2: %s\nOperon 1 position: %s\nOperon 2 position: %s\nAncestral Operon Sequence: %s' % (self.trackingEventId, self.genome1Name, self.genome2Name, self.score, self.genome1Operon, self.genome2Operon, self.operon1Index, self.operon2Index, self.ancestralOperonGeneSequence))
