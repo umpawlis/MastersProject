@@ -302,7 +302,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     
     temp = operon1GapIndexes
     operon1GapIndexes = operon2GapIndexes
-    operon2GapIndexes
+    operon2GapIndexes = temp
 
     temp = gap1Indexes
     gap1Indexes = gap2Indexes
