@@ -162,13 +162,18 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     substitutionIndexesStrain2 = []
     substitutionGenesStrain1 = []
     substitutionGenesStrain2 = []
-
+    
+    #Tracks the genes in a gap and the index of those genes in both strains note: details stored in an array of arrays
     operon1Gaps = []
     operon1Gap = []
+    operon1GapIndexes = [] #This is used to determine the position of the genes with respect to the genome
+    operon1GapIndex = []
     operon1ConsecutiveGap = False #Tracks consecutive gaps
 
     operon2Gaps = []
     operon2Gap = []
+    operon2GapIndexes = []
+    operon2GapIndex = []
     operon2ConsecutiveGap = False #Tracks consecutive gaps
 
     #Track the alignment (two in the event we have substitutions)
@@ -176,7 +181,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     alignmentSequence2 = []
 
     #Tracks where the extra genes are from
-    gap1Indexes = []
+    gap1Indexes = [] #This is used to determine where to insert the genes into the alignment
     gap2Indexes = []
 
     while i > 0 or j > 0:
@@ -232,12 +237,17 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon2ConsecutiveGap:
                 operon2Gap.insert(0, operon1[index])
+                operon2GapIndex.insert(0, index)
+                
                 operon2ConsecutiveGap = True
             else:
                 if len(operon2Gap) > 0:
                     operon2Gaps.insert(0, operon2Gap)
+                    operon2GapIndexes.insert(0, operon2GapIndex)
                 operon2Gap = []
+                operon2GapIndex = []
                 operon2Gap.insert(0, operon1[index])
+                operon2GapIndex.insert(0, index)
                 gap2Indexes.insert(0, len(alignmentSequence2))
                 operon2ConsecutiveGap = True
 
@@ -250,22 +260,32 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             #Check if this is a consecutive gap, if it is then append to the gap list if not then append to the list of gaps and start a new gap
             if operon1ConsecutiveGap:
                 operon1Gap.insert(0, operon2[index])
+                operon1GapIndex.insert(0, index)
+                
                 operon1ConsecutiveGap = True
             else:
                 if len(operon1Gap) > 0:
                     operon1Gaps.insert(0, operon1Gap)
+                    operon1GapIndexes.insert(0, operon1GapIndex)
                 operon1Gap = []
+                operon1GapIndex = []
                 operon1Gap.insert(0, operon2[index])
+                operon1GapIndex.insert(0, index)
                 gap1Indexes.insert(0, len(alignmentSequence1))
                 operon1ConsecutiveGap = True
 
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
+        operon1GapIndexes.insert(0, operon1GapIndex)
         operon1Gap = []
+        operon1GapIndex = []
+        
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
+        operon2GapIndexes.insert(0, operon2GapIndex)
         operon2Gap = []
+        operon2GapIndex = []
 
     #The indexes values need to be flipped b/c right now they're oriented from right to left
     if len(gap1Indexes) > 0:
@@ -279,6 +299,10 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     temp = operon1Gaps
     operon1Gaps = operon2Gaps
     operon2Gaps = temp
+    
+    temp = operon1GapIndexes
+    operon1GapIndexes = operon2GapIndexes
+    operon2GapIndexes
 
     temp = gap1Indexes
     gap1Indexes = gap2Indexes
@@ -309,7 +333,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     #Gap details
     event.setOperon1Gaps(operon1Gaps)
     event.setOperon2Gaps(operon2Gaps)
-
+    event.setOperon1GapPositions(operon1GapIndexes)
+    event.setOperon2GapPositions(operon2GapIndexes)
     event.setOperon1GapIndexes(gap1Indexes)
     event.setOperon2GapIndexes(gap2Indexes)
 
@@ -370,8 +395,7 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
                         event = eventMatrix[i][j]
                         event.trackingEventId = globals.trackingId
-                        #TODO deal with ancestral reconstruction
-                        #event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
+                        event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
                         #Codon mismatches
                         if event.numCodonMismatches > 0:
@@ -407,7 +431,6 @@ def constructStatement(indexes, genes, fragmentDetails):
     temp = ''
     #TODO keep in mind the scenario if the operon was in the negative orientation originally
     startPosition = fragmentDetails.startPositionInGenome
-
     if len(indexes) != len(genes):
         print('Error! These two arrays should be the same length for Codon Mismatch Substitution parallel arrays')
     else:
@@ -417,3 +440,33 @@ def constructStatement(indexes, genes, fragmentDetails):
             temp+=gene + ' ' + str(position) + ';'
 
     return temp
+
+######################################################
+# reconstructOperonSequence
+# Parameters:
+# Description: Reconstructs the ancestral operon by determining whether the gaps are losses or duplications
+######################################################
+def reconstructOperonSequence(event, strain1, strain2):
+    ancestralOperon = copy.deepcopy(event.operon1Alignment) #The alignments will be identical except when codon mismatches or substitutions occur
+    if event.score == 0:
+        print('No differences detected between these two operons')
+        event.setAncestralOperonGeneSequence(ancestralOperon)
+    else:
+        print('Differences detected between these two operons!')
+        operon1Gaps = event.operon1Gaps
+        operon2Gaps = event.operon2Gaps
+        operon1GapIndexes = event.operon1GapIndexes
+        operon2GapIndexes = event.operon2GapIndexes
+        operon1GapPositions = event.operon1GapPositions
+        operon2GapPositions = event.operon2GapPositions
+
+        print('These are the extra genes for operon 1: %s' %(operon1Gaps))
+        print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
+        print('These are the positions of the extra genes in operon 1: %s' %(operon1GapPositions))
+        print('These are the extra genes for operon 2: %s' %(operon2Gaps))
+        print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
+        print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
+        
+        #TODO process the gaps if they exist
+        print('')
+    return event, strain1, strain2

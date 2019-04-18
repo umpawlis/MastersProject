@@ -4,6 +4,7 @@ class Event(object):
         self.trackingEventId = trackingEventId
         self.numCodonMismatches = 0
         self.numSubstitutions = 0
+        self.numMismatches = 0
 
     def setScore(self, score):
         self.score = score
@@ -77,5 +78,14 @@ class Event(object):
     def setOperon2GapIndexes(self, operon2GapIndexes):
         self.operon2GapIndexes = operon2GapIndexes
         
+    def setOperon1GapPositions(self, operon1GapPositions):
+        self.operon1GapPositions = operon1GapPositions
+        
+    def setOperon2GapPositions(self, operon2GapPositions):
+        self.operon2GapPositions = operon2GapPositions
+    
+    def setAncestralOperonGeneSequence(self, ancestralOperonGeneSequence):
+        self.ancestralOperonGeneSequence = ancestralOperonGeneSequence
+    
     def toString(self):
         return 'Strains: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2:%s\n' % (self.genome1Name, self.genome2Name, self.score, self.fragmentDetails1.originalSequence, self.fragmentDetails2.originalSequence)
