@@ -162,7 +162,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     substitutionIndexesStrain2 = []
     substitutionGenesStrain1 = []
     substitutionGenesStrain2 = []
-    
+
     #Tracks the genes in a gap and the index of those genes in both strains note: details stored in an array of arrays
     operon1Gaps = []
     operon1Gap = []
@@ -238,7 +238,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             if operon2ConsecutiveGap:
                 operon2Gap.insert(0, operon1[index])
                 operon2GapIndex.insert(0, index)
-                
+
                 operon2ConsecutiveGap = True
             else:
                 if len(operon2Gap) > 0:
@@ -261,7 +261,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             if operon1ConsecutiveGap:
                 operon1Gap.insert(0, operon2[index])
                 operon1GapIndex.insert(0, index)
-                
+
                 operon1ConsecutiveGap = True
             else:
                 if len(operon1Gap) > 0:
@@ -280,7 +280,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
         operon1GapIndexes.insert(0, operon1GapIndex)
         operon1Gap = []
         operon1GapIndex = []
-        
+
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
         operon2GapIndexes.insert(0, operon2GapIndex)
@@ -299,7 +299,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     temp = operon1Gaps
     operon1Gaps = operon2Gaps
     operon2Gaps = temp
-    
+
     temp = operon1GapIndexes
     operon1GapIndexes = operon2GapIndexes
     operon2GapIndexes = temp
@@ -466,7 +466,83 @@ def reconstructOperonSequence(event, strain1, strain2):
         print('These are the extra genes for operon 2: %s' %(operon2Gaps))
         print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
         print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
+
+        #Step 1: Check if these extra genes are the result of a duplicate event within the alignment, remove them if they are
+        operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
+        operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
+        
+        
+        #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         
         #TODO process the gaps if they exist
-        print('')
+
+
+
+        #Set ancestral operon
+        event.setAncestralOperonGeneSequence(ancestralOperon)
+        #print('This is the resulting ancestral operon: %s' % (ancestralOperon))
+        #print('\n\n')
+        #print('These are the extra genes remaining for operon 1: %s' %(operon1Gaps))
+        #print('These are the extra genes remaining for operon 2: %s' %(operon2Gaps))
+        #print('These are the duplicate sizes operon 1: %s' %(duplicateSizesWithinAlignment1))
+        #print('These are the duplicate sizes operon 2: %s\n\n' %(duplicateSizesWithinAlignment2))
+
     return event, strain1, strain2
+
+######################################################
+# checkForMatchesWithinAlignment
+# Parameters:
+# Description: Takes an array of gaps and an alignment, then checks if the genes in the gap match any of the genes in the alignment, if they do then genes are popped off the gap array
+# returns an array of duplicate sizes
+######################################################
+def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPositions, fragmentDetails):
+    geneDuplicateSizes = []
+    duplicationDetails = ''
+
+    for w in range(0, len(arrayOfGaps)):
+        gap = arrayOfGaps[w] #Genes within gap
+        positions = arrayOfGapPositions[w] #Positions of genes within gap
+
+        #Initialize window
+        windowSize = len(gap)
+        startIndex = 0
+        endIndex = len(gap)
+
+        while windowSize > 1:
+            genes = gap[startIndex:endIndex] #Grabs a segment of the gap of n -1 every iteration and shifts it
+
+            genesMatched = 0 #Tracks how many genes we matched so far
+
+            for x in range(0, len(alignedGenes)):
+                if len(genes) > 0 and genes[0] == alignedGenes[x] and genesMatched == 0:
+                    for y in range(0, len(genes)):
+                        if (x+y) < len(alignedGenes) and genes[y] == alignedGenes[x+y]:
+                            genesMatched+=1
+                    if genesMatched != len(genes):
+                        genesMatched = 0
+            if genesMatched != 0 and genesMatched == len(genes):
+                #print('Duplicate!')
+                geneDuplicateSizes.append(len(genes))
+                duplicateGenes = gap[startIndex:endIndex]
+                duplicatePositions = positions[startIndex:endIndex]
+
+                #Creates a string containing the genes and their position
+                for p in range(0, len(duplicateGenes)):
+                    gene = duplicateGenes[p]
+                    pos = duplicatePositions[p]
+                    duplicationDetails += gene + ' ' + str(pos + fragmentDetails.startPositionInGenome) + ', ' #TODO might need some special calculation if the operon is reversed!
+                duplicationDetails += '|' #This indicates end of duplication fragment
+
+                del gap[startIndex:endIndex]
+                del positions[startIndex:endIndex]
+                startIndex = endIndex
+            else:
+                startIndex+=1
+
+            if (startIndex + windowSize) > len(gap):
+                #reduce and reset starting position of the window
+                windowSize = min(windowSize-1, len(gap))
+                startIndex = 0
+            endIndex = startIndex + windowSize
+
+    return arrayOfGaps, arrayOfGapPositions, geneDuplicateSizes, duplicationDetails

@@ -65,27 +65,27 @@ class Event(object):
 
     def setSubstitutionGenesStrain2(self, substitutionGenesStrain2):
         self.substitutionGenesStrain2 = substitutionGenesStrain2
-        
+
     def setOperon1Gaps(self, operon1Gaps):
         self.operon1Gaps = operon1Gaps
 
     def setOperon2Gaps(self, operon2Gaps):
         self.operon2Gaps = operon2Gaps
-        
+
     def setOperon1GapIndexes(self, operon1GapIndexes):
         self.operon1GapIndexes = operon1GapIndexes
 
     def setOperon2GapIndexes(self, operon2GapIndexes):
         self.operon2GapIndexes = operon2GapIndexes
-        
+
     def setOperon1GapPositions(self, operon1GapPositions):
         self.operon1GapPositions = operon1GapPositions
-        
+
     def setOperon2GapPositions(self, operon2GapPositions):
         self.operon2GapPositions = operon2GapPositions
-    
+
     def setAncestralOperonGeneSequence(self, ancestralOperonGeneSequence):
         self.ancestralOperonGeneSequence = ancestralOperonGeneSequence
-    
+
     def toString(self):
         return 'Strains: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2:%s\n' % (self.genome1Name, self.genome2Name, self.score, self.fragmentDetails1.originalSequence, self.fragmentDetails2.originalSequence)
