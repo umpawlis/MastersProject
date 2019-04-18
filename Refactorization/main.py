@@ -1,5 +1,6 @@
 import time
 import os.path
+import globals
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
@@ -178,6 +179,7 @@ def traverseNewickTree(node, parentNode):
 print('Starting application...')
 startTime = time.time()
 
+globals.initialize()
 createFile(outputFileName) #Creates file where data will be output
 
 print('Reading newick tree from file: %s...' % (newickFileName))
