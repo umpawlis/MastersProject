@@ -600,7 +600,7 @@ def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
 
     for w in range(0, len(genomeFragments)): #Iterate through all fragments
         currFragment = genomeFragments[w]
-        if currFragment.startPositionInGenome != fragment.startPositionsInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
+        if currFragment.startPositionInGenome != fragment.startPositionInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
             duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment)
 
             if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals

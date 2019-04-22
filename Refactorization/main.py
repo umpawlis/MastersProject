@@ -54,9 +54,8 @@ def constructEvents(strain1, strain2):
     
     print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
     events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
-
     
-    
+    #TODO add Local alignment and self global alignment
     
     return events
 ######################################################

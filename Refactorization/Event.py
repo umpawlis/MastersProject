@@ -88,4 +88,4 @@ class Event(object):
         self.ancestralOperonGeneSequence = ancestralOperonGeneSequence
 
     def toString(self):
-        return 'Strains: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2:%s\n' % (self.genome1Name, self.genome2Name, self.score, self.fragmentDetails1.originalSequence, self.fragmentDetails2.originalSequence)
+        return 'Strains: %s, %s\nScore: %s\nOperon 1: %s\nOperon 2: %s\nAncestral Operon: %s' % (self.genome1Name, self.genome2Name, self.score, self.fragmentDetails1.originalSequence, self.fragmentDetails2.originalSequence, self.ancestralOperonGeneSequence)
