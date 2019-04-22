@@ -11,6 +11,10 @@ class BacterialStrain(object):
         self.genomeFragments = genomeFragments
         self.codonMismatchDetails = 'Codon Mismatch:'
         self.substitutionDetails = 'Substitution:'
+        self.duplicationCounts = {}
+        self.duplicationDetails = 'Duplication:'
+        self.deletionCounts = {}
+        self.deletionDetails = 'Deletion:'
         
     def addCodonMismatchDetails(self, codonMismatchDetails):
         self.codonMismatchDetails += codonMismatchDetails
