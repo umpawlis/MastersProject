@@ -472,15 +472,15 @@ def reconstructOperonSequence(event, strain1, strain2):
         #Step 1: Check if these extra genes are the result of a duplicate event within the alignment, remove them if they are
         operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
         operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
-        
+
         #Add the details to the respective strain
         strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
         strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
-        
+
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
         j = len(operon2Gaps)
-        
+
         while (i > 0) or (j > 0):
             #Select the gap with the biggest index b/c we will be performing the insertion rear to front of operon to avoid messing up the indexes of the other gaps
             if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
@@ -488,7 +488,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
                 duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
                 strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
-                
+
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
                 #print('Number of unique genes found: %s' %(numUniqueFound))
                 #print('Number of deletion genes found: %s' %(deletionSizes))
@@ -500,7 +500,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon1Gaps[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
-                        deletionDetails += operon1Gaps[i-1][k] + 'index' + ',' #TODO position must be with respect to operon 2
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
                     deletionDetails += '|'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -508,9 +508,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index])
-                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
-                strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
                 #incrementDeletionSizeCounters(deletionSizes)
@@ -519,17 +518,22 @@ def reconstructOperonSequence(event, strain1, strain2):
                 #print('Number of deletion genes found: %s' %(deletionSizes))
                 #print('Number of duplicate genes found: %s' %(duplicationSizes))
                 if len(operon2Gaps[j-1]) > 0:
+                    deletionDetails = ''
+                    deletionSizes = []
                     #Insert gap into operon
                     operon2Gaps[j-1].reverse()
-                    for gene in operon2Gaps[j-1]:
-                        ancestralOperon.insert(operon2GapIndexes[j-1], gene)
+                    for k in range (0, len(operon2Gaps[j-1])):
+                        ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
+                    deletionDetails += '|'                      #End of deleted segment
+                    deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
+                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon1Gaps[i-1], strain1.formattedSequence, strain1.sequenceConversion[event.operon1Index])
-                strain1 = addDuplicationEventsToStrain(duplicationSizes, strain1)
-                strain2 = addDeletionEventsToStrain(deletionSizes, strain2)
+                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
                 #incrementDeletionSizeCounters(deletionSizes)
@@ -538,17 +542,22 @@ def reconstructOperonSequence(event, strain1, strain2):
                 #print('Number of deletion genes found: %s' %(deletionSizes))
                 #print('Number of duplicate genes found: %s' %(duplicationSizes))
                 if len(operon1Gaps[i-1]) > 0:
+                    deletionDetails = ''
+                    deletionSizes = []
                     #Insert gap into operon
                     operon1Gaps[i-1].reverse()
-                    for gene in operon1Gaps[i-1]:
-                        ancestralOperon.insert(operon1GapIndexes[i-1], gene)
+                    for k in range(0, len(operon1Gaps[i-1])):
+                        ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
+                    deletionDetails += '|'                      #End of deleted segment
+                    deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
+                    strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 i = i - 1
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                numUniqueFound, deletionSizes, duplicationSizes, updateUnaligned = findUniqueGenes(operon2Gaps[j-1], strain2.formattedSequence, strain2.sequenceConversion[event.operon2Index])
-                strain2 = addDuplicationEventsToStrain(duplicationSizes, strain2)
-                strain1 = addDeletionEventsToStrain(deletionSizes, strain1)
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
                 #incrementDeletionSizeCounters(deletionSizes)
@@ -557,12 +566,18 @@ def reconstructOperonSequence(event, strain1, strain2):
                 #print('Number of deletion genes found: %s' %(deletionSizes))
                 #print('Number of duplicate genes found: %s' %(duplicationSizes))
                 if len(operon2Gaps[j-1]) > 0:
+                    deletionDetails = ''
+                    deletionSizes = []
                     #Insert gap into operon
                     operon2Gaps[j-1].reverse()
-                    for gene in operon2Gaps[j-1]:
-                        ancestralOperon.insert(operon2GapIndexes[j-1], gene)
+                    for k in range (0, len(operon2Gaps[j-1])):
+                        ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
+                    deletionDetails += '|'                      #End of deleted segment
+                    deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
+                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
-                
+
         #Set ancestral operon
         event.setAncestralOperonGeneSequence(ancestralOperon)
         #print('This is the resulting ancestral operon: %s' % (ancestralOperon))
@@ -582,16 +597,16 @@ def reconstructOperonSequence(event, strain1, strain2):
 def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
     allDuplicationSizes = []
     allDuplicationDetails = ''
-    
+
     for w in range(0, len(genomeFragments)): #Iterate through all fragments
         currFragment = genomeFragments[w]
         if currFragment.startPositionInGenome != fragment.startPositionsInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
             duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment)
-            
+
             if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
                 allDuplicationSizes.append(duplicationSizes)
                 allDuplicationDetails += duplicationDetails
-                
+
     return allDuplicationSizes, allDuplicationDetails, gap, positions
 
 ######################################################
@@ -605,46 +620,46 @@ def checkForMatch(gap, positions, sequence, fragment):
     windowSize = len(gap)   #Size of window
     startIndex = 0          #Start position of window
     endIndex = len(gap)     #End position of Window
-    
+
     while windowSize > 1:
         genes = gap[startIndex:endIndex] #Grabs the genes within the window
         genesMatched = 0
-        
+
         for x in range(0, len(sequence)): #Iterate over all genes in sequence
             if genes[0] == sequence[x] and genesMatched == 0: #If the first gene matches in the sequence and we don't have an existing match then check if this is potentially a match for the gap
                 for y in range(0, len(genes)): #Iterate over all of the genes in the gap
                     if (x+y) < len(sequence) and genes[y] == sequence[y+x]: #Match sure we don't go out of bounds and the genes match
                         genesMatched+=1
                 if genesMatched != len(genes): #Reset the counter if we don't find a match for the gap
-                    genesMatched = 0       
-        
+                    genesMatched = 0
+
         if genesMatched != 0 and genesMatched == len(genes): #If we found a match for the gap in the sequence
             geneDuplicateSizes.append(len(genes))
             duplicateGenes = gap[startIndex:endIndex]
             duplicatePositions = positions[startIndex:endIndex]
-                    
+
             #Creates a string containing the genes and their position
             for p in range(0, len(duplicateGenes)):
                 gene = duplicateGenes[p]
                 pos = duplicatePositions[p]
                 duplicationDetails += gene + ' ' + str(pos + fragment.startPositionInGenome) + ', ' #TODO might need some special calculation if the operon is reversed!
             duplicationDetails += '|' #This indicates end of duplication fragment
-            
+
             #Remove the duplicated region
             del gap[startIndex:endIndex]
             del positions[startIndex:endIndex]
             startIndex = endIndex
         else:
             startIndex+=1
-            
+
         if (startIndex + windowSize) > len(gap):
             #reduce and reset starting position of the window
             windowSize = min(windowSize-1, len(gap))
             startIndex = 0
             endIndex = startIndex + windowSize
-            
+
     return geneDuplicateSizes, duplicationDetails, gap, positions
-    
+
 ######################################################
 # checkForMatchesWithinAlignment
 # Parameters:
@@ -658,11 +673,11 @@ def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPosition
         gap = arrayOfGaps[w] #Genes within gap
         positions = arrayOfGapPositions[w] #Positions of genes within gap
         duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, alignedGenes, fragment)
-        
+
         if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
             allDuplicationSizes.append(duplicationSizes)
             allDuplicationDetails += duplicationDetails
             arrayOfGaps[w] = gap
             arrayOfGapPositions[w] = positions
-        
+
     return arrayOfGaps, arrayOfGapPositions, allDuplicationSizes, allDuplicationDetails
