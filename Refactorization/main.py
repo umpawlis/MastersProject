@@ -42,6 +42,18 @@ def initializeTracker(strain):
     return coverageTracker
 
 ######################################################
+#countRemainingOperons
+#Parameters: tracker - array of booleans that tracks whether an operon was paired (ortholog)
+#Description: Takes an array of booleans and returns a count of the number of False values in the list
+######################################################
+def countRemainingOperons(tracker):
+    count = 0
+    for x in range(0, len(tracker)):
+        if tracker[x] == False:
+            count += 1
+    return count
+
+######################################################
 # constructEvents
 # Parameters:
 # Description: Constructs the orthologous events between two provided strains
@@ -55,7 +67,19 @@ def constructEvents(strain1, strain2):
     print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
     events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
     
-    #TODO add Local alignment and self global alignment
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+    
+    #TODO Add Local Alignment
+    
+    #TODO Add Global Alignment
+    #Self Global Alignment
+    if numRemainingOperons1 > 0:
+        duplicationEvents1, lossEvents1, coverageTracker1, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
+        print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
+        if len(lossEvents1) > 0:
+            events.extend(lossEvents1)
     
     return events
 ######################################################
