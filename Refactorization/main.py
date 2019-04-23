@@ -4,10 +4,11 @@ import globals
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
+from SequenceService import createDotPlot
+from SequenceService import createBarGraph
+from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
-from LocalAlignmentModule import findOrthologsByLocalAlignment
-from SequenceService import createDotPlot
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -31,13 +32,14 @@ def createAncestor(strain1, strain2, neighborStrain):
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events = constructEvents(strain1, strain2)
     
-    #TODO ADD GRAPHS AND STUFF
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     createDotPlot(events, strain1, strain2)
+    createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
+    createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
+    createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
+    createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
     
-    
-    
-    #TODO ADD FRAGMENT STUFF
+    #TODO ADD FRAGMENT AND ANCESTRAL OPERON CONSTRUCTION STUFF
 
     return ancestor
 

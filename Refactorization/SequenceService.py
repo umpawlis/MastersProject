@@ -1,4 +1,5 @@
 import multiset
+import numpy as np
 import matplotlib.pyplot as plt
 
 ####################################
@@ -118,3 +119,26 @@ def createDotPlot(events, strain1, strain2):
     else:
         print('No plot to display!')
     print("x" * 70)
+    
+######################################################
+# createBarGraph
+# Parameters:
+# Description:
+######################################################
+def createBarGraph(dictionary, title):
+    if dictionary != None and len(dictionary) > 0:
+        keys = list(dictionary.keys())
+        keys.sort()
+
+        y_pos = np.arange(len(keys))
+
+        performance = []
+        for key in keys:
+            performance.append(dictionary[key])
+
+        plt.bar(y_pos, performance, align='center', alpha=0.5)
+        plt.xticks(y_pos, keys)
+        plt.ylabel('Number of Occurrences')
+        plt.xlabel('Size of Occurrence')
+        plt.title(title)
+        plt.show()
