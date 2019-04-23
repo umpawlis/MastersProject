@@ -96,7 +96,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 for gene in op:
                     duplicationDetails += gene + ' ' + str(position) + ','
                     position += 1
-                duplicationDetails += '|'
+                duplicationDetails += ';'
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
                 strain = addDuplicationEventsToStrain(strain, [len(bestEvent.fragmentDetails1.sequence)], duplicationDetails)
@@ -129,7 +129,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 for gene in op:
                     deletionDetails += gene + ' ' + str(position) + ','
                     position += 1
-                deletionDetails += '|'
+                deletionDetails += ';'
                 
                 #Increment the loss counter with the size of the operon since the operon is a loss
                 strain = addDeletionEventsToStrain(strain, [len(event.fragmentDetails1.sequence)], deletionDetails)
