@@ -3,6 +3,7 @@ import os.path
 import globals
 from Bio import Phylo
 from FileService import createFile
+from FileService import appendToFile
 from FileService import processSequence
 from SequenceService import createDotPlot
 from SequenceService import createBarGraph
@@ -38,6 +39,31 @@ def createAncestor(strain1, strain2, neighborStrain):
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
     createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
+    
+    #Append all details to file here
+    appendToFile(outputFileName, strain1.name)
+    appendToFile(outputFileName, strain1.codonMismatchDetails)
+    appendToFile(outputFileName, strain1.substitutionDetails)
+    appendToFile(outputFileName, strain1.duplicationDetails)
+    appendToFile(outputFileName, strain1.namedeletionDetails)
+    
+    appendToFile(outputFileName, strain2.name)
+    appendToFile(outputFileName, strain2.codonMismatchDetails)
+    appendToFile(outputFileName, strain2.substitutionDetails)
+    appendToFile(outputFileName, strain2.duplicationDetails)
+    appendToFile(outputFileName, strain2.namedeletionDetails)
+    
+    print(strain1.name)
+    print(strain1.codonMismatchDetails)
+    print(strain1.substitutionDetails)
+    print(strain1.duplicationDetails)
+    print(strain1.deletionDetails)
+
+    print(strain2.name)
+    print(strain2.codonMismatchDetails)
+    print(strain2.substitutionDetails)
+    print(strain2.duplicationDetails)
+    print(strain2.deletionDetails)
     
     #TODO ADD FRAGMENT AND ANCESTRAL OPERON CONSTRUCTION STUFF
 
@@ -115,19 +141,7 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
         print('Error! There are unmarked operons remaining!')
-
-    print(strain1.name)
-    print(strain1.codonMismatchDetails)
-    print(strain1.substitutionDetails)
-    print(strain1.duplicationDetails)
-    print(strain1.deletionDetails)
-
-    print(strain2.name)
-    print(strain2.codonMismatchDetails)
-    print(strain2.substitutionDetails)
-    print(strain2.duplicationDetails)
-    print(strain2.deletionDetails)
-
+        
     return events
 ######################################################
 # getNeighborStrain

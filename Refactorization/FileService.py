@@ -17,6 +17,17 @@ def createFile(fileName):
     file.close()
     
 ######################################################
+# appendToFile
+# Parameters:
+# Description: Appends content to file
+######################################################
+def appendToFile(fileName, content):
+    print('Appending to file %s the following content, %s...' % (fileName, content))
+    file = open(fileName, "a")
+    file.write(content)
+    file.close()
+
+######################################################
 # processSequence
 # Parameters: sequence - The strain's genome sequence
 # Description: Parses the genome sequence into a strain object
