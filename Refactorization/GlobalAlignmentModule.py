@@ -500,7 +500,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon1Gaps[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
                     deletionDetails += '|'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -524,7 +524,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon2Gaps[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
                     deletionDetails += '|'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -548,7 +548,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon1Gaps[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might have to be fixed if the operon is in a negative orientation
                     deletionDetails += '|'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -572,7 +572,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon2Gaps[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails1.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(operon2GapPositions[j-1][k] + event.fragmentDetails2.startPositionInGenome) + ',' #TODO this might change if operon is in negative orientation
                     deletionDetails += '|'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
