@@ -41,17 +41,17 @@ def createAncestor(strain1, strain2, neighborStrain):
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
     
     #Append all details to file here
-    appendToFile(outputFileName, strain1.name)
-    appendToFile(outputFileName, strain1.codonMismatchDetails)
-    appendToFile(outputFileName, strain1.substitutionDetails)
-    appendToFile(outputFileName, strain1.duplicationDetails)
-    appendToFile(outputFileName, strain1.namedeletionDetails)
+    appendToFile(outputFileName, strain1.name + '\n')
+    appendToFile(outputFileName, strain1.codonMismatchDetails + '\n')
+    appendToFile(outputFileName, strain1.substitutionDetails + '\n')
+    appendToFile(outputFileName, strain1.duplicationDetails + '\n')
+    appendToFile(outputFileName, strain1.deletionDetails + '\n')
     
-    appendToFile(outputFileName, strain2.name)
-    appendToFile(outputFileName, strain2.codonMismatchDetails)
-    appendToFile(outputFileName, strain2.substitutionDetails)
-    appendToFile(outputFileName, strain2.duplicationDetails)
-    appendToFile(outputFileName, strain2.namedeletionDetails)
+    appendToFile(outputFileName, strain2.name + '\n')
+    appendToFile(outputFileName, strain2.codonMismatchDetails + '\n')
+    appendToFile(outputFileName, strain2.substitutionDetails + '\n')
+    appendToFile(outputFileName, strain2.duplicationDetails + '\n')
+    appendToFile(outputFileName, strain2.deletionDetails + '\n')
     
     print(strain1.name)
     print(strain1.codonMismatchDetails)

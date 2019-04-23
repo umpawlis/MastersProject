@@ -1,0 +1,10 @@
+NC_014219
+Codon Mismatch:Leu_CUG 15;
+Substitution:
+Duplication:
+Deletion:Lys_AAA 91,;Arg_AGG 24,;5S 25,Asn_AAC 26,Thr_ACC 27,Glu_GAA 28,Gln_CAA 29,;Arg_AGA 61,;
+CP002394
+Codon Mismatch:Leu_CUA 15;
+Substitution:
+Duplication:Asn_AAC 65,;Gly_GGA 66,;Gln_CAA 70,;16S 72,23S 73,5S 74,;Sec_UGA 76,;5S 78,23S 79,16S 80,;5S 81,23S 82,16S 83,;
+Deletion:Ser_AGC 91,;Ile_AUC 42,;Arg_CGU 39,;Leu_UUA 63,;Trp_UGG 58,;Asn_AAC 24,Asn_AAC 25,Asn_AAC 26,Thr_ACC 27,Glu_GAA 28,Gln_CAA 29,Lys_AAA 30,Ala_GCA 31,;Trp_NNN 85,;Arg_AGA 86,Gly_GGA 87,;
