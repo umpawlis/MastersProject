@@ -94,7 +94,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                     op.reverse()
                 
                 for gene in op:
-                    duplicationDetails += gene + str(position) + ','
+                    duplicationDetails += gene + ' ' + str(position) + ','
                     position += 1
                 duplicationDetails += '|'
                 
@@ -127,7 +127,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                     op.reverse()
                 
                 for gene in op:
-                    deletionDetails += gene + str(position) + ','
+                    deletionDetails += gene + ' ' + str(position) + ','
                     position += 1
                 deletionDetails += '|'
                 
