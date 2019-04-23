@@ -64,7 +64,11 @@ def createDotPlot(events, strain1, strain2):
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
-
+    
+    #The black ones represent the origin and terminus
+    black_x_coord = []
+    black_y_coord = []
+    
     #The green ones represent operons with no differences (Global alignment)
     green_x_coord = []
     green_y_coord = []
@@ -87,7 +91,10 @@ def createDotPlot(events, strain1, strain2):
             #Assign the coords to the appropriate array, the index represents the position of the operon with respect to the genome
             if events[i].technique == 'Local Alignment':
                 red_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                red_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+                red_y_coord.append(events[i].fragmentDetails2.fragmentIndex)            
+            elif events[i].score == 0 and (events[i].fragmentDetails1.description == 'Terminus' or events[i].fragmentDetails1.description == 'Origin'):
+                black_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
+                black_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
             elif events[i].score == 0:
                 green_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
                 green_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
@@ -111,6 +118,7 @@ def createDotPlot(events, strain1, strain2):
         plt.plot( yellow_x_coord, yellow_y_coord, 'o', color = 'gold')
         plt.plot(orange_x_coord, orange_y_coord, 'o', color = 'orange')
         plt.plot(red_x_coord, red_y_coord, 'o', color = 'red')
+        plt.plot(black_x_coord, black_y_coord, 'o', color = 'black')
         plt.axis([0, len(events)+5, 0, len(events)+5])
         plt.ylabel('Operon Position in %s' % (strain1.name))
         plt.xlabel('Operon Position in %s' % (strain2.name))
