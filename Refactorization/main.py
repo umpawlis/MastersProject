@@ -5,6 +5,7 @@ from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
+from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -73,13 +74,36 @@ def constructEvents(strain1, strain2):
     
     #TODO Add Local Alignment
     
-    #TODO Add Global Alignment
     #Self Global Alignment
     if numRemainingOperons1 > 0:
-        duplicationEvents1, lossEvents1, coverageTracker1, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
+        duplicationEvents1, lossEvents1, coverageTracker1, strain1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1)
         print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
         if len(lossEvents1) > 0:
             events.extend(lossEvents1)
+            
+    if numRemainingOperons2 > 0:
+        duplicationEvents2, lossEvents2, coverageTracker2, strain2 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2)
+        print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
+        if len(lossEvents2) > 0:
+            events.extend(lossEvents2)
+            
+    #Verify there's no unmarked operons at this point
+    numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+    numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+    if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
+        print('Error! There are unmarked operons remaining!')
+    
+    print(strain1.name)
+    print(strain1.codonMismatchDetails)
+    print(strain1.substitutionDetails)
+    print(strain1.duplicationDetails)
+    print(strain1.deletionDetails)
+    
+    print(strain2.name)
+    print(strain2.codonMismatchDetails)
+    print(strain2.substitutionDetails)
+    print(strain2.duplicationDetails)
+    print(strain2.deletionDetails)
     
     return events
 ######################################################
