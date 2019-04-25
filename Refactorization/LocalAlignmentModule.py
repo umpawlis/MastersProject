@@ -181,24 +181,26 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
 
     #Need to capture the genes outside the aligned regions. Remember this traceback only traverses the regions with a score above 0! ie we'll be missing genes
     currIndex = len(operon1) - 1
-    while currIndex > -1 and currIndex != x:
+    while currIndex > -1 and currIndex > x:
         operon2Gap.insert(0, operon1[currIndex])
         operon2GapIndex.insert(0, currIndex)
         currIndex -= 1
-    operon2Gaps.insert(0, operon2Gap)
-    operon2GapIndexes.insert(0, operon2GapIndex)
-    operon2Gap = []
-    operon2GapIndex = []
+    if len(operon2Gap) > 0:
+        operon2Gaps.insert(0, operon2Gap)
+        operon2GapIndexes.insert(0, operon2GapIndex)
+        operon2Gap = []
+        operon2GapIndex = []
     
     currIndex = len(operon2) - 1
-    while currIndex > -1 and currIndex != y:
+    while currIndex > -1 and currIndex > y:
         operon1Gap.insert(0, operon2[currIndex])
         operon1GapIndex.insert(0, currIndex)
         currIndex -= 1
-    operon1Gaps.insert(0, operon1Gap)
-    operon1GapIndexes.insert(0, operon1GapIndex)
-    operon1Gap = []
-    operon1GapIndex = []
+    if len(operon1Gap) > 0:
+        operon1Gaps.insert(0, operon1Gap)
+        operon1GapIndexes.insert(0, operon1GapIndex)
+        operon1Gap = []
+        operon1GapIndex = []
                 
     while move != END:
         if move == DIAG:
@@ -299,20 +301,22 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
         operon2Gap.insert(0, operon1[currIndex])
         operon2GapIndex.insert(0, currIndex)
         currIndex -= 1
-    operon2Gaps.insert(0, operon2Gap)
-    operon2GapIndexes.insert(0, operon2GapIndex)
-    operon2Gap = []
-    operon2GapIndex = []
+    if len(operon2Gap) > 0:
+        operon2Gaps.insert(0, operon2Gap)
+        operon2GapIndexes.insert(0, operon2GapIndex)
+        operon2Gap = []
+        operon2GapIndex = []
     
     currIndex = y - 1
     while currIndex > -1:
         operon1Gap.insert(0, operon2[currIndex])
         operon1GapIndex.insert(0, currIndex)
         currIndex -= 1
-    operon1Gaps.insert(0, operon1Gap)
-    operon1GapIndexes.insert(0, operon1GapIndex)
-    operon1Gap = []
-    operon1GapIndex = []
+    if len(operon1Gap) > 0:
+        operon1Gaps.insert(0, operon1Gap)
+        operon1GapIndexes.insert(0, operon1GapIndex)
+        operon1Gap = []
+        operon1GapIndex = []
                 
     #The indexes values need to be flipped b/c right now they're oriented from right to left
     if len(gap1Indexes) > 0:
