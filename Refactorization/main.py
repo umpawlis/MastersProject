@@ -37,8 +37,8 @@ def createAncestor(strain1, strain2, neighborStrain):
     createDotPlot(events, strain1, strain2)
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
-    createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
-    createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
+    createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
+    createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
     
     #Append all details to file here
     appendToFile(outputFileName, strain1.name + '\n')

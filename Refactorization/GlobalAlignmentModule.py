@@ -514,7 +514,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
-                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
+                    strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 i = i - 1
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
@@ -544,7 +544,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
-                    strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
+                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
@@ -574,7 +574,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
-                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
+                    strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 i = i - 1
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
@@ -604,7 +604,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
-                    strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
+                    strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
 
         #Set ancestral operon
