@@ -10,6 +10,7 @@ from SequenceService import createBarGraph
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
+from FragmentService import computeOperonArrangements
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -66,7 +67,14 @@ def createAncestor(strain1, strain2, neighborStrain):
     print(strain2.deletionDetails)
     
     #TODO ADD FRAGMENT AND ANCESTRAL OPERON CONSTRUCTION STUFF
-
+    computeOperonArrangements(events)
+    
+    
+    
+    
+    
+    
+    
     return ancestor
 
 ######################################################
@@ -110,7 +118,7 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 
-    #Local Alignment operation
+    #Local Alignment operation look into why the end genes were reversed in the local alignment
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
         #TODO Add Local Alignment
         print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
