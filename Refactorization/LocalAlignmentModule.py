@@ -391,10 +391,9 @@ def nextMove(scoreMatrix, x, y):
         return 1 if diag !=0 else 0
     elif (diag + mismatch) == scoreMatrix[x][y]:            #Substitution
         return 1 if diag !=0 else 0
-    elif left == scoreMatrix[x][y]:                         #Gap
+    elif (left + gap) == scoreMatrix[x][y]:                         #Gap
         return 3 if left != 0 else 0
-    elif up == scoreMatrix[x][y]:                           #Gap
+    elif (up + gap) == scoreMatrix[x][y]:                           #Gap
         return 2 if up != 0 else 0
     else:
-        # Execution should not reach here.
-        raise ValueError('invalid move during traceback')
+        return 0
