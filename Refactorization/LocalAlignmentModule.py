@@ -4,6 +4,12 @@ from Event import Event
 from GlobalAlignmentModule import constructStatement
 from GlobalAlignmentModule import reconstructOperonSequence
 
+#Local alignment parameters
+matchWithCodon = 1.0
+matchWithoutCodon = 0.5
+mismatch = -1.0
+gap = -1.0
+    
 ################################
 ###Local Alignment Functions####
 ################################
@@ -93,12 +99,6 @@ def localAlignment(fragment1, fragment2, event):
     operon1 = fragment1.sequence
     operon2 = fragment2.sequence
 
-    #Local alignment parameters
-    matchWithCodon = 1.0
-    matchWithoutCodon = 0.5
-    mismatch = -1.0
-    gap = -1.0
-
     #Initialize the matrix
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
     maxScore = 0
@@ -144,8 +144,7 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
 
     END, DIAG, UP, LEFT = range(4)
     x, y = startPosition
-    move = nextMove(scoreMatrix, x, y)
-
+    
     #Tracks index and genes for codon mismatches in both strains
     codonMismatchIndexesStrain1 = []
     codonMismatchIndexesStrain2 = []
@@ -180,28 +179,31 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
     aligned_seq2 = []
 
     #Need to capture the genes outside the aligned regions. Remember this traceback only traverses the regions with a score above 0! ie we'll be missing genes
-    currIndex = len(operon1) - 1
-    while currIndex > -1 and currIndex > x:
-        operon2Gap.insert(0, operon1[currIndex])
-        operon2GapIndex.insert(0, currIndex)
+    currIndex = len(operon1)
+    while currIndex > 1 and currIndex > x:
+        operon2Gap.insert(0, operon1[currIndex - 1])
+        operon2GapIndex.insert(0, currIndex - 1)
         currIndex -= 1
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
         operon2GapIndexes.insert(0, operon2GapIndex)
+        gap2Indexes.insert(0, len(aligned_seq2))
         operon2Gap = []
         operon2GapIndex = []
     
-    currIndex = len(operon2) - 1
-    while currIndex > -1 and currIndex > y:
-        operon1Gap.insert(0, operon2[currIndex])
-        operon1GapIndex.insert(0, currIndex)
+    currIndex = len(operon2)
+    while currIndex > 1 and currIndex > y:
+        operon1Gap.insert(0, operon2[currIndex - 1])
+        operon1GapIndex.insert(0, currIndex - 1)
         currIndex -= 1
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
         operon1GapIndexes.insert(0, operon1GapIndex)
+        gap1Indexes.insert(0, len(aligned_seq1))
         operon1Gap = []
         operon1GapIndex = []
-                
+    
+    move = nextMove(scoreMatrix, x, y)          
     while move != END:
         if move == DIAG:
             if operon1[x-1] == operon2[y-1]: #Both the gene and codon match
@@ -278,7 +280,7 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
 
         move = nextMove(scoreMatrix, x, y) #Makes move to the next cell in the matrix
 
-    aligned_seq1.insert(0, operon1[x - 1])
+    aligned_seq1.insert(0, operon1[x - 1]) #Add the last aligned gene
     aligned_seq2.insert(0, operon2[y - 1])
     endPosition = (x,y)
 
@@ -297,24 +299,26 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
         
     #Need to capture the genes outside the aligned regions. Remember this traceback only traverses the regions with a score above 0! ie we'll be missing genes
     currIndex = x - 1
-    while currIndex > -1:
-        operon2Gap.insert(0, operon1[currIndex])
-        operon2GapIndex.insert(0, currIndex)
+    while currIndex > 0:
+        operon2Gap.insert(0, operon1[currIndex - 1])
+        operon2GapIndex.insert(0, currIndex - 1)
         currIndex -= 1
     if len(operon2Gap) > 0:
         operon2Gaps.insert(0, operon2Gap)
         operon2GapIndexes.insert(0, operon2GapIndex)
+        gap2Indexes.insert(0, len(aligned_seq2))
         operon2Gap = []
         operon2GapIndex = []
     
     currIndex = y - 1
-    while currIndex > -1:
-        operon1Gap.insert(0, operon2[currIndex])
-        operon1GapIndex.insert(0, currIndex)
+    while currIndex > 0:
+        operon1Gap.insert(0, operon2[currIndex - 1])
+        operon1GapIndex.insert(0, currIndex - 1)
         currIndex -= 1
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
         operon1GapIndexes.insert(0, operon1GapIndex)
+        gap1Indexes.insert(0, len(aligned_seq1))
         operon1Gap = []
         operon1GapIndex = []
                 
@@ -380,13 +384,17 @@ def nextMove(scoreMatrix, x, y):
     diag = scoreMatrix[x - 1][y - 1]
     up   = scoreMatrix[x - 1][y]
     left = scoreMatrix[x][y - 1]
-
-    if diag >= up and diag >= left:     # Tie goes to the DIAG move.
-        return 1 if diag != 0 else 0    # 1 signals a DIAG move. 0 signals the end.
-    elif up > diag and up >= left:      # Tie goes to UP move.
-        return 2 if up != 0 else 0      # UP move or end.
-    elif left > diag and left > up:
-        return 3 if left != 0 else 0    # LEFT move or end.
+    
+    if (diag + matchWithCodon) == scoreMatrix[x][y]:        #Perfect match
+        return 1 if diag !=0 else 0
+    elif (diag + matchWithoutCodon) == scoreMatrix[x][y]:   #Codon mismatch
+        return 1 if diag !=0 else 0
+    elif (diag + mismatch) == scoreMatrix[x][y]:            #Substitution
+        return 1 if diag !=0 else 0
+    elif left == scoreMatrix[x][y]:                         #Gap
+        return 3 if left != 0 else 0
+    elif up == scoreMatrix[x][y]:                           #Gap
+        return 2 if up != 0 else 0
     else:
         # Execution should not reach here.
         raise ValueError('invalid move during traceback')
