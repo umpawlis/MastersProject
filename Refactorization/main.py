@@ -66,14 +66,18 @@ def createAncestor(strain1, strain2, neighborStrain):
     print(strain2.duplicationDetails)
     print(strain2.deletionDetails)
     
-    #TODO ADD FRAGMENT AND ANCESTRAL OPERON CONSTRUCTION STUFF
-    computeOperonArrangements(events)
+    #Compute the various regions
+    FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
     
+    #Compare one of the siblings to the neighbor if one exists
+    if neighborStrain != None:
+        #TODO compute the operon arrangements in the genome based on the neighbor
+        print('Performing analysis on the neighboring strain!')
+    else:
+        #TODO no neighbor, do some sort of default thing
+        print('No neighbor!')
     
-    
-    
-    
-    
+    #TODO create and return the ancestor
     
     return ancestor
 
@@ -271,12 +275,12 @@ def traverseNewickTree(node, parentNode):
 print('Starting application...')
 startTime = time.time()
 
-globals.initialize()
-createFile(outputFileName) #Creates file where data will be output
-
 print('Reading newick tree from file: %s...' % (newickFileName))
 newickTree = Phylo.read(newickFileName, 'newick')
 Phylo.draw(newickTree)
+
+globals.initialize() #Initialize the globals file
+createFile(outputFileName, newickTree) #Creates file where data will be output
 
 #Traverses the newick tree recursively reconstructing ancestral genomes
 print('Traversing newick tree...')

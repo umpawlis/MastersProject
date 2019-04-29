@@ -11,9 +11,10 @@ from BacterialStrain import BacterialStrain
 # Parameters:
 # Description: Creates a file where the output will be stored
 ######################################################
-def createFile(fileName):
-    print('Creating file %s...' % (fileName));
+def createFile(fileName, newickTree):
+    print('Creating file %s...' % (fileName));    
     file = open(fileName, "w+")
+    file.write(str(newickTree) + '\n') #Append the newick tree to the file
     file.close()
     
 ######################################################
