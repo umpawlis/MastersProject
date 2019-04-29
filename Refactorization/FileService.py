@@ -1,4 +1,5 @@
 import copy
+from Bio import Phylo
 from GenomeFragment import GenomeFragment
 from BacterialStrain import BacterialStrain
 
@@ -14,7 +15,7 @@ from BacterialStrain import BacterialStrain
 def createFile(fileName, newickTree):
     print('Creating file %s...' % (fileName));    
     file = open(fileName, "w+")
-    file.write(str(newickTree) + '\n') #Append the newick tree to the file
+    Phylo.write(newickTree,fileName, 'newick') #Write the tree to the output file
     file.close()
     
 ######################################################
