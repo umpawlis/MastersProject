@@ -3,7 +3,6 @@ import os.path
 import globals
 from Bio import Phylo
 from FileService import createFile
-from FileService import appendToFile
 from FileService import processSequence
 from SequenceService import createDotPlot
 from SequenceService import createBarGraph
@@ -11,6 +10,7 @@ from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FragmentService import computeOperonArrangements
+from FileService import outputStrainDetailsToFile
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -42,29 +42,8 @@ def createAncestor(strain1, strain2, neighborStrain):
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
     
     #Append all details to file here
-    appendToFile(outputFileName, strain1.name + '\n')
-    appendToFile(outputFileName, strain1.codonMismatchDetails + '\n')
-    appendToFile(outputFileName, strain1.substitutionDetails + '\n')
-    appendToFile(outputFileName, strain1.duplicationDetails + '\n')
-    appendToFile(outputFileName, strain1.deletionDetails + '\n')
-    
-    appendToFile(outputFileName, strain2.name + '\n')
-    appendToFile(outputFileName, strain2.codonMismatchDetails + '\n')
-    appendToFile(outputFileName, strain2.substitutionDetails + '\n')
-    appendToFile(outputFileName, strain2.duplicationDetails + '\n')
-    appendToFile(outputFileName, strain2.deletionDetails + '\n')
-    
-    print(strain1.name)
-    print(strain1.codonMismatchDetails)
-    print(strain1.substitutionDetails)
-    print(strain1.duplicationDetails)
-    print(strain1.deletionDetails)
-
-    print(strain2.name)
-    print(strain2.codonMismatchDetails)
-    print(strain2.substitutionDetails)
-    print(strain2.duplicationDetails)
-    print(strain2.deletionDetails)
+    outputStrainDetailsToFile(outputFileName, strain1)
+    outputStrainDetailsToFile(outputFileName, strain2)
     
     #Compute the various regions
     FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
