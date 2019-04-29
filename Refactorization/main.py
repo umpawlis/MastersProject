@@ -1,4 +1,5 @@
 import time
+import copy
 import os.path
 import globals
 from Bio import Phylo
@@ -6,11 +7,11 @@ from FileService import createFile
 from FileService import processSequence
 from SequenceService import createDotPlot
 from SequenceService import createBarGraph
+from FileService import outputStrainDetailsToFile
+from FragmentService import computeOperonArrangements
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
-from FragmentService import computeOperonArrangements
-from FileService import outputStrainDetailsToFile
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -33,31 +34,44 @@ def createAncestor(strain1, strain2, neighborStrain):
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events = constructEvents(strain1, strain2)
-    
+
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     createDotPlot(events, strain1, strain2)
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
     createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
-    
+
     #Append all details to file here
     outputStrainDetailsToFile(outputFileName, strain1)
     outputStrainDetailsToFile(outputFileName, strain2)
-    
+
     #Compute the various regions
     FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
-    
+
     #Compare one of the siblings to the neighbor if one exists
-    if neighborStrain != None:
-        #TODO compute the operon arrangements in the genome based on the neighbor
-        print('Performing analysis on the neighboring strain!')
+    if neighborStrain != None and (len(TFCR) > 0 or len(IR) > 0 or len(ITR) > 0):
+        strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object to avoid messing up the details from the previous comparison
+        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
+        neighborEvents = constructEvents(strain1Copy, neighborStrain)
+
+        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
+        createDotPlot(neighborEvents, strain1Copy, neighborStrain)
+
+        #Compute the various regions for the neighbor
+        NFCR, NTFCR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
+
+        #TODO create the genome arrangement based on the sibling and neighbor comparison
     else:
-        #TODO no neighbor, do some sort of default thing
-        print('No neighbor!')
-    
+        if neighborStrain == None:
+            print('No neighbor found!')
+        elif len(TFCR) == 0 and len(IR) == 0 or len(ITR) == 0:
+            print('No inverted or transposed regions detected!!')
+
+        #TODO somehow reconstruct the ancestral genome with no neighbor data
+
     #TODO create and return the ancestor
-    
+
     return ancestor
 
 ######################################################
@@ -107,7 +121,7 @@ def constructEvents(strain1, strain2):
         print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
         localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
         print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
-        
+
         numRemainingOperons1 = countRemainingOperons(coverageTracker1)
         numRemainingOperons2 = countRemainingOperons(coverageTracker2)
         print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
@@ -132,7 +146,7 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
         print('Error! There are unmarked operons remaining!')
-        
+
     return events
 ######################################################
 # getNeighborStrain
