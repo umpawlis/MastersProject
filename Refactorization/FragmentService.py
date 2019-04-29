@@ -1,5 +1,6 @@
 import copy
 import globals
+from Event import Event
 
 ######################################################
 # computeOperonArrangements
