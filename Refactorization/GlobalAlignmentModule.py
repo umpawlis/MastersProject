@@ -686,6 +686,7 @@ def checkForMatch(gap, positions, sequence, fragment):
             startIndex = endIndex
         else:
             startIndex+=1
+            endIndex+=1
 
         if (startIndex + windowSize) > len(gap):
             #reduce and reset starting position of the window

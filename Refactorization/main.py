@@ -115,9 +115,9 @@ def constructEvents(strain1, strain2):
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 
-    #Local Alignment operation look into why the end genes were reversed in the local alignment
+    #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        #TODO Add Local Alignment
+        #TODO Look into why it's crashing for the neighbor comparison
         print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
         localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
         print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
