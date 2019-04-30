@@ -22,3 +22,6 @@ def initialize():
     
     global yDistanceThreshold
     yDistanceThreshold = 4
+    
+    global ancestralCounter
+    ancestralCounter = 0

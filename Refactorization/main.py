@@ -7,12 +7,15 @@ from FileService import createFile
 from FileService import processSequence
 from SequenceService import createDotPlot
 from SequenceService import createBarGraph
+from BacterialStrain import BacterialStrain
+from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
 from FragmentService import computeOperonArrangements
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
-from FragmentService import computeRegionDetails
+from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
+from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -31,7 +34,11 @@ outputFileName = 'ApplicationOutput.txt' #Name of output file
 # Description: Takes two related strains and a close neighbor and constructs the ancestral node
 ######################################################
 def createAncestor(strain1, strain2, neighborStrain):
+    globals.ancestralCounter+=1
     ancestor = None
+    ancestralName = 'Ancestor ' + str(globals.ancestralCounter)
+    ancestralFragments = None
+    
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
@@ -60,25 +67,24 @@ def createAncestor(strain1, strain2, neighborStrain):
 
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborEvents = constructEvents(strain1Copy, neighborStrain)
-
+        
         print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         createDotPlot(neighborEvents, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
-        NFCR, NTFCR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
-
+        NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
+        
         #TODO create the genome arrangement based on the sibling and neighbor comparison
-        print('Do stuff')
+        ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
     else:
         if neighborStrain == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-
         #TODO somehow reconstruct the ancestral genome with no neighbor data
+        ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
 
-    #TODO create and return the ancestor
-
+    ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
 
 ######################################################
@@ -124,7 +130,6 @@ def constructEvents(strain1, strain2):
 
     #Local Alignment operation
     if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        #TODO Look into why it's crashing for the neighbor comparison
         print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
         localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
         print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))

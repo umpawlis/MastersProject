@@ -1,6 +1,5 @@
 import copy
 import globals
-from Event import Event
 
 ######################################################
 # computeOperonArrangements
@@ -152,3 +151,33 @@ def computeRegionDetails(regions, description):
                 temp2 += currGene + ' ' + str(currPos) + ', '
 
     return temp1, temp2
+
+######################################################
+# determineAncestralFragmentArrangementUsingNeighbor
+# Parameters:
+# Description: Orders the ancestral fragments based on the sibling and the neighbor
+######################################################
+def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR):
+    ancestralFragments = None
+    arrangedFragments = {}
+    
+    #De
+    for regions in FCR:
+        for region in regions:
+            for fragment in region:
+                if fragment.fragmentDetails1.fragmentIndex == fragment.fragmentDetails2.fragmentIndex:
+                    arrangedFragments[fragment.fragmentDetails1.fragmentIndex] = fragment #If the position has been preserved in both regions then keep them in same position
+                
+    
+    
+    return ancestralFragments
+
+######################################################
+# determineAncestralFragmentArrangementWithoutNeighbor
+# Parameters:
+# Description: Orders the ancestral fragments based on the siblings
+######################################################
+def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
+    ancestralFragments = None
+    
+    return ancestralFragments
