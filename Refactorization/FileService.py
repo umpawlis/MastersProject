@@ -12,19 +12,25 @@ from BacterialStrain import BacterialStrain
 # Parameters:
 # Description: Creates a file where the output will be stored
 ######################################################
-def outputStrainDetailsToFile(fileName, strain):
+def outputStrainDetailsToFile(fileName, strain,  inversionDetails, transpositionDetails, invertedTransposedDetails):
     #Append all details to file here
     appendToFile(fileName, strain.name + '\n')
     appendToFile(fileName, strain.codonMismatchDetails + '\n')
     appendToFile(fileName, strain.substitutionDetails + '\n')
     appendToFile(fileName, strain.duplicationDetails + '\n')
     appendToFile(fileName, strain.deletionDetails + '\n')
+    appendToFile(fileName, inversionDetails + '\n')
+    appendToFile(fileName, transpositionDetails + '\n')
+    appendToFile(fileName, invertedTransposedDetails + '\n')
     
     print(strain.name)
     print(strain.codonMismatchDetails)
     print(strain.substitutionDetails)
     print(strain.duplicationDetails)
     print(strain.deletionDetails)
+    print(inversionDetails)
+    print(transpositionDetails)
+    print(invertedTransposedDetails)
 
 ######################################################
 # createFile

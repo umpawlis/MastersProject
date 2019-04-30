@@ -118,3 +118,37 @@ def computeOperonArrangements(events):
         print('%s, %s' %(operon.fragmentDetails1.fragmentIndex, operon.fragmentDetails2.fragmentIndex))
 
     return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions, lostRegions
+
+######################################################
+# computeRegionDetails
+# Parameters:
+# Description: Generates a string containing all of the details about a particular region
+######################################################
+def computeRegionDetails(regions, description):
+    temp1 = description
+    temp2 = description
+    
+    for region in regions:
+        for fragment in region:
+            startPos1 = fragment.fragmentDetails1.startPositionInGenome
+            startPos2 = fragment.fragmentDetails2.startPositionInGenome
+            
+            seq1 = copy.deepcopy(fragment.fragmentDetails1.sequence)
+            seq2 = copy.deepcopy(fragment.fragmentDetails2.sequence)
+            
+            if fragment.fragmentDetails1.isNegativeOrientation == True:
+                seq1.reverse()
+            if fragment.fragmentDetails2.isNegativeOrientation == True:
+                seq2.reverse()
+                
+            for y in range(0, len(seq1)):
+                currPos = startPos1 + y
+                currGene = seq1[y]
+                temp1 += currGene + ' ' + str(currPos) + ', '
+                
+            for y in range(0, len(seq2)):
+                currPos = startPos2 + y
+                currGene = seq2[y]
+                temp2 += currGene + ' ' + str(currPos) + ', '
+
+    return temp1, temp2

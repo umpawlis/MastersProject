@@ -12,6 +12,7 @@ from FragmentService import computeOperonArrangements
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
+from FragmentService import computeRegionDetails
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -32,7 +33,7 @@ outputFileName = 'ApplicationOutput.txt' #Name of output file
 def createAncestor(strain1, strain2, neighborStrain):
     ancestor = None
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
-    
+
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events = constructEvents(strain1, strain2)
 
@@ -43,16 +44,20 @@ def createAncestor(strain1, strain2, neighborStrain):
     createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
 
-    #Append all details to file here
-    outputStrainDetailsToFile(outputFileName, strain1)
-    outputStrainDetailsToFile(outputFileName, strain2)
+    #Compute and output the inverted, transposed, and inverted transposed regions
+    FCR, TR, IR, ITR, LR = computeOperonArrangements(events)
 
-    #Compute the various regions
-    FCR, TFCR, IR, ITR, LR = computeOperonArrangements(events)
+    inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
+    transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
+    invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
+
+    #Append all details to file here
+    outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
+    outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
 
     #Compare one of the siblings to the neighbor if one exists
-    if neighborStrain != None and (len(TFCR) > 0 or len(IR) > 0 or len(ITR) > 0):
-        
+    if neighborStrain != None and (len(TR) > 0 or len(IR) > 0 or len(ITR) > 0):
+
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborEvents = constructEvents(strain1Copy, neighborStrain)
 
@@ -63,10 +68,11 @@ def createAncestor(strain1, strain2, neighborStrain):
         NFCR, NTFCR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
 
         #TODO create the genome arrangement based on the sibling and neighbor comparison
+        print('Do stuff')
     else:
         if neighborStrain == None:
             print('No neighbor found!')
-        elif len(TFCR) == 0 and len(IR) == 0 or len(ITR) == 0:
+        elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
 
         #TODO somehow reconstruct the ancestral genome with no neighbor data
