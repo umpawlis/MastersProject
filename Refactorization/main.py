@@ -31,7 +31,8 @@ outputFileName = 'ApplicationOutput.txt' #Name of output file
 ######################################################
 def createAncestor(strain1, strain2, neighborStrain):
     ancestor = None
-
+    strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
+    
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events = constructEvents(strain1, strain2)
 
@@ -51,7 +52,7 @@ def createAncestor(strain1, strain2, neighborStrain):
 
     #Compare one of the siblings to the neighbor if one exists
     if neighborStrain != None and (len(TFCR) > 0 or len(IR) > 0 or len(ITR) > 0):
-        strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object to avoid messing up the details from the previous comparison
+        
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborEvents = constructEvents(strain1Copy, neighborStrain)
 

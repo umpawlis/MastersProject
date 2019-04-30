@@ -633,7 +633,7 @@ def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
             duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment)
 
             if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
-                allDuplicationSizes.append(duplicationSizes)
+                allDuplicationSizes.extend(duplicationSizes)
                 allDuplicationDetails += duplicationDetails
 
     return allDuplicationSizes, allDuplicationDetails, gap, positions
@@ -684,6 +684,7 @@ def checkForMatch(gap, positions, sequence, fragment):
             del gap[startIndex:endIndex]
             del positions[startIndex:endIndex]
             startIndex = endIndex
+            endIndex += windowSize
         else:
             startIndex+=1
             endIndex+=1
