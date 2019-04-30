@@ -35,7 +35,7 @@ def computeOperonArrangements(events):
             yDecreaseCounter = 0 #Counts the number of points that are decreasing in the current region
 
             minMainDiagonalDistance = abs(currEvent.fragmentDetails1.fragmentIndex - currEvent.fragmentDetails2.fragmentIndex) #Calculates the distance from the main diagonal
-            
+
             #These track whether we cross the main diagonal
             aboveMainDiagonal = False
             belowMainDiagonal = False
@@ -54,7 +54,7 @@ def computeOperonArrangements(events):
                 if yDistance - numLossesDetected < globals.yDistanceThreshold and currEvent.score != -1: #If the y-Distance is less than the threshold and not a lost operon then add it to the consecutive region
                     consecutiveRegion.append(eventsCopy.pop(0))
                     foundNeighbor = True #Indicates we found a consecutive region
-                    
+
                     #Tracks the minimuim distance from the main diagonal
                     currMainDiagonalDistance = abs(currEvent.fragmentDetails1.fragmentIndex - currEvent.fragmentDetails2.fragmentIndex)
                     if currMainDiagonalDistance < minMainDiagonalDistance:
@@ -126,25 +126,25 @@ def computeOperonArrangements(events):
 def computeRegionDetails(regions, description):
     temp1 = description
     temp2 = description
-    
+
     for region in regions:
         for fragment in region:
             startPos1 = fragment.fragmentDetails1.startPositionInGenome
             startPos2 = fragment.fragmentDetails2.startPositionInGenome
-            
+
             seq1 = copy.deepcopy(fragment.fragmentDetails1.sequence)
             seq2 = copy.deepcopy(fragment.fragmentDetails2.sequence)
-            
+
             if fragment.fragmentDetails1.isNegativeOrientation == True:
                 seq1.reverse()
             if fragment.fragmentDetails2.isNegativeOrientation == True:
                 seq2.reverse()
-                
+
             for y in range(0, len(seq1)):
                 currPos = startPos1 + y
                 currGene = seq1[y]
                 temp1 += currGene + ' ' + str(currPos) + ', '
-                
+
             for y in range(0, len(seq2)):
                 currPos = startPos2 + y
                 currGene = seq2[y]
@@ -160,16 +160,15 @@ def computeRegionDetails(regions, description):
 def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR):
     ancestralFragments = None
     arrangedFragments = {}
-    
-    #De
+
     for regions in FCR:
         for region in regions:
-            for fragment in region:
-                if fragment.fragmentDetails1.fragmentIndex == fragment.fragmentDetails2.fragmentIndex:
-                    arrangedFragments[fragment.fragmentDetails1.fragmentIndex] = fragment #If the position has been preserved in both regions then keep them in same position
-                
-    
-    
+            for x in range(0, len(region)):
+                fragment = region[x]
+                if (fragment[x].fragmentDetails1.fragmentIndex == fragment[x].fragmentDetails2.fragmentIndex):
+                    arrangedFragments[x] = fragment[x]
+
+
     return ancestralFragments
 
 ######################################################
@@ -179,5 +178,5 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
 ######################################################
 def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
     ancestralFragments = None
-    
+
     return ancestralFragments
