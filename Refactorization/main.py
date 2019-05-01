@@ -73,8 +73,6 @@ def createAncestor(strain1, strain2, neighborStrain):
 
         #Compute the various regions for the neighbor
         NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
-        
-        #TODO create the genome arrangement based on the sibling and neighbor comparison
         ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
     else:
         if neighborStrain == None:
