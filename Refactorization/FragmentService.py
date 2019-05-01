@@ -297,6 +297,102 @@ def checkForFragment(fragment, NFCR):
 # Description: Orders the ancestral fragments based on the siblings
 ######################################################
 def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
-    ancestralFragments = None
+    ancestralFragments = []
+    arrangedFragments = {}
+    
+    #Lost regions
+    for x in range(0, len(LR)):
+        fragment = LR[x]
+        index = fragment.fragmentDetails1.fragmentIndex
 
+        if index in arrangedFragments:
+            arrangedFragments[index].append(fragment)
+        else:
+            arrangedFragments[index] = []
+            arrangedFragments[index].append(fragment)
+    
+    #Forward conserved regions
+    for region in FCR:
+        for x in range(0, len(region)):
+            fragment = region[x]
+            index1 = fragment.fragmentDetails1.fragmentIndex
+            index2 = fragment.fragmentDetails2.fragmentIndex
+
+            if (index1 == index2): #Matching indexes
+                if index1 in arrangedFragments:
+                    arrangedFragments[index1].append(fragment)
+                else:
+                    arrangedFragments[index1] = []
+                    arrangedFragments[index1].append(fragment)
+            else: #Indexes don't match means there's a gap somewhere, insert into the higher index
+                if index2 > index1:
+                    targetIndex = index2
+                else:
+                    targetIndex = index1
+
+                if targetIndex in arrangedFragments:
+                    arrangedFragments[targetIndex].append(fragment)
+                else:
+                    arrangedFragments[targetIndex] = []
+                    arrangedFragments[targetIndex].append(fragment)
+    
+    arrangedFragments = insertFragmentsIntoGenome(TR, arrangedFragments)
+    arrangedFragments = insertFragmentsIntoGenome(IR, arrangedFragments)
+    arrangedFragments = insertFragmentsIntoGenome(ITR, arrangedFragments)
+    
+    keyList = arrangedFragments.keys()
+    keyList.sort()
+    
+    index = 0
+    geneIndex = 0
+    for x in range(0, len(keyList)):
+        key = keyList[x]
+        fragments = arrangedFragments[key]
+        for fragment in fragments:
+            originalSequence = ''
+            negativeOrientation = False
+            seq = copy.deepcopy(fragment.ancestralOperonGeneSequence)
+
+            if len(seq) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
+                description = 'Singleton'
+            else:
+                description = 'Operon'
+
+            if fragment.fragmentDetails1.isNegativeOrientation:
+                negativeOrientation = True
+                originalSequence = '-'
+
+            originalSequence += '['
+            for y in range(0, len(seq)):
+                gene = seq[y]
+                if y != (len(seq) - 1):
+                    originalSequence += gene + ', '
+                else:
+                    originalSequence += gene
+            originalSequence += ']'
+
+            newFragment = GenomeFragment(index, originalSequence, seq, geneIndex, description, negativeOrientation)
+            ancestralFragments.append(newFragment)
+
+            index+=1
+            geneIndex += len(seq)
+    
     return ancestralFragments
+
+######################################################
+# insertFragmentsIntoGenome
+# Parameters:
+# Description: Inserts given fragments into genome
+######################################################
+def insertFragmentsIntoGenome(fragments, arrangedFragments):
+    #Transposed/Inverted/Transposed Inverted
+    for region in fragments:
+        for x in range(0, len(region)):
+            fragment = region[x]
+            index1 = fragment.fragmentDetails1.fragmentIndex
+            
+            if index1 in arrangedFragments:
+                arrangedFragments[index1].append(fragment)
+            else:
+                arrangedFragments[index1] = []
+                arrangedFragments[index1].append(fragment)
