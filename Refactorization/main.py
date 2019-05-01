@@ -79,7 +79,6 @@ def createAncestor(strain1, strain2, neighborStrain):
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-        #TODO somehow reconstruct the ancestral genome with no neighbor data
         ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
