@@ -73,12 +73,15 @@ def createAncestor(strain1, strain2, neighborStrain):
 
         #Compute the various regions for the neighbor
         NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
+        #TODO verify code
         ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
     else:
         if neighborStrain == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
+        
+        #TODO Verify code
         ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
