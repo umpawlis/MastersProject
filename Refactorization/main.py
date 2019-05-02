@@ -11,12 +11,12 @@ from BacterialStrain import BacterialStrain
 from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
 from FragmentService import computeOperonArrangements
+from SequenceService import normalizeIndexesForDotPlot
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
-from SequenceService import adjustOperonIndexesForPlot
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -46,7 +46,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
 
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
-    points, lostPoints = adjustOperonIndexesForPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
+    points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     createDotPlot(points, strain1, strain2)
     
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
@@ -73,7 +73,7 @@ def createAncestor(strain1, strain2, neighborStrain):
         neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborStrain)
         
         print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborPoints, neighborLostPoints = adjustOperonIndexesForPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
+        neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
         createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor

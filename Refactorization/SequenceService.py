@@ -134,7 +134,7 @@ def createDotPlot(events, strain1, strain2):
 # Parameters:
 # Description: Adjusts the dot plot points according to number of duplications and losses
 ######################################################
-def adjustOperonIndexesForPlot(events, dup1, dup2, strain1, strain2):
+def normalizeIndexesForDotPlot(events, dup1, dup2, strain1, strain2):
     points = []
     lostPoints = []
     
