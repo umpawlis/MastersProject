@@ -16,6 +16,7 @@ from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
+from SequenceService import adjustOperonIndexesForPlot
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -42,16 +43,19 @@ def createAncestor(strain1, strain2, neighborStrain):
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
-    events = constructEvents(strain1, strain2)
+    events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
 
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
-    createDotPlot(events, strain1, strain2)
+    points, lostPoints = adjustOperonIndexesForPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
+    createDotPlot(points, strain1, strain2)
+    
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
     createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
 
     #Compute and output the inverted, transposed, and inverted transposed regions
+    #TODO look at code
     FCR, TR, IR, ITR, LR = computeOperonArrangements(events)
 
     inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
@@ -63,15 +67,17 @@ def createAncestor(strain1, strain2, neighborStrain):
     outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
 
     #Compare one of the siblings to the neighbor if one exists
-    if neighborStrain != None and (len(TR) > 0 or len(IR) > 0 or len(ITR) > 0):
+    if neighborStrain != None:
 
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborEvents = constructEvents(strain1Copy, neighborStrain)
+        neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborStrain)
         
         print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        createDotPlot(neighborEvents, strain1Copy, neighborStrain)
+        neighborPoints, neighborLostPoints = adjustOperonIndexesForPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
+        createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
+        #TODO Look at code
         NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
         #TODO verify code
         ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
@@ -118,6 +124,8 @@ def countRemainingOperons(tracker):
 def constructEvents(strain1, strain2):
 
     events = [] #Stores all of the orthologous events also keeps track of deletions and duplications
+    duplicationEvents1 = [] #Stores the duplication events for strain 1
+    duplicationEvents2 = [] #Stores the duplication events for strain 2
     coverageTracker1 = initializeTracker(strain1) #Tracks which operons have been marked off in strain 1
     coverageTracker2 = initializeTracker(strain2) #Tracks which operons have been marked off in strain 2
 
@@ -159,7 +167,7 @@ def constructEvents(strain1, strain2):
     if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
         print('Error! There are unmarked operons remaining!')
 
-    return events
+    return events, duplicationEvents1, duplicationEvents2
 ######################################################
 # getNeighborStrain
 # Parameters:

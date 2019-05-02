@@ -13,3 +13,6 @@ class GenomeFragment(object):
         self.startPositionInGenome = startPositionInGenome
         self.description = description
         self.isNegativeOrientation = isNegativeOrientation
+        
+    def setPoint(self, point):
+        self.point = point

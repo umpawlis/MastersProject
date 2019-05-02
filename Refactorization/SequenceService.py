@@ -90,24 +90,24 @@ def createDotPlot(events, strain1, strain2):
         if events[i].technique == 'Global Alignment' or events[i].technique == 'Local Alignment':
             #Assign the coords to the appropriate array, the index represents the position of the operon with respect to the genome
             if events[i].technique == 'Local Alignment':
-                red_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                red_y_coord.append(events[i].fragmentDetails2.fragmentIndex)            
+                red_x_coord.append(events[i].fragmentDetails1.point)
+                red_y_coord.append(events[i].fragmentDetails2.point)            
             elif events[i].score == 0 and (events[i].fragmentDetails1.description == 'Terminus' or events[i].fragmentDetails1.description == 'Origin'):
-                black_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                black_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+                black_x_coord.append(events[i].fragmentDetails1.point)
+                black_y_coord.append(events[i].fragmentDetails2.point)
             elif events[i].score == 0:
-                green_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                green_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+                green_x_coord.append(events[i].fragmentDetails1.point)
+                green_y_coord.append(events[i].fragmentDetails2.point)
             elif events[i].score == 1 or events[i].score == 2:
-                yellow_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                yellow_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+                yellow_x_coord.append(events[i].fragmentDetails1.point)
+                yellow_y_coord.append(events[i].fragmentDetails2.point)
             else:
-                orange_x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-                orange_y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+                orange_x_coord.append(events[i].fragmentDetails1.point)
+                orange_y_coord.append(events[i].fragmentDetails2.point)
 
             #Get all coordinates into a single array
-            x_coord.append(events[i].fragmentDetails1.fragmentIndex)
-            y_coord.append(events[i].fragmentDetails2.fragmentIndex)
+            x_coord.append(events[i].fragmentDetails1.point)
+            y_coord.append(events[i].fragmentDetails2.point)
             #print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
 
     #If we have any coordinates to plot, display them
@@ -127,7 +127,63 @@ def createDotPlot(events, strain1, strain2):
     else:
         print('No plot to display!')
     print("x" * 70)
+
+
+######################################################
+# adjustOperonIndexesForPlot
+# Parameters:
+# Description: Adjusts the dot plot points according to number of duplications and losses
+######################################################
+def adjustOperonIndexesForPlot(events, dup1, dup2, strain1, strain2):
+    points = []
+    lostPoints = []
     
+    #Split the events into two lists, a points list which will be displayed in the dot plot and a lost points list for the lost operons
+    for event in events:
+        if event.score == -1:
+            lostPoints.append(event)
+        else:
+            points.append(event)
+            
+    #Normalize the points in the points list
+    points.sort(key=lambda x:x.fragmentDetails1.fragmentIndex, reverse=False)
+    for x in range(0, len(points)):
+        point = points[x]
+        
+        if point.fragmentDetails1.fragmentIndex == point.fragmentDetails2.fragmentIndex: #The operon's position is conserved keep as is
+            point.fragmentDetails1.setPoint(point.fragmentDetails1.fragmentIndex)
+            point.fragmentDetails2.setPoint(point.fragmentDetails2.fragmentIndex)
+        else: #These points are different, need to adjust it according to the losses and duplications
+            index1 = point.fragmentDetails1.fragmentIndex
+            index2 = point.fragmentDetails2.fragmentIndex
+            
+            count1 = CountNumLossesAndDuplications(index1, lostPoints, dup1, strain1)
+            count2 = CountNumLossesAndDuplications(index2, lostPoints, dup2, strain2)
+            
+            point.fragmentDetails1.setPoint(index1 - count1)
+            point.fragmentDetails2.setPoint(index2 - count2)
+            
+    return points, lostPoints
+
+######################################################
+# CountNumLossesAndDuplications
+# Parameters:
+# Description: Counts the number of duplications and losses before the current index
+######################################################
+def CountNumLossesAndDuplications(index, losses, dups, strain):
+    count = 0
+    #Number of losses
+    if len(losses) > 0:
+        for x in  range(0, len(losses)):
+            if losses[x].fragmentDetails1.fragmentIndex < index and strain.name == losses[x].genome1Name:
+                count += 1
+    #Number of duplications
+    if len(dups) > 0:
+        for x in  range(0, len(dups)):
+            if dups[x].fragmentDetails1.fragmentIndex < index and strain.name == dups[x].genome1Name:
+                count += 1 
+    return count
+
 ######################################################
 # createBarGraph
 # Parameters:
