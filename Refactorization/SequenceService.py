@@ -108,7 +108,7 @@ def createDotPlot(events, strain1, strain2):
             #Get all coordinates into a single array
             x_coord.append(events[i].fragmentDetails1.point)
             y_coord.append(events[i].fragmentDetails2.point)
-            #print('x-axis: %s, y-axis: %s' %(trackingEvents[i].getGenome1OperonIndex(), trackingEvents[i].getGenome2OperonIndex()))
+            #print('x-axis: %s, y-axis: %s' %(events[i].fragmentDetails1.point, events[i].fragmentDetails2.point))
 
     #If we have any coordinates to plot, display them
     if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(orange_x_coord) > 0 or len(red_x_coord) > 0:

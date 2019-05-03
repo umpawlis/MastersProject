@@ -77,7 +77,7 @@ def createAncestor(strain1, strain2, neighborStrain):
         createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
-        NFCR, NTR, NIR, NITR = determineRegions(points)
+        NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
         
         #TODO look INTO
