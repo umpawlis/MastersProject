@@ -345,9 +345,11 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
             newFragment = GenomeFragment(fragmentIndex, originalSequence, geneSequence, geneIndex, description, negativeOrientation)
             ancestralFragments.append(newFragment)
 
-            index+=1
+            fragmentIndex += 1
             geneIndex += len(geneSequence)
 
+    #Make sure the fragments are sorted by the index
+    ancestralFragments.sort(key=lambda x:x.fragmentIndex, reverse=False)
     return ancestralFragments
 
 ######################################################
