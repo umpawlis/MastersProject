@@ -409,8 +409,8 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
                         #Substitutions
                         if event.numSubstitutions > 0:
-                            substitutionDescription1 = constructStatement(event.setSubstitutionIndexesStrain1, event.setSubstitutionGenesStrain1, event.fragmentDetails1)
-                            substitutionDescription2 = constructStatement(event.setSubstitutionIndexesStrain2, event.setSubstitutionGenesStrain2, event.fragmentDetails2)
+                            substitutionDescription1 = constructStatement(event.substitutionIndexesStrain1, event.substitutionGenesStrain1, event.fragmentDetails1)
+                            substitutionDescription2 = constructStatement(event.substitutionIndexesStrain2, event.substitutionGenesStrain2, event.fragmentDetails2)
 
                             strain1.addSubstitutionDetails(substitutionDescription1)
                             strain2.addSubstitutionDetails(substitutionDescription2)
@@ -712,7 +712,7 @@ def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPosition
         duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, alignedGenes, fragment)
 
         if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
-            allDuplicationSizes.append(duplicationSizes)
+            allDuplicationSizes.extend(duplicationSizes)
             allDuplicationDetails += duplicationDetails
             arrayOfGaps[w] = gap
             arrayOfGapPositions[w] = positions
