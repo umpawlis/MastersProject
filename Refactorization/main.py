@@ -10,13 +10,13 @@ from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain
 from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
-from FragmentService import computeOperonArrangements
 from SequenceService import normalizeIndexesForDotPlot
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
+from FragmentService import determineRegions
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -55,8 +55,8 @@ def createAncestor(strain1, strain2, neighborStrain):
     createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
 
     #Compute and output the inverted, transposed, and inverted transposed regions
-    #TODO look at code
-    FCR, TR, IR, ITR, LR = computeOperonArrangements(events)
+    FCR, TR, IR, ITR = determineRegions(points)
+    #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
 
     inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
@@ -77,10 +77,11 @@ def createAncestor(strain1, strain2, neighborStrain):
         createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
-        #TODO Look at code
-        NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents)
-        #TODO verify code
-        ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
+        NFCR, NTR, NIR, NITR = determineRegions(points)
+        #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
+        
+        #TODO look INTO
+        #ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
     else:
         if neighborStrain == None:
             print('No neighbor found!')
@@ -88,7 +89,7 @@ def createAncestor(strain1, strain2, neighborStrain):
             print('No inverted or transposed regions detected!!')
         
         #TODO Verify code
-        ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
+        #ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
