@@ -255,6 +255,8 @@ def computeRegionDetails(regions, description):
                 currGene = seq2[y]
                 temp2 += currGene + ' ' + str(currPos) + ', '
             temp2 += ';'
+        temp1 += '|' #End of region
+        temp2 += '|' #End of region
 
     return temp1, temp2
 
