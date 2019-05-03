@@ -265,7 +265,6 @@ def computeRegionDetails(regions, description):
 ######################################################
 def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR):
     #Initialize
-    ancestralFragments = []
     arrangedFragments = {}
 
     #Insert the lost operons at the positions they were lost in
@@ -308,48 +307,8 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
     arrangedFragments = insertRegionIntoDictionary(IR, NFCR, arrangedFragments)
     arrangedFragments = insertRegionIntoDictionary(ITR, NFCR, arrangedFragments)
 
-    geneIndex = 0
-    fragmentIndex = 0
-    fragmentIndexes = arrangedFragments.keys()
-    fragmentIndexes.sort()
-
-    #Create the ancestral genome
-    for x in range(0, len(fragmentIndexes)):
-        key = fragmentIndexes[x]
-        fragments = arrangedFragments[key]
-
-        for fragment in fragments:
-            originalSequence = ''
-            negativeOrientation = False
-            geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
-
-            if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
-                description = 'Singleton'
-            else:
-                description = 'Operon'
-
-            if fragment.fragmentDetails1.isNegativeOrientation:
-                negativeOrientation = True
-                originalSequence = '-'
-
-            originalSequence += '['
-            for y in range(0, len(geneSequence)):
-                gene = geneSequence[y]
-
-                if y != (len(geneSequence) - 1):
-                    originalSequence += gene + ', '
-                else:
-                    originalSequence += gene
-            originalSequence += ']'
-
-            newFragment = GenomeFragment(fragmentIndex, originalSequence, geneSequence, geneIndex, description, negativeOrientation)
-            ancestralFragments.append(newFragment)
-
-            fragmentIndex += 1
-            geneIndex += len(geneSequence)
-
-    #Make sure the fragments are sorted by the index
-    ancestralFragments.sort(key=lambda x:x.fragmentIndex, reverse=False)
+    #Construct the return the genome
+    ancestralFragments = constructGenome(arrangedFragments)
     return ancestralFragments
 
 ######################################################
@@ -405,34 +364,31 @@ def checkForFragment(fragment, NFCR):
 # Description: Orders the ancestral fragments based on the siblings
 ######################################################
 def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
-    ancestralFragments = []
     arrangedFragments = {}
-
-    #Lost regions
-    for x in range(0, len(LR)):
-        fragment = LR[x]
+    
+    #Insert the lost operons at the positions they were lost in
+    for fragment in LR:
         index = fragment.fragmentDetails1.fragmentIndex
-
-        if index in arrangedFragments:
+        if index in arrangedFragments: #We already have a fragment at this position so just append it
             arrangedFragments[index].append(fragment)
-        else:
+        else: #We don't have a fragment so initialize the position
             arrangedFragments[index] = []
             arrangedFragments[index].append(fragment)
-
-    #Forward conserved regions
+            
+    #Insert the forward conserved regions into the new genome
     for region in FCR:
         for x in range(0, len(region)):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
             index2 = fragment.fragmentDetails2.fragmentIndex
 
-            if (index1 == index2): #Matching indexes
+            if (index1 == index2): #The positions of the fragments has been conserved in both genomes
                 if index1 in arrangedFragments:
                     arrangedFragments[index1].append(fragment)
                 else:
                     arrangedFragments[index1] = []
                     arrangedFragments[index1].append(fragment)
-            else: #Indexes don't match means there's a gap somewhere, insert into the higher index
+            else: #The positions have not been conserved, means there's some operons lost between the two genomes. Insert into the higher index to make room for the lost operons
                 if index2 > index1:
                     targetIndex = index2
                 else:
@@ -448,43 +404,8 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
     arrangedFragments = insertFragmentsIntoGenome(IR, arrangedFragments)
     arrangedFragments = insertFragmentsIntoGenome(ITR, arrangedFragments)
 
-    keyList = arrangedFragments.keys()
-    keyList.sort()
-
-    index = 0
-    geneIndex = 0
-    for x in range(0, len(keyList)):
-        key = keyList[x]
-        fragments = arrangedFragments[key]
-        for fragment in fragments:
-            originalSequence = ''
-            negativeOrientation = False
-            seq = copy.deepcopy(fragment.ancestralOperonGeneSequence)
-
-            if len(seq) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
-                description = 'Singleton'
-            else:
-                description = 'Operon'
-
-            if fragment.fragmentDetails1.isNegativeOrientation:
-                negativeOrientation = True
-                originalSequence = '-'
-
-            originalSequence += '['
-            for y in range(0, len(seq)):
-                gene = seq[y]
-                if y != (len(seq) - 1):
-                    originalSequence += gene + ', '
-                else:
-                    originalSequence += gene
-            originalSequence += ']'
-
-            newFragment = GenomeFragment(index, originalSequence, seq, geneIndex, description, negativeOrientation)
-            ancestralFragments.append(newFragment)
-
-            index+=1
-            geneIndex += len(seq)
-
+    #Construct the return the genome
+    ancestralFragments = constructGenome(arrangedFragments)
     return ancestralFragments
 
 ######################################################
@@ -504,3 +425,56 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
             else:
                 arrangedFragments[index1] = []
                 arrangedFragments[index1].append(fragment)
+    return arrangedFragments
+                
+######################################################
+# constructGenome
+# Parameters:
+# Description: Constructs the ancestral genome
+######################################################
+def constructGenome(arrangedFragments):
+    #Initialize variables
+    geneIndex = 0
+    fragmentIndex = 0
+    ancestralFragments = []
+    fragmentIndexes = arrangedFragments.keys()
+    fragmentIndexes.sort()
+
+    #Create the ancestral genome
+    for x in range(0, len(fragmentIndexes)):
+        key = fragmentIndexes[x]
+        fragments = arrangedFragments[key]
+
+        for fragment in fragments:
+            originalSequence = ''
+            negativeOrientation = False
+            geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
+
+            if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
+                description = 'Singleton'
+            else:
+                description = 'Operon'
+
+            if fragment.fragmentDetails1.isNegativeOrientation:
+                negativeOrientation = True
+                originalSequence = '-'
+
+            originalSequence += '['
+            for y in range(0, len(geneSequence)):
+                gene = geneSequence[y]
+
+                if y != (len(geneSequence) - 1):
+                    originalSequence += gene + ', '
+                else:
+                    originalSequence += gene
+            originalSequence += ']'
+
+            newFragment = GenomeFragment(fragmentIndex, originalSequence, geneSequence, geneIndex, description, negativeOrientation)
+            ancestralFragments.append(newFragment)
+
+            fragmentIndex += 1
+            geneIndex += len(geneSequence)
+
+    #Make sure the fragments are sorted by the index
+    ancestralFragments.sort(key=lambda x:x.fragmentIndex, reverse=False)
+    return ancestralFragments

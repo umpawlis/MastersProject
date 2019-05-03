@@ -78,6 +78,7 @@ def createAncestor(strain1, strain2, neighborStrain):
         #Compute the various regions for the neighbor
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
         NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
+        
         #TODO Still need to look into the operon orientations for the ancestral genome
         ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints)
     else:
@@ -85,7 +86,8 @@ def createAncestor(strain1, strain2, neighborStrain):
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-        #TODO
+            
+        #TODO look into orientation here as well
         ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
