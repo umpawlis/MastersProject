@@ -64,11 +64,11 @@ def createDotPlot(events, strain1, strain2):
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
-    
+
     #The black ones represent the origin and terminus
     black_x_coord = []
     black_y_coord = []
-    
+
     #The green ones represent operons with no differences (Global alignment)
     green_x_coord = []
     green_y_coord = []
@@ -91,7 +91,7 @@ def createDotPlot(events, strain1, strain2):
             #Assign the coords to the appropriate array, the index represents the position of the operon with respect to the genome
             if events[i].technique == 'Local Alignment':
                 red_x_coord.append(events[i].fragmentDetails1.point)
-                red_y_coord.append(events[i].fragmentDetails2.point)            
+                red_y_coord.append(events[i].fragmentDetails2.point)
             elif events[i].score == 0 and (events[i].fragmentDetails1.description == 'Terminus' or events[i].fragmentDetails1.description == 'Origin'):
                 black_x_coord.append(events[i].fragmentDetails1.point)
                 black_y_coord.append(events[i].fragmentDetails2.point)
@@ -137,32 +137,32 @@ def createDotPlot(events, strain1, strain2):
 def normalizeIndexesForDotPlot(events, dup1, dup2, strain1, strain2):
     points = []
     lostPoints = []
-    
+
     #Split the events into two lists, a points list which will be displayed in the dot plot and a lost points list for the lost operons
     for event in events:
         if event.score == -1:
             lostPoints.append(event)
         else:
             points.append(event)
-            
+
     #Normalize the points in the points list
     points.sort(key=lambda x:x.fragmentDetails1.fragmentIndex, reverse=False)
     for x in range(0, len(points)):
         point = points[x]
-        
+
         if point.fragmentDetails1.fragmentIndex == point.fragmentDetails2.fragmentIndex: #The operon's position is conserved keep as is
             point.fragmentDetails1.setPoint(point.fragmentDetails1.fragmentIndex)
             point.fragmentDetails2.setPoint(point.fragmentDetails2.fragmentIndex)
         else: #These points are different, need to adjust it according to the losses and duplications
             index1 = point.fragmentDetails1.fragmentIndex
             index2 = point.fragmentDetails2.fragmentIndex
-            
+
             count1 = CountNumLossesAndDuplications(index1, lostPoints, dup1, strain1)
             count2 = CountNumLossesAndDuplications(index2, lostPoints, dup2, strain2)
-            
+
             point.fragmentDetails1.setPoint(index1 - count1)
             point.fragmentDetails2.setPoint(index2 - count2)
-            
+
     return points, lostPoints
 
 ######################################################
@@ -181,7 +181,7 @@ def CountNumLossesAndDuplications(index, losses, dups, strain):
     if len(dups) > 0:
         for x in  range(0, len(dups)):
             if dups[x].fragmentDetails1.fragmentIndex < index and strain.name == dups[x].genome1Name:
-                count += 1 
+                count += 1
     return count
 
 ######################################################

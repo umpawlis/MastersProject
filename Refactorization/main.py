@@ -8,6 +8,7 @@ from FileService import processSequence
 from SequenceService import createDotPlot
 from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain
+from FragmentService import determineRegions
 from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
 from SequenceService import normalizeIndexesForDotPlot
@@ -16,7 +17,6 @@ from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
-from FragmentService import determineRegions
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -39,7 +39,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     ancestor = None
     ancestralName = 'Ancestor ' + str(globals.ancestralCounter)
     ancestralFragments = None
-    
+
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
@@ -48,7 +48,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     createDotPlot(points, strain1, strain2)
-    
+
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
     createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
@@ -68,28 +68,25 @@ def createAncestor(strain1, strain2, neighborStrain):
 
     #Compare one of the siblings to the neighbor if one exists
     if neighborStrain != None:
-
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborStrain)
-        
+
         print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
         createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
-        NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
-        
-        #TODO look INTO
-        #ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR)
+        NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
+        #TODO Still need to look into the operon orientations for the ancestral genome
+        ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints)
     else:
         if neighborStrain == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-        
-        #TODO Verify code
-        #ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR)
+        #TODO
+        ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor

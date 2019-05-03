@@ -261,37 +261,37 @@ def computeRegionDetails(regions, description):
 ######################################################
 # determineAncestralFragmentArrangementUsingNeighbor
 # Parameters:
-# Description: Orders the ancestral fragments based on the sibling and the neighbor
+# Description: Orders the ancestral fragments based on the siblings and the neighbor
 ######################################################
 def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR):
+    #Initialize
     ancestralFragments = []
     arrangedFragments = {}
 
-    #Lost regions
-    for x in range(0, len(LR)):
-        fragment = LR[x]
+    #Insert the lost operons at the positions they were lost in
+    for fragment in LR:
         index = fragment.fragmentDetails1.fragmentIndex
 
-        if index in arrangedFragments:
+        if index in arrangedFragments: #We already have a fragment at this position so just append it
             arrangedFragments[index].append(fragment)
-        else:
+        else: #We don't have a fragment so initialize the position
             arrangedFragments[index] = []
             arrangedFragments[index].append(fragment)
 
-    #Forward conserved regions
+    #Insert the forward conserved regions into the new genome
     for region in FCR:
         for x in range(0, len(region)):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
             index2 = fragment.fragmentDetails2.fragmentIndex
 
-            if (index1 == index2): #Matching indexes
+            if (index1 == index2): #The positions of the fragments has been conserved in both genomes
                 if index1 in arrangedFragments:
                     arrangedFragments[index1].append(fragment)
                 else:
                     arrangedFragments[index1] = []
                     arrangedFragments[index1].append(fragment)
-            else: #Indexes don't match means there's a gap somewhere, insert into the higher index
+            else: #The positions have not been conserved, means there's some operons lost between the two genomes. Insert into the higher index to make room for the lost operons
                 if index2 > index1:
                     targetIndex = index2
                 else:
@@ -303,24 +303,27 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
                     arrangedFragments[targetIndex] = []
                     arrangedFragments[targetIndex].append(fragment)
 
+    #Handle the remaining regions
     arrangedFragments = insertRegionIntoDictionary(TR, NFCR, arrangedFragments)
     arrangedFragments = insertRegionIntoDictionary(IR, NFCR, arrangedFragments)
     arrangedFragments = insertRegionIntoDictionary(ITR, NFCR, arrangedFragments)
 
-    keyList = arrangedFragments.keys()
-    keyList.sort()
-
-    index = 0
     geneIndex = 0
-    for x in range(0, len(keyList)):
-        key = keyList[x]
+    fragmentIndex = 0
+    fragmentIndexes = arrangedFragments.keys()
+    fragmentIndexes.sort()
+
+    #Create the ancestral genome
+    for x in range(0, len(fragmentIndexes)):
+        key = fragmentIndexes[x]
         fragments = arrangedFragments[key]
+
         for fragment in fragments:
             originalSequence = ''
             negativeOrientation = False
-            seq = copy.deepcopy(fragment.ancestralOperonGeneSequence)
+            geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
 
-            if len(seq) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
+            if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
                 description = 'Singleton'
             else:
                 description = 'Operon'
@@ -330,47 +333,47 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
                 originalSequence = '-'
 
             originalSequence += '['
-            for y in range(0, len(seq)):
-                gene = seq[y]
-                if y != (len(seq) - 1):
+            for y in range(0, len(geneSequence)):
+                gene = geneSequence[y]
+
+                if y != (len(geneSequence) - 1):
                     originalSequence += gene + ', '
                 else:
                     originalSequence += gene
             originalSequence += ']'
 
-            newFragment = GenomeFragment(index, originalSequence, seq, geneIndex, description, negativeOrientation)
+            newFragment = GenomeFragment(fragmentIndex, originalSequence, geneSequence, geneIndex, description, negativeOrientation)
             ancestralFragments.append(newFragment)
 
             index+=1
-            geneIndex += len(seq)
+            geneIndex += len(geneSequence)
 
     return ancestralFragments
 
 ######################################################
 # insertRegionIntoDictionary
 # Parameters:
-# Description: inserts region into dictionary
+# Description: inserts region into fragment dictionary
 ######################################################
-def insertRegionIntoDictionary(fragments, NFCR, arrangedFragments):
+def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
+
     #Transposed/Inverted/Inverted Transposed regions
-    for region in fragments:
+    for region in regions:
         count = 0
+
+        #Iterate through all of the fragments in the region and count the number of times they appear in the neighbor's forward conserved region
         for x in range(0, len(region)):
             fragment = region[x]
             match = checkForFragment(fragment, NFCR)
             if match:
                 count += 1
+        #Insert the fragments into the dictionary based on the counter
         for x in range(0, len(region)):
             fragment = region[x]
-
             if count > 0:
-                targetIndex = fragment.fragmentDetails1.fragmentIndex
+                targetIndex = fragment.fragmentDetails1.fragmentIndex #Same arrangement exists in the neighbor
             else:
-                if fragment.fragmentDetails2.isNegativeOrientation:
-                    fragment.fragmentDetails1.isNegativeOrientation = True
-                else:
-                    fragment.fragmentDetails1.isNegativeOrientation = False
-                targetIndex = fragment.fragmentDetails2.fragmentIndex
+                targetIndex = fragment.fragmentDetails2.fragmentIndex #Neighbor's arrangement does not match Strain 1
 
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
@@ -383,14 +386,14 @@ def insertRegionIntoDictionary(fragments, NFCR, arrangedFragments):
 ######################################################
 # checkForFragment
 # Parameters:
-# Description: returns true if fragment is found
+# Description: returns true if a matching fragment is found
 ######################################################
 def checkForFragment(fragment, NFCR):
     match = False
     for region in NFCR:
         for x in range(0, len(region)):
             currFragment = region[x]
-            if fragment.fragmentDetails1.fragmentIndex == currFragment.fragmentDetails1.fragmentIndex:
+            if fragment.genome1Name == currFragment.genome1Name and fragment.fragmentDetails1.fragmentIndex == currFragment.fragmentDetails1.fragmentIndex:
                 return True
     return match
 
