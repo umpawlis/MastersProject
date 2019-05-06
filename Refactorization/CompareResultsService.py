@@ -2,6 +2,47 @@
 outputFile1 = 'ApplicationOutput.txt'
 outputFile2 = 'ApplicationOutput.txt'
 
+
+######################################################
+# duplicationDeletionComparison
+# Parameters:
+# Description: Compares results of codon mismatches and substitutions
+######################################################
+def duplicationDeletionComparison(data1, data2):
+    percentage = 0
+
+    #Parse the data
+    segments1 = data1.split(';')
+    segments2 = data2.split(';')
+    dict1 = {}
+    dict2 = {}
+    for segment in segments1:
+        genes = segment.split(',')
+        for gene in genes:
+            data = gene.split(' ')
+            if len(data) == 2:
+                dict1[data[1]] = data[0]
+    for segment in segments2:
+        genes = segment.split(',')
+        for gene in genes:
+            data = gene.split(' ')
+            if len(data) == 2:
+                dict2[data[1]] = data[0]
+
+    #Compute a percentage
+    keys = dict1.keys()
+    count = 0
+    for key in keys:
+        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+            count += 1
+
+    if count == 0 and len(dict2) == 0:
+        return 100
+    else:
+        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+
+    return percentage
+
 ######################################################
 # codonMismatchSubstitutionComparison
 # Parameters:
@@ -11,7 +52,7 @@ def codonMismatchSubstitutionComparison(data1, data2):
     percentage = 0
     dict1 = {}
     dict2 = {}
-    
+
     #Parse the data
     array1 = data1.split(';')
     array2 = data2.split(';')
@@ -23,19 +64,19 @@ def codonMismatchSubstitutionComparison(data1, data2):
         data = entry.split(' ')
         if len(data) == 2:
             dict2[data[1]] = data[0]
-    
+
     #Compute a percentage
     keys = dict1.keys()
     count = 0
     for key in keys:
         if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
             count += 1
-            
+
     if count == 0 and len(dict2) == 0:
         return 100
-    else:    
+    else:
         percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
-    
+
     return percentage
 
 ######################################################
@@ -97,7 +138,10 @@ def readFiles():
                     line2 = file2.readline() #Duplication
                     if 'Duplication' in line1 and 'Duplication' in line2:
                         print('Comparing the duplications between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Duplication:', '')
+                        line2 = line2.replace('Duplication:', '')
+                        result = duplicationDeletionComparison(line1, line2)
+                        print('The result of the Duplications is: %s percent' % (result))
                     else:
                         print('Error! This line should be the duplications')
                         return False
@@ -106,7 +150,10 @@ def readFiles():
                     line2 = file2.readline() #Deletion
                     if 'Deletion' in line1 and 'Deletion' in line2:
                         print('Comparing the deletions between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Deletion:', '')
+                        line2 = line2.replace('Deletion:', '')
+                        result = duplicationDeletionComparison(line1, line2)
+                        print('The result of the Deletions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the deletions')
                         return False
