@@ -2,6 +2,48 @@
 outputFile1 = 'ApplicationOutput.txt'
 outputFile2 = 'ApplicationOutput.txt'
 
+######################################################
+# inversionTranspositionComparison
+# Parameters:
+# Description: Compares results of inversions, transpositions, and inverted transpositions
+######################################################
+def inversionTranspositionComparison(data1, data2):
+    percentage = 0
+    dict1 = {}
+    dict2 = {}
+
+    #Parse the data
+    regions1 = data1.split('|') #An inversion/transposition fragment ie entire piece that was transposed
+    regions2 = data2.split('|') #An inversion/transposition fragment ie entire piece that was transposed
+    for region in regions1:
+        operons = region.split(';')
+        for operon in operons:
+            genes = operon.split(',')
+            for gene in genes:
+                data = gene.split(' ')
+                if len(data) == 2:
+                    dict1[data[1]] = data[0]
+    for region in regions2:
+        operons = region.split(';')
+        for operon in operons:
+            genes = operon.split(',')
+            for gene in genes:
+                data = gene.split(' ')
+                if len(data) == 2:
+                    dict2[data[1]] = data[0]
+    #Compute a percentage
+    keys = dict1.keys()
+    count = 0
+    for key in keys:
+        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+            count += 1
+
+    if count == 0 and len(dict2) == 0:
+        return 100
+    else:
+        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+
+    return percentage
 
 ######################################################
 # duplicationDeletionComparison
@@ -94,6 +136,9 @@ def readFiles():
     if file1.mode == "r" and file2.mode == "r":
         newickTree1 = file1.readline() #Newick tree 1
         newickTree2 = file2.readline() #Newick tree 2
+        
+        if newickTree1 == newickTree2:
+            print('Trees match!')
 
         line1 = file1.readline() #Strain 1
         line2 = file2.readline() #Strain 2
@@ -162,7 +207,10 @@ def readFiles():
                     line2 = file2.readline() #Inversion
                     if 'Inversion' in line1 and 'Inversion' in line2:
                         print('Comparing the inversions between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Inversion:', '')
+                        line2 = line2.replace('Inversion:', '')
+                        result = inversionTranspositionComparison(line1, line2)
+                        print('The result of the Inversion is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inversions')
                         return False
@@ -171,7 +219,10 @@ def readFiles():
                     line2 = file2.readline() #Transposition
                     if 'Transposition' in line1 and 'Transposition' in line2:
                         print('Comparing the transpositions between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Transposition:', '')
+                        line2 = line2.replace('Transposition:', '')
+                        result = inversionTranspositionComparison(line1, line2)
+                        print('The result of the Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the transpositions')
                         return False
@@ -180,7 +231,10 @@ def readFiles():
                     line2 = file2.readline() #Inverted Transposition
                     if 'Inverted Transposition' in line1 and 'Inverted Transposition' in line2:
                         print('Comparing the inverted transposition between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Inverted Transposition:', '')
+                        line2 = line2.replace('Inverted Transposition:', '')
+                        result = inversionTranspositionComparison(line1, line2)
+                        print('The result of the Inverted Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
