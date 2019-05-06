@@ -3,6 +3,38 @@ outputFile1 = 'ApplicationOutput.txt'
 outputFile2 = 'ApplicationOutput.txt'
 
 ######################################################
+# codonMismatchSubstitutionComparison
+# Parameters:
+# Description: Compares results of codon mismatches and substitutions
+######################################################
+def codonMismatchSubstitutionComparison(data1, data2):
+    percentage = 0
+    dict1 = {}
+    dict2 = {}
+    
+    #Parse the data
+    array1 = data1.split(';')
+    array2 = data2.split(';')
+    for entry in array1:
+        data = entry.split(' ')
+        if len(data) == 2:
+            dict1[data[1]] = data[0]
+    for entry in array2:
+        data = entry.split(' ')
+        if len(data) == 2:
+            dict2[data[1]] = data[0]
+    
+    #Compute a percentage
+    keys = dict1.keys()
+    count = 0
+    for key in keys:
+        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+            count += 1
+    percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+    
+    return percentage
+
+######################################################
 # readFiles
 # Parameters:
 # Description: Reads two files and compares two files
@@ -23,8 +55,8 @@ def readFiles():
 
         while line1 and line2 and len(line1) > 0 and len(line2) > 0:
             if 'Strain' in line1 and 'Strain' in line2: #This is the strain identifier
-                strain1 = line1.replace('Strain:', '')
-                strain2 = line2.replace('Strain:', '')
+                strain1 = line1.replace('Strain:', '').strip()
+                strain2 = line2.replace('Strain:', '').strip()
 
                 #Indicate whether this is a matching strain
                 if strain1 != strain2:
@@ -37,7 +69,10 @@ def readFiles():
                     line2 = file2.readline() #Codon mismatch
                     if 'Codon Mismatch' in line1 and 'Codon Mismatch' in line2:
                         print('Comparing the codon mismatches between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Codon Mismatch:', '')
+                        line2 = line2.replace('Codon Mismatch:', '')
+                        result = codonMismatchSubstitutionComparison(line1, line2)
+                        print('The result of the Codon Mismatches is: %s percent' % (result))
                     else:
                         print('Error! This line should be the codon mismatch')
                         return False
@@ -95,6 +130,8 @@ def readFiles():
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
+            line1 = file1.readline() #Strain 1
+            line2 = file2.readline() #Strain 2
     else:
         print('Unable to process output files!')
     print('Closing files...')
