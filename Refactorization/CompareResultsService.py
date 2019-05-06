@@ -30,7 +30,11 @@ def codonMismatchSubstitutionComparison(data1, data2):
     for key in keys:
         if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
             count += 1
-    percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+            
+    if count == 0 and len(dict2) == 0:
+        return 100
+    else:    
+        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
     
     return percentage
 
@@ -81,7 +85,10 @@ def readFiles():
                     line2 = file2.readline() #Substitution
                     if 'Substitution' in line1 and 'Substitution' in line2:
                         print('Comparing the substitutions between the strains!')
-                        #TODO comparison
+                        line1 = line1.replace('Substitution:', '')
+                        line2 = line2.replace('Substitution:', '')
+                        result = codonMismatchSubstitutionComparison(line1, line2)
+                        print('The result of the Substitutions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the substitutions')
                         return False
