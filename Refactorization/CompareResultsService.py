@@ -238,6 +238,7 @@ def readFiles():
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
+            print('\n')
             line1 = file1.readline() #Strain 1
             line2 = file2.readline() #Strain 2
     else:
