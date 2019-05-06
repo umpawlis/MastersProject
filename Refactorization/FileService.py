@@ -8,13 +8,13 @@ from BacterialStrain import BacterialStrain
 ####################################################
 
 ######################################################
-# createFile
+# outputStrainDetailsToFile
 # Parameters:
 # Description: Creates a file where the output will be stored
 ######################################################
 def outputStrainDetailsToFile(fileName, strain,  inversionDetails, transpositionDetails, invertedTransposedDetails):
     #Append all details to file here
-    appendToFile(fileName, strain.name + '\n')
+    appendToFile(fileName, 'Strain:' + strain.name + '\n')
     appendToFile(fileName, strain.codonMismatchDetails + '\n')
     appendToFile(fileName, strain.substitutionDetails + '\n')
     appendToFile(fileName, strain.duplicationDetails + '\n')
