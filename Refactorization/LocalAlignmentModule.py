@@ -205,7 +205,7 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
         operon1Gap = []
         operon1GapIndex = []
     
-    move = nextMove(scoreMatrix, x, y)          
+    move = nextMove(scoreMatrix, x, y, operon1[x-1], operon2[y-1])          
     while move != END:
         if move == DIAG:
             if operon1[x-1] == operon2[y-1]: #Both the gene and codon match
@@ -280,7 +280,7 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
                 gap1Indexes.insert(0, len(aligned_seq1))
                 operon1ConsecutiveGap = True
 
-        move = nextMove(scoreMatrix, x, y) #Makes move to the next cell in the matrix
+        move = nextMove(scoreMatrix, x, y, operon1[x-1], operon2[y-1]) #Makes move to the next cell in the matrix
 
     aligned_seq1.insert(0, operon1[x - 1]) #Add the last aligned gene
     aligned_seq2.insert(0, operon2[y - 1])
@@ -382,20 +382,20 @@ def traceback(operon1, operon2, scoreMatrix, startPosition, event):
 # Parameters: scoreMatrix, x, y
 # Description: determines which direction to traverse score matrix
 ######################################################
-def nextMove(scoreMatrix, x, y):
+def nextMove(scoreMatrix, x, y, gene1, gene2):
     diag = scoreMatrix[x - 1][y - 1]
     up   = scoreMatrix[x - 1][y]
     left = scoreMatrix[x][y - 1]
     
-    if (diag + matchWithCodon) == scoreMatrix[x][y]:        #Perfect match
+    if (diag + matchWithCodon) == scoreMatrix[x][y] and gene1 == gene2: #Perfect match
         return 1 if diag !=0 else 0
-    elif (diag + matchWithoutCodon) == scoreMatrix[x][y]:   #Codon mismatch
+    elif (diag + matchWithoutCodon) == scoreMatrix[x][y]:               #Codon mismatch
         return 1 if diag !=0 else 0
-    elif (diag + mismatch) == scoreMatrix[x][y]:            #Substitution
+    elif (diag + mismatch) == scoreMatrix[x][y]:                        #Substitution
         return 1 if diag !=0 else 0
-    elif (left + gap) == scoreMatrix[x][y]:                         #Gap
+    elif (left + gap) == scoreMatrix[x][y]:                             #Gap
         return 3 if left != 0 else 0
-    elif (up + gap) == scoreMatrix[x][y]:                           #Gap
+    elif (up + gap) == scoreMatrix[x][y]:                               #Gap
         return 2 if up != 0 else 0
     else:
         return 0
