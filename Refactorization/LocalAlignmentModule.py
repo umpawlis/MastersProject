@@ -387,15 +387,18 @@ def nextMove(scoreMatrix, x, y, gene1, gene2):
     up   = scoreMatrix[x - 1][y]
     left = scoreMatrix[x][y - 1]
     
-    if (diag + matchWithCodon) == scoreMatrix[x][y] and gene1 == gene2: #Perfect match
+    gene1Array = gene1.strip().split('_')
+    gene2Array = gene2.strip().split('_')
+    
+    if (diag + matchWithCodon) == scoreMatrix[x][y] and gene1.strip() == gene2.strip():     #Perfect match
         return 1 if diag !=0 else 0
-    elif (diag + matchWithoutCodon) == scoreMatrix[x][y]:               #Codon mismatch
+    elif (diag + matchWithoutCodon) == scoreMatrix[x][y] and len(gene1Array) == 2 and len(gene2Array) == 2 and gene1Array[0] == gene2Array[0] and gene1Array[1] != gene2Array[1]: #Codon mismatch
         return 1 if diag !=0 else 0
-    elif (diag + mismatch) == scoreMatrix[x][y]:                        #Substitution
+    elif (diag + mismatch) == scoreMatrix[x][y] and gene1Array[0] != gene2Array[0]:         #Substitution
         return 1 if diag !=0 else 0
-    elif (left + gap) == scoreMatrix[x][y]:                             #Gap
+    elif (left + gap) == scoreMatrix[x][y]:                                                 #Gap
         return 3 if left != 0 else 0
-    elif (up + gap) == scoreMatrix[x][y]:                               #Gap
+    elif (up + gap) == scoreMatrix[x][y]:                                                   #Gap
         return 2 if up != 0 else 0
     else:
         return 0
