@@ -19,10 +19,7 @@ def initialize():
 
     global ancestralCounter
     ancestralCounter = 0
-
-    global ancestralCounter
-    ancestralCounter = 0
-
+    
     global inversionCounter
     inversionCounter = 0
 

@@ -12,8 +12,8 @@ from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
 from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
-from SequenceService import updateGlobalDeletionCounter
 from SequenceService import normalizeIndexesForDotPlot
+from SequenceService import updateGlobalDeletionCounter
 from SequenceService import updateGlobalDuplicationCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
