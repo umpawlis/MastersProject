@@ -6,6 +6,7 @@ from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
 from SequenceService import createDotPlot
+from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
@@ -84,7 +85,7 @@ def createAncestor(strain1, strain2, neighborStrain):
 
         print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
         neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
-        createDotPlot(neighborPoints, strain1Copy, neighborStrain)
+        #createDotPlot(neighborPoints, strain1Copy, neighborStrain)
 
         #Compute the various regions for the neighbor
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
@@ -308,24 +309,8 @@ createFile(outputFileName, newickTree) #Creates file where data will be output
 print('Traversing newick tree...')
 result = traverseNewickTree(newickTree.clade, None)
 
-print('Outputting statistics for total events:')
-temp = 'Total Deletions: '
-if len(globals.deletionSizeCounter) > 0:
-    for size, count in globals.deletionSizeCounter.items():
-        temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
-    temp = temp[:-2] #Removes the last two characters
-print(temp)
-
-temp = 'Total Duplications: '
-if len(globals.duplicationSizeCounter) > 0:
-    for size, count in globals.duplicationSizeCounter.items():
-        temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
-    temp = temp[:-2] #Removes the last two characters
-print(temp)
-
-print('Total # of Inversions: %s' % (globals.inversionCounter))
-print('Total # of Transpositions: %s' % (globals.transposedCounter))
-print('Total # of Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
+#Output the totals for the computation to console and file
+outputTotalsToFile(outputFileName)
 
 endTime = time.time()
 totalTime = endTime - startTime
