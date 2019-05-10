@@ -39,9 +39,9 @@ def outputTotalsToFile(fileName):
     print('Total # of Transpositions: %s' % (globals.transposedCounter))
     print('Total # of Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
 
-    appendToFile(fileName, 'Inversions: %s\n' % (globals.inversionCounter))
-    appendToFile(fileName, 'Transpositions: %s\n' % (globals.transposedCounter))
-    appendToFile(fileName, 'Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
+    appendToFile(fileName, 'Total Inversions: %s\n' % (globals.inversionCounter))
+    appendToFile(fileName, 'Total Transpositions: %s\n' % (globals.transposedCounter))
+    appendToFile(fileName, 'Total Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
 
 ######################################################
 # outputStrainDetailsToFile
@@ -85,7 +85,7 @@ def createFile(fileName, newickTree):
 # Description: Appends content to file
 ######################################################
 def appendToFile(fileName, content):
-    print('Appending to file %s the following content, %s...' % (fileName, content))
+    #print('Appending to file %s the following content, %s...' % (fileName, content))
     file = open(fileName, "a")
     file.write(content)
     file.close()

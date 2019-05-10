@@ -238,9 +238,65 @@ def readFiles():
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
+                    
+            elif 'Total Deletions' in line1 and 'Total Deletions' in line2:
+                print('Comparing total deletions between files!')
+                #TODO
+                
+                line1 = file1.readline() #Total duplications
+                line2 = file2.readline() #Total duplications
+                if 'Total Duplications' in line1 and 'Total Duplications' in line2:
+                    print('Comparing total duplications between files!')
+                    #TODO
+                else:
+                    print('Error! Expected total duplications!')
+                    return False
+                    
+                line1 = file1.readline() #Total inversions
+                line2 = file2.readline() #Total inversions
+                if 'Total Inversions' in line1 and 'Total Inversions' in line2:
+                    print('Comparing total inversions between files!')
+                    line1 = line1.replace('Total Inversions:', '').strip()
+                    line2 = line2.replace('Total Inversions:', '').strip()
+                    count1 = int(line1) #Count of events
+                    count2 = int(line2) #Count of events
+                    accuracyRate = (count1/count2) * 100
+                    print('Accuracy rate for inversions was %s %%' % (accuracyRate))
+                else:
+                    print('Error! Expected total inversions!')
+                    return False
+                
+                line1 = file1.readline() #Total transpositions
+                line2 = file2.readline() #Total transpositions
+                if 'Total Transpositions' in line1 and 'Total Transpositions' in line2:
+                    print('Comparing total transpositions between files!')
+                    line1 = line1.replace('Total Transpositions:', '').strip()
+                    line2 = line2.replace('Total Transpositions:', '').strip()
+                    count1 = int(line1) #Count of events
+                    count2 = int(line2) #Count of events
+                    accuracyRate = (count1/count2) * 100
+                    print('Accuracy rate for transpositions was %s %%' % (accuracyRate))
+                else:
+                    print('Error! Expected total transpositions!')
+                    return False
+                
+                line1 = file1.readline() #Total inverted transpositions
+                line2 = file2.readline() #Total inverted transpositions
+                if 'Total Inverted Transpositions' in line1 and 'Total Inverted Transpositions' in line2:
+                    print('Comparing total inverted transpositions between files!')
+                    line1 = line1.replace('Total Inverted Transpositions:', '').strip()
+                    line2 = line2.replace('Total Inverted Transpositions:', '').strip()
+                    count1 = int(line1) #Count of events
+                    count2 = int(line2) #Count of events
+                    accuracyRate = (count1/count2) * 100
+                    print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
+                else:
+                    print('Error! Expected total inverted transpositions!')
+                    return False
+   
             print('\n')
-            line1 = file1.readline() #Strain 1
-            line2 = file2.readline() #Strain 2
+            line1 = file1.readline() #Strain 1 or Totals at the end
+            line2 = file2.readline() #Strain 2 or Totals at the end
     else:
         print('Unable to process output files!')
     print('Closing files...')
