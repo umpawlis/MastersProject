@@ -122,6 +122,27 @@ def codonMismatchSubstitutionComparison(data1, data2):
     return percentage
 
 ######################################################
+# getTotalEvents
+# Parameters:
+# Description: computes the total number of deletions or duplications
+######################################################
+def getTotalEvents(line):
+    result = 0
+    array = line.split(',')
+    
+    if len(array) > 0:
+        for data in array:
+            processedLine = (data.replace('size:', '')).replace('count:', '')
+            numbers = processedLine.split()
+            if len(numbers) == 2:
+                size = int(numbers[0])
+                count = int(numbers[1])
+                result += (size * count)
+            else:
+                print('Error! There should be two numbers!')
+    return result
+
+######################################################
 # readFiles
 # Parameters:
 # Description: Reads two files and compares two files
@@ -241,13 +262,23 @@ def readFiles():
                     
             elif 'Total Deletions' in line1 and 'Total Deletions' in line2:
                 print('Comparing total deletions between files!')
-                #TODO
+                line1 = line1.replace('Total Deletions:', '').strip()
+                line2 = line2.replace('Total Deletions:', '').strip()
+                count1 = getTotalEvents(line1)
+                count2 = getTotalEvents(line2)
+                accuracyRate = (count1/count2) * 100
+                print('Accuracy rate for deletions was %s %%' % (accuracyRate))
                 
                 line1 = file1.readline() #Total duplications
                 line2 = file2.readline() #Total duplications
                 if 'Total Duplications' in line1 and 'Total Duplications' in line2:
                     print('Comparing total duplications between files!')
-                    #TODO
+                    line1 = line1.replace('Total Deletions:', '').strip()
+                    line2 = line2.replace('Total Deletions:', '').strip()
+                    count1 = getTotalEvents(line1)
+                    count2 = getTotalEvents(line2)
+                    accuracyRate = (count1/count2) * 100
+                    print('Accuracy rate for deletions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total duplications!')
                     return False
