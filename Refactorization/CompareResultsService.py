@@ -273,8 +273,8 @@ def readFiles():
                 line2 = file2.readline() #Total duplications
                 if 'Total Duplications' in line1 and 'Total Duplications' in line2:
                     print('Comparing total duplications between files!')
-                    line1 = line1.replace('Total Deletions:', '').strip()
-                    line2 = line2.replace('Total Deletions:', '').strip()
+                    line1 = line1.replace('Total Duplications:', '').strip()
+                    line2 = line2.replace('Total Duplications:', '').strip()
                     count1 = getTotalEvents(line1)
                     count2 = getTotalEvents(line2)
                     accuracyRate = (count1/count2) * 100
