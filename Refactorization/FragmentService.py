@@ -273,7 +273,7 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
     for fragment in LR:
         index = fragment.fragmentDetails1.fragmentIndex
         fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
-        
+
         if index in arrangedFragments: #We already have a fragment at this position so just append it
             arrangedFragments[index].append(fragment)
         else: #We don't have a fragment so initialize the position
@@ -343,7 +343,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
             else:
                 targetIndex = fragment.fragmentDetails2.fragmentIndex #Neighbor's arrangement does not match Strain 1
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
-                
+
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
             else:
@@ -373,7 +373,7 @@ def checkForFragment(fragment, NFCR):
 ######################################################
 def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
     arrangedFragments = {}
-    
+
     #Insert the lost operons at the positions they were lost in
     for fragment in LR:
         index = fragment.fragmentDetails1.fragmentIndex
@@ -383,7 +383,7 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
         else: #We don't have a fragment so initialize the position
             arrangedFragments[index] = []
             arrangedFragments[index].append(fragment)
-            
+
     #Insert the forward conserved regions into the new genome
     for region in FCR:
         for x in range(0, len(region)):
@@ -432,14 +432,14 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
             fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
-            
+
             if index1 in arrangedFragments:
                 arrangedFragments[index1].append(fragment)
             else:
                 arrangedFragments[index1] = []
                 arrangedFragments[index1].append(fragment)
     return arrangedFragments
-                
+
 ######################################################
 # constructGenome
 # Parameters:

@@ -1,3 +1,4 @@
+import globals
 import multiset
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,6 +23,32 @@ def computeOperonDifferences(operon1, operon2):
     set3 = set1.symmetric_difference(set2)
 
     return len(set3)
+
+######################################################
+# updateGlobalDeletionCounter
+# Parameters: strain
+# Description: Increments the global deletion counter based on the strains deletion sizes
+######################################################
+def updateGlobalDeletionCounter(strain):
+    if len(strain.deletionCounts) > 0:
+        for size, count in strain.deletionCounts.items():
+            if size in globals.deletionSizeCounter:
+                globals.deletionSizeCounter[size] += count
+            else:
+                globals.deletionSizeCounter[size] = count
+
+######################################################
+# updateGlobalDuplicationCounter
+# Parameters: strain
+# Description: Increments the global duplication counter based on the strains duplication sizes
+######################################################
+def updateGlobalDuplicationCounter(strain):
+    if len(strain.duplicationCounts) > 0:
+        for size, count in strain.duplicationCounts.items():
+            if size in globals.duplicationSizeCounter:
+                globals.duplicationSizeCounter[size] += count
+            else:
+                globals.duplicationSizeCounter[size] = count
 
 ######################################################
 # addDuplicationEventsToStrain

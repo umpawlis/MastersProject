@@ -11,7 +11,9 @@ from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
 from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
+from SequenceService import updateGlobalDeletionCounter
 from SequenceService import normalizeIndexesForDotPlot
+from SequenceService import updateGlobalDuplicationCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
@@ -57,6 +59,15 @@ def createAncestor(strain1, strain2, neighborStrain):
     #Compute and output the inverted, transposed, and inverted transposed regions
     FCR, TR, IR, ITR = determineRegions(points)
     #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
+
+    #Computes the total number of inversions, transpositions, inverted transpositions, deletions, duplications
+    globals.inversionCounter += len(IR)
+    globals.transposedCounter += len(TR)
+    globals.invertedTransposedCounter += len(ITR)
+    updateGlobalDeletionCounter(strain1)
+    updateGlobalDeletionCounter(strain2)
+    updateGlobalDuplicationCounter(strain1)
+    updateGlobalDuplicationCounter(strain2)
 
     inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
@@ -296,6 +307,25 @@ createFile(outputFileName, newickTree) #Creates file where data will be output
 #Traverses the newick tree recursively reconstructing ancestral genomes
 print('Traversing newick tree...')
 result = traverseNewickTree(newickTree.clade, None)
+
+print('Outputting statistics for total events:')
+temp = 'Total Deletions: '
+if len(globals.deletionSizeCounter) > 0:
+    for size, count in globals.deletionSizeCounter.items():
+        temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+    temp = temp[:-2] #Removes the last two characters
+print(temp)
+
+temp = 'Total Duplications: '
+if len(globals.duplicationSizeCounter) > 0:
+    for size, count in globals.duplicationSizeCounter.items():
+        temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+    temp = temp[:-2] #Removes the last two characters
+print(temp)
+
+print('Total # of Inversions: %s' % (globals.inversionCounter))
+print('Total # of Transpositions: %s' % (globals.transposedCounter))
+print('Total # of Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
 
 endTime = time.time()
 totalTime = endTime - startTime

@@ -13,12 +13,27 @@ def initialize():
 
     global substitutionCost
     substitutionCost = 1
-    
+
     global yDistanceThreshold
     yDistanceThreshold = 3
-    
+
     global ancestralCounter
     ancestralCounter = 0
 
     global ancestralCounter
     ancestralCounter = 0
+
+    global inversionCounter
+    inversionCounter = 0
+
+    global transposedCounter
+    transposedCounter = 0
+
+    global invertedTransposedCounter
+    invertedTransposedCounter = 0
+
+    global deletionSizeCounter
+    deletionSizeCounter = {}
+
+    global duplicationSizeCounter
+    duplicationSizeCounter = {}
