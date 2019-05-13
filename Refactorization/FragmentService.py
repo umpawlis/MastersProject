@@ -463,11 +463,17 @@ def constructGenome(arrangedFragments):
             negativeOrientation = False
             geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
             positiveOrientationGeneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
-            
+
             if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
                 description = 'Singleton'
             else:
-                description = 'Operon'
+                #Make sure description is correct
+                if fragment.fragmentDetails1.originalSequence == '< o >':
+                    description = 'Origin'
+                elif fragment.fragmentDetails1.originalSequence != '< t >':
+                    description = 'Terminus'
+                else:
+                    description = 'Operon'
 
             if fragment.ancestralOperonNegativeOrientation == True:
                 negativeOrientation = True
