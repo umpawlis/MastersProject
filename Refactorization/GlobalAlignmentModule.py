@@ -64,9 +64,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 eventMatrix[x][y] = event
                 globalAlignmentMatrix[x][y] = str(0) + '*'
 
-            #Case 2: Two singleton genes are being compared
-            elif len(op1.sequence) == 1 and len(op2.sequence) == 1:
-
+            #Case 2: Two singleton genes are being compared and not the origin or terminus
+            elif len(op1.sequence) == 1 and len(op2.sequence) == 1 and op1.description != 'Origin' and op2.description != 'Origin' and op1.description != 'Terminus' and op2.description != 'Terminus':
                 if op1.sequence[0] == op2.sequence[0]:
                     event.setOperon1Alignment(copy.deepcopy(op1.sequence))
                     event.setOperon2Alignment(copy.deepcopy(op2.sequence))

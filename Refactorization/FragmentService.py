@@ -468,9 +468,9 @@ def constructGenome(arrangedFragments):
                 description = 'Singleton'
             else:
                 #Make sure description is correct
-                if fragment.fragmentDetails1.originalSequence == '< o >':
+                if fragment.fragmentDetails1.originalSequence[0] == '< o >':
                     description = 'Origin'
-                elif fragment.fragmentDetails1.originalSequence != '< t >':
+                elif fragment.fragmentDetails1.originalSequence[0] == '< t >':
                     description = 'Terminus'
                 else:
                     description = 'Operon'
