@@ -685,6 +685,10 @@ def checkForMatch(gap, positions, sequence, fragment):
             del positions[startIndex:endIndex]
             startIndex = endIndex
             endIndex += windowSize
+            #For making sure everything is working
+            print('Gap sequence found! Removing gap sequence!')
+            print('This is the gap that was removed, %s' % (duplicationDetails))
+            print('This is the sequence the gap was found in, %s' % (sequence))
         else:
             startIndex+=1
             endIndex+=1
