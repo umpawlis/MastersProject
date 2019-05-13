@@ -89,19 +89,19 @@ def determineRegions(fragments):
     for region in conservedForwardRegions:
         print('Forward Conserved Region')
         for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point))
+            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
     for region in transposedForwardRegions:
         print('Forward Transposed Region')
         for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point))
+            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
     for region in invertedRegions:
         print('Inverted Region')
         for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point))
+            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
     for region in invertedTransposedRegions:
         print('Inverted Transposed Region')
         for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point))
+            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
 
     return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions
 
