@@ -464,13 +464,13 @@ def constructGenome(arrangedFragments):
             geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
             positiveOrientationGeneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
 
-            if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
+            if len(geneSequence) == 1 and fragment.fragmentDetails1.sequence[0] != '< o >' and fragment.fragmentDetails1.sequence[0] != '< t >':
                 description = 'Singleton'
             else:
                 #Make sure description is correct
-                if fragment.fragmentDetails1.originalSequence[0] == '< o >':
+                if fragment.fragmentDetails1.sequence[0] == '< o >':
                     description = 'Origin'
-                elif fragment.fragmentDetails1.originalSequence[0] == '< t >':
+                elif fragment.fragmentDetails1.sequence[0] == '< t >':
                     description = 'Terminus'
                 else:
                     description = 'Operon'
