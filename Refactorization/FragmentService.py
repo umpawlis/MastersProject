@@ -462,7 +462,8 @@ def constructGenome(arrangedFragments):
             originalSequence = ''
             negativeOrientation = False
             geneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
-
+            positiveOrientationGeneSequence = copy.deepcopy(fragment.ancestralOperonGeneSequence)
+            
             if len(geneSequence) == 1 and fragment.fragmentDetails1.originalSequence != '< o >' and fragment.fragmentDetails1.originalSequence != '< t >':
                 description = 'Singleton'
             else:
@@ -471,6 +472,7 @@ def constructGenome(arrangedFragments):
             if fragment.ancestralOperonNegativeOrientation == True:
                 negativeOrientation = True
                 originalSequence = '-'
+                geneSequence.reverse()
 
             originalSequence += '['
             for y in range(0, len(geneSequence)):
@@ -482,7 +484,7 @@ def constructGenome(arrangedFragments):
                     originalSequence += gene
             originalSequence += ']'
 
-            newFragment = GenomeFragment(fragmentIndex, originalSequence, geneSequence, geneIndex, description, negativeOrientation)
+            newFragment = GenomeFragment(fragmentIndex, originalSequence, positiveOrientationGeneSequence, geneIndex, description, negativeOrientation)
             ancestralFragments.append(newFragment)
 
             fragmentIndex += 1
