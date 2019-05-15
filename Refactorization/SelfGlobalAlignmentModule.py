@@ -58,7 +58,8 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                         if numOperonDifferences <= threshold and score < bestScore:
                             bestScore = score
                             bestEvent = event
-            else: #We're processing a singleton
+            #Make sure an origin or a terminus doesn't get mapped with a singleton gene
+            elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description == 'Terminus':
                 for j in range(0, len(coverageTracker)):
                     if i != j and coverageTracker[j] == True:
                         filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
