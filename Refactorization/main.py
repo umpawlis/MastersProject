@@ -78,7 +78,8 @@ def createAncestor(strain1, strain2, neighborStrain):
     #Append all details to file here
     outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
     outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
-
+    #TODO singletons should not have brackets? Still deciding but this should not affect anything
+    #TODO origin cycling appears in NC_016023. Do I need a special case for this?
     #Compare one of the siblings to the neighbor if one exists
     if neighborStrain != None:
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))

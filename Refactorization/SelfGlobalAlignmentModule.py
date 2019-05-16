@@ -17,6 +17,10 @@ import copy
 ######################################################
 def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
     print('Performing self-global alignment on strain: %s' %(strain.name))
+    
+    if strain.name == 'NC_015634':
+        print('BREAK')
+        
     lossEvents = []
     duplicationEvents = []
     fragments = strain.genomeFragments
@@ -59,7 +63,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                             bestScore = score
                             bestEvent = event
             #Make sure an origin or a terminus doesn't get mapped with a singleton gene
-            elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description == 'Terminus':
+            elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description != 'Terminus':
                 for j in range(0, len(coverageTracker)):
                     if i != j and coverageTracker[j] == True:
                         filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
