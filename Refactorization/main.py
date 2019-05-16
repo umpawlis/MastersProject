@@ -165,13 +165,15 @@ def constructEvents(strain1, strain2):
 
     #Self Global Alignment
     if numRemainingOperons1 > 0:
-        duplicationEvents1, lossEvents1, coverageTracker1, strain1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1)
+        #Remember to insert the deletions into the sibling (that's how we defined it)
+        duplicationEvents1, lossEvents1, coverageTracker1, strain1, strain2 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
         print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
         if len(lossEvents1) > 0:
             events.extend(lossEvents1)
 
     if numRemainingOperons2 > 0:
-        duplicationEvents2, lossEvents2, coverageTracker2, strain2 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2)
+        #Remember to insert the deletions into the sibling (that's how we defined it)
+        duplicationEvents2, lossEvents2, coverageTracker2, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2, strain1)
         print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
         if len(lossEvents2) > 0:
             events.extend(lossEvents2)

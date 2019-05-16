@@ -15,7 +15,7 @@ import copy
 # Parameters:
 # Description: Performs a self global alignment to identify duplicate operons
 ######################################################
-def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
+def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
     print('Performing self-global alignment on strain: %s' %(strain.name))
     
     if strain.name == 'NC_015634':
@@ -137,10 +137,10 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                 deletionDetails += ';'
                 
                 #Increment the loss counter with the size of the operon since the operon is a loss
-                strain = addDeletionEventsToStrain(strain, [len(event.fragmentDetails1.sequence)], deletionDetails)
+                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 print(event.toString())
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
                 
-    return duplicationEvents, lossEvents, coverageTracker, strain
+    return duplicationEvents, lossEvents, coverageTracker, strain, sibling
