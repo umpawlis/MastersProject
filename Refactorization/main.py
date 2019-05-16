@@ -45,6 +45,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     ancestralFragments = None
 
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
+    neighborCopy = copy.deepcopy(neighborStrain) #Do a deep copy of the neighbor as well b/c we don't want to store those comparisons in the strain either
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
@@ -78,16 +79,18 @@ def createAncestor(strain1, strain2, neighborStrain):
     #Append all details to file here
     outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
     outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
+
     #TODO singletons should not have brackets? Still deciding but this should not affect anything
     #TODO origin cycling appears in NC_016023. Do I need a special case for this?
-    #Compare one of the siblings to the neighbor if one exists
-    if neighborStrain != None:
-        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborStrain)
 
-        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
-        #createDotPlot(neighborPoints, strain1Copy, neighborStrain)
+    #Compare one of the siblings to the neighbor if one exists
+    if neighborCopy != None:
+        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborCopy)
+
+        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborCopy)
+        #createDotPlot(neighborPoints, strain1Copy, neighborCopy)
 
         #Compute the various regions for the neighbor
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
@@ -95,7 +98,7 @@ def createAncestor(strain1, strain2, neighborStrain):
 
         ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints)
     else:
-        if neighborStrain == None:
+        if neighborCopy == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
