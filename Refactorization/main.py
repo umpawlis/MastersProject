@@ -6,7 +6,6 @@ from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
 from SequenceService import createDotPlot
-from GenomeFragment import GenomeFragment
 from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain

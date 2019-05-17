@@ -115,10 +115,15 @@ def processSequence(name, genome):
 
             originOrTerminus = genome[startIndex:index]
 
-            if 't' in originOrTerminus:
+            if '< t >' in originOrTerminus:
                 description = 'Terminus'
-            else:
+            elif 'originCycling' in originOrTerminus:
+                description = 'Origin Cycling'
+            elif '< o >' in originOrTerminus:
                 description = 'Origin'
+            else:
+                print('Error! Unhandled case!')
+                return None
 
             fragment = GenomeFragment(fragmentIndex, originOrTerminus, originOrTerminus.split(','), originOrTerminusPosition, description, False)
             fragments.append(fragment)
