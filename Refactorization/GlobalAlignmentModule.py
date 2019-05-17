@@ -510,7 +510,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
                         
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -540,7 +541,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -570,7 +572,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
                         
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -600,7 +603,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -677,6 +681,7 @@ def checkForMatch(gap, positions, sequence, fragment):
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
                 
                 duplicationDetails += gene + ' ' + str(genePos) + ', '
+            duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
 
             #Remove the duplicated region
