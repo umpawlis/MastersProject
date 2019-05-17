@@ -248,12 +248,14 @@ def computeRegionDetails(regions, description):
                 currPos = startPos1 + y
                 currGene = seq1[y]
                 temp1 += currGene + ' ' + str(currPos) + ', '
+            temp1 = temp1[0:(len(temp1) - 2)]
             temp1 += ';'
 
             for y in range(0, len(seq2)):
                 currPos = startPos2 + y
                 currGene = seq2[y]
                 temp2 += currGene + ' ' + str(currPos) + ', '
+            temp2 = temp2[0:(len(temp2) - 2)]
             temp2 += ';'
         temp1 += '|' #End of region
         temp2 += '|' #End of region
