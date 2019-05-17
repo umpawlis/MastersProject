@@ -325,11 +325,14 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
 # Description: inserts region into fragment dictionary
 ######################################################
 def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
-
+    details1 = ''
+    details1Counter = {}
+    details2 = ''
+    details2Counter = {}
+    
     #Transposed/Inverted/Inverted Transposed regions
     for region in regions:
         count = 0
-
         #Iterate through all of the fragments in the region and count the number of times they appear in the neighbor's forward conserved region
         for x in range(0, len(region)):
             fragment = region[x]
@@ -337,21 +340,56 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
             if match:
                 count += 1
         #Insert the fragments into the dictionary based on the counter
+        addedDetails1 = False;
+        addedDetails2 = False;
         for x in range(0, len(region)):
             fragment = region[x]
             if count > 0:
                 targetIndex = fragment.fragmentDetails1.fragmentIndex #Same arrangement exists in the neighbor
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
+                #Constructs the description of the region
+                seq = fragment.fragmentDetails2.sequence
+                startPosition = fragment.fragmentDetails2.startPositionInGenome
+                for i in range(0, len(seq)):
+                    details2 += seq[i] + ' ' + str(startPosition + i) + ', '
+                details2 = details2[0:(len(details2) - 2)]
+                details2 += ';'
+                addedDetails2 = True
             else:
                 targetIndex = fragment.fragmentDetails2.fragmentIndex #Neighbor's arrangement does not match Strain 1
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
-
+                #Constructs the description of the region
+                seq = fragment.fragmentDetails1.sequence
+                startPosition = fragment.fragmentDetails1.startPositionInGenome
+                for i in range(0, len(seq)):
+                    details1 += seq[i] + ' ' + str(startPosition + i) + ', '
+                details1 = details1[0:(len(details1) - 2)]
+                details1 += ';'
+                addedDetails1 = True
+                
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
             else:
                 arrangedFragments[targetIndex] = []
                 arrangedFragments[targetIndex].append(fragment)
-
+        
+        #Add a delimiter if a region was added and increment the appropriate counter
+        if addedDetails2:
+            details2 += '|'
+            size = len(region)
+            if size in details2Counter:
+                details2Counter[size] += 1
+            else:
+                details2Counter[size] = 1
+                
+        if addedDetails1:
+            details1 += '|'
+            size = len(region)
+            if size in details1Counter:
+                details1Counter[size] += 1
+            else:
+                details1Counter[size] = 1
+                
     return arrangedFragments
 
 ######################################################

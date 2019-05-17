@@ -63,24 +63,23 @@ def createAncestor(strain1, strain2, neighborStrain):
     #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
 
     #Computes the total number of inversions, transpositions, inverted transpositions, deletions, duplications
-    globals.inversionCounter += len(IR)
-    globals.transposedCounter += len(TR)
-    globals.invertedTransposedCounter += len(ITR)
+    #globals.inversionCounter += len(IR)
+    #globals.transposedCounter += len(TR)
+    #globals.invertedTransposedCounter += len(ITR)
     updateGlobalDeletionCounter(strain1)
     updateGlobalDeletionCounter(strain2)
     updateGlobalDuplicationCounter(strain1)
     updateGlobalDuplicationCounter(strain2)
 
-    inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
-    transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
-    invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
+    #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
+    #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
+    #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
 
     #Append all details to file here
     outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
     outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
 
     #TODO singletons should not have brackets? Still deciding but this should not affect anything
-    #TODO origin cycling appears in NC_016023. Do I need a special case for this?
 
     #Compare one of the siblings to the neighbor if one exists
     if neighborCopy != None:
