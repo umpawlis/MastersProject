@@ -318,6 +318,9 @@ result = traverseNewickTree(newickTree.clade, None)
 #Output the totals for the computation to console and file
 outputTotalsToFile(outputFileName)
 
+#Output newick tree after the ancestors have been added to it
+Phylo.draw(newickTree)
+
 endTime = time.time()
 totalTime = endTime - startTime
 print('Total time (in seconds): %s' % (totalTime))
