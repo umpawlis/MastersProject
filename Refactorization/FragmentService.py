@@ -329,7 +329,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
     details1Counter = {}
     details2 = ''
     details2Counter = {}
-    
+
     #Transposed/Inverted/Inverted Transposed regions
     for region in regions:
         count = 0
@@ -366,13 +366,13 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 details1 = details1[0:(len(details1) - 2)]
                 details1 += ';'
                 addedDetails1 = True
-                
+
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
             else:
                 arrangedFragments[targetIndex] = []
                 arrangedFragments[targetIndex].append(fragment)
-        
+
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
             details2 += '|'
@@ -381,7 +381,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 details2Counter[size] += 1
             else:
                 details2Counter[size] = 1
-                
+
         if addedDetails1:
             details1 += '|'
             size = len(region)
@@ -389,8 +389,8 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 details1Counter[size] += 1
             else:
                 details1Counter[size] = 1
-                
-    return arrangedFragments
+
+    return arrangedFragments, details1, details1Counter, details2, details2Counter
 
 ######################################################
 # checkForFragment
@@ -452,13 +452,36 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
                     arrangedFragments[targetIndex] = []
                     arrangedFragments[targetIndex].append(fragment)
 
-    arrangedFragments = insertFragmentsIntoGenome(TR, arrangedFragments)
-    arrangedFragments = insertFragmentsIntoGenome(IR, arrangedFragments)
-    arrangedFragments = insertFragmentsIntoGenome(ITR, arrangedFragments)
+    allDetails2 = '';
+    allDetails2Counter = {};
+
+    arrangedFragments, details2, details2Counter = insertFragmentsIntoGenome(TR, arrangedFragments)
+    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
+
+    arrangedFragments, details2, details2Counter = insertFragmentsIntoGenome(IR, arrangedFragments)
+    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
+
+    arrangedFragments, details2, details2Counter = insertFragmentsIntoGenome(ITR, arrangedFragments)
+    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
 
     #Construct the return the genome
     ancestralFragments = constructGenome(arrangedFragments)
     return ancestralFragments
+
+######################################################
+# addDetails
+# Parameters:
+# Description: Appends inversion, transposition, inverted transposition details to a dictionary and String
+######################################################
+def addDetails(allDetails, allDetailsCounter, detailsCounter, details):
+    if len(detailsCounter) > 0:
+        for size, count in detailsCounter.items():
+            if size in allDetailsCounter:
+                allDetailsCounter[size] += count
+            else:
+                 allDetailsCounter[size] = 1
+        allDetails += details
+    return allDetails, allDetailsCounter
 
 ######################################################
 # insertFragmentsIntoGenome
@@ -466,19 +489,41 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR):
 # Description: Inserts given fragments into genome
 ######################################################
 def insertFragmentsIntoGenome(fragments, arrangedFragments):
+    details2 = ''
+    details2Counter = {}
+
     #Transposed/Inverted/Transposed Inverted
     for region in fragments:
+        addedDetails2 = False; #Tracks whether we added a region
         for x in range(0, len(region)):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
             fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
+
+            #We will assume Strain 2 was transposed, inverted, inverted transposed if no neighbor is present
+            seq = fragment.fragmentDetails2.sequence
+            startPosition = fragment.fragmentDetails2.startPositionInGenome
+            for i in range(0, len(seq)):
+                details2 += seq[i] + ' ' + str(startPosition + i) + ', '
+            details2 = details2[0:(len(details2) - 2)]
+            details2 += ';'
+            addedDetails2 = True
 
             if index1 in arrangedFragments:
                 arrangedFragments[index1].append(fragment)
             else:
                 arrangedFragments[index1] = []
                 arrangedFragments[index1].append(fragment)
-    return arrangedFragments
+        #Add a delimiter if a region was added and increment the appropriate counter
+        if addedDetails2:
+            details2 += '|'
+            size = len(region)
+            if size in details2Counter:
+                details2Counter[size] += 1
+            else:
+                details2Counter[size] = 1
+
+    return arrangedFragments, details2, details2Counter
 
 ######################################################
 # constructGenome
