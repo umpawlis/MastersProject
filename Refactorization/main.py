@@ -101,7 +101,7 @@ def createAncestor(strain1, strain2, neighborStrain):
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
 
-        ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints)
+        ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
