@@ -267,7 +267,7 @@ def computeRegionDetails(regions, description):
 # Parameters:
 # Description: Orders the ancestral fragments based on the siblings and the neighbor
 ######################################################
-def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR):
+def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFCR, NTR, NIR, NITR, NLR, strain1, strain2):
     #Initialize
     arrangedFragments = {}
 
@@ -310,27 +310,60 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
                     arrangedFragments[targetIndex] = []
                     arrangedFragments[targetIndex].append(fragment)
 
-    allDetails1 = '';
-    allDetails1Counter = {};
-    allDetails2 = '';
-    allDetails2Counter = {};
-    
-    #Handle the remaining regions
+    #Transposed regions
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(TR, NFCR, arrangedFragments)
-    allDetails1, allDetails1Counter = addDetails(allDetails1, allDetails1Counter, details1Counter, details1)
-    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
-    
+    if len(details1Counter) > 0:
+        for size, count in details1Counter.items():
+            if size in strain1.transpositionCounts:
+                strain1.transpositionCounts[size] += count
+            else:
+                strain1.transpositionCounts[size] = count
+        strain1.transpositionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain2.transpositionCounts:
+                strain2.transpositionCounts[size] += count
+            else:
+                strain2.transpositionCounts[size] = count
+        strain2.transpositionDetails += details2
+
+    #Inverted regions
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(IR, NFCR, arrangedFragments)
-    allDetails1, allDetails1Counter = addDetails(allDetails1, allDetails1Counter, details1Counter, details1)
-    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
-    
+    if len(details1Counter) > 0:
+        for size, count in details1Counter.items():
+            if size in strain1.inversionCounts:
+                strain1.inversionCounts[size] += count
+            else:
+                strain1.inversionCounts[size] = count
+        strain1.inversionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain2.inversionCounts:
+                strain2.inversionCounts[size] += count
+            else:
+                strain2.inversionCounts[size] = count
+        strain2.inversionDetails += details2
+
+    #Inverted Transposed regions
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(ITR, NFCR, arrangedFragments)
-    allDetails1, allDetails1Counter = addDetails(allDetails1, allDetails1Counter, details1Counter, details1)
-    allDetails2, allDetails2Counter = addDetails(allDetails2, allDetails2Counter, details2Counter, details2)
-    
+    if len(details1Counter) > 0:
+        for size, count in details1Counter.items():
+            if size in strain1.invertedTranspositionCounts:
+                strain1.invertedTranspositionCounts[size] += count
+            else:
+                strain1.invertedTranspositionCounts[size] = count
+        strain1.invertedTranspositionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain2.invertedTranspositionCounts:
+                strain2.invertedTranspositionCounts[size] += count
+            else:
+                strain2.invertedTranspositionCounts[size] = count
+        strain2.invertedTranspositionDetails += details2
+
     #Construct the return the genome
     ancestralFragments = constructGenome(arrangedFragments)
-    return ancestralFragments, allDetails1, allDetails1Counter, allDetails2, allDetails2Counter
+    return ancestralFragments, strain1, strain2
 
 ######################################################
 # insertRegionIntoDictionary
@@ -394,7 +427,6 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 details2Counter[size] += 1
             else:
                 details2Counter[size] = 1
-
         if addedDetails1:
             details1 += '|'
             size = len(region)
@@ -473,6 +505,7 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR, s
             else:
                 strain.transpositionCounts[size] = count
         strain.transpositionDetails += details2
+
     #Inversions
     arrangedFragments, details2, details2Counter = insertFragmentsIntoGenome(IR, arrangedFragments)
     if len(details2Counter) > 0:
@@ -481,7 +514,8 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR, s
                 strain.inversionCounts[size] += count
             else:
                 strain.inversionCounts[size] = count
-        strain.inversionDetails += details2   
+        strain.inversionDetails += details2
+
     #Inverted Transpositions
     arrangedFragments, details2, details2Counter = insertFragmentsIntoGenome(ITR, arrangedFragments)
     if len(details2Counter) > 0:
@@ -491,7 +525,8 @@ def determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, LR, s
             else:
                 strain.invertedTranspositionCounts[size] = count
         strain.invertedTranspositionDetails += details2
-    #Construct the return the genome
+
+    #Construct and return the genome
     ancestralFragments = constructGenome(arrangedFragments)
     return ancestralFragments, strain
 

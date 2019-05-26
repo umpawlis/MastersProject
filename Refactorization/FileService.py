@@ -48,25 +48,26 @@ def outputTotalsToFile(fileName):
 # Parameters:
 # Description: Creates a file where the output will be stored
 ######################################################
-def outputStrainDetailsToFile(fileName, strain,  inversionDetails, transpositionDetails, invertedTransposedDetails):
+def outputStrainDetailsToFile(fileName, strain):
+
     #Append all details to file here
     appendToFile(fileName, 'Strain:' + strain.name + '\n')
     appendToFile(fileName, strain.codonMismatchDetails + '\n')
     appendToFile(fileName, strain.substitutionDetails + '\n')
     appendToFile(fileName, strain.duplicationDetails + '\n')
     appendToFile(fileName, strain.deletionDetails + '\n')
-    appendToFile(fileName, inversionDetails + '\n')
-    appendToFile(fileName, transpositionDetails + '\n')
-    appendToFile(fileName, invertedTransposedDetails + '\n')
+    appendToFile(fileName, strain.inversionDetails + '\n')
+    appendToFile(fileName, strain.transpositionDetails + '\n')
+    appendToFile(fileName, strain.invertedTranspositionDetails + '\n')
 
     print(strain.name)
     print(strain.codonMismatchDetails)
     print(strain.substitutionDetails)
     print(strain.duplicationDetails)
     print(strain.deletionDetails)
-    print(inversionDetails)
-    print(transpositionDetails)
-    print(invertedTransposedDetails)
+    print(strain.inversionDetails)
+    print(strain.transpositionDetails)
+    print(strain.invertedTranspositionDetails)
 
 ######################################################
 # createFile

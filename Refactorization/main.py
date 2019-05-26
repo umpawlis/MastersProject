@@ -10,7 +10,6 @@ from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
-from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
 from SequenceService import normalizeIndexesForDotPlot
 from SequenceService import updateGlobalDeletionCounter
@@ -63,9 +62,9 @@ def createAncestor(strain1, strain2, neighborStrain):
     #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
 
     #Computes the total number of inversions, transpositions, inverted transpositions, deletions, duplications
-    #globals.inversionCounter += len(IR)
-    #globals.transposedCounter += len(TR)
-    #globals.invertedTransposedCounter += len(ITR)
+    globals.inversionCounter += len(IR)
+    globals.transposedCounter += len(TR)
+    globals.invertedTransposedCounter += len(ITR)
     updateGlobalDeletionCounter(strain1)
     updateGlobalDeletionCounter(strain2)
     updateGlobalDuplicationCounter(strain1)
@@ -74,10 +73,6 @@ def createAncestor(strain1, strain2, neighborStrain):
     #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
     #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
-
-    #Append all details to file here
-    outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
-    outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
 
     #TODO singletons should not have brackets? Still deciding but this should not affect anything
 
@@ -93,15 +88,17 @@ def createAncestor(strain1, strain2, neighborStrain):
         #Compute the various regions for the neighbor
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
         NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
-
-        ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints)
+        ancestralFragments, strain1, strain2 = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints, strain1, strain2)
     else:
         if neighborCopy == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-
         ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
+
+    #Append all details to file here
+    outputStrainDetailsToFile(outputFileName, strain1)
+    outputStrainDetailsToFile(outputFileName, strain2)
 
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
