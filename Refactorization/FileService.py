@@ -33,7 +33,34 @@ def outputTotalsToFile(fileName):
         temp = temp[:-2] #Removes the last two characters
     print(temp)
     appendToFile(fileName, temp + '\n')
-
+    
+    #Size distribution of inversions
+    temp = 'Size Distribution of Inversions: '
+    if len(globals.inversionSizeDistributionCounter) > 0:
+        for size, count in globals.inversionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
+    #Size distribution of transpositions
+    temp = 'Size Distribution of Transpositions: '
+    if len(globals.transpositionSizeDistributionCounter) > 0:
+        for size, count in globals.transpositionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
+    #Size distribution of inverted transpositions
+    temp = 'Size Distribution of Inverted Transpositions: '
+    if len(globals.invertedTranspositionSizeDistributionCounter) > 0:
+        for size, count in globals.invertedTranspositionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
     #Inversions. transpositions, inverted transpositions
     print('Total # of Inversions: %s' % (globals.inversionCounter))
     print('Total # of Transpositions: %s' % (globals.transposedCounter))

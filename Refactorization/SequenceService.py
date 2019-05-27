@@ -25,6 +25,45 @@ def computeOperonDifferences(operon1, operon2):
     return len(set3)
 
 ######################################################
+# updateGlobalInversionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for inversions
+######################################################
+def updateGlobalInversionSizeDistributionCounter(strain):
+    if len(strain.inversionCounts) > 0:
+        for size, count in strain.inversionCounts.items():
+            if size in globals.inversionSizeDistributionCounter:
+                globals.inversionSizeDistributionCounter[size] += count
+            else:
+                globals.inversionSizeDistributionCounter[size] = count
+                
+######################################################
+# updateGlobalTranspositionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for transpositions
+######################################################
+def updateGlobalTranspositionSizeDistributionCounter(strain):
+    if len(strain.transpositionCounts) > 0:
+        for size, count in strain.transpositionCounts.items():
+            if size in globals.transpositionSizeDistributionCounter:
+                globals.transpositionSizeDistributionCounter[size] += count
+            else:
+                globals.transpositionSizeDistributionCounter[size] = count
+
+######################################################
+# updateGlobalInvertedTranspositionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for inverted transpositions
+######################################################
+def updateGlobalInvertedTranspositionSizeDistributionCounter(strain):
+    if len(strain.invertedTranspositionCounts) > 0:
+        for size, count in strain.invertedTranspositionCounts.items():
+            if size in globals.invertedTranspositionSizeDistributionCounter:
+                globals.invertedTranspositionSizeDistributionCounter[size] += count
+            else:
+                globals.invertedTranspositionSizeDistributionCounter[size] = count
+
+######################################################
 # updateGlobalDeletionCounter
 # Parameters: strain
 # Description: Increments the global deletion counter based on the strains deletion sizes

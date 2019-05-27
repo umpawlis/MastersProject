@@ -17,8 +17,11 @@ from SequenceService import updateGlobalDuplicationCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
+from SequenceService import updateGlobalInversionSizeDistributionCounter
+from SequenceService import updateGlobalTranspositionSizeDistributionCounter
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
+from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -61,15 +64,6 @@ def createAncestor(strain1, strain2, neighborStrain):
     FCR, TR, IR, ITR = determineRegions(points)
     #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
 
-    #Computes the total number of inversions, transpositions, inverted transpositions, deletions, duplications
-    globals.inversionCounter += len(IR)
-    globals.transposedCounter += len(TR)
-    globals.invertedTransposedCounter += len(ITR)
-    updateGlobalDeletionCounter(strain1)
-    updateGlobalDeletionCounter(strain2)
-    updateGlobalDuplicationCounter(strain1)
-    updateGlobalDuplicationCounter(strain2)
-
     #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
     #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
@@ -95,11 +89,28 @@ def createAncestor(strain1, strain2, neighborStrain):
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
         ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
-
+    
+    #Computes the total number of inversions, transpositions, inverted transpositions
+    globals.inversionCounter += len(IR)
+    globals.transposedCounter += len(TR)
+    globals.invertedTransposedCounter += len(ITR)
+    
+    #Increments the counters for the size distributions for each event type
+    updateGlobalDeletionCounter(strain1)
+    updateGlobalDeletionCounter(strain2)
+    updateGlobalDuplicationCounter(strain1)
+    updateGlobalDuplicationCounter(strain2)
+    updateGlobalInversionSizeDistributionCounter(strain1)
+    updateGlobalInversionSizeDistributionCounter(strain2)
+    updateGlobalTranspositionSizeDistributionCounter(strain1)
+    updateGlobalTranspositionSizeDistributionCounter(strain2)
+    updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
+    updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
+    
     #Append all details to file here
     outputStrainDetailsToFile(outputFileName, strain1)
     outputStrainDetailsToFile(outputFileName, strain2)
-
+    
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
 
