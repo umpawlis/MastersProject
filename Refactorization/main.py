@@ -5,6 +5,7 @@ import globals
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
+from LineageSummary import LineageSummary
 from SequenceService import createDotPlot
 from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
@@ -240,6 +241,33 @@ def createStrainFromFile(node):
     return strain
 
 ######################################################
+# computeLineageCost
+# Parameters:
+# Description: Traverses newick tree in post order to compute the cost of a lineage
+######################################################
+def computeLineageCost(node, targetName, lineageCost):
+    
+    if lineageCost != None:
+        #TODO CREATE NEW OBJECT AND APPEND
+        print('')
+    else:
+        newLineageCost = LineageSummary(targetName) #LineageCost new object
+        filteredList = iter(filter(lambda x: x.name == node.name, strains))
+        foundStrain = next(filteredList, None)
+        if foundStrain == None:
+            print('Error! Unable to find the following strain: %s' %(targetName))
+            return None
+        else:
+            #Get the counts
+            count = foundStrain.codonMismatchDetails.count(';')
+            newLineageCost.totalCodonMismatches = count
+            
+            count = foundStrain.substitutionDetails.count(';')
+            newLineageCost.totalSubstitutions = count
+    
+    return None
+    
+######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node
 # Description: Traverses a provided newick tree in post order traversal
@@ -327,6 +355,10 @@ outputTotalsToFile(outputFileName)
 
 #Output newick tree after the ancestors have been added to it
 Phylo.draw(newickTree)
+
+#TODO compute lineage
+target = ''
+computeLineageCost(newickTree.clade, target, None)
 
 endTime = time.time()
 totalTime = endTime - startTime
