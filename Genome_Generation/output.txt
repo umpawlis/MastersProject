@@ -1,0 +1,133 @@
+Ancestor:
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Ser_UCG, Tyr_UAC, Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+Reading in newick tree structure from file: tree.dnd...
+Creating file generatorOutput.txt...
+Previous Events:
+[]
+Parent Genome:
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Ser_UCG, Tyr_UAC, Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+Ser_UCG 7,Tyr_UAC 8,
+Performing deletion... From before: True Index: 1  Section length: 2
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[]
+Ser_UCG 7,Tyr_UAC 8,;
+8
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]
+[0, 1, 2, 3, 4, 5, 6, -1, -1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
+[Event(Type = 'L', Range = [7, 8], Genes: ['Ser_UCG', 'Tyr_UAC']]
+5S 30,23S 31,
+Performing deletion... From before: False Index: 0  Section length: 2
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[Event(Type = 'L', Range = [7, 8], Genes: ['Ser_UCG', 'Tyr_UAC']]
+5S 30,23S 31,;
+[30, 31]
+Ser_UCG 7,Tyr_UAC 8,;
+31
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]
+[0, 1, 2, 3, 4, 5, 6, -1, -1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, -1, -1, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[Event(Type = 'L', Range = [7, 8], Genes: ['Ser_UCG', 'Tyr_UAC'], Event(Type = 'L', Range = [32, 33], Genes: ['5S', '23S']]
+Previous Events:
+['Ser_UCG 7,Tyr_UAC 8,;', '5S 30,23S 31,;']
+Parent Genome:
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+5S 43,23S 44,16S 45,Cys_UGU 46,
+Performing deletion... From before: False Index: 3  Section length: 4
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[]
+5S 43,23S 44,16S 45,Cys_UGU 46,;
+46
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, -1, -1, -1, -1, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]
+[Event(Type = 'L', Range = [43, 44, 45, 46], Genes: ['5S', '23S', '16S', 'Cys_UGU']]
+Ala_GCC 46,Ala_GCC 47,
+Performing deletion... From before: False Index: 4  Section length: 2
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[Ala_GCU, Arg_AGA, Ser_UCU], -[5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[Event(Type = 'L', Range = [43, 44, 45, 46], Genes: ['5S', '23S', '16S', 'Cys_UGU']]
+Ala_GCC 46,Ala_GCC 47,;
+[46, 47]
+5S 43,23S 44,16S 45,Cys_UGU 46,;
+47
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, -1, -1, -1, -1, 43, 44, 45, -1, -1, 46, 47, 48, 49, 50, 51]
+[Event(Type = 'L', Range = [43, 44, 45, 46], Genes: ['5S', '23S', '16S', 'Cys_UGU'], Event(Type = 'L', Range = [50, 51], Genes: ['Ala_GCC', 'Ala_GCC']]
+Previous Events:
+['Ser_UCG 7,Tyr_UAC 8,;', '5S 30,23S 31,;']
+Parent Genome:
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+Gln_CAG 1,
+Performing deletion... From before: True Index: 0  Section length: 1
+< o >, [His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[]
+Gln_CAG 1,;
+1
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[0, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56]
+[Event(Type = 'L', Range = [1], Genes: ['Gln_CAG']]
+Ala_GCC 49,
+Performing deletion... From before: False Index: 4  Section length: 1
+< o >, [His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[Event(Type = 'L', Range = [1], Genes: ['Gln_CAG']]
+Ala_GCC 49,;
+[49]
+Gln_CAG 1,;
+49
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[0, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, -1, 49, 50, 51, 52, 53, 54, 55]
+[Event(Type = 'L', Range = [1], Genes: ['Gln_CAG'], Event(Type = 'L', Range = [50], Genes: ['Ala_GCC']]
+[Event(Type = 'L', Range = [43, 44, 45, 46], Genes: ['5S', '23S', '16S', 'Cys_UGU'], Event(Type = 'L', Range = [50, 51], Genes: ['Ala_GCC', 'Ala_GCC']]
+[Event(Type = 'L', Range = [1], Genes: ['Gln_CAG'], Event(Type = 'L', Range = [50], Genes: ['Ala_GCC']]
+[1]
+5S 43,23S 44,16S 45,Cys_UGU 46,;
+[1]
+Ala_GCC 50,Ala_GCC 51,;
+[50]
+5S 43,23S 44,16S 45,Cys_UGU 46,;
+[50]
+Ala_GCC 50,Ala_GCC 51,;
+[43, 44, 45, 46]
+Gln_CAG 1,;
+[43, 44, 45, 46]
+Ala_GCC 50,;
+[50, 51]
+Gln_CAG 1,;
+[50, 51]
+Ala_GCC 50,;
+[Event(Type = 'L', Range = [43, 44, 45, 46], Genes: ['5S', '23S', '16S', 'Cys_UGU'], Event(Type = 'L', Range = [50, 51], Genes: ['Ala_GCC', 'Ala_GCC']]
+[Event(Type = 'L', Range = [1], Genes: ['Gln_CAG'], Event(Type = 'L', Range = [50], Genes: ['Ala_GCC']]
+Previous Events:
+[]
+Parent Genome:
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Ser_UCG, Tyr_UAC, Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Ile_AUU, Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+Ile_AUU 42,
+Performing deletion... From before: False Index: 2  Section length: 1
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Ser_UCG, Tyr_UAC, Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [16S, 23S, 5S], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[]
+Ile_AUU 42,;
+42
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, -1, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]
+[Event(Type = 'L', Range = [42], Genes: ['Ile_AUU']]
+16S 20,23S 21,5S 22,
+Performing deletion... From before: True Index: 4  Section length: 3
+< o >, [Gln_CAG, His_CAU, Tyr_UAC, Ser_UCG, Arg_AGG, Leu_CUA], [Ser_UCG, Tyr_UAC, Leu_CUA], Met_AUG, [16S, 23S, 5S, Tyr_UAC, Ile_AUU, Ser_UCA, Ala_GCG, Val_GUA, Thr_ACU], [Pro_CCC, Glu_GAA, Thr_ACC, Ile_AUC, Cys_UGU, Pro_CCG, Ser_AGC, Val_GUA], < t >, -[5S, 23S, 16S, Leu_CUU, Gly_GGA, Glu_GAG, His_CAU, Ser_UCA, Ile_AUC], -Cys_UGU, -[Trp_UGG, 5S, 23S, 16S], -[5S, 23S, 16S, Cys_UGU, Ala_GCU, Arg_AGA, Ser_UCU], -[Ala_GCC, Ala_GCC, 5S, 23S, 16S], -[Glu_GAG, Gly_GGG, Thr_ACC]
+
+[Event(Type = 'L', Range = [42], Genes: ['Ile_AUU']]
+16S 20,23S 21,5S 22,;
+[20, 21, 22]
+Ile_AUU 42,;
+22
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, -1, -1, -1, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, -1, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+[Event(Type = 'L', Range = [42], Genes: ['Ile_AUU'], Event(Type = 'L', Range = [20, 21, 22], Genes: ['16S', '23S', '5S']]

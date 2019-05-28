@@ -1,0 +1,4 @@
+Ser_UCG 7,Tyr_UAC 8,;
+5S 30,23S 31,;
+5S 43,23S 44,16S 45,Cys_UGU 46,;
+Ala_GCC 46,Ala_GCC 47,;

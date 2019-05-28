@@ -27,14 +27,14 @@ trans_pValue = 0.0
 ancestorCounter = 1
 
 class Event:
-	def __init__(self, eventType, indexRange, genes, event):
+	def __init__(self, eventType, indexRange, genes, prevEventRange = None):
 		self.type = eventType
 		self.range = indexRange
 		self.genes = genes
-		self.event = event
+		self.prevEventRange = prevEventRange
 
 	def __repr__(self):
-		return "Event(Type = %r, Range = %r, Genes: %r, Full Event: %r" % (self.type, self.range, self.genes, self.event)
+		return "Event(Type = %r, Range = %r, Genes: %r" % (self.type, self.range, self.genes)
 
 	def __str__(self):
 		event = ""
@@ -74,11 +74,11 @@ class Node:
 		outputFile = open("generatorOutput.txt", "a+")
 		outputFile.write("Strain: %s\n" % (self.name))
 		# print "Codon Mismatch: %s" % (self.codonMismatch)
-		outputFile.write("Substitution: %s\n" % (self.subEvents))
-		outputFile.write("Duplication: %s\n" % (self.dupEvents))
-		outputFile.write("Deletion: %s\n" % (self.lossEvents))
-		outputFile.write("Inversion: %s\n" % (self.invEvents))
-		outputFile.write("Transposition: %s\n" % (self.transEvents))
+		outputFile.write("Substitution: %s\n" % (''.join(str(e) for e in self.subEvents)))
+		outputFile.write("Duplication: %s\n" % (''.join(str(e) for e in self.dupEvents)))
+		outputFile.write("Deletion: %s\n" % (''.join(str(e) for e in self.lossEvents)))
+		outputFile.write("Inversion: %s\n" % (''.join(str(e) for e in self.invEvents)))
+		outputFile.write("Transposition: %s\n" % (''.join(str(e) for e in self.transEvents)))
 		# print "Inverted Transposition: %s\n" % (self.invTransEvents)
 		# for event in self.branchEvents:
 		# 	print event
@@ -141,7 +141,7 @@ def main():
 
 	createAncestor(max(args.max_length, 50), args.num_operons)
 	print "Ancestor:"
-	print ["< o >"] + beforeTerminus + ["< t >"] + afterTerminus
+	print formatGenome(beforeTerminus, afterTerminus)
 	print ""
 
 	root = Node(formatGenome(beforeTerminus, afterTerminus), None, "", "", "", "", "", None)
@@ -166,12 +166,19 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 	currentEvents = copy.deepcopy(events)
 	branchEvents = []
 
-	duplicationEvents = ""
-	lossEvents = ""
-	inversionEvents = ""
-	substitutionEvents = ""
-	transpositionEvents = ""
+	duplicationEvents = []
+	lossEvents = []
+	inversionEvents = []
+	substitutionEvents = []
+	transpositionEvents = []
+	prevEventRange = []
+	sectionReversed = False
 
+	originalIndexes = calculateIndexes(currentBefore, currentAfter)
+	currentIndexes = copy.deepcopy(originalIndexes)
+
+	print "Previous Events:"
+	print currentEvents
 	print "Parent Genome:"
 	print formatGenome(before, after)
 	print ""
@@ -180,41 +187,30 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 		rand = random.random()
 
 		if rand < probDup:
-			event, eventRange, genes = performDuplication(currentBefore, currentAfter, dup_pValue)
-			duplicationEvents = ''.join([duplicationEvents, event, ';'])
-			eventType = "D"
-			# event = "Dup:" + event
+			event, eventRange, genes, prevEventRange, sectionReversed = performDuplication(currentBefore, currentAfter, dup_pValue)
+			duplicationEvents.append(event)
 		elif rand < probDup + probLoss:
 			event, eventRange, genes = performLoss(currentBefore, currentAfter, loss_pValue)
-			lossEvents = ''.join([lossEvents, event, ';'])
-			eventType = "L"
-			# event = "Loss:" + event
+			lossEvents.append(event)
 		elif rand < probDup + probLoss + probInv:
 			event, eventRange, genes = performInversion(currentBefore, currentAfter, inv_pValue)
-			inversionEvents = ''.join([inversionEvents, event, ';'])
-			eventType = "I"
-			# event = "Inv:" + event
+			inversionEvents.append(event)
 		elif rand < probDup + probLoss + probInv + probSub:
 			event, eventRange, genes = performSubstitution(currentBefore, currentAfter)
-			substitutionEvents = ''.join([substitutionEvents, event, ';'])
-			eventType = "S"
-			# event = "Sub:" + event
+			substitutionEvents.append(event)
 		elif rand < probDup + probLoss + probInv + probSub + probTrans:
-			event, eventRange, genes = performTransposition(currentBefore, currentAfter, trans_pValue)
-			transpositionEvents = ''.join([transpositionEvents, event, ';'])
-			eventType = "T"
-			# event = "Trans:" + event
-		currentEvents.append(event)
-		branchEvent = Event(eventType, eventRange, genes, event)
+			event, eventRange, genes, prevEventRange, sectionReversed = performTransposition(currentBefore, currentAfter, trans_pValue)
+			transpositionEvents.append(event)
+		currentEvents.append(str(event))
+
 		print branchEvents
-		print branchEvent
-		updateEvents(branchEvents, branchEvent)
+		print event
+		updateEvents(branchEvents, event, currentBefore, currentAfter, prevEventRange)
+		updateIndexes(event, originalIndexes, currentIndexes, prevEventRange, sectionReversed)
+		branchEvents.append(event)
 		print branchEvents
-		branchEvents.append(branchEvent)
 
 	currNode = Node(formatGenome(before, after), parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents)
-	# print "Ordered Events:"
-	# print currNode.orderedEvents
 
 	if len(node.clades) > 0:
 		left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode)
@@ -223,7 +219,14 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 			right = buildTreeData(node.clades[1], currentBefore, currentAfter, numEvents, currentEvents, currNode)
 			currNode.children.append(right)
 
-			adjustLossIndexes(left, right)
+			print left.lossEvents
+			print right.lossEvents
+
+			adjustLossIndexes(left.lossEvents, right.orderedEvents, before, after)
+			adjustLossIndexes(right.lossEvents, left.orderedEvents, before, after)
+
+			print left.lossEvents
+			print right.lossEvents
 
 		currNode.name = "Ancestor" + str(ancestorCounter)
 		ancestorCounter += 1
@@ -245,32 +248,176 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 
 	return currNode
 
-def updateEvents(eventList, newEvent):
+def calculateIndexes(before, after):
+	count = 2
+
+	for item in before:
+		if isinstance(item, list):
+			count += len(item)
+		else:
+			count += 1
+	for item in after:
+		if isinstance(item, list):
+			count += len(item)
+		else:
+			count += 1
+
+	return range(count)
+
+def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectionReversed = None):
+	overlap = checkOverlap(currIndexes, event.range, event.type)
+
+	if event.type == "D":
+		for index1 in prevEventRange:
+			origIndexes.append(origIndexes[currIndexes.index(index1)])
+		for i in range(len(currIndexes)):
+			if currIndexes[i] >= event.range[0]:
+				currIndexes[i] = currIndexes[i] + len(event.range)
+
+		copyRange = range(event.range[0], event.range[-1]+1)
+		if sectionReversed:
+			copyRange.reverse()
+
+		for index2 in copyRange:
+			currIndexes.append(index2)
+	elif event.type == "I":
+		ordered = getOrderedIndexes(currIndexes, event.range)
+		copyRange = range(event.range[0], event.range[-1]+1)
+		copyRange.reverse()
+
+		for index1, index2 in zip(ordered, copyRange):
+			currIndexes[index1] = index2
+	elif event.type == "T":
+		print prevEventRange
+		ordered = getOrderedIndexes(currIndexes, prevEventRange)
+		for i in range(len(currIndexes)):
+			if currIndexes[i] > prevEventRange[-1]:
+				currIndexes[i] = currIndexes[i] - len(prevEventRange)
+			if currIndexes[i] >= event.range[0]:
+				currIndexes[i] = currIndexes[i] + len(event.range)
+
+		if sectionReversed:
+			ordered.reverse()
+
+		for index1, index2 in zip(ordered, event.range):
+			currIndexes[index1] = index2
+	elif event.type == "L":
+		ordered = getOrderedIndexes(currIndexes, event.range)
+		print event.range[-1]
+		for i in range(len(currIndexes)):
+			if currIndexes[i] > event.range[-1]:
+				# print "Index " + str(i)
+				# print currIndexes[i]
+				currIndexes[i] = currIndexes[i] - len(event.range)
+				# print currIndexes[i]
+
+		for index in overlap:
+			currIndexes[index] = -1
+
+		for i, index in zip(range(len(event.range)), ordered):
+			event.range[i] = origIndexes[index]
+
+	print origIndexes
+	print currIndexes
+
+def getOrderedIndexes(currIndexes, eventRange):
+	orderedIndexes = []
+
+	for index in range(eventRange[0], eventRange[-1]+1):
+		for index2 in range(len(currIndexes)):
+			if index == currIndexes[index2]:
+				orderedIndexes.append(index2)
+				break
+
+	return orderedIndexes
+
+def updateEvents(eventList, newEvent, before, after, prevEventRange = None, updateLosses = False):
 	for event in eventList:
 		print newEvent.range
 		print event
-		overlap = checkOverlap(event.range, newEvent.range)
-		if overlap:
+		overlap = checkOverlap(event.range, newEvent.range, newEvent.type)
+
+		if event.type != "L" or updateLosses:
 			if newEvent.type == "D":
+				# if checkBeforeOrOverlap(event.range, newEvent.range):
 				for i in range(len(event.range)):
 					if event.range[i] >= newEvent.range[0]:
 						event.range[i] = event.range[i] + len(newEvent.range)
-		else:
-			if newEvent.type == "D":
-				if newEvent.range[0] < event.range[0]:
-					for i in range(len(event.range)):
+			elif newEvent.type == "I":
+				terminusIndex = getTerminusIndex(before)
+				numBefore = 0
+				numAfter = 0
+
+				for index in newEvent.range:
+					if index > terminusIndex:
+						numAfter += 1
+					else:
+						numBefore += 1
+
+				oldterminusIndex = terminusIndex + (numAfter - numBefore)
+				print "Terminus index: %d" % (oldterminusIndex)
+				for index in overlap:
+					diff = abs(oldterminusIndex - event.range[index])
+					print "index: %d diff: %d" % (event.range[index], diff)
+					if event.range[index] > oldterminusIndex:
+						event.range[index] = terminusIndex - diff
+					else:
+						event.range[index] = terminusIndex + diff
+			elif newEvent.type == "S":
+				if overlap and (len(overlap) == 1):
+					event.gene[overlap[0]] = newEvent.gene[0]
+			elif newEvent.type == "T":
+				prevOverlap = checkOverlap(prevEventRange, event.range, newEvent.type)
+				eventOverlap = checkOverlap(event.range, prevEventRange, newEvent.type)
+				for i in range(len(event.range)):
+					if event.range[i] > prevEventRange[-1]:
+						event.range[i] = event.range[i] - len(prevEventRange)
+					if event.range[i] >= newEvent.range[0]:
 						event.range[i] = event.range[i] + len(newEvent.range)
+				for index in eventOverlap:
+					for index2 in prevOverlap:
+						if eventOverlap[index] == prevOverlap[index2]:
+							event.range[index] = newEvent.range[index2]
+							break
+			elif newEvent.type == "L":
+				for i in range(len(event.range)):
+					if event.range[i] > newEvent.range[-1]:
+						event.range[i] = event.range[i] - len(newEvent.range)
+				for index in overlap:
+					event.range[index] = -1
 
 
-def checkOverlap(range1, range2):
+def checkOverlap(range1, range2, eventType):
 	# overlap = range(max(range1[0], range2[0]), min(range1[-1], range2[-1])+1)
-	return ((range1[0] <= range2[0]) and (range1[-1] >= range2[0]))
+	overlapIndexes = []
 
-def adjustLossIndexes(left, right):
-	events = left.lossEvents
+	for i in range(len(range1)):
+		if range1[i] in range2:
+			overlapIndexes.append(i)
+		elif eventType == "I":
+			if ((range2[0] <= range1[i]) and (range2[-1] >= range1[i])):
+				overlapIndexes.append(i)
 
-	losses = events.split(";")
-	# print losses
+	return overlapIndexes
+
+def getTerminusIndex(before):
+	index = 1
+
+	for item in before:
+		if isinstance(item, list):
+			index += len(item)
+		else:
+			index += 1
+	return index
+
+def checkBeforeOrOverlap(range1, range2):
+	return (((range1[0] <= range2[0]) and (range1[-1] >= range2[0])) or (range1[0] > range2[0])) 
+
+def adjustLossIndexes(losses, orderedEvents, before, after):
+	lossUpdate = True
+
+	for event in orderedEvents:
+		updateEvents(losses, event, before, after, event.prevEventRange, lossUpdate)
 
 def formatGenome(before, after):
 	sequence = "< o >, "
@@ -313,6 +460,7 @@ def performTransposition(before, after, p):
 	genes = []
 	startPos = 0
 	operonTrans = False
+	sectionReversed = False
 
 	if random.random() < 0.5:
 		genome = before
@@ -338,7 +486,9 @@ def performTransposition(before, after, p):
 		# print "is singleton"
 		transSection = genome[index:index+1]
 		del genome[index]
-	print transSection
+
+	beforeStartIndex = getAbsoluteIndex(fromBefore, before, after, index, startPos)
+	beforeStopIndex = beforeStartIndex + len(transSection)
 
 	if random.random() < 0.5:
 		genome = before
@@ -349,13 +499,13 @@ def performTransposition(before, after, p):
 
 	if fromBefore and not targetBefore:
 		transSection.reverse()
+		sectionReversed = True
 	elif not fromBefore and targetBefore:
 		transSection.reverse()
+		sectionReversed = True
 
 	targetIndex = random.randint(0, len(genome)-1)
 	targetPos = 0
-	absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
-	startIndex = absoluteIndex
 
 	if isinstance(genome[targetIndex], list):
 		# print "target in list"
@@ -380,6 +530,13 @@ def performTransposition(before, after, p):
 		# event = "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
 		print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
 
+	absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
+	startIndex = absoluteIndex
+
+	# if absoluteIndex < beforeStartIndex:
+	# 	beforeStartIndex += len(transSection)
+	# 	beforeStopIndex += len(transSection)
+
 	for gene in transSection:
 		event += gene + " " + str(absoluteIndex) + ","
 		genes.append(gene)
@@ -388,9 +545,12 @@ def performTransposition(before, after, p):
 	stopIndex = absoluteIndex
 
 	print "Transposition:"
-	print ["< o >"] + before + ["< t >"] + after
+	print formatGenome(before, after)
 	print ""
-	return event, range(startIndex, stopIndex), genes
+
+	eventType = "T"
+	branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
+	return branchEvent, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex), sectionReversed
 
 def performSubstitution(before, after):
 	gene = []
@@ -410,6 +570,7 @@ def performSubstitution(before, after):
 		geneSub = genome[index][targetPos]
 	else:
 		# print "is singleton"
+		targetPos = 0
 		genome[index] = random.choice(aminoAcids)
 		geneSub = genome[index]
 
@@ -419,9 +580,12 @@ def performSubstitution(before, after):
 	event = "%s %d" % (geneSub, absoluteIndex)
 	print "Performing substitution... From before: %s Index: %s " % (str(fromBefore), str(index))
 	print "Substitution:"
-	print ["< o >"] + before + ["< t >"] + after
+	print formatGenome(before, after)
 	print ""
-	return event, range(absoluteIndex, absoluteIndex+1), gene
+
+	eventType = "S"
+	branchEvent = Event(eventType, range(absoluteIndex, absoluteIndex+1), gene)
+	return branchEvent, range(absoluteIndex, absoluteIndex+1), gene, range(beforeStartIndex, beforeStopIndex)
 
 def getDifferentGene(currGene):
 	while True:
@@ -455,8 +619,8 @@ def performInversion(before, after, p):
 		reverseOperons(beforeSection)
 		after[0:0] = beforeSection[::-1]
 
+	indexes = []
 	absoluteIndex = getAbsoluteIndex(fromBefore, before, after, index, 0)
-	startIndex = absoluteIndex
 
 	if afterSection is not None:
 		for operon in reversed(afterSection):
@@ -464,10 +628,12 @@ def performInversion(before, after, p):
 				for gene in operon:
 					event += gene + " " + str(absoluteIndex) + ","
 					genes.append(gene)
+					indexes.append(absoluteIndex)
 					absoluteIndex += 1
 			else:
 				event += operon + " " + str(absoluteIndex) + ","
 				genes.append(operon)
+				indexes.append(absoluteIndex)
 				absoluteIndex += 1
 
 	absoluteIndex += 1 # for the terminus
@@ -477,19 +643,24 @@ def performInversion(before, after, p):
 				for gene in operon:
 					event += gene + " " + str(absoluteIndex) + ","
 					genes.append(gene)
+					indexes.append(absoluteIndex)
 					absoluteIndex += 1
 			else:
 				event += operon + " " + str(absoluteIndex) + ","
 				genes.append(operon)
+				indexes.append(absoluteIndex)
 				absoluteIndex += 1
 	print event
 	stopIndex = absoluteIndex
 
 	print "Performing inversions... Num before: %s Num after: %s" % (str(lengthBefore), str(lengthAfter))
 	print "Inversion:"
-	print ["< o >"] + before + ["< t >"] + after
+	print formatGenome(before, after)
 	print ""
-	return event, range(startIndex, stopIndex), genes
+
+	eventType = "I"
+	branchEvent = Event(eventType, indexes, genes)
+	return branchEvent, indexes, genes
 
 def reverseOperons(sequence):
 	for index in sequence:
@@ -538,9 +709,12 @@ def performLoss(before, after, p):
 
 	# event = "Performing deletion... From before: %s Index: %s  Section length: %s" % (str(deleteBefore), str(index), str(stopPos-startPos))
 	print "Performing deletion... From before: %s Index: %s  Section length: %s" % (str(deleteBefore), str(index), str(stopPos-startPos))
-	print ["< o >"] + before + ["< t >"] + after
+	print formatGenome(before, after)
 	print ""
-	return event, range(startIndex, stopIndex), genes
+
+	eventType = "L"
+	branchEvent = Event(eventType, range(startIndex, stopIndex), genes)
+	return branchEvent, range(startIndex, stopIndex), genes
 
 def performDuplication(before, after, p):
 	event = ""
@@ -548,6 +722,7 @@ def performDuplication(before, after, p):
 	startPos = 0
 	stopPos = 0
 	operonDup = False
+	sectionReversed = False
 
 	if random.random() < 0.5:
 		genome = before
@@ -568,7 +743,9 @@ def performDuplication(before, after, p):
 	else:
 		# print "is singleton"
 		dupSection = genome[index:index+1]
-	print dupSection
+
+	beforeStartIndex = getAbsoluteIndex(dupFromBefore, before, after, index, startPos)
+	beforeStopIndex = beforeStartIndex + len(dupSection)
 
 	if random.random() < 0.5:
 		genome = before
@@ -579,10 +756,12 @@ def performDuplication(before, after, p):
 
 	if dupFromBefore and not targetBefore:
 		dupSection.reverse()
+		sectionReversed = True
 		targetIndex, targetPos = getNormalPos(genome)
 		# absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
 	elif not dupFromBefore and targetBefore:
 		dupSection.reverse()
+		sectionReversed = True
 		targetIndex, targetPos = getNormalPos(genome)
 		# absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
 	else:
@@ -623,9 +802,12 @@ def performDuplication(before, after, p):
 	stopIndex = absoluteIndex
 
 	print "Duplication:"
-	print ["< o >"] + before + ["< t >"] + after
+	print formatGenome(before, after)
 	print ""
-	return event, range(startIndex, stopIndex), genes
+
+	eventType = "D"
+	branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
+	return branchEvent, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex), sectionReversed
 
 def getAbsoluteIndex(inBefore, before, after, targetIndex, targetPos):
 	index  = 0
