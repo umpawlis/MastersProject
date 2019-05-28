@@ -331,8 +331,9 @@ def traverseNewickTree(node, parentNode):
             print('No neighbor found!')
 
         ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
+        node.name = ancestor.name
         strains.append(ancestor)
-
+        
         return ancestor
 
     #Case 2: Only the left sibling exists so return it
