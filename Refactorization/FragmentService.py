@@ -25,7 +25,10 @@ def determineRegions(fragments):
         consecutiveRegion = [] #Stores a consecutive region
         consecutiveRegion.append(currFragment)
         foundNeighbor = True #Keeps track of whether we found a neighboring operon
-
+        
+        skipCounter = 0 #Counters the number of skipped fragments
+        index = 0
+        
         yIncreaseCounter = 0 #Counts the number of points that are increasing in the current region
         yDecreaseCounter = 0 #Counts the number of points that are decreasing in the current region
 
@@ -39,16 +42,18 @@ def determineRegions(fragments):
         if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point > 0:
             belowMainDiagonal = True
 
-        while foundNeighbor and len(fragmentsCopy) > 0: #Continue looping as long as we keep on finding a neighbor
+        while index < len(fragmentsCopy) and ((foundNeighbor and len(fragmentsCopy) > 0) or (skipCounter < 2 and len(fragmentsCopy) > 0)): #Continue looping as long as we keep on finding a neighbor
             foundNeighbor = False #Reset the tracker
 
             prevFragment = consecutiveRegion[len(consecutiveRegion)-1] #Gets the last operon in the the consecutive operons list
-            currFragment = fragmentsCopy[0] #Get the next available operon
+            currFragment = fragmentsCopy[index] #Get the next available operon
             yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
-
-            if yDistance < globals.yDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
-                consecutiveRegion.append(fragmentsCopy.pop(0))
+            xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
+            
+            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
+                consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
+                skipCounter = 0 #Reset the skip counter
 
                 #Tracks the minimuim distance from the main diagonal
                 currMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point)
@@ -66,6 +71,10 @@ def determineRegions(fragments):
                     yIncreaseCounter += 1
                 else:
                     yDecreaseCounter += 1
+            else:
+                skipCounter += 1
+                index += 1
+                
         #Add the region to the appropriate array
         if yIncreaseCounter > yDecreaseCounter or len(consecutiveRegion) == 1:  #If the points were going up or there was only 1 point
             if minMainDiagonalDistance < globals.yDistanceThreshold:            #If the distance from the main diagonal is below the threshold
