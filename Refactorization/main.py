@@ -255,6 +255,7 @@ def computeLineageCost(node, targetName, lineageCost):
     #Now add in the costs for the current node
     filteredList = iter(filter(lambda x: x.name == node.name, strains))
     foundStrain = next(filteredList, None)
+    print(node.name)
     if foundStrain != None:
         count = foundStrain.codonMismatchDetails.count(';')
         newLineageCost.totalCodonMismatches += count
