@@ -626,8 +626,11 @@ def constructGenome(arrangedFragments):
                 negativeOrientation = True
                 originalSequence = '-'
                 geneSequence.reverse()
-
-            originalSequence += '['
+            
+            #Brackets only on the oerons with length > 1
+            if len(geneSequence) != 1:
+                originalSequence += '['
+            
             for y in range(0, len(geneSequence)):
                 gene = geneSequence[y]
 
@@ -635,7 +638,9 @@ def constructGenome(arrangedFragments):
                     originalSequence += gene + ', '
                 else:
                     originalSequence += gene
-            originalSequence += ']'
+            #Brackets only on operons with length > 1
+            if len(geneSequence) != 1:
+                originalSequence += ']'
 
             newFragment = GenomeFragment(fragmentIndex, originalSequence, positiveOrientationGeneSequence, geneIndex, description, negativeOrientation)
             ancestralFragments.append(newFragment)
