@@ -251,24 +251,21 @@ def computeLineageCost(node, targetName, lineageCost):
     if lineageCost != None: #Insert the previous costs
         newLineageCost.totalCodonMismatches = lineageCost.totalCodonMismatches
         newLineageCost.totalSubstitutions = lineageCost.totalSubstitutions
+    
+    if node.name != None: #Sometimes there's a none type. not sure why    
+        #Now add in the costs for the current node
+        filteredList = iter(filter(lambda x: x.name == node.name, strains))
+        foundStrain = next(filteredList, None)
+
+        if foundStrain != None:
+            count = foundStrain.codonMismatchDetails.count(';')
+            newLineageCost.totalCodonMismatches += count
+            count = foundStrain.substitutionDetails.count(';')
+            newLineageCost.totalSubstitutions += count
+        if node.name == targetName: #Check if this is our target
+            print('Found  node in newick tree! The found node is: %s' % (targetName))
+            return newLineageCost
         
-    #Now add in the costs for the current node
-    filteredList = iter(filter(lambda x: x.name == node.name, strains))
-    foundStrain = next(filteredList, None)
-    print(node.name)
-    if foundStrain != None:
-        count = foundStrain.codonMismatchDetails.count(';')
-        newLineageCost.totalCodonMismatches += count
-        count = foundStrain.substitutionDetails.count(';')
-        newLineageCost.totalSubstitutions += count
-    else:
-        print('Error! Unable to find the following strain: %s' % (node.name))
-        return None
-    
-    if node.name == targetName: #Check if this is our target
-        print('Found  node in newick tree! The found node is: %s' % (targetName))
-        return newLineageCost
-    
     if len(node.clades) > 0:
         temp = computeLineageCost(node.clades[0], targetName, newLineageCost)
         if temp != None:
@@ -336,7 +333,6 @@ def traverseNewickTree(node, parentNode):
         strains.append(ancestor)
         
         return ancestor
-
     #Case 2: Only the left sibling exists so return it
     elif leftSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0:
         return leftSibling
@@ -380,5 +376,5 @@ print('Computing lineage cost for: %s' % (target))
 lineageCost = computeLineageCost(newickTree.clade, target, None)
 if lineageCost != None:
     print('Successfully found and computed the lineage for: %s' % (target))
-
+    
 print('Ending application...')
