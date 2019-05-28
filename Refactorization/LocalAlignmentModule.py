@@ -120,9 +120,7 @@ def localAlignment(fragment1, fragment2, event):
             if scoreMatrix[a][b] > maxScore: #Track the position of the max score (that will be our starting point during the trace back)
                 maxScore = scoreMatrix[a][b]
                 maxPosition = (a, b)
-    
-    if maxScore == 6.0:
-        print('BREAK')
+                
     event, endPosition = traceback(operon1, operon2, scoreMatrix, maxPosition, event)
     event.setScore(maxScore)
     

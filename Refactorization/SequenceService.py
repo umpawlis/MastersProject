@@ -25,6 +25,45 @@ def computeOperonDifferences(operon1, operon2):
     return len(set3)
 
 ######################################################
+# updateGlobalInversionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for inversions
+######################################################
+def updateGlobalInversionSizeDistributionCounter(strain):
+    if len(strain.inversionCounts) > 0:
+        for size, count in strain.inversionCounts.items():
+            if size in globals.inversionSizeDistributionCounter:
+                globals.inversionSizeDistributionCounter[size] += count
+            else:
+                globals.inversionSizeDistributionCounter[size] = count
+                
+######################################################
+# updateGlobalTranspositionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for transpositions
+######################################################
+def updateGlobalTranspositionSizeDistributionCounter(strain):
+    if len(strain.transpositionCounts) > 0:
+        for size, count in strain.transpositionCounts.items():
+            if size in globals.transpositionSizeDistributionCounter:
+                globals.transpositionSizeDistributionCounter[size] += count
+            else:
+                globals.transpositionSizeDistributionCounter[size] = count
+
+######################################################
+# updateGlobalInvertedTranspositionSizeDistributionCounter
+# Parameters: strain
+# Description: Increments the global size distributions for inverted transpositions
+######################################################
+def updateGlobalInvertedTranspositionSizeDistributionCounter(strain):
+    if len(strain.invertedTranspositionCounts) > 0:
+        for size, count in strain.invertedTranspositionCounts.items():
+            if size in globals.invertedTranspositionSizeDistributionCounter:
+                globals.invertedTranspositionSizeDistributionCounter[size] += count
+            else:
+                globals.invertedTranspositionSizeDistributionCounter[size] = count
+
+######################################################
 # updateGlobalDeletionCounter
 # Parameters: strain
 # Description: Increments the global deletion counter based on the strains deletion sizes
@@ -136,7 +175,9 @@ def createDotPlot(events, strain1, strain2):
             x_coord.append(events[i].fragmentDetails1.point)
             y_coord.append(events[i].fragmentDetails2.point)
             #print('x-axis: %s, y-axis: %s' %(events[i].fragmentDetails1.point, events[i].fragmentDetails2.point))
-
+    if len(black_x_coord) != 2:
+        print('BREAK!')
+    
     #If we have any coordinates to plot, display them
     if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(orange_x_coord) > 0 or len(red_x_coord) > 0:
         f = plt.figure()

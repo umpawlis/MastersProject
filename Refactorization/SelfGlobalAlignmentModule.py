@@ -15,8 +15,12 @@ import copy
 # Parameters:
 # Description: Performs a self global alignment to identify duplicate operons
 ######################################################
-def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
+def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
     print('Performing self-global alignment on strain: %s' %(strain.name))
+    
+    if strain.name == 'NC_015634':
+        print('BREAK')
+        
     lossEvents = []
     duplicationEvents = []
     fragments = strain.genomeFragments
@@ -58,7 +62,8 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                         if numOperonDifferences <= threshold and score < bestScore:
                             bestScore = score
                             bestEvent = event
-            else: #We're processing a singleton
+            #Make sure an origin or a terminus doesn't get mapped with a singleton gene
+            elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description != 'Terminus':
                 for j in range(0, len(coverageTracker)):
                     if i != j and coverageTracker[j] == True:
                         filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
@@ -94,8 +99,9 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                     op.reverse()
                 
                 for gene in op:
-                    duplicationDetails += gene + ' ' + str(position) + ','
+                    duplicationDetails += gene + ' ' + str(position) + ', '
                     position += 1
+                duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
                 duplicationDetails += ';'
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
@@ -127,15 +133,16 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker):
                     op.reverse()
                 
                 for gene in op:
-                    deletionDetails += gene + ' ' + str(position) + ','
+                    deletionDetails += gene + ' ' + str(position) + ', '
                     position += 1
+                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                 deletionDetails += ';'
                 
                 #Increment the loss counter with the size of the operon since the operon is a loss
-                strain = addDeletionEventsToStrain(strain, [len(event.fragmentDetails1.sequence)], deletionDetails)
+                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 print(event.toString())
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
                 
-    return duplicationEvents, lossEvents, coverageTracker, strain
+    return duplicationEvents, lossEvents, coverageTracker, strain, sibling

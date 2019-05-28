@@ -34,3 +34,12 @@ def initialize():
 
     global duplicationSizeCounter
     duplicationSizeCounter = {}
+    
+    global inversionSizeDistributionCounter
+    inversionSizeDistributionCounter = {}
+    
+    global transpositionSizeDistributionCounter
+    transpositionSizeDistributionCounter = {}
+    
+    global invertedTranspositionSizeDistributionCounter
+    invertedTranspositionSizeDistributionCounter = {}

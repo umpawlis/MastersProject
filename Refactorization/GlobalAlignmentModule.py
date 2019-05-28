@@ -64,9 +64,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 eventMatrix[x][y] = event
                 globalAlignmentMatrix[x][y] = str(0) + '*'
 
-            #Case 2: Two singleton genes are being compared
-            elif len(op1.sequence) == 1 and len(op2.sequence) == 1:
-
+            #Case 2: Two singleton genes are being compared and not the origin or terminus
+            elif len(op1.sequence) == 1 and len(op2.sequence) == 1 and op1.description != 'Origin' and op2.description != 'Origin' and op1.description != 'Terminus' and op2.description != 'Terminus':
                 if op1.sequence[0] == op2.sequence[0]:
                     event.setOperon1Alignment(copy.deepcopy(op1.sequence))
                     event.setOperon2Alignment(copy.deepcopy(op2.sequence))
@@ -480,7 +479,7 @@ def reconstructOperonSequence(event, strain1, strain2):
 
         #Add the details to the respective strain
         strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
-        strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
+        strain2 = addDuplicationEventsToStrain(strain2, duplicateSizesWithinAlignment2, duplicationDetails2)
 
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
@@ -511,7 +510,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
                         
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -541,7 +541,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -571,7 +572,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
                         
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
                     strain2 = addDeletionEventsToStrain(strain2, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -601,7 +603,8 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ','
+                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                    deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
@@ -678,6 +681,7 @@ def checkForMatch(gap, positions, sequence, fragment):
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
                 
                 duplicationDetails += gene + ' ' + str(genePos) + ', '
+            duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
 
             #Remove the duplicated region

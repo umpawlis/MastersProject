@@ -33,7 +33,34 @@ def outputTotalsToFile(fileName):
         temp = temp[:-2] #Removes the last two characters
     print(temp)
     appendToFile(fileName, temp + '\n')
-
+    
+    #Size distribution of inversions
+    temp = 'Size Distribution of Inversions: '
+    if len(globals.inversionSizeDistributionCounter) > 0:
+        for size, count in globals.inversionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
+    #Size distribution of transpositions
+    temp = 'Size Distribution of Transpositions: '
+    if len(globals.transpositionSizeDistributionCounter) > 0:
+        for size, count in globals.transpositionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
+    #Size distribution of inverted transpositions
+    temp = 'Size Distribution of Inverted Transpositions: '
+    if len(globals.invertedTranspositionSizeDistributionCounter) > 0:
+        for size, count in globals.invertedTranspositionSizeDistributionCounter.items():
+            temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
+        temp = temp[:-2] #Removes the last two characters
+    print(temp)
+    appendToFile(fileName, temp + '\n')
+    
     #Inversions. transpositions, inverted transpositions
     print('Total # of Inversions: %s' % (globals.inversionCounter))
     print('Total # of Transpositions: %s' % (globals.transposedCounter))
@@ -48,25 +75,26 @@ def outputTotalsToFile(fileName):
 # Parameters:
 # Description: Creates a file where the output will be stored
 ######################################################
-def outputStrainDetailsToFile(fileName, strain,  inversionDetails, transpositionDetails, invertedTransposedDetails):
+def outputStrainDetailsToFile(fileName, strain):
+
     #Append all details to file here
     appendToFile(fileName, 'Strain:' + strain.name + '\n')
     appendToFile(fileName, strain.codonMismatchDetails + '\n')
     appendToFile(fileName, strain.substitutionDetails + '\n')
     appendToFile(fileName, strain.duplicationDetails + '\n')
     appendToFile(fileName, strain.deletionDetails + '\n')
-    appendToFile(fileName, inversionDetails + '\n')
-    appendToFile(fileName, transpositionDetails + '\n')
-    appendToFile(fileName, invertedTransposedDetails + '\n')
+    appendToFile(fileName, strain.inversionDetails + '\n')
+    appendToFile(fileName, strain.transpositionDetails + '\n')
+    appendToFile(fileName, strain.invertedTranspositionDetails + '\n')
 
     print(strain.name)
     print(strain.codonMismatchDetails)
     print(strain.substitutionDetails)
     print(strain.duplicationDetails)
     print(strain.deletionDetails)
-    print(inversionDetails)
-    print(transpositionDetails)
-    print(invertedTransposedDetails)
+    print(strain.inversionDetails)
+    print(strain.transpositionDetails)
+    print(strain.invertedTranspositionDetails)
 
 ######################################################
 # createFile
@@ -115,10 +143,15 @@ def processSequence(name, genome):
 
             originOrTerminus = genome[startIndex:index]
 
-            if 't' in originOrTerminus:
+            if '< t >' in originOrTerminus:
                 description = 'Terminus'
-            else:
+            elif 'originCycling' in originOrTerminus:
+                description = 'Origin Cycling'
+            elif '< o >' in originOrTerminus:
                 description = 'Origin'
+            else:
+                print('Error! Unhandled case!')
+                return None
 
             fragment = GenomeFragment(fragmentIndex, originOrTerminus, originOrTerminus.split(','), originOrTerminusPosition, description, False)
             fragments.append(fragment)

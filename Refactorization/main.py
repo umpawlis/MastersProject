@@ -5,13 +5,12 @@ import globals
 from Bio import Phylo
 from FileService import createFile
 from FileService import processSequence
+from LineageSummary import LineageSummary
 from SequenceService import createDotPlot
-from GenomeFragment import GenomeFragment
 from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
 from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
-from FragmentService import computeRegionDetails
 from FileService import outputStrainDetailsToFile
 from SequenceService import normalizeIndexesForDotPlot
 from SequenceService import updateGlobalDeletionCounter
@@ -19,8 +18,11 @@ from SequenceService import updateGlobalDuplicationCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
+from SequenceService import updateGlobalInversionSizeDistributionCounter
+from SequenceService import updateGlobalTranspositionSizeDistributionCounter
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
+from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
 
 #Application parameters
 newickFileName = 'Bacillus_Tree.dnd' #Name of newick tree file
@@ -45,6 +47,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     ancestralFragments = None
 
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
+    neighborCopy = copy.deepcopy(neighborStrain) #Do a deep copy of the neighbor as well b/c we don't want to store those comparisons in the strain either
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
@@ -62,45 +65,53 @@ def createAncestor(strain1, strain2, neighborStrain):
     FCR, TR, IR, ITR = determineRegions(points)
     #FCR, TR, IR, ITR, LR = computeOperonArrangements(events)  OLD VERSION
 
-    #Computes the total number of inversions, transpositions, inverted transpositions, deletions, duplications
-    globals.inversionCounter += len(IR)
-    globals.transposedCounter += len(TR)
-    globals.invertedTransposedCounter += len(ITR)
-    updateGlobalDeletionCounter(strain1)
-    updateGlobalDeletionCounter(strain2)
-    updateGlobalDuplicationCounter(strain1)
-    updateGlobalDuplicationCounter(strain2)
+    #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
+    #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
+    #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
 
-    inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
-    transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
-    invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
-
-    #Append all details to file here
-    outputStrainDetailsToFile(outputFileName, strain1, inversionDetails1, transpositionDetails1, invertedTransposedDetails1)
-    outputStrainDetailsToFile(outputFileName, strain2, inversionDetails2, transpositionDetails2, invertedTransposedDetails2)
+    #TODO singletons should not have brackets? Still deciding but this should not affect anything
 
     #Compare one of the siblings to the neighbor if one exists
-    if neighborStrain != None:
-        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborStrain)
+    if neighborCopy != None:
+        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborCopy)
 
-        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborStrain.name))
-        neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborStrain)
-        #createDotPlot(neighborPoints, strain1Copy, neighborStrain)
+        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborCopy)
+        #createDotPlot(neighborPoints, strain1Copy, neighborCopy)
 
         #Compute the various regions for the neighbor
         #NFCR, NTR, NIR, NITR, NLR = computeOperonArrangements(neighborEvents) OLD VERSION
         NFCR, NTR, NIR, NITR = determineRegions(neighborPoints)
-
-        ancestralFragments = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints)
+        ancestralFragments, strain1, strain2 = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints, strain1, strain2)
     else:
-        if neighborStrain == None:
+        if neighborCopy == None:
             print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
             print('No inverted or transposed regions detected!!')
-
-        ancestralFragments = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints)
-
+        ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
+    
+    #Computes the total number of inversions, transpositions, inverted transpositions
+    globals.inversionCounter += len(IR)
+    globals.transposedCounter += len(TR)
+    globals.invertedTransposedCounter += len(ITR)
+    
+    #Increments the counters for the size distributions for each event type
+    updateGlobalDeletionCounter(strain1)
+    updateGlobalDeletionCounter(strain2)
+    updateGlobalDuplicationCounter(strain1)
+    updateGlobalDuplicationCounter(strain2)
+    updateGlobalInversionSizeDistributionCounter(strain1)
+    updateGlobalInversionSizeDistributionCounter(strain2)
+    updateGlobalTranspositionSizeDistributionCounter(strain1)
+    updateGlobalTranspositionSizeDistributionCounter(strain2)
+    updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
+    updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
+    
+    #Append all details to file here
+    outputStrainDetailsToFile(outputFileName, strain1)
+    outputStrainDetailsToFile(outputFileName, strain2)
+    
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
 
@@ -161,13 +172,15 @@ def constructEvents(strain1, strain2):
 
     #Self Global Alignment
     if numRemainingOperons1 > 0:
-        duplicationEvents1, lossEvents1, coverageTracker1, strain1 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1)
+        #Remember to insert the deletions into the sibling (that's how we defined it)
+        duplicationEvents1, lossEvents1, coverageTracker1, strain1, strain2 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
         print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
         if len(lossEvents1) > 0:
             events.extend(lossEvents1)
 
     if numRemainingOperons2 > 0:
-        duplicationEvents2, lossEvents2, coverageTracker2, strain2 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2)
+        #Remember to insert the deletions into the sibling (that's how we defined it)
+        duplicationEvents2, lossEvents2, coverageTracker2, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2, strain1)
         print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
         if len(lossEvents2) > 0:
             events.extend(lossEvents2)
@@ -227,6 +240,33 @@ def createStrainFromFile(node):
 
     return strain
 
+######################################################
+# computeLineageCost
+# Parameters:
+# Description: Traverses newick tree in post order to compute the cost of a lineage
+######################################################
+def computeLineageCost(node, targetName, lineageCost):
+    
+    if lineageCost != None:
+        #TODO CREATE NEW OBJECT AND APPEND
+        print('')
+    else:
+        newLineageCost = LineageSummary(targetName) #LineageCost new object
+        filteredList = iter(filter(lambda x: x.name == node.name, strains))
+        foundStrain = next(filteredList, None)
+        if foundStrain == None:
+            print('Error! Unable to find the following strain: %s' %(targetName))
+            return None
+        else:
+            #Get the counts
+            count = foundStrain.codonMismatchDetails.count(';')
+            newLineageCost.totalCodonMismatches = count
+            
+            count = foundStrain.substitutionDetails.count(';')
+            newLineageCost.totalSubstitutions = count
+    
+    return None
+    
 ######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node
@@ -312,6 +352,13 @@ result = traverseNewickTree(newickTree.clade, None)
 
 #Output the totals for the computation to console and file
 outputTotalsToFile(outputFileName)
+
+#Output newick tree after the ancestors have been added to it
+Phylo.draw(newickTree)
+
+#TODO compute lineage
+target = ''
+computeLineageCost(newickTree.clade, target, None)
 
 endTime = time.time()
 totalTime = endTime - startTime

@@ -1,6 +1,84 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 #These indicate the names of the output files
 outputFile1 = 'ApplicationOutput.txt'
 outputFile2 = 'ApplicationOutput.txt'
+
+######################################################
+# constructDistributionGraph
+# Parameters:
+# Description: Constructs a distribution graph
+######################################################
+def constructDistributionGraph(dictionary1, dictionary2, title):
+    print('Constructing distribution graph...')
+    maxSize1 = 0
+    maxSize2 = 0
+    
+    if dictionary1 != None and len(dictionary1) > 0:
+        keys = dictionary1.keys()
+        for key in keys:
+            if int(key) > maxSize1:
+                maxSize1 = int(key)
+    if dictionary2 != None and len(dictionary2) > 0:
+        keys = dictionary2.keys()
+        for key in keys:
+            if int(key) > maxSize2:
+                maxSize2 = int(key)   
+    maxSize = max(maxSize1, maxSize2) + 1 #Make sure to include the last key!
+    
+    if maxSize != 0:
+        x = np.arange(maxSize)
+        y1 = []
+        y2 = []
+        
+        for i in range(0, maxSize):
+            if str(i) in dictionary1:
+                y1.append(int(dictionary1[str(i)]))
+            else:
+                y1.append(0)
+                
+            if str(i) in dictionary2:
+                y2.append(int(dictionary2[str(i)]))
+            else:
+                y2.append(0)
+        
+        plt.bar(x + 0.00, y1, color = 'b', width = 0.25)
+        plt.bar(x + 0.25, y2, color = 'g', width = 0.25)
+        plt.xticks(x)
+        
+        plt.ylabel('Number of Events')
+        plt.xlabel('Size of Event')
+        plt.title(title)
+        plt.show()
+    
+    print('Done constructing graph.')
+
+######################################################
+# parseSizeDistribution
+# Parameters:
+# Description: Parses the size distribution into a dictionary
+######################################################
+def parseSizeDistribution(line):
+    dictionary = {}
+    array = line.split(',')
+    
+    if len(array) > 0:
+        for item in array:
+            data = item.strip()
+            dataArray = data. split()
+            
+            if len(dataArray) != 4:
+                print('Error! Should be 4 elements for the size distribution')
+                return {}
+            else:
+                size = dataArray[1]
+                count = dataArray[3]
+                if size in dictionary:
+                    dictionary[size] += count
+                else:
+                    dictionary[size] = count
+    return dictionary
 
 ######################################################
 # inversionTranspositionComparison
@@ -282,6 +360,42 @@ def readFiles():
                 else:
                     print('Error! Expected total duplications!')
                     return False
+                
+                line1 = file1.readline() #Size distribution of inversions
+                line2 = file2.readline() #Size distribution of inversions
+                if 'Size Distribution of Inversions:' in line1 and 'Size Distribution of Inversions:' in line2:
+                    print('Comparing size distribution for inversions')
+                    line1 = line1.replace('Size Distribution of Inversions:', '').strip()
+                    line2 = line2.replace('Size Distribution of Inversions:', '').strip()
+                    dict1 = parseSizeDistribution(line1)
+                    dict2 = parseSizeDistribution(line2)
+                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inversions')
+                else:
+                    print('Error! Expected size distribution of inversions')
+                
+                line1 = file1.readline() #Size distribution of transpositions
+                line2 = file2.readline() #Size distribution of transpositions
+                if 'Size Distribution of Transpositions:' in line1 and 'Size Distribution of Transpositions:' in line2:
+                    print('Comparing size distribution for transpositions')
+                    line1 = line1.replace('Size Distribution of Transpositions:', '').strip()
+                    line2 = line2.replace('Size Distribution of Transpositions:', '').strip()
+                    dict1 = parseSizeDistribution(line1)
+                    dict2 = parseSizeDistribution(line2)
+                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Transpositions')
+                else:
+                    print('Error! Expected size distribution of transpositions')
+                    
+                line1 = file1.readline() #Size distribution of inverted transpositions
+                line2 = file2.readline() #Size distribution of inverted transpositions
+                if 'Size Distribution of Inverted Transpositions:' in line1 and 'Size Distribution of Inverted Transpositions:' in line2:
+                    print('Comparing size distribution for inverted transpositions')
+                    line1 = line1.replace('Size Distribution of Inverted Transpositions:', '').strip()
+                    line2 = line2.replace('Size Distribution of Inverted Transpositions:', '').strip()
+                    dict1 = parseSizeDistribution(line1)
+                    dict2 = parseSizeDistribution(line2)
+                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inverted Transpositions')
+                else:
+                    print('Error! Expected size distribution of inverted transpositions')
                     
                 line1 = file1.readline() #Total inversions
                 line2 = file2.readline() #Total inversions
