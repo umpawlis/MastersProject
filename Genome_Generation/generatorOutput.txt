@@ -1,0 +1,19 @@
+((NC_013411:0.00000,NC_014206:0.00000):0.00000,NC_014103:0.00000):0.00000;
+Strain: NC_013411
+Substitution: 
+Duplication: 
+Deletion: 5S 43,23S 44,16S 45,Cys_UGU 46,;Ala_GCC 50,Ala_GCC 51,;
+Inversion: 
+Transposition: 
+Strain: NC_014206
+Substitution: 
+Duplication: 
+Deletion: Gln_CAG 1,;Ala_GCC 50,;
+Inversion: 
+Transposition: 
+Strain: NC_014103
+Substitution: 
+Duplication: 
+Deletion: Ile_AUU 42,;16S 20,23S 21,5S 22,;
+Inversion: 
+Transposition: 
