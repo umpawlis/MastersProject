@@ -1,3 +1,4 @@
+import math
 import copy
 import globals
 from GenomeFragment import GenomeFragment
@@ -50,6 +51,16 @@ def determineRegions(fragments):
             yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
             xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
             
+            #TODO ADD POINT DISTANCE FORMULA
+            if skipCounter > 0:
+                tempFragment = fragmentsCopy[index -1]
+                tempYDistance = abs(currFragment.fragmentDetails2.point - tempFragment.fragmentDetails2.point) #The distance on the y-axis
+                tempXDistance = abs(currFragment.fragmentDetails1.point - tempFragment.fragmentDetails1.point) #The distance on the x-axis
+                tempDistance = math.sqrt((tempXDistance * tempXDistance) + (tempYDistance * tempYDistance))
+                distance = math.sqrt((xDistance * xDistance) + (yDistance * yDistance))
+                if tempDistance < distance:
+                    break #Break out of the while loop if there's a better match by not skipping
+                
             if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region

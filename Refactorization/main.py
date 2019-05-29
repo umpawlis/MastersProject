@@ -68,9 +68,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
     #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
-
-    #TODO singletons should not have brackets? Still deciding but this should not affect anything
-
+    
     #Compare one of the siblings to the neighbor if one exists
     if neighborCopy != None:
         print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
