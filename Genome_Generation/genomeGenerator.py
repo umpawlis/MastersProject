@@ -219,11 +219,13 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 			right = buildTreeData(node.clades[1], currentBefore, currentAfter, numEvents, currentEvents, currNode)
 			currNode.children.append(right)
 
+			print "Updating Loss Events"
 			print left.lossEvents
 			print right.lossEvents
 
+			leftEvents = copy.deepcopy(left.orderedEvents)
 			adjustLossIndexes(left.lossEvents, right.orderedEvents, before, after)
-			adjustLossIndexes(right.lossEvents, left.orderedEvents, before, after)
+			adjustLossIndexes(right.lossEvents, leftEvents, before, after)
 
 			print left.lossEvents
 			print right.lossEvents
