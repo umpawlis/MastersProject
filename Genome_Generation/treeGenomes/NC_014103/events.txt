@@ -1,2 +1,2 @@
-Ile_AUU 42,;
-16S 20,23S 21,5S 22,;
+Pro_CCA 23,;
+Ala_GCU 5,Asp_GAU 6,Leu_CUA 7,;

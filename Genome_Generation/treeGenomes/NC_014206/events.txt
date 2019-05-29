@@ -1,4 +1,4 @@
-Ser_UCG 7,Tyr_UAC 8,;
-5S 30,23S 31,;
-Gln_CAG 1,;
-Ala_GCC 49,;
+Arg_CGU 9,;
+Ser_UCG 40,;
+Ser_UCU 34,;
+5S 15,;

@@ -1,19 +1,19 @@
 ((NC_013411:0.00000,NC_014206:0.00000):0.00000,NC_014103:0.00000):0.00000;
 Strain: NC_013411
 Substitution: 
-Duplication: 
-Deletion: 5S 43,23S 44,16S 45,Cys_UGU 46,;Ala_GCC 50,Ala_GCC 51,;
+Duplication: Val_GUA 43,;
+Deletion: 16S 1,23S 2,5S 3,;
 Inversion: 
 Transposition: 
 Strain: NC_014206
 Substitution: 
-Duplication: 
-Deletion: Gln_CAG 1,;Ala_GCC 50,;
+Duplication: Ser_UCU 35,;5S 15,;
+Deletion: 
 Inversion: 
 Transposition: 
 Strain: NC_014103
 Substitution: 
-Duplication: 
-Deletion: Ile_AUU 42,;16S 20,23S 21,5S 22,;
+Duplication: Pro_CCA 26,;Ala_GCU 5,Asp_GAU 6,Leu_CUA 7,;
+Deletion: 
 Inversion: 
 Transposition: 
