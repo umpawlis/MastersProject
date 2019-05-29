@@ -246,25 +246,35 @@ def createStrainFromFile(node):
 # Description: Traverses newick tree in post order to compute the cost of a lineage
 ######################################################
 def computeLineageCost(node, targetName, lineageCost):
+    newLineageCost = LineageSummary(targetName)
     
-    if lineageCost != None:
-        #TODO CREATE NEW OBJECT AND APPEND
-        print('')
-    else:
-        newLineageCost = LineageSummary(targetName) #LineageCost new object
+    if lineageCost != None: #Insert the previous costs
+        newLineageCost.totalCodonMismatches = lineageCost.totalCodonMismatches
+        newLineageCost.totalSubstitutions = lineageCost.totalSubstitutions
+    
+    if node.name != None: #Sometimes there's a none type. not sure why    
+        #Now add in the costs for the current node
         filteredList = iter(filter(lambda x: x.name == node.name, strains))
         foundStrain = next(filteredList, None)
-        if foundStrain == None:
-            print('Error! Unable to find the following strain: %s' %(targetName))
-            return None
-        else:
-            #Get the counts
+
+        if foundStrain != None:
             count = foundStrain.codonMismatchDetails.count(';')
-            newLineageCost.totalCodonMismatches = count
-            
+            newLineageCost.totalCodonMismatches += count
             count = foundStrain.substitutionDetails.count(';')
-            newLineageCost.totalSubstitutions = count
-    
+            newLineageCost.totalSubstitutions += count
+        if node.name == targetName: #Check if this is our target
+            print('Found  node in newick tree! The found node is: %s' % (targetName))
+            return newLineageCost
+        
+    if len(node.clades) > 0:
+        temp = computeLineageCost(node.clades[0], targetName, newLineageCost)
+        if temp != None:
+            return temp #If we found our target
+        else:
+            if len(node.clades) > 1:
+                temp = computeLineageCost(node.clades[1], targetName, newLineageCost)
+                if temp != None:
+                    return temp #If we found our target
     return None
     
 ######################################################
@@ -319,10 +329,10 @@ def traverseNewickTree(node, parentNode):
             print('No neighbor found!')
 
         ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
+        node.name = ancestor.name
         strains.append(ancestor)
-
+        
         return ancestor
-
     #Case 2: Only the left sibling exists so return it
     elif leftSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0:
         return leftSibling
@@ -356,12 +366,15 @@ outputTotalsToFile(outputFileName)
 #Output newick tree after the ancestors have been added to it
 Phylo.draw(newickTree)
 
-#TODO compute lineage
-target = ''
-computeLineageCost(newickTree.clade, target, None)
-
 endTime = time.time()
 totalTime = endTime - startTime
 print('Total time (in seconds): %s' % (totalTime))
 
+#TODO compute lineage
+target = 'NC_014019'
+print('Computing lineage cost for: %s' % (target))
+lineageCost = computeLineageCost(newickTree.clade, target, None)
+if lineageCost != None:
+    print('Successfully found and computed the lineage for: %s' % (target))
+    
 print('Ending application...')
