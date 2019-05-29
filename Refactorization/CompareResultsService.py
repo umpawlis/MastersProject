@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 #These indicate the names of the output files
 outputFile1 = 'ApplicationOutput.txt'
-outputFile2 = 'ApplicationOutput.txt'
+outputFile2 = 'generatorOutput.txt'
 
 ######################################################
 # constructDistributionGraph

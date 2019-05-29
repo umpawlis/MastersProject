@@ -1,0 +1,1 @@
+< o >, [Met_AUG, Pro_CCU], [16S, 23S, 5S, His_CAU, Lys_AAG, Ala_GCA, Asp_GAU], < t >, -Gly_GGC, -Phe_UUU, -[Glu_GAG, Phe_UUU, Gly_GGG], -[5S, 23S, 16S, Phe_UUC, Gln_CAA]

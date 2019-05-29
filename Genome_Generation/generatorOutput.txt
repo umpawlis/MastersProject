@@ -1,19 +1,33 @@
-((NC_013411:0.00000,NC_014206:0.00000):0.00000,NC_014103:0.00000):0.00000;
-Strain: NC_013411
-Substitution: 
-Duplication: Val_GUA 43,;
-Deletion: 16S 1,23S 2,5S 3,;
-Inversion: 
-Transposition: 
-Strain: NC_014206
-Substitution: 
-Duplication: Ser_UCU 35,;5S 15,;
-Deletion: 
-Inversion: 
-Transposition: 
-Strain: NC_014103
-Substitution: 
-Duplication: Pro_CCA 26,;Ala_GCU 5,Asp_GAU 6,Leu_CUA 7,;
-Deletion: 
-Inversion: 
-Transposition: 
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 9,;His_CAU 6,;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 4,;
+Deletion:His_CAU 3,;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:16S 3,;23S 4,5S 5,;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000003
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG -1,;
+Deletion:Met_AUG 1,;
+Inversion:
+Transposition:
+Inverted Transposition:

@@ -72,14 +72,14 @@ class Node:
 
 	def printNode(self):
 		outputFile = open("generatorOutput.txt", "a+")
-		outputFile.write("Strain: %s\n" % (self.name))
-		# print "Codon Mismatch: %s" % (self.codonMismatch)
-		outputFile.write("Substitution: %s\n" % (''.join(str(e) for e in self.subEvents)))
-		outputFile.write("Duplication: %s\n" % (''.join(str(e) for e in self.dupEvents)))
-		outputFile.write("Deletion: %s\n" % (''.join(str(e) for e in self.lossEvents)))
-		outputFile.write("Inversion: %s\n" % (''.join(str(e) for e in self.invEvents)))
-		outputFile.write("Transposition: %s\n" % (''.join(str(e) for e in self.transEvents)))
-		# print "Inverted Transposition: %s\n" % (self.invTransEvents)
+		outputFile.write("Strain:%s\n" % (self.name))
+		outputFile.write("Codon Mismatch:\n") # % (self.codonMismatch)
+		outputFile.write("Substitution:%s\n" % (''.join(str(e) for e in self.subEvents)))
+		outputFile.write("Duplication:%s\n" % (''.join(str(e) for e in self.dupEvents)))
+		outputFile.write("Deletion:%s\n" % (''.join(str(e) for e in self.lossEvents)))
+		outputFile.write("Inversion:%s\n" % (''.join(str(e) for e in self.invEvents)))
+		outputFile.write("Transposition:%s\n" % (''.join(str(e) for e in self.transEvents)))
+		outputFile.write("Inverted Transposition:\n") # % (self.invTransEvents)
 		# for event in self.branchEvents:
 		# 	print event
 		outputFile.close()
@@ -139,7 +139,7 @@ def main():
 	if not os.path.exists(genomeDirName):
 		os.makedirs(genomeDirName)
 
-	createAncestor(max(args.max_length, 50), args.num_operons)
+	createAncestor(max(args.max_length, 15), args.num_operons)
 	print "Ancestor:"
 	print formatGenome(beforeTerminus, afterTerminus)
 	print ""
@@ -230,15 +230,16 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 			print left.lossEvents
 			print right.lossEvents
 
-		currNode.name = "Ancestor" + str(ancestorCounter)
+		currNode.name = "Ancestor " + str(ancestorCounter)
 		ancestorCounter += 1
+		currNode.printNode()
 	elif node.name is not None and len(node.name) > 0:
 		completePath = genomeDirName + "/" + node.name
 		if not os.path.exists(completePath):
 			os.makedirs(completePath)
 
 		sequenceFile = open(completePath + "/sequence.txt", "w+")
-		sequenceFile.write(formatGenome(before, after))
+		sequenceFile.write(formatGenome(currentBefore, currentAfter))
 		sequenceFile.close()
 		eventsFile = open(completePath + "/events.txt", "w+")
 		for eachEvent in currentEvents:
@@ -913,7 +914,7 @@ def createAncestor(maxLength, numOperons):
 
 def createOperon():
 	operon = []
-	size = max(geometricSampling(0.4), 2)
+	size = max(geometricSampling(0.2), 2)
 
 	for i in range(size):
 		operon.append(random.choice(aminoAcids))
