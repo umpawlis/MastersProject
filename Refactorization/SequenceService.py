@@ -198,7 +198,7 @@ def createDotPlot(events, strain1, strain2):
 
 
 ######################################################
-# adjustOperonIndexesForPlot
+# normalizeIndexesForDotPlot
 # Parameters:
 # Description: Adjusts the dot plot points according to number of duplications and losses
 ######################################################
@@ -217,19 +217,16 @@ def normalizeIndexesForDotPlot(events, dup1, dup2, strain1, strain2):
     points.sort(key=lambda x:x.fragmentDetails1.fragmentIndex, reverse=False)
     for x in range(0, len(points)):
         point = points[x]
+        
+        #These points are different, need to adjust it according to the losses and duplications
+        index1 = point.fragmentDetails1.fragmentIndex
+        index2 = point.fragmentDetails2.fragmentIndex
 
-        if point.fragmentDetails1.fragmentIndex == point.fragmentDetails2.fragmentIndex: #The operon's position is conserved keep as is
-            point.fragmentDetails1.setPoint(point.fragmentDetails1.fragmentIndex)
-            point.fragmentDetails2.setPoint(point.fragmentDetails2.fragmentIndex)
-        else: #These points are different, need to adjust it according to the losses and duplications
-            index1 = point.fragmentDetails1.fragmentIndex
-            index2 = point.fragmentDetails2.fragmentIndex
+        lossCount1, dupCount1 = CountNumLossesAndDuplications(index1, lostPoints, dup1, strain1)
+        lossCount2, dupCount2 = CountNumLossesAndDuplications(index2, lostPoints, dup2, strain2)
 
-            count1 = CountNumLossesAndDuplications(index1, lostPoints, dup1, strain1)
-            count2 = CountNumLossesAndDuplications(index2, lostPoints, dup2, strain2)
-
-            point.fragmentDetails1.setPoint(index1 - count1)
-            point.fragmentDetails2.setPoint(index2 - count2)
+        point.fragmentDetails1.setPoint(index1 - dupCount1 - lossCount1)
+        point.fragmentDetails2.setPoint(index2 - dupCount2 - lossCount2)
 
     return points, lostPoints
 
@@ -239,18 +236,20 @@ def normalizeIndexesForDotPlot(events, dup1, dup2, strain1, strain2):
 # Description: Counts the number of duplications and losses before the current index
 ######################################################
 def CountNumLossesAndDuplications(index, losses, dups, strain):
-    count = 0
+    dupCount = 0
+    lossCount = 0
+    
     #Number of losses
     if len(losses) > 0:
         for x in  range(0, len(losses)):
             if losses[x].fragmentDetails1.fragmentIndex < index and strain.name == losses[x].genome1Name:
-                count += 1
+                lossCount += 1
     #Number of duplications
     if len(dups) > 0:
-        for x in  range(0, len(dups)):
+        for x in range(0, len(dups)):
             if dups[x].fragmentDetails1.fragmentIndex < index and strain.name == dups[x].genome1Name:
-                count += 1
-    return count
+                dupCount += 1
+    return lossCount, dupCount
 
 ######################################################
 # createBarGraph
