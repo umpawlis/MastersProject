@@ -49,7 +49,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             op2 = strain2.genomeFragments[y] #Fragment
 
             event = Event(0)
-            event.setScore(0.0)
+            event.setScore(1.0)
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -62,7 +62,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 event.setOperon2Alignment(copy.deepcopy(op2.sequence))
 
                 eventMatrix[x][y] = event
-                globalAlignmentMatrix[x][y] = str(0) + '*'
+                globalAlignmentMatrix[x][y] = str(1) + '*'
 
             #Case 2: Two singleton genes are being compared and not the origin or terminus
             elif len(op1.sequence) == 1 and len(op2.sequence) == 1 and op1.description != 'Origin' and op2.description != 'Origin' and op1.description != 'Terminus' and op2.description != 'Terminus':
@@ -71,7 +71,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                     event.setOperon2Alignment(copy.deepcopy(op2.sequence))
 
                     eventMatrix[x][y] = event
-                    globalAlignmentMatrix[x][y] = str(0) + '*'
+                    globalAlignmentMatrix[x][y] = str(1) + '*'
                 else:
                     globalAlignmentMatrix[x][y] = -999 #Singletons don't match
 
@@ -84,10 +84,11 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
                 globalAlignmentMatrix[x][y] = score
 
-                threshold = max(len(op1.sequence), len(op2.sequence))
-                threshold = threshold//3
-                numOperonDifferences = computeOperonDifferences(op1.sequence, op2.sequence)
-                if numOperonDifferences <= threshold:
+                #threshold = max(len(op1.sequence), len(op2.sequence))
+                #threshold = threshold//3
+                #numOperonDifferences = computeOperonDifferences(op1.sequence, op2.sequence)
+                #if numOperonDifferences <= threshold:
+                if score >= 0:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
 
             #Case 4: One of them is an operon and the other is a singleton
@@ -113,10 +114,10 @@ def performGlobalAlignment(operon1, operon2, event):
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
 
     for a in range(0, len(operon1)+1):
-        scoreMatrix[a][0] = a
+        scoreMatrix[a][0] = -a
 
     for a in range(0, len(operon2)+1):
-        scoreMatrix[0][a] = a
+        scoreMatrix[0][a] = -a
 
     #perform the Global Alignment
     for a in range(1, len(operon1)+1):
@@ -125,12 +126,12 @@ def performGlobalAlignment(operon1, operon2, event):
             if operon1[a-1].split('_')[0].strip() == operon2[b-1].split('_')[0].strip():
                 #Codons match. Here we are comparing the genes with codons because if codons match, then whole gene will match
                 if operon1[a-1].strip() == operon2[b-1].strip():
-                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1]
+                    scoreMatrix[a][b] = scoreMatrix[a-1][b-1] + globals.match
                 else:
                     #Solves a special case with a bunch of duplicates with different codons
-                    scoreMatrix[a][b] = min(scoreMatrix[a-1][b-1] + globals.codonCost, scoreMatrix[a-1][b] + globals.deletionCost, scoreMatrix[a][b-1] + globals.deletionCost, scoreMatrix[a-1][b-1] + globals.substitutionCost)
+                    scoreMatrix[a][b] = max(scoreMatrix[a-1][b-1] + globals.codonCost, scoreMatrix[a-1][b] + globals.deletionCost, scoreMatrix[a][b-1] + globals.deletionCost, scoreMatrix[a-1][b-1] + globals.substitutionCost)
             else:
-                scoreMatrix[a][b] = min(scoreMatrix[a-1][b] + globals.deletionCost, scoreMatrix[a][b-1] + globals.deletionCost, scoreMatrix[a-1][b-1] + globals.substitutionCost)
+                scoreMatrix[a][b] = max(scoreMatrix[a-1][b] + globals.deletionCost, scoreMatrix[a][b-1] + globals.deletionCost, scoreMatrix[a-1][b-1] + globals.substitutionCost)
 
     #Compute the number of events that occured between the operons
     event = globalAlignmentTraceback(scoreMatrix, operon1, operon2, event)
@@ -187,7 +188,7 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
 
     while i > 0 or j > 0:
         #Case 1: Perfect match
-        if i > 0 and j > 0 and matrix[i][j] == matrix[i-1][j-1] and operon1[i-1] == operon2[j-1]:
+        if i > 0 and j > 0 and matrix[i][j] == (matrix[i-1][j-1] + globals.match) and operon1[i-1] == operon2[j-1]:
             match += 1
             alignmentSequence1.insert(0, operon1[i-1])
             alignmentSequence2.insert(0, operon2[j-1])
@@ -375,9 +376,9 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
     globalAlignmentCounter = 0
 
     maxValue = findMaxValueInMatrix(globalAlignmentMatrix)
-
+    currentScoreSelected = maxValue
     #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
-    while currentScoreSelected <= maxValue:
+    while currentScoreSelected >= 0:
         #For each cell in the matrix
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
@@ -420,7 +421,7 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         events.append(event)
                         print('###################################\n')
 
-        currentScoreSelected += globals.codonCost
+        currentScoreSelected += (-0.5)
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
 
 ######################################################
@@ -454,18 +455,21 @@ def constructStatement(indexes, genes, fragmentDetails):
 ######################################################
 def reconstructOperonSequence(event, strain1, strain2):
     ancestralOperon = copy.deepcopy(event.operon1Alignment) #The alignments will be identical except when codon mismatches or substitutions occur
-    if event.score == 0:
+    
+    operon1Gaps = event.operon1Gaps
+    operon2Gaps = event.operon2Gaps
+    
+    if len(operon1Gaps) == 0 and len(operon2Gaps) == 0:
         print('No differences detected between these two operons')
         event.setAncestralOperonGeneSequence(ancestralOperon)
     else:
         print('Differences detected between these two operons!')
-        operon1Gaps = event.operon1Gaps
-        operon2Gaps = event.operon2Gaps
+        
         operon1GapIndexes = event.operon1GapIndexes
         operon2GapIndexes = event.operon2GapIndexes
         operon1GapPositions = event.operon1GapPositions
         operon2GapPositions = event.operon2GapPositions
-
+        
         print('These are the extra genes for operon 1: %s' %(operon1Gaps))
         print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
         print('These are the positions of the extra genes in operon 1: %s' %(operon1GapPositions))
