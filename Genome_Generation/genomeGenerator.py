@@ -26,12 +26,22 @@ trans_pValue = 0.0
 
 ancestorCounter = 1
 
+totalLosses = {}
+totalDuplications = {}
+distribInversions = {}
+distribTranspositions = {}
+distribInvertedTrans = {}
+totalInversions = 0
+totalTranspositions = 0
+totalInvertedTrans = 0
+
 class Event:
-	def __init__(self, eventType, indexRange, genes, prevEventRange = None):
+	def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
 		self.type = eventType
 		self.range = indexRange
 		self.genes = genes
 		self.prevEventRange = prevEventRange
+		self.operonFormat = operonFormat
 
 	def __repr__(self):
 		return "Event(Type = %r, Range = %r, Genes: %r" % (self.type, self.range, self.genes)
@@ -39,14 +49,17 @@ class Event:
 	def __str__(self):
 		event = ""
 
-		for gene, index in zip(self.genes, self.range):
-			event += gene + " " + str(index) + ","
-		event += ";"
+		if self.type == "I":
+			event = self.operonFormat + "|"
+		else:
+			for gene, index in zip(self.genes, self.range):
+				event += gene + " " + str(index) + ","
+			event += ";"
 
 		return event
 
 class Node:
-	def __init__(self, genome, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, orderedEvents):
+	def __init__(self, genome, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, branchEvents, lineageEvents):
 		self.name = None
 		self.genome = genome
 		self.parent = parent
@@ -56,7 +69,8 @@ class Node:
 		self.invEvents = invEvents
 		self.subEvents = subEvents
 		self.transEvents = transEvents
-		self.orderedEvents = orderedEvents
+		self.branchEvents = branchEvents
+		self.lineageEvents = lineageEvents
 
 	def getGenome(self):
 		return self.genome
@@ -80,6 +94,9 @@ class Node:
 		outputFile.write("Inversion:%s\n" % (''.join(str(e) for e in self.invEvents)))
 		outputFile.write("Transposition:%s\n" % (''.join(str(e) for e in self.transEvents)))
 		outputFile.write("Inverted Transposition:\n") # % (self.invTransEvents)
+
+		# for k, v in sorted(totalLosses.items()):
+		# 	outputFile.write(" size: %s count: %s," % (str(k), str(v)))
 		# for event in self.branchEvents:
 		# 	print event
 		outputFile.close()
@@ -144,7 +161,7 @@ def main():
 	print formatGenome(beforeTerminus, afterTerminus)
 	print ""
 
-	root = Node(formatGenome(beforeTerminus, afterTerminus), None, "", "", "", "", "", None)
+	root = Node(formatGenome(beforeTerminus, afterTerminus), None, "", "", "", "", "", None, None)
 
 	print('Reading in newick tree structure from file: %s...' % (newickFileName))
 	newickTree = Phylo.read(newickFileName, 'newick')
@@ -154,12 +171,46 @@ def main():
 
 	listOfEvents = []
 	if len(currNode.clades) > 0:
-		buildTreeData(currNode.clades[0], beforeTerminus, afterTerminus, numEvents, listOfEvents, root)
+		left = buildTreeData(currNode.clades[0], beforeTerminus, afterTerminus, numEvents, listOfEvents, root)
+		hasRight = False
 		if len(currNode.clades) > 1:
-			buildTreeData(currNode.clades[1], beforeTerminus, afterTerminus, numEvents, listOfEvents, root)
+			if len(left.invEvents) > 0:
+				# Used so that there is a lower chance of both children having inversions (not common)
+				invMultiplier = 0.5
+			else:
+				invMultiplier = 1.0
+			right = buildTreeData(currNode.clades[1], beforeTerminus, afterTerminus, numEvents, listOfEvents, root, invMultiplier)
+			hasRight = True
 
-def buildTreeData(node, before, after, numEvents, events, parent):
+		left.printNode()
+		if hasRight:
+			right.printNode()
+
+	printTotals()
+
+def printTotals():
+	outputFile = open("generatorOutput.txt", "a+")
+	outputFile.write("Total Deletions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(totalLosses.items()))))
+	outputFile.write("Total Duplications:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(totalDuplications.items()))))
+	outputFile.write("Size Distribution of Inversions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(distribInversions.items()))))
+	outputFile.write("Size Distribution of Transpositions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(distribTranspositions.items()))))
+	outputFile.write("Size Distribution of Inverted Transpositions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(distribInvertedTrans.items()))))
+
+	outputFile.write("Total Inversions: %s\n" % (str(totalInversions)))
+	outputFile.write("Total Transpositions: %s\n" % (str(totalTranspositions)))
+	outputFile.write("Total Inverted Transpositions: %s\n" % (str(totalInvertedTrans)))
+	outputFile.close()
+
+def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier = 1.0):
 	global ancestorCounter
+	global totalLosses
+	global totalDuplications
+	global distribInversions
+	global distribTranspositions
+	global distribInvertedTrans
+	global totalInversions
+	global totalTranspositions
+	global totalInvertedTrans
 
 	currentBefore = copy.deepcopy(before)
 	currentAfter = copy.deepcopy(after)
@@ -183,56 +234,101 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 	print formatGenome(before, after)
 	print ""
 
-	for i in range(numEvents):
+	count = 0
+	while count < numEvents:
+		newEvent = True
 		rand = random.random()
 
 		if rand < probDup:
 			event, eventRange, genes, prevEventRange, sectionReversed = performDuplication(currentBefore, currentAfter, dup_pValue)
 			duplicationEvents.append(event)
+
+			if len(genes) in totalDuplications:
+				totalDuplications[len(genes)] += 1
+			else:
+				totalDuplications[len(genes)] = 1
 		elif rand < probDup + probLoss:
 			event, eventRange, genes = performLoss(currentBefore, currentAfter, loss_pValue)
 			lossEvents.append(event)
+
+			if len(genes) in totalLosses:
+				totalLosses[len(genes)] += 1
+			else:
+				totalLosses[len(genes)] = 1
 		elif rand < probDup + probLoss + probInv:
-			event, eventRange, genes = performInversion(currentBefore, currentAfter, inv_pValue)
-			inversionEvents.append(event)
+			if random.random() < invMultiplier:
+				event, eventRange, genes, size = performInversion(currentBefore, currentAfter, inv_pValue)
+				inversionEvents.append(event)
+				invMultiplier *= 0.5
+
+				if size in distribInversions:
+					distribInversions[size] += 1
+				else:
+					distribInversions[size] = 1
+				totalInversions += 1
+			else:
+				newEvent = False
+				count -= 1
 		elif rand < probDup + probLoss + probInv + probSub:
 			event, eventRange, genes = performSubstitution(currentBefore, currentAfter)
 			substitutionEvents.append(event)
+
 		elif rand < probDup + probLoss + probInv + probSub + probTrans:
 			event, eventRange, genes, prevEventRange, sectionReversed = performTransposition(currentBefore, currentAfter, trans_pValue)
 			transpositionEvents.append(event)
-		currentEvents.append(str(event))
 
-		print branchEvents
-		print event
-		updateEvents(branchEvents, event, currentBefore, currentAfter, prevEventRange)
-		updateIndexes(event, originalIndexes, currentIndexes, prevEventRange, sectionReversed)
-		branchEvents.append(event)
-		print branchEvents
+			if len(genes) in distribTranspositions:
+				distribTranspositions[len(genes)] += 1
+			else:
+				distribTranspositions[len(genes)] = 1
+			totalTranspositions += 1
 
-	currNode = Node(formatGenome(before, after), parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents)
+		if newEvent:
+			currentEvents.append(event)
+
+			print branchEvents
+			print event
+			updateEvents(branchEvents, event, currentBefore, currentAfter, prevEventRange)
+			updateIndexes(event, originalIndexes, currentIndexes, prevEventRange, sectionReversed)
+			branchEvents.append(event)
+			print branchEvents
+
+		count += 1
+
+	currNode = Node(formatGenome(before, after), parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents, currentEvents)
 
 	if len(node.clades) > 0:
 		left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode)
 		currNode.children.append(left)
+		hasRight = False
 		if len(node.clades) > 1:
-			right = buildTreeData(node.clades[1], currentBefore, currentAfter, numEvents, currentEvents, currNode)
+			if len(left.invEvents) > 0:
+				# Used so that there is a lower chance of both children having inversions (not common)
+				invMultiplier = 0.5
+			else:
+				invMultiplier = 1.0
+			right = buildTreeData(node.clades[1], currentBefore, currentAfter, numEvents, currentEvents, currNode, invMultiplier)
 			currNode.children.append(right)
+			hasRight = True
 
 			print "Updating Loss Events"
 			print left.lossEvents
 			print right.lossEvents
 
-			leftEvents = copy.deepcopy(left.orderedEvents)
-			adjustLossIndexes(left.lossEvents, right.orderedEvents, before, after)
+			leftEvents = copy.deepcopy(left.branchEvents)
+			adjustLossIndexes(left.lossEvents, right.branchEvents, before, after)
 			adjustLossIndexes(right.lossEvents, leftEvents, before, after)
 
 			print left.lossEvents
 			print right.lossEvents
 
+		left.printNode()
+		if hasRight:
+			right.printNode()
+
 		currNode.name = "Ancestor " + str(ancestorCounter)
 		ancestorCounter += 1
-		currNode.printNode()
+		# currNode.printNode()
 	elif node.name is not None and len(node.name) > 0:
 		completePath = genomeDirName + "/" + node.name
 		if not os.path.exists(completePath):
@@ -243,11 +339,11 @@ def buildTreeData(node, before, after, numEvents, events, parent):
 		sequenceFile.close()
 		eventsFile = open(completePath + "/events.txt", "w+")
 		for eachEvent in currentEvents:
-			eventsFile.write(eachEvent + "\n")
+			eventsFile.write(str(eachEvent) + "\n")
 		eventsFile.close()
 
 		currNode.name = node.name
-		currNode.printNode()
+		# currNode.printNode()
 
 	return currNode
 
@@ -391,7 +487,6 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
 
 
 def checkOverlap(range1, range2, eventType):
-	# overlap = range(max(range1[0], range2[0]), min(range1[-1], range2[-1])+1)
 	overlapIndexes = []
 
 	for i in range(len(range1)):
@@ -416,10 +511,10 @@ def getTerminusIndex(before):
 def checkBeforeOrOverlap(range1, range2):
 	return (((range1[0] <= range2[0]) and (range1[-1] >= range2[0])) or (range1[0] > range2[0])) 
 
-def adjustLossIndexes(losses, orderedEvents, before, after):
+def adjustLossIndexes(losses, branchEvents, before, after):
 	lossUpdate = True
 
-	for event in orderedEvents:
+	for event in branchEvents:
 		updateEvents(losses, event, before, after, event.prevEventRange, lossUpdate)
 
 def formatGenome(before, after):
@@ -588,7 +683,7 @@ def performSubstitution(before, after):
 
 	eventType = "S"
 	branchEvent = Event(eventType, range(absoluteIndex, absoluteIndex+1), gene)
-	return branchEvent, range(absoluteIndex, absoluteIndex+1), gene, range(beforeStartIndex, beforeStopIndex)
+	return branchEvent, range(absoluteIndex, absoluteIndex+1), gene
 
 def getDifferentGene(currGene):
 	while True:
@@ -633,12 +728,15 @@ def performInversion(before, after, p):
 					genes.append(gene)
 					indexes.append(absoluteIndex)
 					absoluteIndex += 1
+				event = event[:-1]
+				event += ";"
 			else:
-				event += operon + " " + str(absoluteIndex) + ","
+				event += operon + " " + str(absoluteIndex) + ";"
 				genes.append(operon)
 				indexes.append(absoluteIndex)
 				absoluteIndex += 1
 
+	event += "< t > " + str(absoluteIndex) + ";"
 	absoluteIndex += 1 # for the terminus
 	if beforeSection is not None:
 		for operon in reversed(beforeSection):
@@ -648,8 +746,10 @@ def performInversion(before, after, p):
 					genes.append(gene)
 					indexes.append(absoluteIndex)
 					absoluteIndex += 1
+				event = event[:-1]
+				event += ";"
 			else:
-				event += operon + " " + str(absoluteIndex) + ","
+				event += operon + " " + str(absoluteIndex) + ";"
 				genes.append(operon)
 				indexes.append(absoluteIndex)
 				absoluteIndex += 1
@@ -662,8 +762,9 @@ def performInversion(before, after, p):
 	print ""
 
 	eventType = "I"
-	branchEvent = Event(eventType, indexes, genes)
-	return branchEvent, indexes, genes
+	branchEvent = Event(eventType, indexes, genes, None, event)
+	size = lengthBefore + lengthAfter + 1  #Additional +1 for terminus
+	return branchEvent, indexes, genes, size
 
 def reverseOperons(sequence):
 	for index in sequence:
@@ -914,7 +1015,7 @@ def createAncestor(maxLength, numOperons):
 
 def createOperon():
 	operon = []
-	size = max(geometricSampling(0.2), 2)
+	size = max(geometricSampling(0.6), 2)
 
 	for i in range(size):
 		operon.append(random.choice(aminoAcids))

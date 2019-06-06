@@ -87,7 +87,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 threshold = max(len(op1.sequence), len(op2.sequence))
                 threshold = threshold//3
                 numOperonDifferences = computeOperonDifferences(op1.sequence, op2.sequence)
-                if numOperonDifferences <= threshold:
+                if score >= 0:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
 
             #Case 4: One of them is an operon and the other is a singleton
