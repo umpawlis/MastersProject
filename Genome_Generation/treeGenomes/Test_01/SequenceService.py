@@ -155,16 +155,17 @@ def createDotPlot(events, strain1, strain2):
     for i in range(0, len(events)):
         if events[i].technique == 'Global Alignment' or events[i].technique == 'Local Alignment':
             #Assign the coords to the appropriate array, the index represents the position of the operon with respect to the genome
+            totalNumEvents = events[i].numMismatches + events[i].numCodonMismatches + events[i].numSubstitutions
             if events[i].technique == 'Local Alignment':
                 red_x_coord.append(events[i].fragmentDetails1.point)
                 red_y_coord.append(events[i].fragmentDetails2.point)
-            elif events[i].score == 0 and (events[i].fragmentDetails1.description == 'Terminus' or events[i].fragmentDetails1.description == 'Origin'):
+            elif events[i].fragmentDetails1.description == 'Terminus' or events[i].fragmentDetails1.description == 'Origin':
                 black_x_coord.append(events[i].fragmentDetails1.point)
                 black_y_coord.append(events[i].fragmentDetails2.point)
-            elif events[i].score == 0:
+            elif totalNumEvents == 0:
                 green_x_coord.append(events[i].fragmentDetails1.point)
                 green_y_coord.append(events[i].fragmentDetails2.point)
-            elif events[i].score == 1 or events[i].score == 2:
+            elif totalNumEvents == 1 or totalNumEvents == 2:
                 yellow_x_coord.append(events[i].fragmentDetails1.point)
                 yellow_y_coord.append(events[i].fragmentDetails2.point)
             else:

@@ -5,6 +5,8 @@ class Event(object):
         self.numCodonMismatches = 0
         self.numSubstitutions = 0
         self.numMismatches = 0
+        self.operon1Gaps = []
+        self.operon2Gaps = []
 
     def setScore(self, score):
         self.score = score

@@ -4,15 +4,18 @@
 def initialize():
     global trackingId
     trackingId = 0
+    
+    global match
+    match = 1
 
     global codonCost
     codonCost = 0.5
 
     global deletionCost
-    deletionCost = 1
+    deletionCost = -1
 
     global substitutionCost
-    substitutionCost = 1
+    substitutionCost = -1
 
     global yDistanceThreshold
     yDistanceThreshold = 3
