@@ -1,0 +1,33 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 9,;His_CAU 6,;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 4,;
+Deletion:His_CAU 3,;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:16S 3,;23S 4,5S 5,;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000003
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG -1,;
+Deletion:Met_AUG 1,;
+Inversion:
+Transposition:
+Inverted Transposition:
