@@ -1,6 +1,7 @@
 from SequenceService import addDuplicationEventsToStrain
 from SequenceService import addDeletionEventsToStrain
 from SequenceService import computeOperonDifferences
+from DeletionDetails import DeletionDetails
 from Event import Event
 import numpy as np
 import globals
@@ -488,6 +489,14 @@ def reconstructOperonSequence(event, strain1, strain2):
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
         j = len(operon2Gaps)
+        
+        #Tracks the genes marked as deleted and their positions
+        deletedGenes = []
+        deletedGenesPositions = []
+        fragmentIds = []
+        strains = []
+        originalDeletedGenes = []
+        originalDeletedGenesPositions = []
 
         while (i > 0) or (j > 0):
             #Select the gap with the biggest index b/c we will be performing the insertion rear to front of operon to avoid messing up the indexes of the other gaps
@@ -513,6 +522,14 @@ def reconstructOperonSequence(event, strain1, strain2):
                             genePos = operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
+                        
+                        #Deleted genes in the ancestral operon
+                        deletedGenes.append(operon1Gaps[i-1][k])
+                        deletedGenesPositions.append(len(ancestralOperon) - int(operon1GapIndexes[i-1]))
+                        fragmentIds.append(event.fragmentDetails1.fragmentIndex)
+                        strains.append(strain1)
+                        originalDeletedGenes.append(operon1Gaps[i-1][k])
+                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails1.startPositionInGenome)
                         
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -545,6 +562,14 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
+                        #Deleted genes in the ancestral operon
+                        deletedGenes.append(operon2Gaps[j-1][k])
+                        deletedGenesPositions.append(len(ancestralOperon) - int(operon2GapIndexes[j-1]))
+                        fragmentIds.append(event.fragmentDetails2.fragmentIndex)
+                        strains.append(strain2)
+                        originalDeletedGenes.append(operon2Gaps[j-1][k])
+                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails2.startPositionInGenome)
+                        
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
@@ -575,6 +600,14 @@ def reconstructOperonSequence(event, strain1, strain2):
                             genePos = operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
+                        
+                        #Deleted genes in the ancestral operon
+                        deletedGenes.append(operon1Gaps[i-1][k])
+                        deletedGenesPositions.append(len(ancestralOperon) - int(operon1GapIndexes[i-1]))
+                        fragmentIds.append(event.fragmentDetails1.fragmentIndex)
+                        strains.append(strain1)
+                        originalDeletedGenes.append(operon1Gaps[i-1][k])
+                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails1.startPositionInGenome)
                         
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -607,13 +640,34 @@ def reconstructOperonSequence(event, strain1, strain2):
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
                         
+                        #Deleted genes in the ancestral operon
+                        deletedGenes.append(operon2Gaps[j-1][k])
+                        deletedGenesPositions.append(len(ancestralOperon) - int(operon2GapIndexes[j-1]))
+                        fragmentIds.append(event.fragmentDetails2.fragmentIndex)
+                        strains.append(strain2)
+                        originalDeletedGenes.append(operon2Gaps[j-1][k])
+                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails2.startPositionInGenome)
+                        
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
-
+        
+        #Adds deletion details to a global tracker
+        if len(deletedGenes) > 0:
+            for x in range(0, len(deletedGenes)):
+                gene = deletedGenes[x] #Gene that was deleted
+                position = len(ancestralOperon) - deletedGenesPositions[x]  #Postion of the gene that was deleted with respect to ancestral operon
+                fragmentId = fragmentIds[x]
+                strain = strains[x]
+                originalGene = originalDeletedGenes[x]
+                originalPosition = originalDeletedGenesPositions[x]
+                #Construct the deletion tracker object
+                details = DeletionDetails(gene, position, fragmentId, strain, originalGene, originalPosition, ancestralOperon)
+                event.deletionDetailsList.append(details)
+                
         #Set ancestral operon
         event.setAncestralOperonGeneSequence(ancestralOperon)
         #print('This is the resulting ancestral operon: %s' % (ancestralOperon))

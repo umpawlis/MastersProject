@@ -664,6 +664,14 @@ def constructGenome(arrangedFragments):
 
             newFragment = GenomeFragment(fragmentIndex, originalSequence, positiveOrientationGeneSequence, geneIndex, description, negativeOrientation)
             ancestralFragments.append(newFragment)
+            
+            #Update the deletion details if needed
+            if len(fragment.deletionDetailsList) > 0:
+                for item in fragment.deletionDetailsList:
+                    if negativeOrientation == True:
+                        item.ancestralPosition = len(positiveOrientationGeneSequence) - item.ancestralPosition
+                    item.ancestralFragmentId = fragmentIndex
+                    newFragment.deletionDetailsList.append(item)
 
             fragmentIndex += 1
             geneIndex += len(geneSequence)

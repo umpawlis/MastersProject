@@ -7,6 +7,7 @@ class Event(object):
         self.numMismatches = 0
         self.operon1Gaps = []
         self.operon2Gaps = []
+        self.deletionDetailsList = []
 
     def setScore(self, score):
         self.score = score
