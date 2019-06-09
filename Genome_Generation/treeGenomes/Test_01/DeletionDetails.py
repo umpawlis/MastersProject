@@ -15,6 +15,7 @@ class DeletionDetails(object):
         self.originalPosition = originalPosition
         self.ancestralOperon = ancestralOperon
         self.ancestralFragmentId = -1
+        self.geneRemoved = False
         
     def toString(self):
         return "Ancestral Operon: %s\nAncestral Gene: %s\nAncestral Position: %s\nFragment Id: %s\nOriginal Gene: %s\nOriginal Position: %s\nOriginal Strain: %s" %(self.ancestralOperon, self.ancestralGene, self.ancestralPosition, self.strainFragmentId, self.originalGene, self.originalPosition, self.strain.name)

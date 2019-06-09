@@ -668,8 +668,6 @@ def constructGenome(arrangedFragments):
             #Update the deletion details if needed
             if len(fragment.deletionDetailsList) > 0:
                 for item in fragment.deletionDetailsList:
-                    if negativeOrientation == True:
-                        item.ancestralPosition = len(positiveOrientationGeneSequence) - item.ancestralPosition
                     item.ancestralFragmentId = fragmentIndex
                     newFragment.deletionDetailsList.append(item)
 

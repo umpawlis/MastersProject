@@ -78,18 +78,58 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             #Case 3: Both are operons
             elif len(op1.sequence) > 1 and len(op2.sequence) > 1:
-                score, event = performGlobalAlignment(op1.sequence, op2.sequence, event)
-
-                event.setScore(score)
-                eventMatrix[x][y] = event
-
-                globalAlignmentMatrix[x][y] = score
+                redoAlignment1 = False #Tracks whether we should redo the alignment to potentially get a better score
+                redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
+                firstAttemptEvent = copy.deepcopy(event)
+                firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
+                
+                #Remove genes that were deleted twice in a row (check both fragments)
+                if len(event.fragmentDetails1.deletionDetailsList) > 0:
+                    eventCopy1 = copy.deepcopy(firstAttemptEvent)
+                    op1Copy = copy.deepcopy(op1)
+                    redoAlignment1, op1Copy, deletionDetailsList1 = removeGenesDeletedMultipleGenerations(eventCopy1, op1Copy, eventCopy1.operon1Gaps, eventCopy1.operon1GapPositions)
+                if len(event.fragmentDetails2.deletionDetailsList) > 0:
+                    eventCopy2 = copy.deepcopy(firstAttemptEvent)
+                    op2Copy = copy.deepcopy(op2)
+                    redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions)
+                
+                #Redo the Alignment if any genes were removed from the operon
+                if redoAlignment1 or redoAlignment2:
+                    secondAttemptEvent = copy.deepcopy(event)
+                    if redoAlignment1:
+                        secondAttemptOp1 = op1Copy
+                        secondAttemptEvent.setFragmentDetails1(op1Copy)
+                        secondAttemptEvent.fragmentDetails1.deletionDetailsList1
+                    else:
+                        secondAttemptOp1 = op1
+                    if redoAlignment2:
+                        secondAttemptOp2 = op2Copy
+                        secondAttemptEvent.setFragmentDetails2(op2Copy)
+                        secondAttemptEvent.fragmentDetails2.deletionDetailsList2
+                    else:
+                        secondAttemptOp2 = op2
+                    secondAttemptScore, secondAttemptEvent = performGlobalAlignment(secondAttemptOp1.sequence, secondAttemptOp2.sequence, secondAttemptEvent)
+                    
+                    if secondAttemptScore > firstAttemptScore:
+                        bestScore = secondAttemptScore
+                        secondAttemptEvent.genesDeletedFromOperon = True
+                        bestEvent = secondAttemptEvent
+                    else:
+                        bestScore = firstAttemptScore
+                        bestEvent = firstAttemptEvent
+                else:
+                    bestScore = firstAttemptScore
+                    bestEvent = firstAttemptEvent
+                #At this point we have the best scores
+                bestEvent.setScore(bestScore)
+                eventMatrix[x][y] = bestEvent
+                globalAlignmentMatrix[x][y] = bestScore
 
                 #threshold = max(len(op1.sequence), len(op2.sequence))
                 #threshold = threshold//3
                 #numOperonDifferences = computeOperonDifferences(op1.sequence, op2.sequence)
                 #if numOperonDifferences <= threshold:
-                if score >= 0:
+                if bestScore >= 0:
                     globalAlignmentMatrix[x][y] = str(globalAlignmentMatrix[x][y]) + '*'
 
             #Case 4: One of them is an operon and the other is a singleton
@@ -103,6 +143,59 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
     #outputResultsToExcel(strain1Name, strain2Name, firstOperonList, secondOperonList, globalAlignmentMatrix)
 
     return globalAlignmentMatrix, eventMatrix
+
+######################################################
+# checkDeletionEvents
+# Parameters:
+# Description: Checks if given gene and position exists in the deletion details list
+######################################################
+def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions):
+    if len(operonGaps) > 0:
+        operonGaps.reverse()             #Reverse the arrays so we start removing from the highest positions
+        operonGapPositions.reverse()     #Reverse the arrays so we start removing from the highest positions
+        sequenceChanged = False          #Tracks whether we actually removed any genes
+        for t in range(0, len(operonGaps)):
+            genes = operonGaps[t]
+            positions = operonGapPositions[t]
+            for g in range(0, len(genes)):
+                gene = genes[g]
+                position = positions[g]
+                #Check if this combination exists in the deletion tracker
+                removeGenes = checkDeletionEvents(gene, position, event.fragmentDetails1.deletionDetailsList)
+                if removeGenes == True:
+                    sequenceChanged = True
+                    redoAlignment = True
+                    del op.sequence[position]
+        #Reconstruct the operon string sequence now
+        if sequenceChanged:
+            sequenceCopy = copy.deepcopy(op.sequence)
+            stringOperon = ''
+            if op.isNegativeOrientation == True:
+                sequenceCopy.reverse()
+                stringOperon += '-'
+            stringOperon += '['
+            for q in range(0, len(sequenceCopy)):
+                geneCopy = sequenceCopy[q]
+                if q != (len(sequenceCopy) - 1):
+                    stringOperon += geneCopy + ', '
+                else:
+                    stringOperon += geneCopy
+            stringOperon += ']'
+            op.originalSequence = stringOperon
+    return redoAlignment, op, event.fragmentDetails1.deletionDetailsList
+
+######################################################
+# checkDeletionEvents
+# Parameters:
+# Description: Checks if given gene and position exists in the deletion details list
+######################################################
+def checkDeletionEvents(gene, position, deletionList):
+    for x in range(0, len(deletionList)):
+        deletion = deletionList[x]
+        if deletion.ancestralGene == gene and int(deletion.ancestralPosition) == int(position):
+            deletion.geneRemoved = True
+            return True
+    return False
 
 ######################################################
 # performGlobalAlignment
