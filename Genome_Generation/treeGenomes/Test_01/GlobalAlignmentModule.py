@@ -595,18 +595,32 @@ def removeGenesFromStrains(deletionList):
                             strain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
                             listOfGenes = description.split(',')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
-                            #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0
+                            
+                            #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0 both in the strain and global counter
+                            globals.deletionSizeCounter[count] += -1
                             strain.deletionCounts[count] += -1
                             if (count - 1) > 0:
+                                if (count - 1) in globals.deletionSizeCounter:
+                                    globals.deletionSizeCounter[count - 1] += 1
+                                else:
+                                    globals.deletionSizeCounter[count - 1] = 1
+                                    
                                 if (count - 1) in strain.deletionCounts:
                                     strain.deletionCounts[count - 1] += 1
                                 else:
                                     strain.deletionCounts[count - 1] = 1
+                                    
                             #Add the duplication to the duplication count
+                            if 1 in globals.duplicationSizeCounter:
+                                globals.duplicationSizeCounter[1] += 1
+                            else:
+                                globals.duplicationSizeCounter[1] = 1
+                                
                             if 1 in strain.duplicationCounts:
                                 strain.duplicationCounts[1] += 1
                             else:
                                 strain.duplicationCounts[1] = 1
+                                
                             listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
                             if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
                                 newString = ''
