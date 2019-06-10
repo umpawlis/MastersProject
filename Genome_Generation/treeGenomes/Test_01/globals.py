@@ -5,6 +5,9 @@ def initialize():
     global trackingId
     trackingId = 0
     
+    global strains
+    strains = []
+    
     global match
     match = 1
 

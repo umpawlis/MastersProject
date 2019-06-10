@@ -87,11 +87,11 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
                     op1Copy = copy.deepcopy(op1)
-                    redoAlignment1, op1Copy, deletionDetailsList1 = removeGenesDeletedMultipleGenerations(eventCopy1, op1Copy, eventCopy1.operon1Gaps, eventCopy1.operon1GapPositions)
+                    redoAlignment1, op1Copy, deletionDetailsList1 = removeGenesDeletedMultipleGenerations(eventCopy1, op1Copy, eventCopy1.operon1Gaps, eventCopy1.operon1GapPositions, eventCopy1.fragmentDetails1.fragmentIndex)
                 if len(event.fragmentDetails2.deletionDetailsList) > 0:
                     eventCopy2 = copy.deepcopy(firstAttemptEvent)
                     op2Copy = copy.deepcopy(op2)
-                    redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions)
+                    redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions, eventCopy2.fragmentDetails2.fragmentIndex)
                 
                 #Redo the Alignment if any genes were removed from the operon
                 if redoAlignment1 or redoAlignment2:
@@ -99,13 +99,13 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                     if redoAlignment1:
                         secondAttemptOp1 = op1Copy
                         secondAttemptEvent.setFragmentDetails1(op1Copy)
-                        secondAttemptEvent.fragmentDetails1.deletionDetailsList1
+                        secondAttemptEvent.fragmentDetails1.deletionDetailsList = deletionDetailsList1
                     else:
                         secondAttemptOp1 = op1
                     if redoAlignment2:
                         secondAttemptOp2 = op2Copy
                         secondAttemptEvent.setFragmentDetails2(op2Copy)
-                        secondAttemptEvent.fragmentDetails2.deletionDetailsList2
+                        secondAttemptEvent.fragmentDetails2.deletionDetailsList = deletionDetailsList2
                     else:
                         secondAttemptOp2 = op2
                     secondAttemptScore, secondAttemptEvent = performGlobalAlignment(secondAttemptOp1.sequence, secondAttemptOp2.sequence, secondAttemptEvent)
@@ -149,7 +149,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 # Parameters:
 # Description: Checks if given gene and position exists in the deletion details list
 ######################################################
-def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions):
+def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions, fragmentId):
     if len(operonGaps) > 0:
         operonGaps.reverse()             #Reverse the arrays so we start removing from the highest positions
         operonGapPositions.reverse()     #Reverse the arrays so we start removing from the highest positions
@@ -161,7 +161,7 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                 gene = genes[g]
                 position = positions[g]
                 #Check if this combination exists in the deletion tracker
-                removeGenes = checkDeletionEvents(gene, position, event.fragmentDetails1.deletionDetailsList)
+                removeGenes = checkDeletionEvents(gene, position, event.fragmentDetails1.deletionDetailsList, fragmentId)
                 if removeGenes == True:
                     sequenceChanged = True
                     redoAlignment = True
@@ -189,10 +189,11 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
 # Parameters:
 # Description: Checks if given gene and position exists in the deletion details list
 ######################################################
-def checkDeletionEvents(gene, position, deletionList):
+def checkDeletionEvents(gene, position, deletionList, fragmentId):
     for x in range(0, len(deletionList)):
         deletion = deletionList[x]
-        if deletion.ancestralGene == gene and int(deletion.ancestralPosition) == int(position):
+        #Make sure these are the genes from the same operon!!
+        if deletion.ancestralGene == gene and int(deletion.ancestralPosition) == int(position) and fragmentId == deletion.ancestralFragmentId:
             deletion.geneRemoved = True
             return True
     return False
@@ -490,6 +491,35 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         coverageTracker2[j] = True
 
                         event = eventMatrix[i][j]
+                        
+                        #Check if we have to go back and remove genes
+                        if event.genesDeletedFromOperon == True:
+                            #Check which of the strains we need to do a backtrack on
+                            doBackTrack1, numGenesDeleted1 = operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList)
+                            doBackTrack2, numGenesDeleted2 = operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList)
+                            if doBackTrack1:
+                                #Get strain 1 from global strains array
+                                filteredList = iter(filter(lambda x : x.name == event.genome1Name, globals.strains))
+                                ancestor1 = next(filteredList, None)
+                                if ancestor1 != None:
+                                    #Get the operon that was modified
+                                    filteredList = iter(filter(lambda x : x.fragmentIndex >= event.fragmentDetails1.fragmentIndex, ancestor1.genomeFragments))
+                                    fragment = next(filteredList, None)
+                                    while fragment:
+                                        if fragment.fragmentIndex == event.fragmentDetails1.fragmentIndex:
+                                            #Replace the operon array and the string sequence
+                                            fragment.originalSequence = copy.deepcopy(event.fragmentDetails1.originalSequence)
+                                            fragment.sequence = copy.deepcopy(event.fragmentDetails1.sequence)
+                                        else:
+                                            #Update the start position of the other operons by subtracting by the number of genes deleted
+                                            fragment.startPositionInGenome = int(fragment.startPositionInGenome) - numGenesDeleted1
+                                        fragment = next(filteredList, None)
+                                    #Now remove one gene at a time from the strains
+                                    
+                                else:
+                                    print('Error! Something went wrong because we failed to find ancestor %s!' % (event.genome1Name))
+
+                        
                         event.trackingEventId = globals.trackingId
                         event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
@@ -517,6 +547,21 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
         currentScoreSelected += (-0.5)
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
+
+######################################################
+# operonHadGenesRemoved
+# Parameters:
+# Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
+######################################################
+def operonHadGenesRemoved(deletions):
+    count = 0
+    result = False
+    if len(deletions) > 0:
+        for deletion in deletions:
+            if deletion.geneRemoved == True:
+                result = True
+                count += 1
+    return result, count
 
 ######################################################
 # constructStatement
@@ -622,7 +667,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         fragmentIds.append(event.fragmentDetails1.fragmentIndex)
                         strains.append(strain1)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
-                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails1.startPositionInGenome)
+                        originalDeletedGenesPositions.append(genePos)
                         
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -661,7 +706,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         fragmentIds.append(event.fragmentDetails2.fragmentIndex)
                         strains.append(strain2)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
-                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails2.startPositionInGenome)
+                        originalDeletedGenesPositions.append(genePos)
                         
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -700,7 +745,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         fragmentIds.append(event.fragmentDetails1.fragmentIndex)
                         strains.append(strain1)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
-                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails1.startPositionInGenome)
+                        originalDeletedGenesPositions.append(genePos)
                         
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -739,7 +784,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         fragmentIds.append(event.fragmentDetails2.fragmentIndex)
                         strains.append(strain2)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
-                        originalDeletedGenesPositions.append(genePos - event.fragmentDetails2.startPositionInGenome)
+                        originalDeletedGenesPositions.append(genePos)
                         
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]

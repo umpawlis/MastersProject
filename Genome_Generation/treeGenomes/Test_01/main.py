@@ -352,6 +352,7 @@ newickTree = Phylo.read(newickFileName, 'newick')
 Phylo.draw(newickTree)
 
 globals.initialize() #Initialize the globals file
+globals.strains = strains #Assign pointer to the global strains array so we can access it anywhere
 createFile(outputFileName, newickTree) #Creates file where data will be output
 
 #Traverses the newick tree recursively reconstructing ancestral genomes
