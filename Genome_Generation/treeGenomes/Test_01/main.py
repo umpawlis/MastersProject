@@ -107,8 +107,8 @@ def createAncestor(strain1, strain2, neighborStrain):
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
     
     #Append all details to file here
-    outputStrainDetailsToFile(outputFileName, strain1)
-    outputStrainDetailsToFile(outputFileName, strain2)
+    #outputStrainDetailsToFile(outputFileName, strain1)
+    #outputStrainDetailsToFile(outputFileName, strain2)
     
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     return ancestor
@@ -274,7 +274,23 @@ def computeLineageCost(node, targetName, lineageCost):
                 if temp != None:
                     return temp #If we found our target
     return None
-    
+
+######################################################
+# traverseNewickTreeAndOutputToFile
+# Parameters: node - Strain being currently processed
+# Description: Traverses a provided newick tree in post order traversal to output the appropriate details to the output file
+######################################################
+def traverseNewickTreeAndOutputToFile(node):
+    if len(node.clades) > 0:
+        traverseNewickTreeAndOutputToFile(node.clades[0])
+        if len(node.clades) > 1:
+            traverseNewickTreeAndOutputToFile(node.clades[1])
+    if node.name != None and len(node.name) > 0:
+        filteredList = iter(filter(lambda x: x.name == node.name, strains))
+        foundStrain = next(filteredList, None)
+        if foundStrain != None:
+            outputStrainDetailsToFile(outputFileName, foundStrain)
+            
 ######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node
@@ -359,21 +375,22 @@ createFile(outputFileName, newickTree) #Creates file where data will be output
 print('Traversing newick tree...')
 result = traverseNewickTree(newickTree.clade, None)
 
-#Output the totals for the computation to console and file
-outputTotalsToFile(outputFileName)
-
 #Output newick tree after the ancestors have been added to it
 Phylo.draw(newickTree)
 
+#Need to traverse tree to ouput appropriate content to file
+traverseNewickTreeAndOutputToFile(newickTree.clade)
+    
+#Output the totals for the computation to console and file
+outputTotalsToFile(outputFileName)
+
+#TODO compute lineage
+#target = 'NC_014019'
+#print('Computing lineage cost for: %s' % (target))
+#lineageCost = computeLineageCost(newickTree.clade, target, None)
+#if lineageCost != None:
+    #print('Successfully found and computed the lineage for: %s' % (target))
 endTime = time.time()
 totalTime = endTime - startTime
 print('Total time (in seconds): %s' % (totalTime))
-
-#TODO compute lineage
-target = 'NC_014019'
-print('Computing lineage cost for: %s' % (target))
-lineageCost = computeLineageCost(newickTree.clade, target, None)
-if lineageCost != None:
-    print('Successfully found and computed the lineage for: %s' % (target))
-    
 print('Ending application...')
