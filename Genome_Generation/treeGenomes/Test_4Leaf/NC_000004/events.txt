@@ -1,0 +1,2 @@
+Ala_GCU 13,Ala_GCU 14,;
+His_CAU 31,Ser_UCG 32,;

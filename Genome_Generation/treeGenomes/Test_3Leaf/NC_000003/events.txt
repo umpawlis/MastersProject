@@ -1,0 +1,2 @@
+Gly_GGG 30,;
+Val_GUA 29,Arg_CGU 30,;
