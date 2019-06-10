@@ -82,7 +82,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
                 firstAttemptEvent = copy.deepcopy(event)
                 firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
-                
+
                 #Remove genes that were deleted twice in a row (check both fragments)
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
@@ -92,7 +92,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                     eventCopy2 = copy.deepcopy(firstAttemptEvent)
                     op2Copy = copy.deepcopy(op2)
                     redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions, eventCopy2.fragmentDetails2.fragmentIndex)
-                
+
                 #Redo the Alignment if any genes were removed from the operon
                 if redoAlignment1 or redoAlignment2:
                     secondAttemptEvent = copy.deepcopy(event)
@@ -109,7 +109,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                     else:
                         secondAttemptOp2 = op2
                     secondAttemptScore, secondAttemptEvent = performGlobalAlignment(secondAttemptOp1.sequence, secondAttemptOp2.sequence, secondAttemptEvent)
-                    
+
                     if secondAttemptScore > firstAttemptScore:
                         bestScore = secondAttemptScore
                         secondAttemptEvent.genesDeletedFromOperon = True
@@ -491,12 +491,13 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         coverageTracker2[j] = True
 
                         event = eventMatrix[i][j]
-                        
+
                         #Check if we have to go back and remove genes
                         if event.genesDeletedFromOperon == True:
                             #Check which of the strains we need to do a backtrack on
                             doBackTrack1, numGenesDeleted1 = operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList)
                             doBackTrack2, numGenesDeleted2 = operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList)
+                            #Backtrack on strain 1
                             if doBackTrack1:
                                 #Get strain 1 from global strains array
                                 filteredList = iter(filter(lambda x : x.name == event.genome1Name, globals.strains))
@@ -514,12 +515,33 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                                             #Update the start position of the other operons by subtracting by the number of genes deleted
                                             fragment.startPositionInGenome = int(fragment.startPositionInGenome) - numGenesDeleted1
                                         fragment = next(filteredList, None)
-                                    #Now remove one gene at a time from the strains
-                                    
+                                    #Update the descendants of the ancestor
+                                    removeGenesFromStrains(event.fragmentDetails1.deletionDetailsList)
                                 else:
                                     print('Error! Something went wrong because we failed to find ancestor %s!' % (event.genome1Name))
+                                #Backtrack on strain 2
+                                if doBackTrack2:
+                                    #Get strain 2 from global strains array
+                                    filteredList = iter(filter(lambda x : x.name == event.genome2Name, globals.strains))
+                                    ancestor2 = next(filteredList, None)
+                                    if ancestor2 != None:
+                                        #Get the operon that was modified
+                                        filteredList = iter(filter(lambda x : x.fragmentIndex >= event.fragmentDetails2.fragmentIndex, ancestor2.genomeFragments))
+                                        fragment = next(filteredList, None)
+                                        while fragment:
+                                            if fragment.fragmentIndex == event.fragmentDetails2.fragmentIndex:
+                                                #Replace the operon array and the string sequence
+                                                fragment.originalSequence = copy.deepcopy(event.fragmentDetails2.originalSequence)
+                                                fragment.sequence = copy.deepcopy(event.fragmentDetails2.sequence)
+                                            else:
+                                                #Update the start position of the other operons by subtracting by the number of genes deleted
+                                                fragment.startPositionInGenome = int(fragment.startPositionInGenome) - numGenesDeleted2
+                                            fragment = next(filteredList, None)
+                                        #Update the descendants of the ancestor
+                                        removeGenesFromStrains(event.fragmentDetails2.deletionDetailsList)
+                                    else:
+                                        print('Error! Something went wrong because we failed to find ancestor %s!' % (event.genome2Name))
 
-                        
                         event.trackingEventId = globals.trackingId
                         event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
@@ -549,6 +571,57 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
 
 ######################################################
+# removeGenesFromStrains
+# Parameters:
+# Description: Iterates over the list and removes genes from strains marked for deletion
+######################################################
+def removeGenesFromStrains(deletionList):
+    if len(deletionList) > 0:
+        for deletion in deletionList:
+            if deletion.geneRemoved: #Make sure this gene is to be removed
+                #Get the strain we need to modify
+                name = deletion.strain.name
+                filteredList = iter(filter(lambda x : x.name == name, globals.strains))
+                strain = next(filteredList, None)
+                if strain != None:
+                    gene = deletion.originalGene
+                    position = deletion.originalPosition
+                    deletionDescription = strain.deletionDetails
+                    stringToRemove = gene + ' ' + str(position)
+                    listOfDescriptions = deletionDescription.split(';')
+                    newDeletionDescription = ''
+                    for description in listOfDescriptions:
+                        if stringToRemove in description:
+                            strain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
+                            listOfGenes = description.split(',')                #Split the sequence
+                            count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
+                            #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0
+                            strain.deletionCounts[count] += -1
+                            if (count - 1) > 0:
+                                if (count - 1) in strain.deletionCounts:
+                                    strain.deletionCounts[count - 1] += 1
+                                else:
+                                    strain.deletionCounts[count - 1] = 1
+                            #Add the duplication to the duplication count
+                            if 1 in strain.duplicationCounts:
+                                strain.duplicationCounts[1] += 1
+                            else:
+                                strain.duplicationCounts[1] = 1
+                            listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
+                            if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
+                                newString = ''
+                                for x in range(0, len(listOfGenes)):
+                                    newString += listOfGenes[x] + ', '
+                                newString = newString[0:(len(newString) - 2)] #Removes the last comma and space
+                                newString += ';'
+                                newDeletionDescription += newString
+                        else:
+                            newDeletionDescription += description + ';' #Just leave it the way it is and put it back
+                    strain.deletionDetails = newDeletionDescription #Insert the new deletion details into the strain
+                else:
+                    print('Error! Unable to find the following strain %s!' % (name))
+
+######################################################
 # operonHadGenesRemoved
 # Parameters:
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
@@ -570,19 +643,19 @@ def operonHadGenesRemoved(deletions):
 ######################################################
 def constructStatement(indexes, genes, fragmentDetails):
     temp = ''
-    
+
     if len(indexes) != len(genes):
         print('Error! These two arrays should be the same length for Codon Mismatch Substitution parallel arrays')
     else:
         for x in range(0, len(indexes)):
             position = indexes[x]
             gene = genes[x]
-            
+
             if fragmentDetails.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
                 genePos = position + fragmentDetails.startPositionInGenome
             else:
                 genePos = fragmentDetails.startPositionInGenome + len(fragmentDetails.sequence) - position - 1
-            
+
             temp+=gene + ' ' + str(genePos) + ';'
 
     return temp
@@ -594,21 +667,21 @@ def constructStatement(indexes, genes, fragmentDetails):
 ######################################################
 def reconstructOperonSequence(event, strain1, strain2):
     ancestralOperon = copy.deepcopy(event.operon1Alignment) #The alignments will be identical except when codon mismatches or substitutions occur
-    
+
     operon1Gaps = event.operon1Gaps
     operon2Gaps = event.operon2Gaps
-    
+
     if len(operon1Gaps) == 0 and len(operon2Gaps) == 0:
         print('No differences detected between these two operons')
         event.setAncestralOperonGeneSequence(ancestralOperon)
     else:
         print('Differences detected between these two operons!')
-        
+
         operon1GapIndexes = event.operon1GapIndexes
         operon2GapIndexes = event.operon2GapIndexes
         operon1GapPositions = event.operon1GapPositions
         operon2GapPositions = event.operon2GapPositions
-        
+
         print('These are the extra genes for operon 1: %s' %(operon1Gaps))
         print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
         print('These are the positions of the extra genes in operon 1: %s' %(operon1GapPositions))
@@ -627,7 +700,7 @@ def reconstructOperonSequence(event, strain1, strain2):
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
         j = len(operon2Gaps)
-        
+
         #Tracks the genes marked as deleted and their positions
         deletedGenes = []
         deletedGenesPositions = []
@@ -655,20 +728,20 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon1Gaps[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
-                        
+
                         if event.fragmentDetails1.isNegativeOrientation == False: #This compute the correct gene position based on whether operon was in the negative orientation or not originally
                             genePos = operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
-                        
+
                         #Deleted genes in the ancestral operon
                         deletedGenes.append(operon1Gaps[i-1][k])
                         deletedGenesPositions.append(len(ancestralOperon) - int(operon1GapIndexes[i-1]))
                         fragmentIds.append(event.fragmentDetails1.fragmentIndex)
-                        strains.append(strain1)
+                        strains.append(strain2)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
-                        
+
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
@@ -694,20 +767,20 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon2Gaps[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
-                        
+
                         if event.fragmentDetails2.isNegativeOrientation == False: #This compute the correct gene position based on whether operon was in the negative orientation or not originally
                             genePos = operon2GapPositions[j-1][k] + event.fragmentDetails2.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
-                        
+
                         #Deleted genes in the ancestral operon
                         deletedGenes.append(operon2Gaps[j-1][k])
                         deletedGenesPositions.append(len(ancestralOperon) - int(operon2GapIndexes[j-1]))
                         fragmentIds.append(event.fragmentDetails2.fragmentIndex)
-                        strains.append(strain2)
+                        strains.append(strain1)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
-                        
+
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
@@ -733,20 +806,20 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon1Gaps[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
-                        
+
                         if event.fragmentDetails1.isNegativeOrientation == False: #This compute the correct gene position based on whether operon was in the negative orientation or not originally
                             genePos = operon1GapPositions[i-1][k] + event.fragmentDetails1.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - operon1GapPositions[i-1][k] - 1
-                        
+
                         #Deleted genes in the ancestral operon
                         deletedGenes.append(operon1Gaps[i-1][k])
                         deletedGenesPositions.append(len(ancestralOperon) - int(operon1GapIndexes[i-1]))
                         fragmentIds.append(event.fragmentDetails1.fragmentIndex)
-                        strains.append(strain1)
+                        strains.append(strain2)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
-                        
+
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
@@ -772,27 +845,27 @@ def reconstructOperonSequence(event, strain1, strain2):
                     operon2Gaps[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
-                        
+
                         if event.fragmentDetails2.isNegativeOrientation == False: #This compute the correct gene position based on whether operon was in the negative orientation or not originally
                             genePos = operon2GapPositions[j-1][k] + event.fragmentDetails2.startPositionInGenome
                         else:
                             genePos = event.fragmentDetails2.startPositionInGenome + len(event.fragmentDetails2.sequence) - operon2GapPositions[j-1][k] - 1
-                        
+
                         #Deleted genes in the ancestral operon
                         deletedGenes.append(operon2Gaps[j-1][k])
                         deletedGenesPositions.append(len(ancestralOperon) - int(operon2GapIndexes[j-1]))
                         fragmentIds.append(event.fragmentDetails2.fragmentIndex)
-                        strains.append(strain2)
+                        strains.append(strain1)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
-                        
+
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
                     strain1 = addDeletionEventsToStrain(strain1, deletionSizes, deletionDetails) #Remember, if the genes are detected a deletions, it means it was lost in the other strain!!
                 j = j - 1
-        
+
         #Adds deletion details to a global tracker
         if len(deletedGenes) > 0:
             for x in range(0, len(deletedGenes)):
@@ -805,7 +878,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                 #Construct the deletion tracker object
                 details = DeletionDetails(gene, position, fragmentId, strain, originalGene, originalPosition, ancestralOperon)
                 event.deletionDetailsList.append(details)
-                
+
         #Set ancestral operon
         event.setAncestralOperonGeneSequence(ancestralOperon)
         #print('This is the resulting ancestral operon: %s' % (ancestralOperon))
@@ -870,12 +943,12 @@ def checkForMatch(gap, positions, sequence, fragment):
             for p in range(0, len(duplicateGenes)):
                 gene = duplicateGenes[p]
                 pos = duplicatePositions[p]
-                
+
                 if fragment.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
                     genePos = pos + fragment.startPositionInGenome
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
-                
+
                 duplicationDetails += gene + ' ' + str(genePos) + ', '
             duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
