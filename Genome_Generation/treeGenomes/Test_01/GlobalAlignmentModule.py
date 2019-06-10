@@ -589,7 +589,7 @@ def removeGenesFromStrains(deletionList):
                     deletionDescription = strain.deletionDetails
                     deletionDescription = deletionDescription.replace('Deletion:', '')
                     stringToRemove = gene + ' ' + str(position)
-                    listOfDescriptions = deletionDescription.split(';')
+                    listOfDescriptions = filter(None, deletionDescription.split(';'))
                     newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
