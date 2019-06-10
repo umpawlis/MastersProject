@@ -587,9 +587,10 @@ def removeGenesFromStrains(deletionList):
                     gene = deletion.originalGene
                     position = deletion.originalPosition
                     deletionDescription = strain.deletionDetails
+                    deletionDescription = deletionDescription.replace('Deletion:', '')
                     stringToRemove = gene + ' ' + str(position)
                     listOfDescriptions = deletionDescription.split(';')
-                    newDeletionDescription = ''
+                    newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
                             strain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
