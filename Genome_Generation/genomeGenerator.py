@@ -52,8 +52,9 @@ class Event:
 		if self.type == "I":
 			event = self.operonFormat + "|"
 		else:
-			for gene, index in zip(self.genes, self.range):
-				event += gene + " " + str(index) + ","
+			# for gene, index in zip(self.genes, self.range):
+			# 	event += gene + " " + str(index) + ","
+			event = ', '.join(gene + " " + str(index) for gene, index in zip(self.genes, self.range))
 			event += ";"
 
 		return event
