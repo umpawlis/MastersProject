@@ -1,0 +1,6 @@
+Asp_GAC 22,;
+5S 38,;
+Arg_AGA 31,;
+Val_GUU 12,;
+Gly_GGU 39,;
+Arg_AGA 33,;

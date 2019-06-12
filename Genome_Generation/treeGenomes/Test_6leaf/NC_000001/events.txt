@@ -1,0 +1,8 @@
+Asp_GAC 22,;
+5S 38,;
+Arg_AGA 31,;
+Val_GUU 12,;
+Ile_AUC 28,;
+Pro_CCG 1,;
+Ser_UCG 4,Val_GUG 5,;
+Pro_CCU 15,;

@@ -571,7 +571,8 @@ def performTransposition(before, after, p):
 	if isinstance(genome[index], list):
 		# print "is list"
 		operon = genome[index]
-		stopPos = min(geometricSampling(p), len(operon))
+		# stopPos = min(geometricSampling(p), len(operon))
+		stopPos = len(operon)
 		transSection = operon[startPos:stopPos]
 
 		if len(transSection) == len(operon):

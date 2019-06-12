@@ -1,0 +1,6 @@
+Asp_GAC 22,;
+5S 38,;
+Thr_ACA 37,;
+Phe_UUU 3,Thr_ACA 4,;
+Ala_GCG 15,;
+Val_GUU 10,;

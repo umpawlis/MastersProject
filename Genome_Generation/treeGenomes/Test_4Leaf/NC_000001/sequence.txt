@@ -1,0 +1,1 @@
+< o >, [Tyr_UAC, Arg_CGG, Ser_UCU], [Ile_AUA, Gly_GGU, 16S, 23S, 5S], [Ala_GCU, Ala_GCU, Ser_UCG, His_CAU], Thr_ACA, [Ala_GCU], [16S, 23S, 5S], [Val_GUU, Tyr_UAU], [Asp_GAC], < t >, -[Val_GUC, Phe_UUC], -[Val_GUA, Trp_UGG, Ser_UCC, Ile_AUA], -[Tyr_UAC, Val_GUU, Pro_CCU], -Gly_GGU, -Asp_GAC, -[Ser_UCA, Asp_GAU], -Val_GUC, -Tyr_UAU, -[Leu_UUA, Arg_CGU], -[23S, 16S]
