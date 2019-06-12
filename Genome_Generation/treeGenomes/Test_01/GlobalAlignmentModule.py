@@ -583,6 +583,11 @@ def removeGenesFromStrains(deletionList):
                 name = deletion.strain.name
                 filteredList = iter(filter(lambda x : x.name == name, globals.strains))
                 strain = next(filteredList, None)
+                
+                otherName = deletion.otherStrain.name
+                filteredList2 = iter(filter(lambda x : x.name == otherName, globals.strains))
+                otherStrain = next(filteredList2, None)
+                
                 if strain != None:
                     gene = deletion.originalGene
                     position = deletion.originalPosition
@@ -593,7 +598,9 @@ def removeGenesFromStrains(deletionList):
                     newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
-                            strain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
+                            
+                            otherStrain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
+                            
                             listOfGenes = description.split(',')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
                             
@@ -617,10 +624,10 @@ def removeGenesFromStrains(deletionList):
                             else:
                                 globals.duplicationSizeCounter[1] = 1
                                 
-                            if 1 in strain.duplicationCounts:
-                                strain.duplicationCounts[1] += 1
+                            if 1 in otherStrain.duplicationCounts:
+                                otherStrain.duplicationCounts[1] += 1
                             else:
-                                strain.duplicationCounts[1] = 1
+                                otherStrain.duplicationCounts[1] = 1
                                 
                             listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
                             if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
@@ -723,6 +730,7 @@ def reconstructOperonSequence(event, strain1, strain2):
         strains = []
         originalDeletedGenes = []
         originalDeletedGenesPositions = []
+        otherStrains = []
 
         while (i > 0) or (j > 0):
             #Select the gap with the biggest index b/c we will be performing the insertion rear to front of operon to avoid messing up the indexes of the other gaps
@@ -756,6 +764,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         strains.append(strain2)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
+                        otherStrains.append(strain1)
 
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -795,6 +804,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         strains.append(strain1)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
+                        otherStrains.append(strain2)
 
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -834,6 +844,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         strains.append(strain2)
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
+                        otherStrains.append(strain1)
 
                         deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -873,6 +884,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                         strains.append(strain1)
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
+                        otherStrains.append(strain2)
 
                         deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
@@ -890,8 +902,9 @@ def reconstructOperonSequence(event, strain1, strain2):
                 strain = strains[x]
                 originalGene = originalDeletedGenes[x]
                 originalPosition = originalDeletedGenesPositions[x]
+                otherStrain = otherStrains[x]
                 #Construct the deletion tracker object
-                details = DeletionDetails(gene, position, fragmentId, strain, originalGene, originalPosition, ancestralOperon)
+                details = DeletionDetails(gene, position, fragmentId, strain, originalGene, originalPosition, ancestralOperon, otherStrain)
                 event.deletionDetailsList.append(details)
 
         #Set ancestral operon
