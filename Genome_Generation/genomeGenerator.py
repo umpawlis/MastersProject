@@ -698,8 +698,11 @@ def getDifferentGene(currGene):
 def performInversion(before, after, p):
 	event = ""
 	genes = []
-	lengthBefore = min(geometricSampling(p), len(before))
-	lengthAfter = min(geometricSampling(p), len(after))
+	lengthBefore = min(geometricSampling(p, 0), len(before))
+	if not lengthBefore:
+		lengthAfter = min(geometricSampling(p), len(after))
+	else:
+		lengthAfter = min(geometricSampling(p, 0), len(after))
 
 	beforeSection = before[len(before)-lengthBefore:]
 	afterSection = after[:lengthAfter]
@@ -711,17 +714,17 @@ def performInversion(before, after, p):
 
 	del before[len(before)-lengthBefore:]
 	del after[:lengthAfter]
-	if afterSection is not None:
+	if afterSection:
 		reverseOperons(afterSection)
 		before.extend(afterSection[::-1])
-	if beforeSection is not None:
+	if beforeSection:
 		reverseOperons(beforeSection)
 		after[0:0] = beforeSection[::-1]
 
 	indexes = []
 	absoluteIndex = getAbsoluteIndex(fromBefore, before, after, index, 0)
 
-	if afterSection is not None:
+	if afterSection:
 		for operon in reversed(afterSection):
 			if isinstance(operon, list):
 				for gene in operon:
@@ -739,7 +742,7 @@ def performInversion(before, after, p):
 
 	event += "< t > " + str(absoluteIndex) + ";"
 	absoluteIndex += 1 # for the terminus
-	if beforeSection is not None:
+	if beforeSection:
 		for operon in reversed(beforeSection):
 			if isinstance(operon, list):
 				for gene in operon:
@@ -1023,8 +1026,8 @@ def createOperon():
 
 	return operon
 
-def geometricSampling(p):
-    value = 1
+def geometricSampling(p, minValue = 1):
+    value = minValue
     while random.random() > p:
         value += 1
     return value
