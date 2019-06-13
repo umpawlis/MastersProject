@@ -1,2 +1,2 @@
-Gly_GGG 30,;
-Val_GUA 29,Arg_CGU 30,;
+Arg_CGG 9;
+Gly_GGU 21;

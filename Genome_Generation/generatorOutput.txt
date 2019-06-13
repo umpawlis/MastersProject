@@ -2,24 +2,24 @@
 Strain:NC_000001
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Leu_UUG 6, Arg_CGC 7;
+Duplication:Ala_GCA 12, Thr_ACU 13;Thr_ACG 18, Arg_CGG 19, Thr_ACU 20, Ala_GCA 21;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000002
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Tyr_UAU 12;
+Duplication:Arg_CGG 16;
+Deletion:Phe_UUU 16;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 1
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Gln_CAG 14;
+Duplication:Ser_UCC 28;Arg_CGG 12, Thr_ACG 13;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -27,12 +27,12 @@ Strain:NC_000003
 Codon Mismatch:
 Substitution:
 Duplication:
-Deletion:Ile_AUU 17;
+Deletion:Arg_CGG 9;Gly_GGU 21;
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 3, size: 2 count: 1
-Total Duplications:
+Total Deletions: size: 1 count: 3
+Total Duplications: size: 1 count: 2, size: 2 count: 2, size: 4 count: 1
 Size Distribution of Inversions:
 Size Distribution of Transpositions:
 Size Distribution of Inverted Transpositions:

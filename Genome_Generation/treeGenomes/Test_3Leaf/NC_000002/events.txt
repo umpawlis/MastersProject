@@ -1,4 +1,4 @@
-Thr_ACU 28,;
-Thr_ACU 11,;
-Val_GUG 22,;
-Ala_GCU 10,;
+Ser_UCC 28;
+Arg_CGG 12, Thr_ACG 13;
+Arg_CGG 16;
+Phe_UUU 14;
