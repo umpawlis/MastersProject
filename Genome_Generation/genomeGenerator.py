@@ -801,6 +801,10 @@ def performLoss(before, after, p):
 			del genome[index][startPos:stopPos]
 			if len(genome[index]) == 0:
 				del genome[index]
+			elif len(genome[index]) == 1:
+				newSingleton = genome[index][0]
+				del genome[index]
+				genome.insert(index, newSingleton)
 	else:
 		# print "is singleton"
 		lossSection = genome[index:index+1]
