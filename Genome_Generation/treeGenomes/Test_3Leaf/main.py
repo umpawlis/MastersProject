@@ -379,6 +379,7 @@ result = traverseNewickTree(newickTree.clade, None)
 Phylo.draw(newickTree)
 
 #Need to traverse tree to ouput appropriate content to file
+newickTree.clade.name = '' #Make sure that the output for the root is not output
 traverseNewickTreeAndOutputToFile(newickTree.clade)
     
 #Output the totals for the computation to console and file
