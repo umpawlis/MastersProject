@@ -931,7 +931,7 @@ def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
     for w in range(0, len(genomeFragments)): #Iterate through all fragments
         currFragment = genomeFragments[w]
         if currFragment.startPositionInGenome != fragment.startPositionInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
-            duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment)
+            duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment, 1)
 
             if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
                 allDuplicationSizes.extend(duplicationSizes)
@@ -944,14 +944,14 @@ def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
 # Parameters: gap: genes in gap, sequence: sequence to check if the genes exist there
 # Description: Checks if a given gap exists in a given sequence
 ######################################################
-def checkForMatch(gap, positions, sequence, fragment):
+def checkForMatch(gap, positions, sequence, fragment, size):
     geneDuplicateSizes = [] #An array of duplicate sizes
     duplicationDetails = '' #Details about the duplication
     windowSize = len(gap)   #Size of window
     startIndex = 0          #Start position of window
     endIndex = len(gap)     #End position of Window
 
-    while windowSize > 1:
+    while windowSize > size:
         genes = gap[startIndex:endIndex] #Grabs the genes within the window
         genesMatched = 0
 
@@ -1015,7 +1015,7 @@ def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPosition
     for w in range(0, len(arrayOfGaps)):
         gap = arrayOfGaps[w] #Genes within gap
         positions = arrayOfGapPositions[w] #Positions of genes within gap
-        duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, alignedGenes, fragment)
+        duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, alignedGenes, fragment, 0)
 
         if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
             allDuplicationSizes.extend(duplicationSizes)

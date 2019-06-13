@@ -19,14 +19,14 @@ Strain:Ancestor 1
 Codon Mismatch:
 Substitution:Val_GUG 10;
 Duplication:
-Deletion:Gly_GGG 30;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000003
 Codon Mismatch:
 Substitution:Thr_ACU 11;
-Duplication:Ala_GCU 10;
+Duplication:Gly_GGG 30;Ala_GCU 10;
 Deletion:Thr_ACU 28, Val_GUA 29, Arg_CGU 30;
 Inversion:
 Transposition:
@@ -39,8 +39,8 @@ Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 2, size: 2 count: 1, size: 3 count: 1
-Total Duplications: size: 1 count: 4
+Total Deletions: size: 1 count: 1, size: 2 count: 1, size: 3 count: 1
+Total Duplications: size: 1 count: 5
 Size Distribution of Inversions: 
 Size Distribution of Transpositions: size: 1 count: 1
 Size Distribution of Inverted Transpositions: 
