@@ -31,14 +31,6 @@ Deletion:Ser_UCC 29;Arg_CGG 9, Thr_ACG 10;Gly_GGU 23, Arg_AGA 24;
 Inversion:
 Transposition:
 Inverted Transposition:
-Strain:Ancestor 2
-Codon Mismatch:
-Substitution:
-Duplication:
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
 Total Deletions: size: 1 count: 3, size: 2 count: 2
 Total Duplications: size: 1 count: 2, size: 2 count: 2, size: 4 count: 1
 Size Distribution of Inversions: 
