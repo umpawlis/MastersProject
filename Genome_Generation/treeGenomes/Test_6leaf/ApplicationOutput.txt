@@ -3,14 +3,14 @@ Strain:NC_000001
 Codon Mismatch:
 Substitution:
 Duplication:Lys_AAG 12;
-Deletion: Ile_AUA 6;
+Deletion: Ile_AUA 5;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000002
 Codon Mismatch:
 Substitution:
-Duplication:Val_GUU 5;Ile_AUA 9;
+Duplication:Val_GUU 6;Ile_AUA 9;
 Deletion:
 Inversion:
 Transposition:

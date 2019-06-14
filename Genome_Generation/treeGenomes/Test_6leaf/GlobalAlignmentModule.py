@@ -750,6 +750,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     deletionSizes = []
                     #Insert gap into operon
                     operon1Gaps[i-1].reverse()
+                    operon1GapPositions[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
 
@@ -790,6 +791,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     deletionSizes = []
                     #Insert gap into operon
                     operon2Gaps[j-1].reverse()
+                    operon2GapPositions[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
 
@@ -830,6 +832,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     deletionSizes = []
                     #Insert gap into operon
                     operon1Gaps[i-1].reverse()
+                    operon1GapPositions[i-1].reverse()
                     for k in range(0, len(operon1Gaps[i-1])):
                         ancestralOperon.insert(operon1GapIndexes[i-1], operon1Gaps[i-1][k])
 
@@ -870,6 +873,7 @@ def reconstructOperonSequence(event, strain1, strain2):
                     deletionSizes = []
                     #Insert gap into operon
                     operon2Gaps[j-1].reverse()
+                    operon2GapPositions[j-1].reverse()
                     for k in range (0, len(operon2Gaps[j-1])):
                         ancestralOperon.insert(operon2GapIndexes[j-1], operon2Gaps[j-1][k])
 
