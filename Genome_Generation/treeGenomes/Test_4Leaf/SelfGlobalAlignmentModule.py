@@ -54,12 +54,11 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                         event.setScore(score)
                         
                         #Compute whether this comparison is interesting
-                        threshold = max(len(op1), len(op2))
-                        threshold = threshold//3
-                        
-                        numOperonDifferences = computeOperonDifferences(op1, op2)
-                        
-                        if numOperonDifferences <= threshold and score < bestScore:
+                        #threshold = max(len(op1), len(op2))
+                        #threshold = threshold//3
+                        #numOperonDifferences = computeOperonDifferences(op1, op2)
+                        #if numOperonDifferences <= threshold and score < bestScore:
+                        if score > 0 and score < bestScore:
                             bestScore = score
                             bestEvent = event
             #Make sure an origin or a terminus doesn't get mapped with a singleton gene
