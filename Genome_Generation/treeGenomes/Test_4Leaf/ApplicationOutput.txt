@@ -2,56 +2,56 @@
 Strain:NC_000001
 Codon Mismatch:
 Substitution:
-Duplication:Asp_GAC 32;
-Deletion:5S 39;Phe_UUC 23;
+Duplication:Pro_CCC 20;
+Deletion:Leu_CUG 7, Arg_AGA 8;
 Inversion:
-Transposition:Asp_GAC 20;|
+Transposition:
 Inverted Transposition:
 Strain:NC_000002
 Codon Mismatch:
 Substitution:
-Duplication:Val_GUU 41, Tyr_UAC 40;Ser_AGU 20, Asp_GAC 21;
-Deletion:Val_GUC 22, Phe_UUC 23;
+Duplication:16S 19;5S 4;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 1
 Codon Mismatch:
 Substitution:
-Duplication:Ala_GCU 14;Phe_UUC 23;
-Deletion:Ala_GCU 12, Ala_GCU 13;Arg_CGU 38;
+Duplication:Ala_GCU 18;
+Deletion:Ser_UCG 1, Val_GUU 2;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000003
 Codon Mismatch:
 Substitution:
-Duplication:16S 19, Ser_AGU 20, Asp_GAC 21;
-Deletion:Ala_GCU 9, Ala_GCU 10;Leu_UUA 37, Arg_CGU 38;
+Duplication:Leu_CUG 6;
+Deletion:5S 4, Pro_CCC 5, Trp_UGG 6;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 2
 Codon Mismatch:
 Substitution:
-Duplication:Ala_GCU 9, Ala_GCU 10;Val_GUC 35;Arg_CGU 39;
-Deletion:Arg_AGG 1;
+Duplication:
+Deletion:Arg_CGU 16;Asp_GAC 21;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000004
 Codon Mismatch:
 Substitution:
-Duplication:Ser_AGU 18, Asp_GAC 19;His_CAU 31, Ser_UCG 32;
-Deletion:Ala_GCU 14, Ala_GCU 15;
+Duplication:Pro_CCG 10;Arg_CGU 17;
+Deletion:5S 6;
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 4, size: 2 count: 5
-Total Duplications: size: 1 count: 5, size: 2 count: 5, size: 3 count: 1
+Total Deletions: size: 1 count: 3, size: 2 count: 2, size: 3 count: 1
+Total Duplications: size: 1 count: 7
 Size Distribution of Inversions: 
-Size Distribution of Transpositions: size: 1 count: 1
+Size Distribution of Transpositions: 
 Size Distribution of Inverted Transpositions: 
 Total Inversions: 0
-Total Transpositions: 1
+Total Transpositions: 0
 Total Inverted Transpositions: 0
