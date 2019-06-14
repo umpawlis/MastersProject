@@ -1,6 +1,6 @@
-Arg_AGG 1,;
-Val_GUC 35,;
-Ala_GCU 9,Ala_GCU 10,;
-Ala_GCU 12,;
-Tyr_UAC 40,Val_GUU 41,;
-Val_GUC 23,;
+Arg_CGU 15;
+Asp_GAC 19;
+Ala_GCU 12;
+Val_GUU 1, Ser_UCG 2;
+5S 4;
+16S 19;

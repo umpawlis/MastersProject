@@ -2,53 +2,53 @@
 Strain:NC_000001
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:5S 41,;Ser_AGU 20,;
+Duplication:Pro_CCC 20;
+Deletion:Leu_CUG 7, Arg_AGA 8;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000002
 Codon Mismatch:
 Substitution:
-Duplication:Tyr_UAC 40,Val_GUU 41,;
-Deletion:Val_GUC 22,;
+Duplication:5S 4;16S 19;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 1
 Codon Mismatch:
 Substitution:
-Duplication:Ala_GCU 9,Ala_GCU 10,;
-Deletion:Ala_GCU 12,;
+Duplication:Ala_GCU 12;
+Deletion:Val_GUU 1, Ser_UCG 2;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000003
 Codon Mismatch:
 Substitution:
-Duplication:16S 19,;
-Deletion:Leu_UUA 38,;
+Duplication:Leu_CUG 7;
+Deletion:Pro_CCC 4, Trp_UGG 5;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 2
 Codon Mismatch:
 Substitution:
-Duplication:Val_GUC 35,;
-Deletion:Arg_AGG 1,;
+Duplication:
+Deletion:Arg_CGU 15;Asp_GAC 19;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000004
 Codon Mismatch:
 Substitution:
-Duplication:His_CAU 31,Ser_UCG 32,;
-Deletion:Ala_GCU 13,Ala_GCU 14,;
+Duplication:Arg_CGU 16;Pro_CCG 11;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 6, size: 2 count: 1
-Total Duplications: size: 1 count: 2, size: 2 count: 3
+Total Deletions: size: 1 count: 2, size: 2 count: 3
+Total Duplications: size: 1 count: 7
 Size Distribution of Inversions:
 Size Distribution of Transpositions:
 Size Distribution of Inverted Transpositions:

@@ -1,6 +1,6 @@
-Asp_GAC 22,;
-5S 38,;
-Arg_AGA 31,;
-Val_GUU 12,;
-Gly_GGU 39,;
-Arg_AGA 33,;
+Thr_ACG 15;
+Thr_ACG 6;
+Thr_ACG 15;
+Ile_AUA 27;
+Thr_ACG 1;
+Leu_CUC 12, Leu_CUU 13;

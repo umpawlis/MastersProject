@@ -1,8 +1,8 @@
-Asp_GAC 22,;
-5S 38,;
-Arg_AGA 31,;
-Val_GUU 12,;
-Ile_AUC 28,;
-Pro_CCG 1,;
-Arg_CGU 16,Ala_GCG 17,;
-Ile_AUC 6,;
+Thr_ACG 15;
+Thr_ACG 6;
+Thr_ACG 15;
+Ile_AUA 27;
+Ser_UCC 8, Ser_AGU 9;
+Arg_CGU 18, His_CAU 19, 5S 20;
+Ile_AUA 9;
+Val_GUU 6;

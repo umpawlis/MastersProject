@@ -1,6 +1,6 @@
-Asp_GAC 22,;
-5S 38,;
-Thr_ACA 37,;
-Phe_UUU 3,Thr_ACA 4,;
-Ala_GCG 15,;
-Val_GUU 10,;
+Thr_ACG 15;
+Thr_ACG 6;
+Thr_ACG 1;
+Thr_ACG 2;
+Tyr_UAC 16;
+Thr_ACG 8;

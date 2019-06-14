@@ -1,2 +1,2 @@
-Ala_GCG 33,;
-Arg_CGA 26,;
+Val_GUU 26;
+Arg_CGU 21, His_CAU 22;

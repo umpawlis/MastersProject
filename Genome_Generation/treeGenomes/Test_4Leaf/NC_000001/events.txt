@@ -1,6 +1,6 @@
-Arg_AGG 1,;
-Val_GUC 35,;
-Ala_GCU 9,Ala_GCU 10,;
-Ala_GCU 12,;
-5S 40,;
-Ser_AGU 20,;
+Arg_CGU 15;
+Asp_GAC 19;
+Ala_GCU 12;
+Val_GUU 1, Ser_UCG 2;
+Leu_CUG 6, Arg_AGA 7;
+Pro_CCC 20;
