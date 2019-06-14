@@ -496,8 +496,13 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         #Check if we have to go back and remove genes
                         if event.genesDeletedFromOperon == True:
                             #Check which of the strains we need to do a backtrack on
-                            doBackTrack1, numGenesDeleted1 = operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList)
-                            doBackTrack2, numGenesDeleted2 = operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList)
+                            filteredList = iter(filter(lambda x : x.name == event.genome1Name, globals.strains))
+                            ancestor1 = next(filteredList, None)
+                            doBackTrack1, numGenesDeleted1 = operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, ancestor1)
+                            
+                            filteredList = iter(filter(lambda x : x.name == event.genome2Name, globals.strains))
+                            ancestor2 = next(filteredList, None)
+                            doBackTrack2, numGenesDeleted2 = operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, ancestor2)
                             #Backtrack on strain 1
                             if doBackTrack1:
                                 #Get strain 1 from global strains array
@@ -571,6 +576,76 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
         currentScoreSelected += (-0.5)
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
 
+######################################################
+# inversionTranspositionComparison
+# Parameters:
+# Description: Compares results of inversions, transpositions, and inverted transpositions
+######################################################
+def inversionTranspositionIndexUpdate(start, line, numDeleted):
+    newLine = ''
+    #Parse the data
+    regions = filter(None,line.split('|')) #An inversion/transposition fragment ie entire piece that was transposed
+    for x in range(0, len(regions)):
+        region = regions[x]
+        operons = filter(None, region.split(';'))
+        
+        for y in range(0, len(operons)):
+            operon = operons[y]
+            genes = filter(None, operon.split(','))
+            
+            for j in range(0, len(genes)):
+                gene = genes[j]
+                data = filter(None, gene.split(' '))
+                g = data[0]
+                p = int(data[1])
+                
+                if p > start:
+                    p -= numDeleted
+                newLine += g + ' ' + str(p) + ', '
+            newLine = newLine[0:(len(newLine) - 2)] + ';'
+        newLine += '|'
+        
+    return newLine
+
+######################################################
+# codonMismatchSubstitutionComparison
+# Parameters:
+# Description: 
+######################################################
+def codonMismatchSubstitutionIndexUpdate(start, line, numDeleted):
+    newLine = ''
+    #Parse the data
+    array = filter(None, line.split(';'))
+    for entry in array:
+        data = filter(None, entry.split(' '))
+        gene = data[0]
+        position = int(data[1])
+        if position > start:
+            position -= numDeleted
+        newLine += gene + ' '  + str(position) + ';'
+    return newLine
+
+######################################################
+# duplicationDeletionIndexUpdate
+# Parameters:
+# Description:
+######################################################
+def duplicationDeletionIndexUpdate(start, line, numDeleted):
+    newLine = ''
+    #Parse the data
+    segments = filter(None, line.split(';'))
+    for segment in segments:
+        genes = segment.split(',')
+        for x in range (0, len(genes)):
+            data = filter(None, genes[x].split(' '))
+            gene = data[0]
+            position = int(data[1])
+            if position > start:
+                position -= numDeleted
+            newLine += gene + ' ' +str(position) + ', '
+        newLine = newLine[0:(len(newLine) - 2)] + ';'
+    return newLine
+    
 ######################################################
 # removeGenesFromStrains
 # Parameters:
@@ -649,7 +724,7 @@ def removeGenesFromStrains(deletionList):
 # Parameters:
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
 ######################################################
-def operonHadGenesRemoved(deletions):
+def operonHadGenesRemoved(deletions, ancestor1):
     count = 0
     result = False
     if len(deletions) > 0:
@@ -657,6 +732,30 @@ def operonHadGenesRemoved(deletions):
             if deletion.geneRemoved == True:
                 result = True
                 count += 1
+                #TODO
+                #Update details in the deletion details and duplication details
+#                start = int(deletion.ancestralPosition)
+#                newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor1.codonMismatchDetails.replace('Codon Mismatch:', ''), 1)
+#                ancestor1.codonMismatchDetails = 'Codon Mismatch:' + newLine
+#                                            
+#                newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor1.substitutionDetails.replace('Substitution:', ''), 1)
+#                ancestor1.substitutionDetails = 'Substitution:' + newLine
+#                                            
+#                newLine = duplicationDeletionIndexUpdate(start, ancestor1.duplicationDetails.replace('Duplication:', ''), 1)
+#                ancestor1.duplicationDetails = 'Duplication:' + newLine
+#                                           
+#                newLine = duplicationDeletionIndexUpdate(start, ancestor1.deletionDetails.replace('Deletion:', ''), 1)
+#                ancestor1.deletionDetails = 'Deletion:' + newLine
+#                                           
+#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.inversionDetails.replace('Inversion:', ''), 1)
+#                ancestor1.inversionDetails = 'Inversion:' + newLine
+#                                           
+#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.transpositionDetails.replace('Transposition:', ''), 1)
+#                ancestor1.transpositionDetails = 'Transposition:' + newLine
+#                                           
+#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.invertedTranspositionDetails.replace('Inverted Transposition:', ''), 1)
+#                ancestor1.invertedTranspositionDetails = 'Inverted Transposition:' + newLine
+    
     return result, count
 
 ######################################################
