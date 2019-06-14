@@ -1,0 +1,89 @@
+((((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000,(NC_000004:0.00000,NC_000005:0.00000):0.00000):0.00000,NC_000006:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Lys_AAG 12;
+Deletion: Ile_AUA 6;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Val_GUU 5;Ile_AUA 9;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:
+Duplication:5S 22;His_CAU 21, Arg_CGU 20;
+Deletion:Ala_GCA 1;Ser_UCC 7, Ser_AGU 8;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000003
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Thr_ACG 1, Ala_GCA 2;Leu_CUC 10, Leu_CUU 11;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 2
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUA 28;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000004
+Codon Mismatch:
+Substitution:
+Duplication:Ala_GCA 2;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000005
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Tyr_UAC 18;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 3
+Codon Mismatch:
+Substitution:
+Duplication:Thr_ACG 16;Thr_ACG 2;Thr_ACG 8;
+Deletion:Thr_ACG 1, Ala_GCA 2;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 4
+Codon Mismatch:
+Substitution:
+Duplication:His_CAU 26, Arg_CGU 25;Ala_GCA 3;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000006
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Thr_ACG 8;Val_GUU 28;
+Inversion:
+Transposition:
+Inverted Transposition:
+Total Deletions: size: 1 count: 5, size: 2 count: 4
+Total Duplications: size: 1 count: 10, size: 2 count: 2
+Size Distribution of Inversions: 
+Size Distribution of Transpositions: 
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 0
+Total Transpositions: 0
+Total Inverted Transpositions: 0
