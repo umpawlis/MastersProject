@@ -494,60 +494,10 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         event = eventMatrix[i][j]
 
                         #Check if we have to go back and remove genes
-                        if event.genesDeletedFromOperon == True:
-                            #Check which of the strains we need to do a backtrack on
-                            filteredList = iter(filter(lambda x : x.name == event.genome1Name, globals.strains))
-                            ancestor1 = next(filteredList, None)
-                            doBackTrack1, numGenesDeleted1 = operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, ancestor1)
+                        if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
+                            operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
+                            operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
                             
-                            filteredList = iter(filter(lambda x : x.name == event.genome2Name, globals.strains))
-                            ancestor2 = next(filteredList, None)
-                            doBackTrack2, numGenesDeleted2 = operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, ancestor2)
-                            #Backtrack on strain 1
-                            if doBackTrack1:
-                                #Get strain 1 from global strains array
-                                filteredList = iter(filter(lambda x : x.name == event.genome1Name, globals.strains))
-                                ancestor1 = next(filteredList, None)
-                                if ancestor1 != None:
-                                    #Get the operon that was modified
-                                    filteredList = iter(filter(lambda x : x.fragmentIndex >= event.fragmentDetails1.fragmentIndex, ancestor1.genomeFragments))
-                                    fragment = next(filteredList, None)
-                                    while fragment:
-                                        if fragment.fragmentIndex == event.fragmentDetails1.fragmentIndex:
-                                            #Replace the operon array and the string sequence
-                                            fragment.originalSequence = copy.deepcopy(event.fragmentDetails1.originalSequence)
-                                            fragment.sequence = copy.deepcopy(event.fragmentDetails1.sequence)
-                                        else:
-                                            #Update the start position of the other operons by subtracting by the number of genes deleted
-                                            fragment.startPositionInGenome = int(fragment.startPositionInGenome) - numGenesDeleted1
-                                        fragment = next(filteredList, None)
-                                    #Update the descendants of the ancestor
-                                    removeGenesFromStrains(event.fragmentDetails1.deletionDetailsList)
-                                else:
-                                    print('Error! Something went wrong because we failed to find ancestor %s!' % (event.genome1Name))
-                                #Backtrack on strain 2
-                                if doBackTrack2:
-                                    #Get strain 2 from global strains array
-                                    filteredList = iter(filter(lambda x : x.name == event.genome2Name, globals.strains))
-                                    ancestor2 = next(filteredList, None)
-                                    if ancestor2 != None:
-                                        #Get the operon that was modified
-                                        filteredList = iter(filter(lambda x : x.fragmentIndex >= event.fragmentDetails2.fragmentIndex, ancestor2.genomeFragments))
-                                        fragment = next(filteredList, None)
-                                        while fragment:
-                                            if fragment.fragmentIndex == event.fragmentDetails2.fragmentIndex:
-                                                #Replace the operon array and the string sequence
-                                                fragment.originalSequence = copy.deepcopy(event.fragmentDetails2.originalSequence)
-                                                fragment.sequence = copy.deepcopy(event.fragmentDetails2.sequence)
-                                            else:
-                                                #Update the start position of the other operons by subtracting by the number of genes deleted
-                                                fragment.startPositionInGenome = int(fragment.startPositionInGenome) - numGenesDeleted2
-                                            fragment = next(filteredList, None)
-                                        #Update the descendants of the ancestor
-                                        removeGenesFromStrains(event.fragmentDetails2.deletionDetailsList)
-                                    else:
-                                        print('Error! Something went wrong because we failed to find ancestor %s!' % (event.genome2Name))
-
                         event.trackingEventId = globals.trackingId
                         event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
@@ -724,14 +674,30 @@ def removeGenesFromStrains(deletionList):
 # Parameters:
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
 ######################################################
-def operonHadGenesRemoved(deletions, ancestor1):
-    count = 0
-    result = False
+def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
     if len(deletions) > 0:
+        removeGenesFromStrains(deletions) #Update the descendants of the ancestor
         for deletion in deletions:
             if deletion.geneRemoved == True:
-                result = True
-                count += 1
+                #We have to update the ancestral strain
+                filteredList = iter(filter(lambda x : x.name == ancestralName, globals.strains))
+                ancestor = next(filteredList, None)
+                if ancestor != None:
+                    #Get the operons that we have to update
+                    filteredList = iter(filter(lambda x : x.fragmentIndex >= deletion.ancestralFragmentId, ancestor.genomeFragments))
+                    fragment = next(filteredList, None)
+                    while fragment:
+                        if fragment.fragmentIndex == deletion.ancestralFragmentId:
+                            #Replace the operon array and the string sequence
+                            fragment.originalSequence = originalSequence
+                            fragment.sequence = sequence
+                        else:
+                            #Update the start position of the other operons by subtracting by the number of genes deleted
+                            fragment.startPositionInGenome = int(fragment.startPositionInGenome) - 1
+                        fragment = next(filteredList, None)
+                else:
+                    print('Error! Something went wrong because we failed to find ancestor %s!' % (ancestralName))   
+                
                 #TODO
                 #Update details in the deletion details and duplication details
 #                start = int(deletion.ancestralPosition)
@@ -755,9 +721,7 @@ def operonHadGenesRemoved(deletions, ancestor1):
 #                                           
 #                newLine = inversionTranspositionIndexUpdate(start, ancestor1.invertedTranspositionDetails.replace('Inverted Transposition:', ''), 1)
 #                ancestor1.invertedTranspositionDetails = 'Inverted Transposition:' + newLine
-    
-    return result, count
-
+                
 ######################################################
 # constructStatement
 # Parameters:

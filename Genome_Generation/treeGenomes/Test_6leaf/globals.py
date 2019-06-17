@@ -2,6 +2,9 @@
 ###Global variables used in the script############
 ##################################################
 def initialize():
+    global enableDeletionReversions
+    enableDeletionReversions = False
+    
     global trackingId
     trackingId = 0
     

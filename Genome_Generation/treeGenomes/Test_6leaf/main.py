@@ -45,13 +45,15 @@ def createAncestor(strain1, strain2, neighborStrain):
     ancestor = None
     ancestralName = 'Ancestor ' + str(globals.ancestralCounter)
     ancestralFragments = None
-
+    
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
     neighborCopy = copy.deepcopy(neighborStrain) #Do a deep copy of the neighbor as well b/c we don't want to store those comparisons in the strain either
 
     print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
+    globals.enableDeletionReversions = True #Only do the backtrace between these two strains!
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
-
+    globals.enableDeletionReversions = False
+    
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     createDotPlot(points, strain1, strain2)
