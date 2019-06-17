@@ -14,6 +14,7 @@ from FragmentService import determineRegions
 from FileService import outputStrainDetailsToFile
 from SequenceService import normalizeIndexesForDotPlot
 from SequenceService import updateGlobalDeletionCounter
+from GlobalAlignmentModule import reduceSingletonDeletions
 from SequenceService import updateGlobalDuplicationCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
@@ -114,9 +115,6 @@ def createAncestor(strain1, strain2, neighborStrain):
     
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
     
-    #for fragment in ancestor.genomeFragments:
-        #print(fragment.originalSequence)
-        
     return ancestor
 
 ######################################################
@@ -154,7 +152,10 @@ def constructEvents(strain1, strain2):
     duplicationEvents2 = [] #Stores the duplication events for strain 2
     coverageTracker1 = initializeTracker(strain1) #Tracks which operons have been marked off in strain 1
     coverageTracker2 = initializeTracker(strain2) #Tracks which operons have been marked off in strain 2
-
+    lossEvents1 = []
+    lossEvents2 = []
+    newEvents = []
+    
     print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
     events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
 
@@ -179,16 +180,22 @@ def constructEvents(strain1, strain2):
         #Remember to insert the deletions into the sibling (that's how we defined it)
         duplicationEvents1, lossEvents1, coverageTracker1, strain1, strain2 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
         print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
-        if len(lossEvents1) > 0:
-            events.extend(lossEvents1)
-
+        
     if numRemainingOperons2 > 0:
         #Remember to insert the deletions into the sibling (that's how we defined it)
         duplicationEvents2, lossEvents2, coverageTracker2, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2, strain1)
         print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
-        if len(lossEvents2) > 0:
+    
+    #Try reducing the number of singleton deletions
+    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
+        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
+    if len(newEvents) > 0:
+            events.extend(newEvents)
+    if len(lossEvents1) > 0:
+            events.extend(lossEvents1)
+    if len(lossEvents2) > 0:
             events.extend(lossEvents2)
-
+            
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)

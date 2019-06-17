@@ -497,8 +497,17 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
                             operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
                             operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
-                            
+                        
                         event.trackingEventId = globals.trackingId
+                        
+                        #Get the newest copy of the fragment into event as it may have been update
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails1 = fragment
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails2 = fragment
+                        
                         event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
                         #Codon mismatches
@@ -1089,3 +1098,128 @@ def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPosition
             arrayOfGapPositions[w] = positions
 
     return arrayOfGaps, arrayOfGapPositions, allDuplicationSizes, allDuplicationDetails
+
+######################################################
+# reduceSingletonDeletions
+# Parameters:
+# Description: Attempts to map singletons to operons in the event any operons were reduced to singletons
+######################################################
+def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2):
+    loss1 = []
+    loss2 = []
+    newEvents = []
+    
+    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
+        #Step 1: unmark these operons and singletons again
+        for event in lossEvents1:
+            coverageTracker1[event.fragmentDetails1.fragmentIndex] = False
+            #Get the newest copy of the fragment into event as it may have been update
+            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
+            fragment = next(filteredList, None)
+            event.fragmentDetails1 = fragment
+            event.fragmentDetails2 = fragment
+            
+        for event in lossEvents2:
+            coverageTracker2[event.fragmentDetails1.fragmentIndex] = False
+            #Get the newest copy of the fragment into event as it may have been update
+            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain2.genomeFragments))
+            fragment = next(filteredList, None)
+            event.fragmentDetails1 = fragment
+            event.fragmentDetails2 = fragment
+            
+        #Step 2: Attempt to map a singleton to an operon
+        for x in range(0, len(lossEvents1)):
+            for y in range(0, len(lossEvents2)):
+                event1 = lossEvents1[x]
+                event2 = lossEvents2[y]
+                #Make sure bother operons are not marked and one of them is an operon and the other is a singleton
+                if coverageTracker1[event1.fragmentDetails1.fragmentIndex] == False and coverageTracker2[event2.fragmentDetails1.fragmentIndex] == False and ((len(event1.ancestralOperonGeneSequence) == 1 and len(event2.ancestralOperonGeneSequence) > 1) or (len(event2.ancestralOperonGeneSequence) == 1 and len(event1.ancestralOperonGeneSequence) > 1)):
+                    #Test if the singleton is in the operon
+                    if len(event1.ancestralOperonGeneSequence) == 1:
+                        singleton = event1.ancestralOperonGeneSequence[0]
+                        operon = event2.ancestralOperonGeneSequence
+                    else:
+                        singleton = event2.ancestralOperonGeneSequence[0]
+                        operon = event1.ancestralOperonGeneSequence
+                    if singleton in operon:
+                        print('\n##### Global Alignment (Reducing number of singletons operation)#####')
+                        #Mark these two as orthologs
+                        coverageTracker1[event1.fragmentDetails1.fragmentIndex] = True
+                        coverageTracker2[event2.fragmentDetails1.fragmentIndex] = True
+                        
+                        #Construct the new event
+                        globals.trackingId += 1
+                        newEvent = Event(globals.trackingId)
+                        newEvent.setFragmentDetails1(event1.fragmentDetails1)
+                        newEvent.setFragmentDetails2(event2.fragmentDetails1)
+                        newEvent.setGenome1Name(event1.genome1Name)
+                        newEvent.setGenome2Name(event2.genome1Name)
+                        newEvent.setTechnique('Global Alignment')
+                        score, newEvent = performGlobalAlignment(event1.fragmentDetails1.sequence, event2.fragmentDetails1.sequence, newEvent)
+                        newEvent.setScore(score)
+                        
+                        newEvent, strain1, strain2 = reconstructOperonSequence(newEvent, strain1, strain2)
+                        #Codon mismatches
+                        if newEvent.numCodonMismatches > 0:
+                            codonMismatchDescription1 = constructStatement(newEvent.codonMismatchIndexesStrain1, newEvent.codonMismatchGenesStrain1, newEvent.fragmentDetails1)
+                            codonMismatchDescription2 = constructStatement(newEvent.codonMismatchIndexesStrain2, newEvent.codonMismatchGenesStrain2, newEvent.fragmentDetails2)
+
+                            strain1.addCodonMismatchDetails(codonMismatchDescription1)
+                            strain2.addCodonMismatchDetails(codonMismatchDescription2)
+                        #Substitutions
+                        if newEvent.numSubstitutions > 0:
+                            substitutionDescription1 = constructStatement(newEvent.substitutionIndexesStrain1, newEvent.substitutionGenesStrain1, newEvent.fragmentDetails1)
+                            substitutionDescription2 = constructStatement(newEvent.substitutionIndexesStrain2, newEvent.substitutionGenesStrain2, newEvent.fragmentDetails2)
+
+                            strain1.addSubstitutionDetails(substitutionDescription1)
+                            strain2.addSubstitutionDetails(substitutionDescription2)
+                        #Add new event to list
+                        newEvents.append(newEvent)
+                        print(newEvent.toString())
+                        print('###################################\n')
+        
+        #Step 3: Put the unmarked operons back in the loss lists
+        #Only add loss details after we fail to map a singleton to an operon
+        for event in lossEvents1:
+            if coverageTracker1[event.fragmentDetails1.fragmentIndex] == False:
+                coverageTracker1[event.fragmentDetails1.fragmentIndex] = True
+                loss1.append(event)
+            
+                deletionDetails = ''
+                position = event.fragmentDetails1.startPositionInGenome
+                op = copy.deepcopy(event.fragmentDetails1.sequence)
+                
+                if event.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
+                    op.reverse()
+                
+                for gene in op:
+                    deletionDetails += gene + ' ' + str(position) + ', '
+                    position += 1
+                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
+                deletionDetails += ';'
+                
+                #Increment the loss counter with the size of the operon since the operon is a loss
+                strain2 = addDeletionEventsToStrain(strain2, [len(event.fragmentDetails1.sequence)], deletionDetails)
+                
+        for event in lossEvents2:
+            if coverageTracker2[event.fragmentDetails1.fragmentIndex] == False:
+                coverageTracker2[event.fragmentDetails1.fragmentIndex] = True
+                loss2.append(event)
+                
+                deletionDetails = ''
+                position = event.fragmentDetails1.startPositionInGenome
+                op = copy.deepcopy(event.fragmentDetails1.sequence)
+                
+                if event.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
+                    op.reverse()
+                
+                for gene in op:
+                    deletionDetails += gene + ' ' + str(position) + ', '
+                    position += 1
+                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
+                deletionDetails += ';'
+                
+                #Increment the loss counter with the size of the operon since the operon is a loss
+                strain1 = addDeletionEventsToStrain(strain1, [len(event.fragmentDetails1.sequence)], deletionDetails)
+                
+    return loss1, loss2, newEvents

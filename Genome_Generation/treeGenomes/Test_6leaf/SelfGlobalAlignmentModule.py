@@ -124,21 +124,21 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                 event.setAncestralOperonGeneSequence(copy.deepcopy(unmarkedFragment.sequence))
                 lossEvents.append(event)
                 
-                deletionDetails = ''
-                position = event.fragmentDetails1.startPositionInGenome
-                op = copy.deepcopy(event.fragmentDetails1.sequence)
-                
-                if event.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
-                    op.reverse()
-                
-                for gene in op:
-                    deletionDetails += gene + ' ' + str(position) + ', '
-                    position += 1
-                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
-                deletionDetails += ';'
-                
-                #Increment the loss counter with the size of the operon since the operon is a loss
-                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
+#                deletionDetails = ''
+#                position = event.fragmentDetails1.startPositionInGenome
+#                op = copy.deepcopy(event.fragmentDetails1.sequence)
+#                
+#                if event.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
+#                    op.reverse()
+#                
+#                for gene in op:
+#                    deletionDetails += gene + ' ' + str(position) + ', '
+#                    position += 1
+#                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
+#                deletionDetails += ';'
+#                
+#                #Increment the loss counter with the size of the operon since the operon is a loss
+#                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 print(event.toString())
