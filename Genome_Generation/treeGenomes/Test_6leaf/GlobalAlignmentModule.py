@@ -695,33 +695,31 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
                             #Update the start position of the other operons by subtracting by the number of genes deleted
                             fragment.startPositionInGenome = int(fragment.startPositionInGenome) - 1
                         fragment = next(filteredList, None)
+                    #Update details in the deletion details and duplication details
+                    start = int(deletion.ancestralPosition)
+                    newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor.codonMismatchDetails.replace('Codon Mismatch:', ''), 1)
+                    ancestor.codonMismatchDetails = 'Codon Mismatch:' + newLine
+                                                
+                    newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor.substitutionDetails.replace('Substitution:', ''), 1)
+                    ancestor.substitutionDetails = 'Substitution:' + newLine
+                                                
+                    newLine = duplicationDeletionIndexUpdate(start, ancestor.duplicationDetails.replace('Duplication:', ''), 1)
+                    ancestor.duplicationDetails = 'Duplication:' + newLine
+                                           
+                    newLine = duplicationDeletionIndexUpdate(start, ancestor.deletionDetails.replace('Deletion:', ''), 1)
+                    ancestor.deletionDetails = 'Deletion:' + newLine
+                                           
+                    newLine = inversionTranspositionIndexUpdate(start, ancestor.inversionDetails.replace('Inversion:', ''), 1)
+                    ancestor.inversionDetails = 'Inversion:' + newLine
+                                           
+                    newLine = inversionTranspositionIndexUpdate(start, ancestor.transpositionDetails.replace('Transposition:', ''), 1)
+                    ancestor.transpositionDetails = 'Transposition:' + newLine
+                                           
+                    newLine = inversionTranspositionIndexUpdate(start, ancestor.invertedTranspositionDetails.replace('Inverted Transposition:', ''), 1)
+                    ancestor.invertedTranspositionDetails = 'Inverted Transposition:' + newLine
                 else:
                     print('Error! Something went wrong because we failed to find ancestor %s!' % (ancestralName))   
-                
-                #TODO
-                #Update details in the deletion details and duplication details
-#                start = int(deletion.ancestralPosition)
-#                newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor1.codonMismatchDetails.replace('Codon Mismatch:', ''), 1)
-#                ancestor1.codonMismatchDetails = 'Codon Mismatch:' + newLine
-#                                            
-#                newLine = codonMismatchSubstitutionIndexUpdate(start, ancestor1.substitutionDetails.replace('Substitution:', ''), 1)
-#                ancestor1.substitutionDetails = 'Substitution:' + newLine
-#                                            
-#                newLine = duplicationDeletionIndexUpdate(start, ancestor1.duplicationDetails.replace('Duplication:', ''), 1)
-#                ancestor1.duplicationDetails = 'Duplication:' + newLine
-#                                           
-#                newLine = duplicationDeletionIndexUpdate(start, ancestor1.deletionDetails.replace('Deletion:', ''), 1)
-#                ancestor1.deletionDetails = 'Deletion:' + newLine
-#                                           
-#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.inversionDetails.replace('Inversion:', ''), 1)
-#                ancestor1.inversionDetails = 'Inversion:' + newLine
-#                                           
-#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.transpositionDetails.replace('Transposition:', ''), 1)
-#                ancestor1.transpositionDetails = 'Transposition:' + newLine
-#                                           
-#                newLine = inversionTranspositionIndexUpdate(start, ancestor1.invertedTranspositionDetails.replace('Inverted Transposition:', ''), 1)
-#                ancestor1.invertedTranspositionDetails = 'Inverted Transposition:' + newLine
-                
+                    
 ######################################################
 # constructStatement
 # Parameters:
