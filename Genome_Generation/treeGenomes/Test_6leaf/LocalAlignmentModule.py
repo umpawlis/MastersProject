@@ -47,8 +47,16 @@ def findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, s
                         event.setGenome1Name(strain1.name)
                         event.setGenome2Name(strain2.name)
                         event.setTechnique('Local Alignment')
-
-                        score, startPosition, endPosition, event = localAlignment(fragment1, fragment2, event)
+                        
+                        #Get the newest copy of the fragment into event as it may have been update
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails1 = fragment
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails2 = fragment
+                        
+                        score, startPosition, endPosition, event = localAlignment(event.fragmentDetails1, event.fragmentDetails2, event)
 
                         if (score > highestScore) or (score == highestScore and (abs(i - j)) < distance):
                             highestScore = score
