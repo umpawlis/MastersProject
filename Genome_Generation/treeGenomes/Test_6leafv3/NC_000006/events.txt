@@ -1,0 +1,4 @@
+Thr_ACC 18;
+Ile_AUA 20;
+Ser_UCG 22;
+Arg_CGA 23;

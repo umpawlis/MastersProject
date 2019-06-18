@@ -1,0 +1,1 @@
+< o >, [16S, 23S, 5S, Cys_UGC, Pro_CCG], [16S, 23S, 5S, HIs_CAC, Gln_CAA], [16S, 23S, Ser_UCU, Met_AUG, Arg_CGU, Arg_CGA], < t >, -[HIs_CAC, Ile_AUC, Ile_AUC], -Ser_UCG

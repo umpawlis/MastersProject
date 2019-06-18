@@ -1,0 +1,6 @@
+Ser_AGC 4;
+Pro_CCC 19;
+Gly_GGC 3;
+Arg_CGA 10;
+Ser_AGC 9;
+Ile_AUU 26;

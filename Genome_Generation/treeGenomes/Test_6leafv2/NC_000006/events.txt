@@ -1,0 +1,2 @@
+Leu_CUG 15;
+Phe_UUU 2;

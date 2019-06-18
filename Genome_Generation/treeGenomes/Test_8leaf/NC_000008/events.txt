@@ -1,0 +1,4 @@
+5S 1;
+5S 4;
+Arg_AGG 24;
+Arg_AGA 14;

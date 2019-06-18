@@ -1,0 +1,4 @@
+Ser_AGC 4;
+Pro_CCC 19;
+Ile_AUA 21;
+Arg_AGG 2;

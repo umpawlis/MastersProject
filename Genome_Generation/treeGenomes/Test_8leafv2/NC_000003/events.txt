@@ -1,0 +1,8 @@
+Ile_AUU 21;
+Ile_AUA 4;
+Arg_CGA 22, His_CAU 23;
+Arg_AGG 20;
+Arg_AGG 28;
+Arg_AGG 19, Pro_CCC 20, Met_AUG 21;
+Ile_AUC 11;
+5S 4;

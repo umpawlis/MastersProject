@@ -1,9 +1,9 @@
-((((NC_000001:0.00000,NC_000002:0.00000):0.00000,(NC_000003:0.00000,NC_000004:0.00000):0.00000):0.00000,NC_000005:0.00000):0.00000,((NC_000006:0.00000,NC_000007:0.00000):0.00000,NC_000008:0.00000):0.00000):0.00000;
+((((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000,((NC_000004:0.00000,NC_000005:0.00000):0.00000,NC_000006:0.00000):0.00000):0.00000,(NC_000007:0.00000,NC_000008:0.00000):0.00000):0.00000;
 Strain:NC_000001
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUC 7;Ile_AUC 22;
-Deletion:
+Duplication:16S 1;
+Deletion:Pro_CCA 1;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -11,108 +11,108 @@ Strain:NC_000002
 Codon Mismatch:
 Substitution:
 Duplication:
-Deletion:Ala_GCG 5;5S 23;
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000003
-Codon Mismatch:
-Substitution:
-Duplication:Ile_AUC 11;5S 4;
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000004
-Codon Mismatch:
-Substitution:
-Duplication:Ser_AGC 19;
-Deletion:Ile_AUA 1;
+Deletion:16S 19, Glu_GAA 20;Trp_UGG 21;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 1
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Ser_AGC 5;Ala_GCG 9;
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:Ancestor 2
-Codon Mismatch:
-Substitution:
-Duplication:Arg_AGG 28;Arg_AGG 19, Pro_CCC 20, Met_AUG 21;
+Duplication:Arg_AGG 15;Ser_UCG 14;
 Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-Strain:Ancestor 3
+Strain:NC_000003
 Codon Mismatch:
 Substitution:
-Duplication:Arg_AGG 20;
-Deletion:Arg_CGA 23, His_CAU 24;
+Duplication:16S 20;
+Deletion:16S 18;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000004
+Codon Mismatch:
+Substitution:
+Duplication:Pro_CCA 7;
+Deletion:16S 9;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000005
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUU 27, Asp_GAU 28;Ser_AGC 14;
-Deletion:
+Duplication:Glu_GAA 1;
+Deletion:16S 17;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 3
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:23S 16;Arg_AGA 12;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000006
 Codon Mismatch:
 Substitution:
-Duplication:Ser_AGC 9;Ile_AUU 26;
-Deletion:
+Duplication:
+Deletion:Arg_AGG 21;Pro_CCA 2;
 Inversion:
 Transposition:
 Inverted Transposition:
-Strain:NC_000007
+Strain:Ancestor 2
 Codon Mismatch:
 Substitution:
-Duplication:Arg_CGA 19;
-Deletion:Ala_GCG 5;
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:Ancestor 5
-Codon Mismatch:
-Substitution:
-Duplication:Gly_GGC 3;Arg_CGA 10;
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000008
-Codon Mismatch:
-Substitution:
-Duplication:Ile_AUA 21;Arg_AGG 2;
-Deletion:
+Duplication:
+Deletion:23S 18;23S 17;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 4
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUA 4;
-Deletion:Ile_AUU 21;
+Duplication:Ser_UCG 1;
+Deletion:23S -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000007
+Codon Mismatch:
+Substitution:
+Duplication:16S 27;
+Deletion:Arg_AGG -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000008
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Arg_AGG -1;Arg_AGA 14;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 5
+Codon Mismatch:
+Substitution:
+Duplication:23S 18, 16S 19;
+Deletion:5S 16;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 6
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Ser_AGC 4;Pro_CCC 19;
+Duplication:5S 1;5S 4;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 9, size: 2 count: 1
-Total Duplications: size: 1 count: 16, size: 2 count: 1, size: 3 count: 1
+Total Deletions: size: 1 count: 16, size: 2 count: 1
+Total Duplications: size: 1 count: 10, size: 2 count: 1
 Size Distribution of Inversions:
 Size Distribution of Transpositions:
 Size Distribution of Inverted Transpositions:

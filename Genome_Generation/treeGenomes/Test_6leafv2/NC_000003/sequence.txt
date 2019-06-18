@@ -1,0 +1,1 @@
+< o >, Thr_ACC, Phe_UUU, Gly_GGC, [Ile_AUU, 16S, 23S, 5S], Leu_CUG, Val_GUA, [Glu_GAG, His_CAU], < t >, -Gln_CAG, -[5S, Thr_ACC, 23S, 16S], -[Pro_CCA, Glu_GAG, Leu_UUA], -[Thr_ACC, HIs_CAC], -Glu_GAG, -Gly_GGC, -[Ser_UCU, Ile_AUU]

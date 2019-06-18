@@ -1,0 +1,6 @@
+Thr_ACC 18;
+Ile_AUA 20;
+16S 7;
+Ser_UCG 20;
+16S 11;
+Ala_GCC 12;

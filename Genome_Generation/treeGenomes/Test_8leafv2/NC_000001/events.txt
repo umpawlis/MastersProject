@@ -1,0 +1,8 @@
+Ile_AUU 21;
+Ile_AUA 4;
+Arg_CGA 22, His_CAU 23;
+Arg_AGG 20;
+Ser_AGC 5;
+Ala_GCG 9;
+Ile_AUC 7;
+Ile_AUC 22;

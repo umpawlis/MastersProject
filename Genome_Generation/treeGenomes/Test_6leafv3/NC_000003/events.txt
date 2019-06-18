@@ -1,0 +1,4 @@
+Ile_AUA 20;
+Ala_GCC 11, Ser_UCG 12;
+Thr_ACC 23, Gln_CAG 24;
+5S 16, 23S 17, 16S 18;

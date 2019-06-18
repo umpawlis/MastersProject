@@ -1,0 +1,1 @@
+< o >, Ile_AUA, [Ser_AGU, Gly_GGC, Arg_AGA], Ala_GCG, [Ser_AGC, Ser_UCC], Ala_GCG, Ser_AGC, Gly_GGC, Arg_CGA, Ile_AUC, [Asp_GAU, Ile_AUU, Tyr_UAC, Ser_UCC, Leu_CUA], < t >, -[Arg_AGG, HIs_CAC], -Met_AUG, -Ile_AUU, -[Arg_CGA, His_CAU], -[5S, Ile_AUU, 23S, 16S]

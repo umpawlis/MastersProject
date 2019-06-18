@@ -1,0 +1,6 @@
+Leu_CUG 15;
+Glu_GAG 23;
+Leu_CUU 4;
+Thr_ACC 16;
+Asp_GAC 9;
+Glu_GAG 19;

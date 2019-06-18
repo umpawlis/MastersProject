@@ -1,0 +1,4 @@
+Ile_AUU 21;
+Ile_AUA 4;
+Ile_AUU 27, Asp_GAU 28;
+Ser_AGC 14;
