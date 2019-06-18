@@ -1,0 +1,1 @@
+< o >, Pro_CCA, [Ser_UCG, Ser_AGU, 16S, 23S, 5S], [16S, 23S, 5S, Thr_ACG, Glu_GAG], [Arg_AGA, Ala_GCA, Ser_UCG, Arg_AGG, Phe_UUC], < t >, -16S, -[16S, Glu_GAA, Trp_UGG, Leu_CUA], -[Arg_AGG, Thr_ACU, 5S, 23S, 16S]
