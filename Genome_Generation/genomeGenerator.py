@@ -341,6 +341,9 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 			# print right.lossEvents
 
 		currNode.name = "Ancestor " + str(ancestorCounter)
+		sequenceFile = open(currNode.name + ".txt", "w+")
+		sequenceFile.write(formatGenome(currentBefore, currentAfter))
+		sequenceFile.close()
 		ancestorCounter += 1
 		# currNode.printNode()
 	elif node.name is not None and len(node.name) > 0:
