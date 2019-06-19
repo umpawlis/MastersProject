@@ -1,443 +1,455 @@
 Ancestor:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
 
 Reading in newick tree structure from file: tree8Leaf.dnd...
 Creating file generatorOutput.txt...
 Previous Events:
 []
 Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
 
-Performing duplication... From before: False Index: 7  Section length: 2 Target before: False Target index: 2 Target position: 0
-Arg_CGC 17,Asp_GAU 18,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[]
-Arg_CGC 17, Asp_GAU 18;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 25, 26]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 17, 18]
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU']]
-Met_AUG 23,
+Gly_GGU 25,
 Performing deletion... From before: False Index: 4  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU']]
-Met_AUG 23;
-[23]
-Arg_CGC 17, Asp_GAU 18;
-23
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 25, 26]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, -1, 23, 24, 25, 26, 27, 17, 18]
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Performing duplication... From before: True Index: 2 Section length: 1 Target before: False Target index: 1
-Leu_CUA 16,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Leu_CUA, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
 []
-Leu_CUA 16;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 4]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 16]
-[Event(Type = 'D', Range = [16], Genes: ['Leu_CUA']]
-Leu_CUA 16,
-Performing deletion... From before: False Index: 1  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [16], Genes: ['Leu_CUA']]
-Leu_CUA 16;
-[16]
-Leu_CUA 16;
-16
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 4]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, -1]
-[Event(Type = 'D', Range = [-1], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [4], Genes: ['Leu_CUA']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [4], Genes: ['Leu_CUA']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Ser_UCU 25,
-Performing deletion... From before: False Index: 5  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[]
-Ser_UCU 25;
+Gly_GGU 25;
 25
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, -1, 25, 26]
-[Event(Type = 'L', Range = [25], Genes: ['Ser_UCU']]
-Performing duplication... From before: False Index: 0  Section length: 1 Target before: True Target index: 7 Target position: 0
-Asp_GAU 12,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'L', Range = [25], Genes: ['Ser_UCU']]
-Asp_GAU 12;
-[12]
-Ser_UCU 25;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 15]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, 26, 27, 12]
-[Event(Type = 'L', Range = [25], Genes: ['Ser_UCU'], Event(Type = 'D', Range = [12], Genes: ['Asp_GAU']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [4], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [25], Genes: ['Ser_UCU'], Event(Type = 'D', Range = [12], Genes: ['Asp_GAU']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-Performing duplication... From before: True Index: 3 Section length: 1 Target before: False Target index: 3
-Arg_AGG 23,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Arg_AGG, -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[]
-Arg_AGG 23;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 6]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 23]
-[Event(Type = 'D', Range = [23], Genes: ['Arg_AGG']]
-Leu_CUA 8,
-Performing deletion... From before: True Index: 4  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], Ser_AGC, Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Arg_AGG, -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [23], Genes: ['Arg_AGG']]
-Leu_CUA 8;
-[8]
-Arg_AGG 23;
-8
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 6]
-[0, 1, 2, 3, 4, 5, 6, 7, -1, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 22]
-[Event(Type = 'D', Range = [22], Genes: ['Arg_AGG'], Event(Type = 'L', Range = [8], Genes: ['Leu_CUA']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [4], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [25], Genes: ['Ser_UCU'], Event(Type = 'D', Range = [12], Genes: ['Asp_GAU']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-Performing duplication... From before: True Index: 4  Section length: 2 Target before: False Target index: 4 Target position: 0
-Ser_AGC 24,Leu_CUA 25,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Ser_AGC, Leu_CUA, Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[]
-Ser_AGC 24, Leu_CUA 25;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 8, 9]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26, 27, 28, 29, 25, 24]
-[Event(Type = 'D', Range = [24, 25], Genes: ['Ser_AGC', 'Leu_CUA']]
-Leu_CUA 4,Gly_GGA 5,
-Performing deletion... From before: True Index: 2  Section length: 2
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Asp_GAU, Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Ser_AGC, Leu_CUA, Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [24, 25], Genes: ['Ser_AGC', 'Leu_CUA']]
-Leu_CUA 4, Gly_GGA 5;
-[4, 5]
-Ser_AGC 24, Leu_CUA 25;
-5
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 8, 9]
-[0, 1, 2, 3, -1, -1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 23, 22]
-[Event(Type = 'D', Range = [22, 23], Genes: ['Ser_AGC', 'Leu_CUA'], Event(Type = 'L', Range = [4, 5], Genes: ['Leu_CUA', 'Gly_GGA']]
-[22, 23]
-Leu_CUA 8;
-[4, 5]
-Leu_CUA 8;
-[22]
-Leu_CUA 4, Gly_GGA 5;
-[8]
-Leu_CUA 4, Gly_GGA 5;
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [4], Genes: ['Leu_CUA']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Arg_AGA 12,Ala_GCC 13,
-Performing deletion... From before: True Index: 7  Section length: 2
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[]
-Arg_AGA 12, Ala_GCC 13;
-13
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, -1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-[Event(Type = 'L', Range = [12, 13], Genes: ['Arg_AGA', 'Ala_GCC']]
-Performing duplication... From before: True Index: 5 Section length: 1 Target before: False Target index: 0
-Ala_GCG 13,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, < t >, -Ala_GCG, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'L', Range = [12, 13], Genes: ['Arg_AGA', 'Ala_GCC']]
-Ala_GCG 13;
-[13]
-Arg_AGA 12, Ala_GCC 13;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 10]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, -1, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 13]
-[Event(Type = 'L', Range = [12, 13], Genes: ['Arg_AGA', 'Ala_GCC'], Event(Type = 'D', Range = [13], Genes: ['Ala_GCG']]
-[12, 13]
-Ser_UCU 25;
-[13]
-Ser_UCU 23;
-[25]
-Arg_AGA 12, Ala_GCC 13;
-[12]
-Arg_AGA 12, Ala_GCC 13;
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Performing duplication... From before: False Index: 0 Section length: 1 Target before: True Target index: 1
-Asp_GAU 3,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], Asp_GAU, Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[]
-Asp_GAU 3;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 15]
-[0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 3]
-[Event(Type = 'D', Range = [3], Genes: ['Asp_GAU']]
-Asp_GAU 3,
-Performing deletion... From before: True Index: 1  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [3], Genes: ['Asp_GAU']]
-Asp_GAU 3;
-[3]
-Asp_GAU 3;
-3
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 15]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, -1]
-[Event(Type = 'D', Range = [-1], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [15], Genes: ['Asp_GAU']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [15], Genes: ['Asp_GAU']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Arg_CGC 17,
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU']]
+Gly_GGG 19,
 Performing deletion... From before: False Index: 2  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
-[]
-Arg_CGC 17;
-17
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU']]
+Gly_GGG 19;
+[19]
+Gly_GGU 25;
+19
 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
-[Event(Type = 'L', Range = [17], Genes: ['Arg_CGC']]
-Ala_GCU 16,
-Performing deletion... From before: False Index: 1  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'L', Range = [17], Genes: ['Arg_CGC']]
-Ala_GCU 16;
-[16]
-Arg_CGC 17;
-16
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -1, -1, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-[Event(Type = 'L', Range = [17], Genes: ['Arg_CGC'], Event(Type = 'L', Range = [16], Genes: ['Ala_GCU']]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, -1, 19, 20, 21, 22, 23, -1, 24, 25]
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG']]
 Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [15], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [17], Genes: ['Arg_CGC'], Event(Type = 'L', Range = [16], Genes: ['Ala_GCU']]
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG']]
 Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
-Gln_CAA 3,
-Performing deletion... From before: True Index: 1  Section length: 1
-< o >, [Val_GUG, Thr_ACC], [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[]
-Gln_CAA 3;
-3
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-[0, 1, 2, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA']]
-Arg_AGG 5,Glu_GAA 6,
-Performing deletion... From before: True Index: 2  Section length: 2
-< o >, [Val_GUG, Thr_ACC], [Leu_CUA, Gly_GGA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA']]
-Arg_AGG 5, Glu_GAA 6;
-[5, 6]
-Gln_CAA 3;
-6
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
-[0, 1, 2, -1, 3, 4, -1, -1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA'], Event(Type = 'L', Range = [6, 7], Genes: ['Arg_AGG', 'Glu_GAA']]
-Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [15], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [17], Genes: ['Arg_CGC'], Event(Type = 'L', Range = [16], Genes: ['Ala_GCU']]
-Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Performing duplication... From before: False Index: 5  Section length: 1 Target before: False Target index: 5 Target position: 1
-Arg_CGC 25,
+Performing duplication... From before: False Index: 0  Section length: 1 Target before: True Target index: 0 Target position: 1
+Lys_AAG 2,
 Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
 []
-Arg_CGC 25;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 24]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 25]
-[Event(Type = 'D', Range = [25], Genes: ['Arg_CGC']]
-Cys_UGC 20,
+Lys_AAG 2;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 15]
+[0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 2]
+[Event(Type = 'D', Range = [2], Genes: ['Lys_AAG']]
+Pro_CCG 20,
 Performing deletion... From before: False Index: 2  Section length: 1
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -[Asp_GAU, 5S, 23S, 16S], -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
-[Event(Type = 'D', Range = [25], Genes: ['Arg_CGC']]
-Cys_UGC 20;
+[Event(Type = 'D', Range = [2], Genes: ['Lys_AAG']]
+Pro_CCG 20;
 [20]
-Arg_CGC 25;
+Lys_AAG 2;
 20
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 24]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, -1, 20, 21, 22, 23, 25, 24]
-[Event(Type = 'D', Range = [24], Genes: ['Arg_CGC'], Event(Type = 'L', Range = [20], Genes: ['Cys_UGC']]
-[24]
-Gln_CAA 3;
-[24]
-Arg_AGG 6, Glu_GAA 7;
-[20]
-Gln_CAA 3;
-[20]
-Arg_AGG 6, Glu_GAA 7;
-[3]
-Cys_UGC 20;
-[6, 7]
-Cys_UGC 19;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 15]
+[0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, -1, 20, 21, 22, 23, 24, 25, 2]
+[Event(Type = 'D', Range = [2], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [19], Genes: ['Pro_CCG']]
 Previous Events:
-[Event(Type = 'D', Range = [17, 18], Genes: ['Arg_CGC', 'Asp_GAU'], Event(Type = 'L', Range = [21], Genes: ['Met_AUG'], Event(Type = 'D', Range = [-1], Genes: ['Asp_GAU'], Event(Type = 'L', Range = [15], Genes: ['Asp_GAU']]
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'D', Range = [2], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [19], Genes: ['Pro_CCG']]
 Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
-Gln_CAA 3,
-Performing deletion... From before: True Index: 1  Section length: 1
-< o >, [Val_GUG, Thr_ACC], [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+Tyr_UAU 12,
+Performing deletion... From before: True Index: 4  Section length: 1
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
 
 []
-Gln_CAA 3;
-3
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-[0, 1, 2, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA']]
-Performing duplication... From before: False Index: 6  Section length: 1 Target before: True Target index: 1 Target position: 1
-Arg_CGC 4,
-Duplication:
-< o >, [Val_GUG, Thr_ACC], [Leu_CUA, Arg_CGC, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[Arg_CGC, Asp_GAU, 5S, 23S, 16S], -Cys_UGC, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+Tyr_UAU 12;
+12
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+[Event(Type = 'L', Range = [12], Genes: ['Tyr_UAU']]
+Ala_GCU 23,
+Performing deletion... From before: False Index: 4  Section length: 1
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
 
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA']]
-Arg_CGC 4;
-[4]
-Gln_CAA 3;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 26]
-[0, 1, 2, -1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 4]
-[Event(Type = 'L', Range = [3], Genes: ['Gln_CAA'], Event(Type = 'D', Range = [4], Genes: ['Arg_CGC']]
-[3]
-Arg_CGC 17;
-[3]
-Ala_GCU 16;
-[4]
-Arg_CGC 16;
-[4]
-Ala_GCU 15;
-[17]
-Gln_CAA 3;
+[Event(Type = 'L', Range = [12], Genes: ['Tyr_UAU']]
+Ala_GCU 23;
+[23]
+Tyr_UAU 12;
+23
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1, 23]
+[Event(Type = 'L', Range = [12], Genes: ['Tyr_UAU'], Event(Type = 'L', Range = [24], Genes: ['Ala_GCU']]
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'D', Range = [2], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [19], Genes: ['Pro_CCG'], Event(Type = 'L', Range = [12], Genes: ['Tyr_UAU'], Event(Type = 'L', Range = [24], Genes: ['Ala_GCU']]
+Parent Genome:
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
+
+Performing duplication... From before: True Index: 4  Section length: 1 Target before: True Target index: 1 Target position: 1
+Ser_AGC 5,
+Duplication:
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Ser_AGC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
+
+[]
+Ser_AGC 5;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 12]
+[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 5]
+[Event(Type = 'D', Range = [5], Genes: ['Ser_AGC']]
+Lys_AAG 16,
+Performing deletion... From before: False Index: 0  Section length: 1
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Ser_AGC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
+
+[Event(Type = 'D', Range = [5], Genes: ['Ser_AGC']]
+Lys_AAG 16;
 [16]
-Gln_CAA 3;
-[-1]
-Leu_CUA 4;
-[15]
-Leu_CUA 5;
-[-1]
-Asp_GAU 15;
-[4]
-Asp_GAU 16;
+Ser_AGC 5;
+16
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 12]
+[0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, -1, 16, 17, 18, 19, 20, 21, 22, 23, 5]
+[Event(Type = 'D', Range = [5], Genes: ['Ser_AGC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG']]
 Previous Events:
-[]
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'D', Range = [2], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [19], Genes: ['Pro_CCG'], Event(Type = 'L', Range = [12], Genes: ['Tyr_UAU'], Event(Type = 'L', Range = [24], Genes: ['Ala_GCU']]
 Parent Genome:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
 
-Performing duplication... From before: True Index: 0  Section length: 1 Target before: True Target index: 4 Target position: 0
-Val_GUG 8,
+Performing duplication... From before: False Index: 0 Section length: 2 Target before: True Target index: 2
+Leu_CUA 9,Lys_AAG 10,
 Duplication:
-< o >, [Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Leu_CUA, Lys_AAG, Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -Pro_CCG
 
 []
-Val_GUG 8;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 1]
-[0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 8]
-[Event(Type = 'D', Range = [8], Genes: ['Val_GUG']]
-Performing duplication... From before: False Index: 6  Section length: 1 Target before: True Target index: 0 Target position: 0
-Ser_UCU 1,
-Duplication:
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'D', Range = [8], Genes: ['Val_GUG']]
-Ser_UCU 1;
-[1]
-Val_GUG 8;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 1, 24]
-[0, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 9, 1]
-[Event(Type = 'D', Range = [9], Genes: ['Val_GUG'], Event(Type = 'D', Range = [1], Genes: ['Ser_UCU']]
-Previous Events:
-[Event(Type = 'D', Range = [9], Genes: ['Val_GUG'], Event(Type = 'D', Range = [1], Genes: ['Ser_UCU']]
-Parent Genome:
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Tyr_UAC 24,
-Performing deletion... From before: False Index: 5  Section length: 1
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -Ser_UCU, -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[]
-Tyr_UAC 24;
-24
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, -1, 24, 25, 26, 27]
-[Event(Type = 'L', Range = [24], Genes: ['Tyr_UAC']]
-Performing duplication... From before: True Index: 7 Section length: 1 Target before: False Target index: 6
-Arg_AGA 25,
-Duplication:
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -Ser_UCU, -Arg_AGA, -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-[Event(Type = 'L', Range = [24], Genes: ['Tyr_UAC']]
-Arg_AGA 25;
-[25]
-Tyr_UAC 24;
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 14]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, -1, 24, 26, 27, 28, 25]
-[Event(Type = 'L', Range = [24], Genes: ['Tyr_UAC'], Event(Type = 'D', Range = [25], Genes: ['Arg_AGA']]
-Previous Events:
-[Event(Type = 'D', Range = [9], Genes: ['Val_GUG'], Event(Type = 'D', Range = [1], Genes: ['Ser_UCU']]
-Parent Genome:
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -Ser_UCU, -[Arg_CGC, Asp_GAU]
-
-Ser_UCU 26,
-Performing deletion... From before: False Index: 6  Section length: 1
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Cys_UGC, -Met_AUG, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
-
-[]
-Ser_UCU 26;
-26
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, 26, 27]
-[Event(Type = 'L', Range = [26], Genes: ['Ser_UCU']]
-Cys_UGC 22,
+Leu_CUA 9, Lys_AAG 10;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 15, 16]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 10, 9]
+[Event(Type = 'D', Range = [9, 10], Genes: ['Leu_CUA', 'Lys_AAG']]
+Gly_GGG 24,
 Performing deletion... From before: False Index: 3  Section length: 1
-< o >, [Ser_UCU, Val_GUG, Thr_ACC], Gln_CAA, [Leu_CUA, Gly_GGA], [Arg_AGG, Glu_GAA], [Val_GUG, Leu_CUA, Ser_AGC], Ala_GCG, Gln_CAA, [Arg_AGA, Ala_GCC], < t >, -Asp_GAU, -Ala_GCU, -[5S, 23S, 16S], -Met_AUG, -[Tyr_UAC, Ser_UCU], -[Arg_CGC, Asp_GAU]
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Leu_CUA, Lys_AAG, Glu_GAA, [Asp_GAC, Asp_GAC], [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Pro_CCG
 
-[Event(Type = 'L', Range = [26], Genes: ['Ser_UCU']]
-Cys_UGC 22;
-[22]
-Ser_UCU 26;
-22
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
-[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, -1, 22, 23, 24, -1, 25, 26]
-[Event(Type = 'L', Range = [26], Genes: ['Ser_UCU'], Event(Type = 'L', Range = [22], Genes: ['Cys_UGC']]
-[26]
-Tyr_UAC 24;
-[22]
-Tyr_UAC 24;
+[Event(Type = 'D', Range = [9, 10], Genes: ['Leu_CUA', 'Lys_AAG']]
+Gly_GGG 24;
 [24]
-Ser_UCU 26;
-[24]
-Cys_UGC 22;
+Leu_CUA 9, Lys_AAG 10;
+24
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 15, 16]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, -1, 24, 10, 9]
+[Event(Type = 'D', Range = [9, 10], Genes: ['Leu_CUA', 'Lys_AAG'], Event(Type = 'L', Range = [22], Genes: ['Gly_GGG']]
+[9, 10]
+Lys_AAG 15;
+[22]
+Lys_AAG 17;
+[5]
+Gly_GGG 22;
+[15]
+Gly_GGG 23;
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'D', Range = [2], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [19], Genes: ['Pro_CCG']]
+Parent Genome:
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Performing duplication... From before: False Index: 0  Section length: 1 Target before: True Target index: 3 Target position: 1
+Lys_AAG 11,
+Duplication:
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Lys_AAG, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Lys_AAG 11;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 16]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 11]
+[Event(Type = 'D', Range = [11], Genes: ['Lys_AAG']]
+Performing duplication... From before: True Index: 1  Section length: 3 Target before: True Target index: 1 Target position: 4
+Phe_UUC 8,Phe_UUU 9,16S 10,
+Duplication:
+< o >, [Gly_GGC, Lys_AAG, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, Phe_UUC, Phe_UUU, 16S, 5S], Glu_GAA, [Asp_GAC, Lys_AAG, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'D', Range = [11], Genes: ['Lys_AAG']]
+Phe_UUC 8, Phe_UUU 9, 16S 10;
+[8, 9, 10]
+Lys_AAG 11;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 16, 4, 5, 6]
+[0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 14, 8, 9, 10]
+[Event(Type = 'D', Range = [14], Genes: ['Lys_AAG'], Event(Type = 'D', Range = [8, 9, 10], Genes: ['Phe_UUC', 'Phe_UUU', '16S']]
+[14]
+Tyr_UAU 12;
+[14]
+Ala_GCU 24;
+[8, 9, 10]
+Tyr_UAU 12;
+[8, 9, 10]
+Ala_GCU 25;
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Asp_GAC 9,
+Performing deletion... From before: True Index: 3  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Asp_GAC 9;
+9
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+[Event(Type = 'L', Range = [9], Genes: ['Asp_GAC']]
+Lys_AAG 14,
+Performing deletion... From before: False Index: 0  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [9], Genes: ['Asp_GAC']]
+Lys_AAG 14;
+[14]
+Asp_GAC 9;
+14
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 9, 10, 11, 12, 13, -1, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+[Event(Type = 'L', Range = [9], Genes: ['Asp_GAC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG']]
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Pro_CCG 17,
+Performing deletion... From before: False Index: 2  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Pro_CCG 17;
+17
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1, 17, 18, 19, 20, 21, 22]
+[Event(Type = 'L', Range = [17], Genes: ['Pro_CCG']]
+Asp_GAC 9,
+Performing deletion... From before: True Index: 3  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [17], Genes: ['Pro_CCG']]
+Asp_GAC 9;
+[9]
+Pro_CCG 17;
+9
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, -1, 9, 10, 11, 12, 13, 14, 15, -1, 16, 17, 18, 19, 20, 21]
+[Event(Type = 'L', Range = [17], Genes: ['Pro_CCG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC']]
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [17], Genes: ['Pro_CCG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Leu_CUA 13,
+Performing deletion... From before: False Index: 0  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -Ala_GCU, -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Leu_CUA 13;
+13
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, -1, 13, 14, 15, 16, 17, 18, 19, 20]
+[Event(Type = 'L', Range = [13], Genes: ['Leu_CUA']]
+Phe_UUC 3,
+Performing deletion... From before: True Index: 1  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -Ala_GCU, -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [13], Genes: ['Leu_CUA']]
+Phe_UUC 3;
+[3]
+Leu_CUA 13;
+3
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+[0, 1, 2, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, -1, 12, 13, 14, 15, 16, 17, 18, 19]
+[Event(Type = 'L', Range = [13], Genes: ['Leu_CUA'], Event(Type = 'L', Range = [3], Genes: ['Phe_UUC']]
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG'], Event(Type = 'L', Range = [17], Genes: ['Pro_CCG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Performing duplication... From before: False Index: 1 Section length: 1 Target before: False Target index: 3
+Leu_UUA 19,
+Duplication:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[5S, 23S, 16S], -Leu_UUA, -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Leu_UUA 19;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 15]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 19]
+[Event(Type = 'D', Range = [19], Genes: ['Leu_UUA']]
+Performing duplication... From before: True Index: 3  Section length: 1 Target before: False Target index: 2 Target position: 0
+Tyr_UAU 16,
+Duplication:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Tyr_UAU, 5S, 23S, 16S], -Leu_UUA, -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'D', Range = [19], Genes: ['Leu_UUA']]
+Tyr_UAU 16;
+[16]
+Leu_UUA 19;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 15, 9]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 21, 22, 23, 20, 16]
+[Event(Type = 'D', Range = [20], Genes: ['Leu_UUA'], Event(Type = 'D', Range = [16], Genes: ['Tyr_UAU']]
+[20]
+Leu_CUA 13;
+[20]
+Phe_UUC 3;
+[16]
+Leu_CUA 13;
+[16]
+Phe_UUC 3;
+Previous Events:
+[Event(Type = 'L', Range = [25], Genes: ['Gly_GGU'], Event(Type = 'L', Range = [19], Genes: ['Gly_GGG'], Event(Type = 'L', Range = [9], Genes: ['Asp_GAC'], Event(Type = 'L', Range = [15], Genes: ['Lys_AAG']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+Performing duplication... From before: False Index: 2 Section length: 1 Target before: True Target index: 3
+Pro_CCG 9,
+Duplication:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Pro_CCG, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[]
+Pro_CCG 9;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 17]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 9]
+[Event(Type = 'D', Range = [9], Genes: ['Pro_CCG']]
+Performing duplication... From before: True Index: 2  Section length: 1 Target before: True Target index: 0 Target position: 0
+Glu_GAA 1,
+Duplication:
+< o >, [Glu_GAA, Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, Pro_CCG, Asp_GAC, Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Leu_CUA, Ala_GCU], -Leu_UUA, -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'D', Range = [9], Genes: ['Pro_CCG']]
+Glu_GAA 1;
+[1]
+Pro_CCG 9;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 17, 8]
+[0, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 10, 1]
+[Event(Type = 'D', Range = [10], Genes: ['Pro_CCG'], Event(Type = 'D', Range = [1], Genes: ['Glu_GAA']]
+[10]
+Pro_CCG 17;
+[10]
+Asp_GAC 9;
+[1]
+Pro_CCG 18;
+[1]
+Asp_GAC 9;
+[9]
+Pro_CCG 19;
+[15]
+Pro_CCG 18;
+[2]
+Asp_GAC 9;
+[2]
+Lys_AAG 15;
+[19]
+Asp_GAC 10;
+[19]
+Lys_AAG 16;
+Previous Events:
+[]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -Leu_UUA, -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
+
+Leu_UUA 18,
+Performing deletion... From before: False Index: 1  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
+
+[]
+Leu_UUA 18;
+18
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, -1, 18, 19, 20, 21, 22, 23, 24, 25, 26]
+[Event(Type = 'L', Range = [18], Genes: ['Leu_UUA']]
+Performing duplication... From before: True Index: 2  Section length: 1 Target before: False Target index: 4 Target position: 0
+Glu_GAA 25,
+Duplication:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Glu_GAA, Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [18], Genes: ['Leu_UUA']]
+Glu_GAA 25;
 [25]
-Ser_UCU 25;
+Leu_UUA 18;
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 8]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, -1, 18, 19, 20, 21, 22, 23, 24, 26, 27, 25]
+[Event(Type = 'L', Range = [18], Genes: ['Leu_UUA'], Event(Type = 'D', Range = [25], Genes: ['Glu_GAA']]
+Previous Events:
+[Event(Type = 'L', Range = [18], Genes: ['Leu_UUA'], Event(Type = 'D', Range = [25], Genes: ['Glu_GAA']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Glu_GAA, Ala_GCU, Pro_CCG]
+
+Phe_UUC 3,Phe_UUU 4,
+Performing deletion... From before: True Index: 1  Section length: 2
+< o >, [Gly_GGC, Trp_UGG], [16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Glu_GAA, Ala_GCU, Pro_CCG]
+
+[]
+Phe_UUC 3, Phe_UUU 4;
+4
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+[0, 1, 2, -1, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+[Event(Type = 'L', Range = [3, 4], Genes: ['Phe_UUC', 'Phe_UUU']]
+Glu_GAA 23,
+Performing deletion... From before: False Index: 4  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [3, 4], Genes: ['Phe_UUC', 'Phe_UUU']]
+Glu_GAA 23;
+[23]
+Phe_UUC 3, Phe_UUU 4;
+23
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+[0, 1, 2, -1, -1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, -1, 23, 24]
+[Event(Type = 'L', Range = [3, 4], Genes: ['Phe_UUC', 'Phe_UUU'], Event(Type = 'L', Range = [25], Genes: ['Glu_GAA']]
+Previous Events:
+[Event(Type = 'L', Range = [18], Genes: ['Leu_UUA'], Event(Type = 'D', Range = [25], Genes: ['Glu_GAA']]
+Parent Genome:
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Glu_GAA, Ala_GCU, Pro_CCG]
+
+Glu_GAA 25,
+Performing deletion... From before: False Index: 4  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Gly_GGG, Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
+
+[]
+Glu_GAA 25;
+25
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, -1, 25, 26]
+[Event(Type = 'L', Range = [25], Genes: ['Glu_GAA']]
+Gly_GGG 18,
+Performing deletion... From before: False Index: 1  Section length: 1
+< o >, [Gly_GGC, Trp_UGG], [Phe_UUC, Phe_UUU, 16S, 23S, 5S], Glu_GAA, [Asp_GAC, Asp_GAC], Tyr_UAU, [Ser_AGC, Arg_CGG], < t >, -[Lys_AAG, Leu_CUA, Ala_GCU], -[Pro_CCG, 5S, 23S, 16S], -Gly_GGG, -Gly_GGU, -[Ala_GCU, Pro_CCG]
+
+[Event(Type = 'L', Range = [25], Genes: ['Glu_GAA']]
+Gly_GGG 18;
+[18]
+Glu_GAA 25;
+18
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, -1, 18, 19, 20, 21, 22, 23, -1, 24, 25]
+[Event(Type = 'L', Range = [25], Genes: ['Glu_GAA'], Event(Type = 'L', Range = [18], Genes: ['Gly_GGG']]
 [25]
-Cys_UGC 22;
+Phe_UUC 3, Phe_UUU 4;
+[25]
+Glu_GAA 25;
+[18]
+Phe_UUC 3, Phe_UUU 4;
+[18]
+Glu_GAA -1;
+[3, 4]
+Glu_GAA 25;
+[3, 4]
+Gly_GGG 18;
+[25]
+Glu_GAA 23;
+[25]
+Gly_GGG 16;
+[18]
+Gly_GGU 25;
+[18]
+Gly_GGG 19;
+[25]
+Gly_GGU 24;
+[25]
+Gly_GGG 18;
+[25]
+Leu_UUA 18;
+[19]
+Leu_UUA 18;

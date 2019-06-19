@@ -60,9 +60,10 @@ class Event:
 		return event
 
 class Node:
-	def __init__(self, genome, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, branchEvents, lineageEvents):
+	def __init__(self, before, after, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, branchEvents, lineageEvents, inversionBefores):
 		self.name = None
-		self.genome = genome
+		self.before = before
+		self.after = after
 		self.parent = parent
 		self.children = []
 		self.dupEvents = dupEvents
@@ -72,6 +73,7 @@ class Node:
 		self.transEvents = transEvents
 		self.branchEvents = branchEvents
 		self.lineageEvents = lineageEvents
+		self.inversionBefores = inversionBefores
 
 	def getGenome(self):
 		return self.genome
@@ -162,7 +164,7 @@ def main():
 	print formatGenome(beforeTerminus, afterTerminus)
 	print ""
 
-	root = Node(formatGenome(beforeTerminus, afterTerminus), None, "", "", "", "", "", None, None)
+	root = Node(beforeTerminus, afterTerminus, None, "", "", "", "", "", None, None, None)
 
 	print('Reading in newick tree structure from file: %s...' % (newickFileName))
 	newickTree = Phylo.read(newickFileName, 'newick')
@@ -183,9 +185,9 @@ def main():
 			right = buildTreeData(currNode.clades[1], beforeTerminus, afterTerminus, numEvents, listOfEvents, root, invMultiplier)
 			hasRight = True
 
-			# leftEvents = copy.deepcopy(left.branchEvents)
-			# adjustLossIndexes(left.lossEvents, right.branchEvents, before, after)
-			# adjustLossIndexes(right.lossEvents, leftEvents, before, after)
+			leftEvents = copy.deepcopy(left.branchEvents)
+			adjustLossIndexes(left.lossEvents, right.branchEvents, right.inversionBefores, None)
+			adjustLossIndexes(right.lossEvents, leftEvents, left.inversionBefores, None)
 
 		printTree(left)
 		if hasRight:
@@ -237,6 +239,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 	transpositionEvents = []
 	prevEventRange = []
 	sectionReversed = False
+	inversionBefores = []
 
 	originalIndexes = calculateIndexes(currentBefore, currentAfter)
 	currentIndexes = copy.deepcopy(originalIndexes)
@@ -298,6 +301,8 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 
 		if newEvent:
 			currentEvents.append(event)
+			if event.type == "I":
+				inversionBefores.append(copy.deepcopy(currentBefore))
 
 			print branchEvents
 			print event
@@ -308,7 +313,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 
 		count += 1
 
-	currNode = Node(formatGenome(before, after), parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents, currentEvents)
+	currNode = Node(currentBefore, currentAfter, parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents, currentEvents, inversionBefores)
 
 	if len(node.clades) > 0:
 		left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode)
@@ -329,8 +334,8 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 			# print right.lossEvents
 
 			leftEvents = copy.deepcopy(left.branchEvents)
-			adjustLossIndexes(left.lossEvents, right.branchEvents, before, after)
-			adjustLossIndexes(right.lossEvents, leftEvents, before, after)
+			adjustLossIndexes(left.lossEvents, right.branchEvents, right.inversionBefores, after)
+			adjustLossIndexes(right.lossEvents, leftEvents, left.inversionBefores, after)
 
 			# print left.lossEvents
 			# print right.lossEvents
@@ -520,11 +525,16 @@ def getTerminusIndex(before):
 def checkBeforeOrOverlap(range1, range2):
 	return (((range1[0] <= range2[0]) and (range1[-1] >= range2[0])) or (range1[0] > range2[0])) 
 
-def adjustLossIndexes(losses, branchEvents, before, after):
+def adjustLossIndexes(losses, branchEvents, befores, after):
 	lossUpdate = True
+	count = 0
 
 	for event in branchEvents:
-		updateEvents(losses, event, before, after, event.prevEventRange, lossUpdate)
+		if event.type == "I":
+			updateEvents(losses, event, befores[count], after, event.prevEventRange, lossUpdate)
+			count += 1
+		else:
+			updateEvents(losses, event, None, after, event.prevEventRange, lossUpdate)
 
 def formatGenome(before, after):
 	sequence = "< o >, "
