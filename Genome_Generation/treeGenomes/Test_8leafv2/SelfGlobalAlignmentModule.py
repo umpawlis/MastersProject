@@ -27,7 +27,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
     
     for i in range(0, len(coverageTracker)):
         if coverageTracker[i] == False: #Operon has not been marked
-            bestScore = 1000    #Make the best score some large numer
+            bestScore = -1000    #Make the best score some large numer
             bestEvent = None    #Initialize the event
             minDistance = 1000  #Used to track the minimum distance from singleton to operon that has an identical gene
             
@@ -58,9 +58,10 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                         #threshold = threshold//3
                         #numOperonDifferences = computeOperonDifferences(op1, op2)
                         #if numOperonDifferences <= threshold and score < bestScore:
-                        if score > 0 and score < bestScore:
+                        if score > 0 and score > bestScore and abs(i-j) < minDistance:
                             bestScore = score
                             bestEvent = event
+                            minDistance = abs(i-j)
             #Make sure an origin or a terminus doesn't get mapped with a singleton gene
             elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description != 'Terminus':
                 for j in range(0, len(coverageTracker)):
