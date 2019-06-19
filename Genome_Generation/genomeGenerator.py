@@ -183,11 +183,23 @@ def main():
 			right = buildTreeData(currNode.clades[1], beforeTerminus, afterTerminus, numEvents, listOfEvents, root, invMultiplier)
 			hasRight = True
 
-		left.printNode()
+			# leftEvents = copy.deepcopy(left.branchEvents)
+			# adjustLossIndexes(left.lossEvents, right.branchEvents, before, after)
+			# adjustLossIndexes(right.lossEvents, leftEvents, before, after)
+
+		printTree(left)
 		if hasRight:
-			right.printNode()
+			printTree(right)
 
 	printTotals()
+
+def printTree(currNode):
+	if len(currNode.children) > 0:
+		printTree(currNode.children[0])
+		if len(currNode.children) > 1:
+			printTree(currNode.children[1])
+	currNode.printNode()
+
 
 def printTotals():
 	outputFile = open("generatorOutput.txt", "a+")
@@ -312,20 +324,16 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 			currNode.children.append(right)
 			hasRight = True
 
-			print "Updating Loss Events"
-			print left.lossEvents
-			print right.lossEvents
+			# print "Updating Loss Events"
+			# print left.lossEvents
+			# print right.lossEvents
 
 			leftEvents = copy.deepcopy(left.branchEvents)
 			adjustLossIndexes(left.lossEvents, right.branchEvents, before, after)
 			adjustLossIndexes(right.lossEvents, leftEvents, before, after)
 
-			print left.lossEvents
-			print right.lossEvents
-
-		left.printNode()
-		if hasRight:
-			right.printNode()
+			# print left.lossEvents
+			# print right.lossEvents
 
 		currNode.name = "Ancestor " + str(ancestorCounter)
 		ancestorCounter += 1

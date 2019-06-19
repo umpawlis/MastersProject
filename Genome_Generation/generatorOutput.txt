@@ -1,118 +1,118 @@
-((((NC_000001:0.00000,NC_000002:0.00000):0.00000,(NC_000003:0.00000,NC_000004:0.00000):0.00000):0.00000,NC_000005:0.00000):0.00000,((NC_000006:0.00000,NC_000007:0.00000):0.00000,NC_000008:0.00000):0.00000):0.00000;
+((((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000,((NC_000004:0.00000,NC_000005:0.00000):0.00000,NC_000006:0.00000):0.00000):0.00000,(NC_000007:0.00000,NC_000008:0.00000):0.00000):0.00000;
 Strain:NC_000001
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUC 7;Ile_AUC 22;
-Deletion:
+Duplication:Arg_AGG 22;
+Deletion:Leu_CUA 6;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000002
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Ala_GCG 5;5S 23;
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000003
-Codon Mismatch:
-Substitution:
-Duplication:Ile_AUC 11;5S 4;
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000004
-Codon Mismatch:
-Substitution:
-Duplication:Ser_AGC 19;
-Deletion:Ile_AUA 1;
+Duplication:Ser_AGC 22, Leu_CUA 23;
+Deletion:Leu_CUA 4, Gly_GGA 5;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 1
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Ser_AGC 5;Ala_GCG 9;
+Duplication:Asp_GAU 12;
+Deletion:Ser_UCU 24;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000003
+Codon Mismatch:
+Substitution:
+Duplication:Ala_GCG 13;
+Deletion:Arg_AGA 13, Ala_GCC 14;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 2
 Codon Mismatch:
 Substitution:
-Duplication:Arg_AGG 28;Arg_AGG 19, Pro_CCC 20, Met_AUG 21;
-Deletion:
+Duplication:Leu_CUA -1;
+Deletion:Leu_CUA 5;
 Inversion:
 Transposition:
 Inverted Transposition:
-Strain:Ancestor 3
+Strain:NC_000004
 Codon Mismatch:
 Substitution:
-Duplication:Arg_AGG 20;
-Deletion:Arg_CGA 23, His_CAU 24;
+Duplication:
+Deletion:Gln_CAA 3;Arg_AGG 6, Glu_GAA 7;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000005
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUU 27, Asp_GAU 28;Ser_AGC 14;
-Deletion:
+Duplication:Arg_CGC 24;
+Deletion:Cys_UGC 17;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 3
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Arg_CGC 17;Ala_GCU 16;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_000006
 Codon Mismatch:
 Substitution:
-Duplication:Ser_AGC 9;Ile_AUU 26;
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000007
-Codon Mismatch:
-Substitution:
-Duplication:Arg_CGA 19;
-Deletion:Ala_GCG 5;
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:Ancestor 5
-Codon Mismatch:
-Substitution:
-Duplication:Gly_GGC 3;Arg_CGA 10;
-Deletion:
-Inversion:
-Transposition:
-Inverted Transposition:
-Strain:NC_000008
-Codon Mismatch:
-Substitution:
-Duplication:Ile_AUA 21;Arg_AGG 2;
-Deletion:
+Duplication:Arg_CGC 4;
+Deletion:Gln_CAA 3;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 4
 Codon Mismatch:
 Substitution:
-Duplication:Ile_AUA 4;
-Deletion:Ile_AUU 21;
+Duplication:Asp_GAU -1;
+Deletion:Asp_GAU 15;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 5
+Codon Mismatch:
+Substitution:
+Duplication:Arg_CGC 17, Asp_GAU 18;
+Deletion:Met_AUG 21;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000007
+Codon Mismatch:
+Substitution:
+Duplication:Arg_AGA 25;
+Deletion:Tyr_UAC 23;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000008
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Ser_UCU 26;Cys_UGC 22;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 6
 Codon Mismatch:
 Substitution:
-Duplication:
-Deletion:Ser_AGC 4;Pro_CCC 19;
+Duplication:Val_GUG 9;Ser_UCU 1;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 9, size: 2 count: 1
-Total Duplications: size: 1 count: 16, size: 2 count: 1, size: 3 count: 1
+Total Deletions: size: 1 count: 13, size: 2 count: 3
+Total Duplications: size: 1 count: 10, size: 2 count: 2
 Size Distribution of Inversions:
 Size Distribution of Transpositions:
 Size Distribution of Inverted Transpositions:
