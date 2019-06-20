@@ -51,6 +51,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             event = Event(0)
             event.setScore(1.0)
+            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -485,7 +486,7 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                 #Check if this is a * score and if both operons have not been marked off
                 if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
                     score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
-                    currDistance = abs(i-j)
+                    currDistance = eventMatrix[i][j].distance
                     #Check if the score matches the scores we're currently looking for                    
                     if score == currentScoreSelected and currDistance < minDistance:
                         bestEvent = eventMatrix[i][j]
