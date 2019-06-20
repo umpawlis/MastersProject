@@ -26,7 +26,7 @@ from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
 
 #Application parameters
-newickFileName = 'tree8Leaf-v2.dnd' #Name of newick tree file
+newickFileName = 'tree6Leaf-v2.dnd' #Name of newick tree file
 
 #Global vaiables used by the script
 strains = [] #Global variable that stores all of the strains in the phylogenetic tree
