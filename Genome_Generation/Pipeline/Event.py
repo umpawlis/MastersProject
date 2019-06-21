@@ -12,9 +12,6 @@ class Event(object):
 
     def setScore(self, score):
         self.score = score
-        
-    def setDistance(self, distance):
-        self.distance = distance
 
     def setFragmentDetails1(self, fragmentDetails1):
         self.fragmentDetails1 = fragmentDetails1

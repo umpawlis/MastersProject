@@ -51,7 +51,6 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             event = Event(0)
             event.setScore(1.0)
-            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -471,78 +470,69 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
     events = []
     currentScoreSelected = 0
     globalAlignmentCounter = 0
-    
+
     maxValue = findMaxValueInMatrix(globalAlignmentMatrix)
     currentScoreSelected = maxValue
     #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
     while currentScoreSelected >= 0:
-        minDistance = 1000
-        bestRow = -1
-        bestColumn = -1
-        bestEvent = None            
         #For each cell in the matrix
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
                 #Check if this is a * score and if both operons have not been marked off
                 if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
                     score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
-                    currDistance = eventMatrix[i][j].distance
-                    #Check if the score matches the scores we're currently looking for                    
-                    if score == currentScoreSelected and currDistance < minDistance:
-                        bestEvent = eventMatrix[i][j]
-                        bestRow = i
-                        bestColumn = j
-                        minDistance = currDistance
+                    #Check if the score matches the scores we're currently looking for
+                    if score == currentScoreSelected:
+                        #We found an ortholog in the global alignment matrix
+                        print('\n##### Global Alignment #####')
+                        globals.trackingId += 1
+                        globalAlignmentCounter+=1
+
+                        coverageTracker1[i] = True
+                        coverageTracker2[j] = True
+
+                        event = eventMatrix[i][j]
+
+                        #Check if we have to go back and remove genes
+                        if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
+                            operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
+                            operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
                         
-        if bestEvent != None: #Good match was found so don't increment score incase more are found
-            #We found an ortholog in the global alignment matrix
-            print('\n##### Global Alignment #####')
-            globals.trackingId += 1
-            globalAlignmentCounter+=1
-
-            coverageTracker1[bestRow] = True
-            coverageTracker2[bestColumn] = True
-            event = eventMatrix[bestRow][bestColumn]
-            
-            #Check if we have to go back and remove genes
-            if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
-                operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
-                operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
+                        event.trackingEventId = globals.trackingId
                         
-            event.trackingEventId = globals.trackingId
+                        #Get the newest copy of the fragment into event as it may have been update
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails1 = fragment
+                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
+                        fragment = next(filteredList, None)
+                        event.fragmentDetails2 = fragment
                         
-            #Get the newest copy of the fragment into event as it may have been update
-            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
-            fragment = next(filteredList, None)
-            event.fragmentDetails1 = fragment
-            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
-            fragment = next(filteredList, None)
-            event.fragmentDetails2 = fragment
-            
-            event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
+                        event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
-            #Codon mismatches
-            if event.numCodonMismatches > 0:
-                codonMismatchDescription1 = constructStatement(event.codonMismatchIndexesStrain1, event.codonMismatchGenesStrain1, event.fragmentDetails1)
-                codonMismatchDescription2 = constructStatement(event.codonMismatchIndexesStrain2, event.codonMismatchGenesStrain2, event.fragmentDetails2)
+                        #Codon mismatches
+                        if event.numCodonMismatches > 0:
+                            codonMismatchDescription1 = constructStatement(event.codonMismatchIndexesStrain1, event.codonMismatchGenesStrain1, event.fragmentDetails1)
+                            codonMismatchDescription2 = constructStatement(event.codonMismatchIndexesStrain2, event.codonMismatchGenesStrain2, event.fragmentDetails2)
 
-                strain1.addCodonMismatchDetails(codonMismatchDescription1)
-                strain2.addCodonMismatchDetails(codonMismatchDescription2)
+                            strain1.addCodonMismatchDetails(codonMismatchDescription1)
+                            strain2.addCodonMismatchDetails(codonMismatchDescription2)
 
-            #Substitutions
-            if event.numSubstitutions > 0:
-                substitutionDescription1 = constructStatement(event.substitutionIndexesStrain1, event.substitutionGenesStrain1, event.fragmentDetails1)
-                substitutionDescription2 = constructStatement(event.substitutionIndexesStrain2, event.substitutionGenesStrain2, event.fragmentDetails2)
+                        #Substitutions
+                        if event.numSubstitutions > 0:
+                            substitutionDescription1 = constructStatement(event.substitutionIndexesStrain1, event.substitutionGenesStrain1, event.fragmentDetails1)
+                            substitutionDescription2 = constructStatement(event.substitutionIndexesStrain2, event.substitutionGenesStrain2, event.fragmentDetails2)
 
-                strain1.addSubstitutionDetails(substitutionDescription1)
-                strain2.addSubstitutionDetails(substitutionDescription2)
+                            strain1.addSubstitutionDetails(substitutionDescription1)
+                            strain2.addSubstitutionDetails(substitutionDescription2)
 
-            print(event.toString())
-            #Add the event to the tracking events list
-            events.append(event)
-            print('###################################\n')     
-        else:
-            currentScoreSelected += (-0.5) #No good match was found so move on
+                        print(event.toString())
+
+                        #Add the event to the tracking events list
+                        events.append(event)
+                        print('###################################\n')
+
+        currentScoreSelected += (-0.5)
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
 
 ######################################################

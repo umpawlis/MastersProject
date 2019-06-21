@@ -35,6 +35,8 @@ totalInversions = 0
 totalTranspositions = 0
 totalInvertedTrans = 0
 
+testFolder = ""
+
 class Event:
     def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
         self.type = eventType
@@ -88,7 +90,7 @@ class Node:
         return self.branchEvents
 
     def printNode(self):
-        outputFile = open("generatorOutput.txt", "a+")
+        outputFile = open(testFolder + "/generatorOutput.txt", "a+")
         outputFile.write("Strain:%s\n" % (self.name))
         outputFile.write("Codon Mismatch:\n") # % (self.codonMismatch)
         outputFile.write("Substitution:%s\n" % (''.join(str(e) for e in self.subEvents)))
@@ -115,6 +117,9 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     global probTrans
     global trans_pValue
     global ancestorCounter
+    
+    global testFolder
+    testFolder = testSetDir
 
     probDup = dupProb
     dup_pValue = dup_p
@@ -126,21 +131,26 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     probTrans = transProb
     trans_pValue = trans_p
 
-    if not os.path.exists(testSetDir):
-        os.makedirs(testSetDir)
+#    if not os.path.exists(testSetDir):
+#    print testSetDir
+    os.makedirs(testFolder)
 
     createAncestor(max(max_length, 15), num_operons)
-    print "Ancestor:"
-    print formatGenome(beforeTerminus, afterTerminus)
-    print ""
+#    print "Ancestor:"
+#    print formatGenome(beforeTerminus, afterTerminus)
+#    print ""
+    sequenceFile = open(testFolder + "/root.txt", "w+")
+    sequenceFile.write(formatGenome(beforeTerminus, afterTerminus))
+    sequenceFile.close()
+    resetCounters()
 
     root = Node(beforeTerminus, afterTerminus, None, "", "", "", "", "", None, None, None)
 
-    print('Reading in newick tree structure from file: %s...' % (treeStructure))
+#    print('Reading in newick tree structure from file: %s...' % (treeStructure))
     newickTree = Phylo.read(treeStructure, 'newick')
     currNode = newickTree.clade
 
-    createFile("generatorOutput.txt", newickTree)
+    createFile(testFolder + '/' + "generatorOutput.txt", newickTree)
 
     listOfEvents = []
     if len(currNode.clades) > 0:
@@ -165,6 +175,25 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
             
     printTotals()
     ancestorCounter = 1
+    
+def resetCounters():
+    global totalLosses
+    global totalDuplications
+    global distribInversions
+    global distribTranspositions
+    global distribInvertedTrans
+    global totalInversions
+    global totalTranspositions
+    global totalInvertedTrans
+    
+    totalLosses = {}
+    totalDuplications = {}
+    distribInversions = {}
+    distribTranspositions = {}
+    distribInvertedTrans = {}
+    totalInversions = 0
+    totalTranspositions = 0
+    totalInvertedTrans = 0
 
 def printTree(currNode):
     if len(currNode.children) > 0:
@@ -175,7 +204,7 @@ def printTree(currNode):
 
 
 def printTotals():
-    outputFile = open("generatorOutput.txt", "a+")
+    outputFile = open(testFolder + "/generatorOutput.txt", "a+")
     outputFile.write("Total Deletions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(totalLosses.items()))))
     outputFile.write("Total Duplications:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(totalDuplications.items()))))
     outputFile.write("Size Distribution of Inversions:%s\n" % (','.join(" size: %s count: %s" % (str(k), str(v)) for k, v in sorted(distribInversions.items()))))
@@ -215,11 +244,11 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
     originalIndexes = calculateIndexes(currentBefore, currentAfter)
     currentIndexes = copy.deepcopy(originalIndexes)
 
-    print "Previous Events:"
-    print currentEvents
-    print "Parent Genome:"
-    print formatGenome(before, after)
-    print ""
+#    print "Previous Events:"
+#    print currentEvents
+#    print "Parent Genome:"
+#    print formatGenome(before, after)
+#    print ""
 
     count = 0
     while count < numEvents:
@@ -275,12 +304,12 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
             if event.type == "I":
                 inversionBefores.append(copy.deepcopy(currentBefore))
 
-            print branchEvents
-            print event
+#            print branchEvents
+#            print event
             updateEvents(branchEvents, event, currentBefore, currentAfter, prevEventRange)
             updateIndexes(event, originalIndexes, currentIndexes, prevEventRange, sectionReversed)
             branchEvents.append(event)
-            print branchEvents
+#            print branchEvents
 
         count += 1
 
@@ -312,13 +341,13 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
             # print right.lossEvents
 
         currNode.name = "Ancestor " + str(ancestorCounter)
-        sequenceFile = open(currNode.name + ".txt", "w+")
+        sequenceFile = open(testFolder + "/" + currNode.name + ".txt", "w+")
         sequenceFile.write(formatGenome(currentBefore, currentAfter))
         sequenceFile.close()
         ancestorCounter += 1
         # currNode.printNode()
     elif node.name is not None and len(node.name) > 0:
-        completePath = node.name
+        completePath = testFolder + "/" + node.name
         if not os.path.exists(completePath):
             os.makedirs(completePath)
 
@@ -375,7 +404,7 @@ def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectio
         for index1, index2 in zip(ordered, copyRange):
             currIndexes[index1] = index2
     elif event.type == "T":
-        print prevEventRange
+#        print prevEventRange
         ordered = getOrderedIndexes(currIndexes, prevEventRange)
         for i in range(len(currIndexes)):
             if currIndexes[i] > prevEventRange[-1]:
@@ -390,7 +419,7 @@ def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectio
             currIndexes[index1] = index2
     elif event.type == "L":
         ordered = getOrderedIndexes(currIndexes, event.range)
-        print event.range[-1]
+#        print event.range[-1]
         for i in range(len(currIndexes)):
             if currIndexes[i] > event.range[-1]:
                 # print "Index " + str(i)
@@ -404,8 +433,8 @@ def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectio
         for i, index in zip(range(len(event.range)), ordered):
             event.range[i] = origIndexes[index]
 
-    print origIndexes
-    print currIndexes
+#    print origIndexes
+#    print currIndexes
 
 def getOrderedIndexes(currIndexes, eventRange):
     orderedIndexes = []
@@ -420,8 +449,8 @@ def getOrderedIndexes(currIndexes, eventRange):
 
 def updateEvents(eventList, newEvent, before, after, prevEventRange = None, updateLosses = False):
     for event in eventList:
-        print newEvent.range
-        print event
+#        print newEvent.range
+#        print event
         overlap = checkOverlap(event.range, newEvent.range, newEvent.type)
 
         if event.type != "L" or updateLosses:
@@ -442,10 +471,10 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
                         numBefore += 1
 
                 oldterminusIndex = terminusIndex + (numAfter - numBefore)
-                print "Terminus index: %d" % (oldterminusIndex)
+#                print "Terminus index: %d" % (oldterminusIndex)
                 for index in overlap:
                     diff = abs(oldterminusIndex - event.range[index])
-                    print "index: %d diff: %d" % (event.range[index], diff)
+#                    print "index: %d diff: %d" % (event.range[index], diff)
                     if event.range[index] > oldterminusIndex:
                         event.range[index] = terminusIndex - diff
                     else:
@@ -609,7 +638,7 @@ def performTransposition(before, after, p):
             genome[targetIndex].insert(targetPos, gene)
 
         # event = "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
-        print "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
+#        print "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
     else:
         # print "target in singleton"
         if operonTrans:
@@ -620,7 +649,7 @@ def performTransposition(before, after, p):
                 genome.insert(targetIndex, gene)
 
         # event = "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
-        print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
+#        print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
 
     absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
     startIndex = absoluteIndex
@@ -633,12 +662,12 @@ def performTransposition(before, after, p):
         event += gene + " " + str(absoluteIndex) + ","
         genes.append(gene)
         absoluteIndex += 1
-    print event
+#    print event
     stopIndex = absoluteIndex
 
-    print "Transposition:"
-    print formatGenome(before, after)
-    print ""
+#    print "Transposition:"
+#    print formatGenome(before, after)
+#    print ""
 
     eventType = "T"
     branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
@@ -670,10 +699,10 @@ def performSubstitution(before, after):
     gene.append(geneSub)
 
     event = "%s %d" % (geneSub, absoluteIndex)
-    print "Performing substitution... From before: %s Index: %s " % (str(fromBefore), str(index))
-    print "Substitution:"
-    print formatGenome(before, after)
-    print ""
+#    print "Performing substitution... From before: %s Index: %s " % (str(fromBefore), str(index))
+#    print "Substitution:"
+#    print formatGenome(before, after)
+#    print ""
 
     eventType = "S"
     branchEvent = Event(eventType, range(absoluteIndex, absoluteIndex+1), gene)
@@ -750,13 +779,13 @@ def performInversion(before, after, p):
                 genes.append(operon)
                 indexes.append(absoluteIndex)
                 absoluteIndex += 1
-    print event
+#    print event
     stopIndex = absoluteIndex
 
-    print "Performing inversions... Num before: %s Num after: %s" % (str(lengthBefore), str(lengthAfter))
-    print "Inversion:"
-    print formatGenome(before, after)
-    print ""
+#    print "Performing inversions... Num before: %s Num after: %s" % (str(lengthBefore), str(lengthAfter))
+#    print "Inversion:"
+#    print formatGenome(before, after)
+#    print ""
 
     eventType = "I"
     branchEvent = Event(eventType, indexes, genes, None, event)
@@ -809,13 +838,13 @@ def performLoss(before, after, p):
         event += gene + " " + str(absoluteIndex) + ","
         genes.append(gene)
         absoluteIndex += 1
-    print event
+#    print event
     stopIndex = absoluteIndex
 
     # event = "Performing deletion... From before: %s Index: %s  Section length: %s" % (str(deleteBefore), str(index), str(stopPos-startPos))
-    print "Performing deletion... From before: %s Index: %s  Section length: %s" % (str(deleteBefore), str(index), str(stopPos-startPos))
-    print formatGenome(before, after)
-    print ""
+#    print "Performing deletion... From before: %s Index: %s  Section length: %s" % (str(deleteBefore), str(index), str(stopPos-startPos))
+#    print formatGenome(before, after)
+#    print ""
 
     eventType = "L"
     branchEvent = Event(eventType, range(startIndex, stopIndex), genes)
@@ -888,7 +917,7 @@ def performDuplication(before, after, p):
 
         # event = "".join([gene+" "+str(absoluteIndex)+"," for gene in dupSection])
         # print event
-        print "Performing duplication... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(dupFromBefore), str(index), str(len(dupSection)), str(targetBefore), str(targetIndex), str(targetPos))
+#        print "Performing duplication... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(dupFromBefore), str(index), str(len(dupSection)), str(targetBefore), str(targetIndex), str(targetPos))
     else:
         # print "target in singleton"
         if operonDup:
@@ -897,18 +926,18 @@ def performDuplication(before, after, p):
             for gene in reversed(dupSection):
                 # print "inserting " + gene
                 genome.insert(targetIndex, gene)
-        print "Performing duplication... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(dupFromBefore), str(index), str(len(dupSection)), str(targetBefore), str(targetIndex))
+#        print "Performing duplication... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(dupFromBefore), str(index), str(len(dupSection)), str(targetBefore), str(targetIndex))
 
     for gene in dupSection:
         event += gene + " " + str(absoluteIndex) + ","
         genes.append(gene)
         absoluteIndex += 1
-    print event
+#    print event
     stopIndex = absoluteIndex
 
-    print "Duplication:"
-    print formatGenome(before, after)
-    print ""
+#    print "Duplication:"
+#    print formatGenome(before, after)
+#    print ""
 
     eventType = "D"
     branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
@@ -980,6 +1009,8 @@ def getNormalPos(genome):
 def createAncestor(maxLength, numOperons):
     global beforeTerminus
     global afterTerminus
+    beforeTerminus = []
+    afterTerminus = []
     seqLength = 0
     currNumOperons = 0
     terminusAdded = False
@@ -1030,7 +1061,7 @@ def geometricSampling(p, minValue = 1):
     return value
 
 def createFile(fileName, newickTree):
-    print('Creating file %s...' % (fileName));    
+#    print('Creating file %s...' % (fileName));    
     file = open(fileName, "w+")
     Phylo.write(newickTree,fileName, 'newick') #Write the tree to the output file
     file.close()

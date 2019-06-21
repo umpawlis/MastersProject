@@ -1,6 +1,7 @@
 import time
 import copy
 import os.path
+import sys
 import globals
 from Bio import Phylo
 from FileService import createFile
@@ -31,6 +32,7 @@ newickFileName = 'tree8Leaf-v2.dnd' #Name of newick tree file
 #Global vaiables used by the script
 strains = [] #Global variable that stores all of the strains in the phylogenetic tree
 outputFileName = 'ApplicationOutput.txt' #Name of output file
+testFileName = ''
 
 ################################################################
 ################# Main Fuctions ################################
@@ -246,9 +248,9 @@ def getNeighborStrain(currNode):
 def createStrainFromFile(node):
     strain = None
 
-    if os.path.isdir(node.name):
-        if os.path.isfile(node.name + '/sequence.txt'):
-            genome = open(node.name + '/sequence.txt', 'r').read()
+    if os.path.isdir(testFileName + '/' + node.name):
+        if os.path.isfile(testFileName + '/' + node.name + '/sequence.txt'):
+            genome = open(testFileName + '/' + node.name + '/sequence.txt', 'r').read()
             strain = processSequence(node.name, genome)
         else:
             print('No sequence file found for node: %s' % node.name)
@@ -379,32 +381,44 @@ def traverseNewickTree(node, parentNode):
 ######################################################
 #                       main
 ######################################################
-def analyzeTree(newickFileName):
+def main():
+    global newickFileName
+    global outputFileName
+    global testFileName
+    
+    if len(sys.argv) != 3:
+        print "WARNING: Must provide a Newick tree and test folder name. Exiting..."
+        sys.exit(0)
+    
+    newickFileName = sys.argv[1]
+    outputFileName = sys.argv[2] + "/ApplicationOutput.txt"
+    testFileName = sys.argv[2]
+    
     print('Starting application...')
     startTime = time.time()
-
+    
     print('Reading newick tree from file: %s...' % (newickFileName))
     newickTree = Phylo.read(newickFileName, 'newick')
     Phylo.draw(newickTree)
-
+    
     globals.initialize() #Initialize the globals file
     globals.strains = strains #Assign pointer to the global strains array so we can access it anywhere
     createFile(outputFileName, newickTree) #Creates file where data will be output
-
+    
     #Traverses the newick tree recursively reconstructing ancestral genomes
     print('Traversing newick tree...')
     result = traverseNewickTree(newickTree.clade, None)
-
+    
     #Output newick tree after the ancestors have been added to it
     Phylo.draw(newickTree)
-
+    
     #Need to traverse tree to ouput appropriate content to file
     newickTree.clade.name = '' #Make sure that the output for the root is not output
     traverseNewickTreeAndOutputToFile(newickTree.clade)
         
     #Output the totals for the computation to console and file
     outputTotalsToFile(outputFileName)
-
+    
     #TODO compute lineage
     #target = 'NC_014019'
     #print('Computing lineage cost for: %s' % (target))
@@ -415,3 +429,5 @@ def analyzeTree(newickFileName):
     totalTime = endTime - startTime
     print('Total time (in seconds): %s' % (totalTime))
     print('Ending application...')
+    
+main()

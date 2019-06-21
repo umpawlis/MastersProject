@@ -91,37 +91,52 @@ def inversionTranspositionComparison(data1, data2):
     dict2 = {}
 
     #Parse the data
-    regions1 = data1.split('|') #An inversion/transposition fragment ie entire piece that was transposed
-    regions2 = data2.split('|') #An inversion/transposition fragment ie entire piece that was transposed
+    regions1 = data1.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
+    print regions1
+    regions2 = data2.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
+    print regions2
+    
+    numEventsFound = 0
+    numEventsExpected = len(regions2) - 1
+    numGenesFound = 0
+    numGenesExpected = 0
+    numAppEvents = len(regions1) - 1
+    
     for region in regions1:
         operons = region.split(';')
         for operon in operons:
-            genes = operon.split(',')
+            genes = operon.split(', ')
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
                     dict1[data[1]] = data[0]
     for region in regions2:
-        operons = region.split(';')
-        for operon in operons:
-            genes = operon.split(',')
-            for gene in genes:
-                data = gene.split(' ')
-                if len(data) == 2:
-                    dict2[data[1]] = data[0]
+        if region != '':
+            if region in regions1:
+                numEventsFound += 1
+            operons = region.split(';')
+            if operon != '':
+                for operon in operons:
+                    genes = operon.split(', ')
+                    numGenesExpected += len(genes)
+                    for gene in genes:
+                        data = gene.split(' ')
+                        if len(data) == 2:
+                            dict2[data[1]] = data[0]
     #Compute a percentage
     keys = dict1.keys()
     count = 0
     for key in keys:
         if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
             count += 1
+            numGenesFound += 1
 
-    if count == 0 and len(dict2) == 0:
-        return 100
-    else:
-        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+#    if count == 0 and len(dict2) == 0:
+#        return 100
+#    else:
+#        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
 
-    return percentage
+    return (numEventsFound, numEventsExpected, numGenesFound, numGenesExpected, numAppEvents)
 
 ######################################################
 # duplicationDeletionComparison
@@ -132,22 +147,35 @@ def duplicationDeletionComparison(data1, data2):
     percentage = 0
 
     #Parse the data
-    segments1 = data1.split(';')
-    segments2 = data2.split(';')
+    segments1 = data1.strip().split(';')
+    print segments1
+    segments2 = data2.strip().split(';')
+    print segments2
     dict1 = {}
     dict2 = {}
+    
+    numEventsFound = 0
+    numEventsExpected = len(segments2) - 1
+    numGenesFound = 0
+    numGenesExpected = 0
+    numAppEvents = len(segments1) - 1
+    
     for segment in segments1:
-        genes = segment.split(',')
+        genes = segment.split(', ')
         for gene in genes:
             data = gene.split(' ')
             if len(data) == 2:
                 dict1[data[1]] = data[0]
     for segment in segments2:
-        genes = segment.split(',')
-        for gene in genes:
-            data = gene.split(' ')
-            if len(data) == 2:
-                dict2[data[1]] = data[0]
+        if segment != '':
+            if segment in segments1:
+                numEventsFound += 1
+            genes = segment.split(', ')
+            numGenesExpected += len(genes)
+            for gene in genes:
+                data = gene.split(' ')
+                if len(data) == 2:
+                    dict2[data[1]] = data[0]
 
     #Compute a percentage
     keys = dict1.keys()
@@ -155,13 +183,14 @@ def duplicationDeletionComparison(data1, data2):
     for key in keys:
         if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
             count += 1
+            numGenesFound += 1
 
-    if count == 0 and len(dict2) == 0:
-        return 100
-    else:
-        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+#    if count == 0 and len(dict2) == 0:
+#        return 100
+#    else:
+#        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
 
-    return percentage
+    return (numEventsFound, numEventsExpected, numGenesFound, numGenesExpected, numAppEvents)
 
 ######################################################
 # codonMismatchSubstitutionComparison
@@ -174,16 +203,24 @@ def codonMismatchSubstitutionComparison(data1, data2):
     dict2 = {}
 
     #Parse the data
-    array1 = data1.split(';')
-    array2 = data2.split(';')
+    array1 = data1.strip().split(';')
+    print array1
+    array2 = data2.strip().split(';')
+    print array2
+    
+    numEventsFound = 0
+    numEventsExpected = len(array2) - 1
+    numAppEvents = len(array1) - 1
+    
     for entry in array1:
         data = entry.split(' ')
         if len(data) == 2:
             dict1[data[1]] = data[0]
     for entry in array2:
-        data = entry.split(' ')
-        if len(data) == 2:
-            dict2[data[1]] = data[0]
+        if entry != '':
+            data = entry.split(' ')
+            if len(data) == 2:
+                dict2[data[1]] = data[0]
 
     #Compute a percentage
     keys = dict1.keys()
@@ -191,13 +228,14 @@ def codonMismatchSubstitutionComparison(data1, data2):
     for key in keys:
         if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
             count += 1
+            numEventsFound += 1
 
-    if count == 0 and len(dict2) == 0:
-        return 100
-    else:
-        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
+#    if count == 0 and len(dict2) == 0:
+#        return 100
+#    else:
+#        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
 
-    return percentage
+    return (numEventsFound, numEventsExpected, numAppEvents)
 
 ######################################################
 # getTotalEvents
@@ -225,12 +263,18 @@ def getTotalEvents(line):
 # Parameters:
 # Description: Reads two files and compares two files
 ######################################################
-def readFiles():
+def readFiles(fileDir):
     newickTree1 = ''
     newickTree2 = ''
     print('Opening %s %s...' % (outputFile1, outputFile2))
-    file1 = open(outputFile1, "r")
-    file2 = open(outputFile2, "r")
+    file1 = open(fileDir+ "/" + outputFile1, "r")
+    file2 = open(fileDir+ "/" + outputFile2, "r")
+    
+    totalEventsFound = 0
+    totalEventsExpected = 0
+    totalGenesFound = 0
+    totalGenesExpected = 0
+    totalAppEvents = 0
 
     if file1.mode == "r" and file2.mode == "r":
         newickTree1 = file1.readline() #Newick tree 1
@@ -261,7 +305,13 @@ def readFiles():
                         line1 = line1.replace('Codon Mismatch:', '')
                         line2 = line2.replace('Codon Mismatch:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2)
-                        print('The result of the Codon Mismatches is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[0]
+                        totalGenesExpected += result[1]
+                        totalAppEvents += result[2]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Codon Mismatches is: %s percent' % (result))
                     else:
                         print('Error! This line should be the codon mismatch')
                         return False
@@ -273,7 +323,13 @@ def readFiles():
                         line1 = line1.replace('Substitution:', '')
                         line2 = line2.replace('Substitution:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2)
-                        print('The result of the Substitutions is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[0]
+                        totalGenesExpected += result[1]
+                        totalAppEvents += result[2]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Substitutions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the substitutions')
                         return False
@@ -285,7 +341,13 @@ def readFiles():
                         line1 = line1.replace('Duplication:', '')
                         line2 = line2.replace('Duplication:', '')
                         result = duplicationDeletionComparison(line1, line2)
-                        print('The result of the Duplications is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[2]
+                        totalGenesExpected += result[3]
+                        totalAppEvents += result[4]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Duplications is: %s percent' % (result))
                     else:
                         print('Error! This line should be the duplications')
                         return False
@@ -297,7 +359,13 @@ def readFiles():
                         line1 = line1.replace('Deletion:', '')
                         line2 = line2.replace('Deletion:', '')
                         result = duplicationDeletionComparison(line1, line2)
-                        print('The result of the Deletions is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[2]
+                        totalGenesExpected += result[3]
+                        totalAppEvents += result[4]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Deletions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the deletions')
                         return False
@@ -309,7 +377,13 @@ def readFiles():
                         line1 = line1.replace('Inversion:', '')
                         line2 = line2.replace('Inversion:', '')
                         result = inversionTranspositionComparison(line1, line2)
-                        print('The result of the Inversion is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[2]
+                        totalGenesExpected += result[3]
+                        totalAppEvents += result[4]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Inversion is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inversions')
                         return False
@@ -321,7 +395,13 @@ def readFiles():
                         line1 = line1.replace('Transposition:', '')
                         line2 = line2.replace('Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2)
-                        print('The result of the Transposition is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[2]
+                        totalGenesExpected += result[3]
+                        totalAppEvents += result[4]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the transpositions')
                         return False
@@ -333,7 +413,13 @@ def readFiles():
                         line1 = line1.replace('Inverted Transposition:', '')
                         line2 = line2.replace('Inverted Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2)
-                        print('The result of the Inverted Transposition is: %s percent' % (result))
+                        totalEventsFound += result[0]
+                        totalEventsExpected += result[1]
+                        totalGenesFound += result[2]
+                        totalGenesExpected += result[3]
+                        totalAppEvents += result[4]
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+#                        print('The result of the Inverted Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
@@ -344,8 +430,9 @@ def readFiles():
                 line2 = line2.replace('Total Deletions:', '').strip()
                 count1 = getTotalEvents(line1)
                 count2 = getTotalEvents(line2)
-                accuracyRate = (count1/count2) * 100
-                print('Accuracy rate for deletions was %s %%' % (accuracyRate))
+                if count2 > 0:
+                    accuracyRate = (count1/count2) * 100
+                    print('Accuracy rate for deletions was %s %%' % (accuracyRate))
                 
                 line1 = file1.readline() #Total duplications
                 line2 = file2.readline() #Total duplications
@@ -355,8 +442,9 @@ def readFiles():
                     line2 = line2.replace('Total Duplications:', '').strip()
                     count1 = getTotalEvents(line1)
                     count2 = getTotalEvents(line2)
-                    accuracyRate = (count1/count2) * 100
-                    print('Accuracy rate for deletions was %s %%' % (accuracyRate))
+                    if count2 > 0:
+                        accuracyRate = (count1/count2) * 100
+                        print('Accuracy rate for deletions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total duplications!')
                     return False
@@ -405,8 +493,9 @@ def readFiles():
                     line2 = line2.replace('Total Inversions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
-                    accuracyRate = (count1/count2) * 100
-                    print('Accuracy rate for inversions was %s %%' % (accuracyRate))
+                    if count2 > 0:
+                        accuracyRate = (count1/count2) * 100
+                        print('Accuracy rate for inversions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total inversions!')
                     return False
@@ -419,8 +508,9 @@ def readFiles():
                     line2 = line2.replace('Total Transpositions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
-                    accuracyRate = (count1/count2) * 100
-                    print('Accuracy rate for transpositions was %s %%' % (accuracyRate))
+                    if count2 > 0:
+                        accuracyRate = (count1/count2) * 100
+                        print('Accuracy rate for transpositions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total transpositions!')
                     return False
@@ -433,8 +523,9 @@ def readFiles():
                     line2 = line2.replace('Total Inverted Transpositions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
-                    accuracyRate = (count1/count2) * 100
-                    print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
+                    if count2 > 0:
+                        accuracyRate = (count1/count2) * 100
+                        print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total inverted transpositions!')
                     return False
@@ -448,11 +539,11 @@ def readFiles():
     file1.close()
     file2.close()
     print('Successfully closed files.')
-    return True
+    return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents
 
 ######## Main ########
-if readFiles():
-    print('Successfully processed the output files')
-else:
-    print('Error! An error has occured while processing the files!')
-print('End of script...')
+#if readFiles():
+#    print('Successfully processed the output files')
+#else:
+#    print('Error! An error has occured while processing the files!')
+#print('End of script...')
