@@ -126,7 +126,7 @@ def addDeletionEventsToStrain(strain, deletionSizes, deletionDescription):
 # Parameters:
 # Description: Constructs a dot plot to indicate a mapping of the orthologous operons
 ######################################################
-def createDotPlot(events, strain1, strain2):
+def createDotPlot(events, strain1, strain2, testFolder = ''):
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
@@ -192,7 +192,7 @@ def createDotPlot(events, strain1, strain2):
         plt.ylabel('Operon Position in %s' % (strain1.name))
         plt.xlabel('Operon Position in %s' % (strain2.name))
         plt.show()
-        f.savefig("%s %s.pdf" %(strain1.name, strain2.name), bbox_inches='tight')
+        f.savefig(testFolder + '%s %s.pdf' %(strain1.name, strain2.name), bbox_inches='tight')
     else:
         print('No plot to display!')
     print("x" * 70)

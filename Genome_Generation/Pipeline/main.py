@@ -59,7 +59,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     
     print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
-    createDotPlot(points, strain1, strain2)
+    createDotPlot(points, strain1, strain2, testFileName)
 
     createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
     createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
@@ -248,9 +248,9 @@ def getNeighborStrain(currNode):
 def createStrainFromFile(node):
     strain = None
 
-    if os.path.isdir(testFileName + '/' + node.name):
-        if os.path.isfile(testFileName + '/' + node.name + '/sequence.txt'):
-            genome = open(testFileName + '/' + node.name + '/sequence.txt', 'r').read()
+    if os.path.isdir(testFileName + node.name):
+        if os.path.isfile(testFileName + node.name + '/sequence.txt'):
+            genome = open(testFileName + node.name + '/sequence.txt', 'r').read()
             strain = processSequence(node.name, genome)
         else:
             print('No sequence file found for node: %s' % node.name)
@@ -392,7 +392,7 @@ def main():
     
     newickFileName = sys.argv[1]
     outputFileName = sys.argv[2] + "/ApplicationOutput.txt"
-    testFileName = sys.argv[2]
+    testFileName = sys.argv[2] + '/'
     
     print('Starting application...')
     startTime = time.time()

@@ -266,7 +266,8 @@ def getTotalEvents(line):
 def readFiles(fileDir):
     newickTree1 = ''
     newickTree2 = ''
-    print('Opening %s %s...' % (outputFile1, outputFile2))
+    outputFile = open(fileDir+ "/comparisonOutput.txt", "w+")
+    outputFile.write('Opening %s %s...\n' % (outputFile1, outputFile2))
     file1 = open(fileDir+ "/" + outputFile1, "r")
     file2 = open(fileDir+ "/" + outputFile2, "r")
     
@@ -296,12 +297,12 @@ def readFiles(fileDir):
                     print('Error! The strain names do not match!')
                     return False
                 else:
-                    print('Comparing the following strain between the two files: %s' % (strain1))
+                    outputFile.write('Comparing the following strain between the two files: %s\n' % (strain1))
 
                     line1 = file1.readline() #Codon mismatch
                     line2 = file2.readline() #Codon mismatch
                     if 'Codon Mismatch' in line1 and 'Codon Mismatch' in line2:
-                        print('Comparing the codon mismatches between the strains!')
+                        outputFile.write('Comparing the codon mismatches between the strains!\n')
                         line1 = line1.replace('Codon Mismatch:', '')
                         line2 = line2.replace('Codon Mismatch:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2)
@@ -310,7 +311,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[0]
                         totalGenesExpected += result[1]
                         totalAppEvents += result[2]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Codon Mismatches is: %s percent' % (result))
                     else:
                         print('Error! This line should be the codon mismatch')
@@ -319,7 +320,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Substitution
                     line2 = file2.readline() #Substitution
                     if 'Substitution' in line1 and 'Substitution' in line2:
-                        print('Comparing the substitutions between the strains!')
+                        outputFile.write('Comparing the substitutions between the strains!\n')
                         line1 = line1.replace('Substitution:', '')
                         line2 = line2.replace('Substitution:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2)
@@ -328,7 +329,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[0]
                         totalGenesExpected += result[1]
                         totalAppEvents += result[2]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Substitutions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the substitutions')
@@ -337,7 +338,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Duplication
                     line2 = file2.readline() #Duplication
                     if 'Duplication' in line1 and 'Duplication' in line2:
-                        print('Comparing the duplications between the strains!')
+                        outputFile.write('Comparing the duplications between the strains!\n')
                         line1 = line1.replace('Duplication:', '')
                         line2 = line2.replace('Duplication:', '')
                         result = duplicationDeletionComparison(line1, line2)
@@ -346,7 +347,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[2]
                         totalGenesExpected += result[3]
                         totalAppEvents += result[4]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Duplications is: %s percent' % (result))
                     else:
                         print('Error! This line should be the duplications')
@@ -355,7 +356,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Deletion
                     line2 = file2.readline() #Deletion
                     if 'Deletion' in line1 and 'Deletion' in line2:
-                        print('Comparing the deletions between the strains!')
+                        outputFile.write('Comparing the deletions between the strains!\n')
                         line1 = line1.replace('Deletion:', '')
                         line2 = line2.replace('Deletion:', '')
                         result = duplicationDeletionComparison(line1, line2)
@@ -364,7 +365,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[2]
                         totalGenesExpected += result[3]
                         totalAppEvents += result[4]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Deletions is: %s percent' % (result))
                     else:
                         print('Error! This line should be the deletions')
@@ -373,7 +374,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Inversion
                     line2 = file2.readline() #Inversion
                     if 'Inversion' in line1 and 'Inversion' in line2:
-                        print('Comparing the inversions between the strains!')
+                        outputFile.write('Comparing the inversions between the strains!\n')
                         line1 = line1.replace('Inversion:', '')
                         line2 = line2.replace('Inversion:', '')
                         result = inversionTranspositionComparison(line1, line2)
@@ -382,7 +383,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[2]
                         totalGenesExpected += result[3]
                         totalAppEvents += result[4]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Inversion is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inversions')
@@ -391,7 +392,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Transposition
                     line2 = file2.readline() #Transposition
                     if 'Transposition' in line1 and 'Transposition' in line2:
-                        print('Comparing the transpositions between the strains!')
+                        outputFile.write('Comparing the transpositions between the strains!\n')
                         line1 = line1.replace('Transposition:', '')
                         line2 = line2.replace('Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2)
@@ -400,7 +401,7 @@ def readFiles(fileDir):
                         totalGenesFound += result[2]
                         totalGenesExpected += result[3]
                         totalAppEvents += result[4]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the transpositions')
@@ -409,7 +410,7 @@ def readFiles(fileDir):
                     line1 = file1.readline() #Inverted Transposition
                     line2 = file2.readline() #Inverted Transposition
                     if 'Inverted Transposition' in line1 and 'Inverted Transposition' in line2:
-                        print('Comparing the inverted transposition between the strains!')
+                        outputFile.write('Comparing the inverted transposition between the strains!\n')
                         line1 = line1.replace('Inverted Transposition:', '')
                         line2 = line2.replace('Inverted Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2)
@@ -418,33 +419,33 @@ def readFiles(fileDir):
                         totalGenesFound += result[2]
                         totalGenesExpected += result[3]
                         totalAppEvents += result[4]
-                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
+                        outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Inverted Transposition is: %s percent' % (result))
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
                     
             elif 'Total Deletions' in line1 and 'Total Deletions' in line2:
-                print('Comparing total deletions between files!')
+                outputFile.write('Comparing total deletions between files!\n')
                 line1 = line1.replace('Total Deletions:', '').strip()
                 line2 = line2.replace('Total Deletions:', '').strip()
                 count1 = getTotalEvents(line1)
                 count2 = getTotalEvents(line2)
                 if count2 > 0:
                     accuracyRate = (count1/count2) * 100
-                    print('Accuracy rate for deletions was %s %%' % (accuracyRate))
+                    outputFile.write('Accuracy rate for deletions was %s %%\n' % (accuracyRate))
                 
                 line1 = file1.readline() #Total duplications
                 line2 = file2.readline() #Total duplications
                 if 'Total Duplications' in line1 and 'Total Duplications' in line2:
-                    print('Comparing total duplications between files!')
+                    outputFile.write('Comparing total duplications between files!\n')
                     line1 = line1.replace('Total Duplications:', '').strip()
                     line2 = line2.replace('Total Duplications:', '').strip()
                     count1 = getTotalEvents(line1)
                     count2 = getTotalEvents(line2)
                     if count2 > 0:
                         accuracyRate = (count1/count2) * 100
-                        print('Accuracy rate for deletions was %s %%' % (accuracyRate))
+                        outputFile.write('Accuracy rate for deletions was %s %%\n' % (accuracyRate))
                 else:
                     print('Error! Expected total duplications!')
                     return False
@@ -536,6 +537,7 @@ def readFiles(fileDir):
     else:
         print('Unable to process output files!')
     print('Closing files...')
+    outputFile.close()
     file1.close()
     file2.close()
     print('Successfully closed files.')
