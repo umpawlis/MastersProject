@@ -51,6 +51,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             event = Event(0)
             event.setScore(1.0)
+            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -82,7 +83,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
                 firstAttemptEvent = copy.deepcopy(event)
                 firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
-
+                print(op1.sequence)
+                print(op2.sequence)
                 #Remove genes that were deleted twice in a row (check both fragments)
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
@@ -470,69 +472,78 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
     events = []
     currentScoreSelected = 0
     globalAlignmentCounter = 0
-
+    
     maxValue = findMaxValueInMatrix(globalAlignmentMatrix)
     currentScoreSelected = maxValue
     #Keep iterating util we find all the optimal scores (Finding orthologs using global alignment)
     while currentScoreSelected >= 0:
+        minDistance = 1000
+        bestRow = -1
+        bestColumn = -1
+        bestEvent = None            
         #For each cell in the matrix
         for i in range(0, len(globalAlignmentMatrix)):
             for j in range(0, len(globalAlignmentMatrix[i])):
                 #Check if this is a * score and if both operons have not been marked off
                 if ('*' in str(globalAlignmentMatrix[i][j])) and (coverageTracker1[i] == False) and (coverageTracker2[j] == False):
                     score = float(str(globalAlignmentMatrix[i][j]).replace('*', ''))
-                    #Check if the score matches the scores we're currently looking for
-                    if score == currentScoreSelected:
-                        #We found an ortholog in the global alignment matrix
-                        print('\n##### Global Alignment #####')
-                        globals.trackingId += 1
-                        globalAlignmentCounter+=1
-
-                        coverageTracker1[i] = True
-                        coverageTracker2[j] = True
-
-                        event = eventMatrix[i][j]
-
-                        #Check if we have to go back and remove genes
-                        if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
-                            operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
-                            operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
+                    currDistance = eventMatrix[i][j].distance
+                    #Check if the score matches the scores we're currently looking for                    
+                    if score == currentScoreSelected and currDistance < minDistance:
+                        bestEvent = eventMatrix[i][j]
+                        bestRow = i
+                        bestColumn = j
+                        minDistance = currDistance
                         
-                        event.trackingEventId = globals.trackingId
+        if bestEvent != None: #Good match was found so don't increment score incase more are found
+            #We found an ortholog in the global alignment matrix
+            print('\n##### Global Alignment #####')
+            globals.trackingId += 1
+            globalAlignmentCounter+=1
+
+            coverageTracker1[bestRow] = True
+            coverageTracker2[bestColumn] = True
+            event = eventMatrix[bestRow][bestColumn]
+            
+            #Check if we have to go back and remove genes
+            if event.genesDeletedFromOperon == True and globals.enableDeletionReversions == True:
+                operonHadGenesRemoved(event.fragmentDetails1.deletionDetailsList, event.genome1Name, copy.deepcopy(event.fragmentDetails1.originalSequence), copy.deepcopy(event.fragmentDetails1.sequence))
+                operonHadGenesRemoved(event.fragmentDetails2.deletionDetailsList, event.genome2Name, copy.deepcopy(event.fragmentDetails2.originalSequence), copy.deepcopy(event.fragmentDetails2.sequence))
                         
-                        #Get the newest copy of the fragment into event as it may have been update
-                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
-                        fragment = next(filteredList, None)
-                        event.fragmentDetails1 = fragment
-                        filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
-                        fragment = next(filteredList, None)
-                        event.fragmentDetails2 = fragment
+            event.trackingEventId = globals.trackingId
                         
-                        event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
+            #Get the newest copy of the fragment into event as it may have been update
+            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails1.fragmentIndex, strain1.genomeFragments))
+            fragment = next(filteredList, None)
+            event.fragmentDetails1 = fragment
+            filteredList = iter(filter(lambda x : x.fragmentIndex == event.fragmentDetails2.fragmentIndex, strain2.genomeFragments))
+            fragment = next(filteredList, None)
+            event.fragmentDetails2 = fragment
+            
+            event, strain1, strain2 = reconstructOperonSequence(event, strain1, strain2)
 
-                        #Codon mismatches
-                        if event.numCodonMismatches > 0:
-                            codonMismatchDescription1 = constructStatement(event.codonMismatchIndexesStrain1, event.codonMismatchGenesStrain1, event.fragmentDetails1)
-                            codonMismatchDescription2 = constructStatement(event.codonMismatchIndexesStrain2, event.codonMismatchGenesStrain2, event.fragmentDetails2)
+            #Codon mismatches
+            if event.numCodonMismatches > 0:
+                codonMismatchDescription1 = constructStatement(event.codonMismatchIndexesStrain1, event.codonMismatchGenesStrain1, event.fragmentDetails1)
+                codonMismatchDescription2 = constructStatement(event.codonMismatchIndexesStrain2, event.codonMismatchGenesStrain2, event.fragmentDetails2)
 
-                            strain1.addCodonMismatchDetails(codonMismatchDescription1)
-                            strain2.addCodonMismatchDetails(codonMismatchDescription2)
+                strain1.addCodonMismatchDetails(codonMismatchDescription1)
+                strain2.addCodonMismatchDetails(codonMismatchDescription2)
 
-                        #Substitutions
-                        if event.numSubstitutions > 0:
-                            substitutionDescription1 = constructStatement(event.substitutionIndexesStrain1, event.substitutionGenesStrain1, event.fragmentDetails1)
-                            substitutionDescription2 = constructStatement(event.substitutionIndexesStrain2, event.substitutionGenesStrain2, event.fragmentDetails2)
+            #Substitutions
+            if event.numSubstitutions > 0:
+                substitutionDescription1 = constructStatement(event.substitutionIndexesStrain1, event.substitutionGenesStrain1, event.fragmentDetails1)
+                substitutionDescription2 = constructStatement(event.substitutionIndexesStrain2, event.substitutionGenesStrain2, event.fragmentDetails2)
 
-                            strain1.addSubstitutionDetails(substitutionDescription1)
-                            strain2.addSubstitutionDetails(substitutionDescription2)
+                strain1.addSubstitutionDetails(substitutionDescription1)
+                strain2.addSubstitutionDetails(substitutionDescription2)
 
-                        print(event.toString())
-
-                        #Add the event to the tracking events list
-                        events.append(event)
-                        print('###################################\n')
-
-        currentScoreSelected += (-0.5)
+            print(event.toString())
+            #Add the event to the tracking events list
+            events.append(event)
+            print('###################################\n')     
+        else:
+            currentScoreSelected += (-0.5) #No good match was found so move on
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
 
 ######################################################
@@ -599,7 +610,7 @@ def duplicationDeletionIndexUpdate(start, line, numDeleted):
             data = filter(None, genes[x].split(' '))
             gene = data[0]
             position = int(data[1])
-            if position > start:
+            if position > start and position != -1: #The -1 handles the self global aligned genes
                 position -= numDeleted
             newLine += gene + ' ' +str(position) + ', '
         newLine = newLine[0:(len(newLine) - 2)] + ';'
@@ -684,10 +695,19 @@ def removeGenesFromStrains(deletionList):
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
 ######################################################
 def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
+    #TODO UPDATE DELETION DETAILS POSITIONS!
     if len(deletions) > 0:
         removeGenesFromStrains(deletions) #Update the descendants of the ancestor
-        for deletion in deletions:
+        for x in range(0, len(deletions)):
+            deletion = deletions[x]
             if deletion.geneRemoved == True:
+                
+                #for y in range(0, len(deletions)):
+                    #if y != x:
+                        #otherDeletion = deletions[y]
+                        #Check if x deletion is smaller, 
+                
+                
                 #We have to update the ancestral strain
                 filteredList = iter(filter(lambda x : x.name == ancestralName, globals.strains))
                 ancestor = next(filteredList, None)
