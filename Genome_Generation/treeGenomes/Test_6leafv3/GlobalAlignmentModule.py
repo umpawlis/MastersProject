@@ -83,7 +83,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
                 firstAttemptEvent = copy.deepcopy(event)
                 firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
-
+                print(op1.sequence)
+                print(op2.sequence)
                 #Remove genes that were deleted twice in a row (check both fragments)
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
@@ -694,10 +695,19 @@ def removeGenesFromStrains(deletionList):
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
 ######################################################
 def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
+    #TODO UPDATE DELETION DETAILS POSITIONS!
     if len(deletions) > 0:
         removeGenesFromStrains(deletions) #Update the descendants of the ancestor
-        for deletion in deletions:
+        for x in range(0, len(deletions)):
+            deletion = deletions[x]
             if deletion.geneRemoved == True:
+                
+                #for y in range(0, len(deletions)):
+                    #if y != x:
+                        #otherDeletion = deletions[y]
+                        #Check if x deletion is smaller, 
+                
+                
                 #We have to update the ancestral strain
                 filteredList = iter(filter(lambda x : x.name == ancestralName, globals.strains))
                 ancestor = next(filteredList, None)
