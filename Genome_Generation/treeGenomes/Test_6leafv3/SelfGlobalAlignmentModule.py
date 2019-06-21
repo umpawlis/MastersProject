@@ -88,6 +88,9 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
             if bestEvent != None: #A match was found meaning the operon is a duplicate therefor do not add it into the ancestor
                 globals.trackingId += 1
                 bestEvent.trackingEventId = globals.trackingId
+                
+                handleDuplicateDetails(bestEvent, strain)
+                
                 coverageTracker[i] = True
                 duplicationEvents.append(bestEvent)
                 
@@ -146,3 +149,67 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                 print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
                 
     return duplicationEvents, lossEvents, coverageTracker, strain, sibling
+
+######################################################
+# handleDuplicateDetails
+# Parameters:
+# Description: Reconstructs the ancestral operon by determining whether the gaps are losses or duplications
+######################################################
+def handleDuplicateDetails(event, strain):
+    operon1Gaps = event.operon1Gaps
+    operon2Gaps = event.operon2Gaps
+    
+    if len(operon1Gaps) > 0 or len(operon2Gaps) > 0:
+        #S1 is the duplicate operon ie target therefore S2 is the source
+        if len(operon2Gaps) > 0:
+            #These are the extra genes in the source therefore they were deleted in the target
+            tempString = ''
+            for gap in operon2Gaps:
+                for gene in gap:
+                    tempString += gene + ' ' +str(-1) + ', '
+                tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
+                tempString += ';'
+                #Increment the size distribution for this particular gap
+                sizeOfDeltion = len(gap)
+                if sizeOfDeltion in strain.deletionCounts:
+                    strain.deletionCounts[sizeOfDeltion] += 1
+                else:
+                    strain.deletionCounts[sizeOfDeltion] = 1
+            #Here wer have the complete string, insert as deletion into target
+            strain.deletionDetails += tempString
+            
+        if len(operon1Gaps) > 0:
+            #These are the extra genes in the target, therefore there were duplicated into the target
+            tempString = ''
+            for gap in operon1Gaps:
+                for gene in gap:
+                    tempString += gene + ' ' +str(-1) + ', '
+                tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
+                tempString += ';'
+                #Increment the size distribution
+                sizeOfDuplication = len(gap)
+                if sizeOfDuplication in strain.duplicationCounts:
+                    strain.duplicationCounts[sizeOfDuplication] += 1
+                else:
+                    strain.duplicationCounts[sizeOfDuplication] = 1
+            #Here wer have the complete string, insert as duplication into the target
+            strain.duplicationDetails += tempString
+            
+    #Now handle the match region details, the matched regions are duplications with a normal index
+    tempString = ''
+    sequence = event.ancestralOperonGeneSequence
+    position = event.fragmentDetails1.startPositionInGenome
+    for x in range(0, len(sequence)):
+        if event.fragmentDetails1.isNegativeOrientation == False:
+            tempString += sequence[x] + ' ' + str(x + position) + ', '
+        else:
+            tempString += sequence[x] + ' ' + str(position + len(sequence) - x - 1) + ', '
+    tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
+    tempString += ';'
+    strain.duplicationDetails += tempString
+    
+    sizeOfDuplication = len(sequence)
+    if sizeOfDuplication in strain.duplicationCounts:
+        strain.duplicationCounts[sizeOfDuplication] += 1
+    else:
+        strain.duplicationCounts[sizeOfDuplication] = 1
