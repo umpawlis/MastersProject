@@ -83,7 +83,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
                 firstAttemptEvent = copy.deepcopy(event)
                 firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
-
+                print(op1.sequence)
+                print(op2.sequence)
                 #Remove genes that were deleted twice in a row (check both fragments)
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
@@ -151,6 +152,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 # Description: Checks if given gene and position exists in the deletion details list
 ######################################################
 def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions, fragmentId):
+    #TODO UPDATE DELETION DETAILS POSITIONS!
     redoAlignment = False
     if len(operonGaps) > 0:
         operonGaps.reverse()             #Reverse the arrays so we start removing from the highest positions
