@@ -114,7 +114,13 @@ def createAncestor(strain1, strain2, neighborStrain):
     #outputStrainDetailsToFile(outputFileName, strain2)
     
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
-    
+    print(strain1.name)
+    for frag in strain1.genomeFragments:
+        print(frag.originalSequence)
+    print(strain2.name)
+    for frag in strain2.genomeFragments:
+        print(frag.originalSequence)
+        
     return ancestor
 
 ######################################################
