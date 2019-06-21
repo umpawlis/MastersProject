@@ -609,7 +609,7 @@ def duplicationDeletionIndexUpdate(start, line, numDeleted):
             data = filter(None, genes[x].split(' '))
             gene = data[0]
             position = int(data[1])
-            if position > start:
+            if position > start and position != -1: #The -1 handles the self global aligned genes
                 position -= numDeleted
             newLine += gene + ' ' +str(position) + ', '
         newLine = newLine[0:(len(newLine) - 2)] + ';'
