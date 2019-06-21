@@ -698,8 +698,16 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
     #TODO UPDATE DELETION DETAILS POSITIONS!
     if len(deletions) > 0:
         removeGenesFromStrains(deletions) #Update the descendants of the ancestor
-        for deletion in deletions:
+        for x in range(0, len(deletions)):
+            deletion = deletions[x]
             if deletion.geneRemoved == True:
+                
+                #for y in range(0, len(deletions)):
+                    #if y != x:
+                        #otherDeletion = deletions[y]
+                        #Check if x deletion is smaller, 
+                
+                
                 #We have to update the ancestral strain
                 filteredList = iter(filter(lambda x : x.name == ancestralName, globals.strains))
                 ancestor = next(filteredList, None)
