@@ -152,7 +152,6 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 # Description: Checks if given gene and position exists in the deletion details list
 ######################################################
 def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions, fragmentId):
-    #TODO UPDATE DELETION DETAILS POSITIONS!
     redoAlignment = False
     if len(operonGaps) > 0:
         operonGaps.reverse()             #Reverse the arrays so we start removing from the highest positions
@@ -696,6 +695,7 @@ def removeGenesFromStrains(deletionList):
 # Description: Checks an operons deleted gene list if any of the genes were switch from deletions to duplications
 ######################################################
 def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
+    #TODO UPDATE DELETION DETAILS POSITIONS!
     if len(deletions) > 0:
         removeGenesFromStrains(deletions) #Update the descendants of the ancestor
         for deletion in deletions:
