@@ -160,6 +160,7 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
         for t in range(0, len(operonGaps)):
             genes = operonGaps[t]
             positions = operonGapPositions[t]
+            count = 0
             for g in range(0, len(genes)):
                 gene = genes[g]
                 position = positions[g]
@@ -168,7 +169,8 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                 if removeGenes == True:
                     sequenceChanged = True
                     redoAlignment = True
-                    del op.sequence[position]
+                    del op.sequence[position - count]
+                    count += 1
         #Reconstruct the operon string sequence now
         if sequenceChanged:
             sequenceCopy = copy.deepcopy(op.sequence)
@@ -647,7 +649,7 @@ def removeGenesFromStrains(deletionList):
                             
                             otherStrain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
                             
-                            listOfGenes = description.split(',')                #Split the sequence
+                            listOfGenes = description.split(', ')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
                             
                             #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0 both in the strain and global counter

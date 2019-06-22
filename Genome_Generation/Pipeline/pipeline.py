@@ -3,6 +3,7 @@ from CompareResultsService import readFiles
 import matplotlib.pyplot as plt
 import os
 import sys
+import subprocess
 import datetime
 
 probDup = 0.0
@@ -101,8 +102,15 @@ def main():
             testSetDir = datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
             generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue)
 #            analyzeTree(tree, testSetDir)
-            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
-            os.system(appCommand)
+#            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
+#            os.system(appCommand)
+#            subprocess.Popen(appCommand, shell=True).wait()
+            p = subprocess.Popen(['python', 'main.py', tree, testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = p.communicate()
+            with open(testSetDir + '/appTestingOutput.txt', "w+") as f:
+                f.write(out)
+                f.write(err)
+            
             totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents = readFiles(testSetDir)
             
             print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
@@ -119,22 +127,6 @@ def main():
             numEventsGenAveragesList.append(totalEventsExpected)
             strictAccuracyAveragesList.append(strictEventAccuracy)
             relaxedAccuracyAveragesList.append(relaxedEventAccuracy)
-            
-#            count = 0
-#            print dirList
-#            for testFile in dirList:
-#                if testFile.endswith('.pdf'):
-#                    print count
-#                    count+= 1
-#                    shutil.move(os.path.join(currDir, testFile), os.path.join(testSetDir, testFile))
-#                elif testFile.startswith('Ancestor'):
-#                    shutil.move(os.path.join(currDir, testFile), os.path.join(testSetDir, testFile))
-#                elif testFile.startswith('NC_0000'):
-#                    shutil.move(os.path.join(currDir, testFile), os.path.join(testSetDir, testFile))
-#                elif testFile == "ApplicationOutput.txt":
-#                    shutil.move(os.path.join(currDir, testFile), os.path.join(testSetDir, testFile))
-#                elif testFile == "generatorOutput.txt":
-#                    shutil.move(os.path.join(currDir, testFile), os.path.join(testSetDir, testFile))
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
