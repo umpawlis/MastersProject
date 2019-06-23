@@ -425,6 +425,18 @@ def main():
     #lineageCost = computeLineageCost(newickTree.clade, target, None)
     #if lineageCost != None:
         #print('Successfully found and computed the lineage for: %s' % (target))
+        
+    #Output ancestral genome to console
+    print('This is the root ancestral genome!')
+    root = newickTree.clade
+    if root.name != None and len(root.name) > 0:
+        filteredList = iter(filter(lambda x: x.name == root.name, strains))
+        foundStrain = next(filteredList, None)
+        if foundStrain != None:
+            ancestralFragments = foundStrain.genomeFragments
+            for fragment in ancestralFragments:
+                print(fragment.originalSequence)
+                
     endTime = time.time()
     totalTime = endTime - startTime
     print('Total time (in seconds): %s' % (totalTime))
