@@ -50,22 +50,23 @@ def main():
     
     totalEventsAppAveragesList = []
     totalEventsGenAveragesList = []
+    totalEventsOrthoAveragesList = []
     totalStrictAccuracyAveragesList = []
     totalRelaxedAccuracyAveragesList = []
     strictEventAccuracy = 0.0
     relaxedEventAccuracy = 0.0
     
-    totalEventsOrthoAveragesList = []
+    totalAppFMeasureList = []
+    totalOrthoFMeasureList = []
     
     for test in tests:
+        numEventsOrthoAveragesList = []
         numEventsAppAveragesList = []
         numEventsGenAveragesList = []
         strictAccuracyAveragesList = []
         relaxedAccuracyAveragesList = []
         
-        numEventsOrthoAveragesList = []
         appFMeasureList = []
-        genFMeasureList = []
         orthoFMeasureList = []
         
         args = test.strip().split()
@@ -148,6 +149,7 @@ def main():
                 
                 duplossOutFile = testSetDir + "/duploss.out"
                 orthoAlignOutFile = testSetDir + "/orthoAlign.out"
+                appRootFile = testSetDir + "/appRoot.txt"
                 genRootFile = testSetDir + "/root.txt"
                 
                 with open(orthoAlignOutFile, "r") as f:
@@ -162,6 +164,9 @@ def main():
                             break
                         line = f.readline()
                         
+                with open(appRootFile, "r") as f:
+                    appAncestor = f.readline()
+                        
                 with open(genRootFile, "r") as f:
                     genAncestor = f.readline()
                 
@@ -170,29 +175,35 @@ def main():
                 print orthoAncestor
                 print genAncestor
                 
-                recall, precision, fMeasure = compareAnc(orthoAncestor, genAncestor)
-                    
-#                appFMeasureList = []
-#                genFMeasureList = []
-                orthoFMeasureList.append(fMeasure)
+                orthoRecall, orthoPrecision, orthofMeasure = compareAnc(orthoAncestor, genAncestor, testSetDir + "/ortho-")
+                appRecall, appPrecision, appfMeasure = compareAnc(appAncestor, genAncestor, testSetDir + "/app-")
+                appFMeasureList.append(appfMeasure)
+                orthoFMeasureList.append(orthofMeasure)
                 
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
+        totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
         totalStrictAccuracyAveragesList.append(strictAccuracyAveragesList)
         totalRelaxedAccuracyAveragesList.append(relaxedAccuracyAveragesList)
         
-        totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
+        totalAppFMeasureList.append(appFMeasureList)
+        totalOrthoFMeasureList.append(orthoFMeasureList)
         print testSetDir
         
     outputData(totalEventsAppAveragesList, "appEventsData.txt")
     outputData(totalEventsGenAveragesList, "genEventsData.txt")
+    outputData(totalEventsOrthoAveragesList, "orthoEventsData.txt")
     outputData(totalStrictAccuracyAveragesList, "strictAccuracyData.txt")
     outputData(totalRelaxedAccuracyAveragesList, "relaxedAccuracyData.txt")
+    outputData(totalAppFMeasureList, "appFMeasureData.txt")
+    outputData(totalOrthoFMeasureList, "orthoFMeasureData.txt")
+    
+    
     graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
     graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
-    
     if cherryTree:
+        graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList)
         graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList)
     else:
         graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
@@ -207,6 +218,9 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     elif graphType == "rAccuracy":
         title = "Average Relaxed Accuracy"
         yAxisTitle = "Accuracy Percentage"
+    elif graphType == "fMeasure":
+        title = "Average F-measure"
+        yAxisTitle = "F-measure"
         
     f = plt.figure()
     plt.title(title)

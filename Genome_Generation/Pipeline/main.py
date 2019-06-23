@@ -409,6 +409,20 @@ def main():
     print('Traversing newick tree...')
     result = traverseNewickTree(newickTree.clade, None)
     
+    #Output ancestral genome to console
+    print('This is the root ancestral genome!')
+    root = newickTree.clade
+    rootGenome = []
+    if root.name != None and len(root.name) > 0:
+        filteredList = iter(filter(lambda x: x.name == root.name, strains))
+        foundStrain = next(filteredList, None)
+        if foundStrain != None:
+            ancestralFragments = foundStrain.genomeFragments
+            rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
+                
+    with open(testFileName + "/appRoot.txt", "w+") as f:
+        f.write(rootGenome)
+    
     #Output newick tree after the ancestors have been added to it
     Phylo.draw(newickTree)
     
@@ -425,17 +439,6 @@ def main():
     #lineageCost = computeLineageCost(newickTree.clade, target, None)
     #if lineageCost != None:
         #print('Successfully found and computed the lineage for: %s' % (target))
-        
-    #Output ancestral genome to console
-    print('This is the root ancestral genome!')
-    root = newickTree.clade
-    if root.name != None and len(root.name) > 0:
-        filteredList = iter(filter(lambda x: x.name == root.name, strains))
-        foundStrain = next(filteredList, None)
-        if foundStrain != None:
-            ancestralFragments = foundStrain.genomeFragments
-            for fragment in ancestralFragments:
-                print(fragment.originalSequence)
                 
     endTime = time.time()
     totalTime = endTime - startTime
