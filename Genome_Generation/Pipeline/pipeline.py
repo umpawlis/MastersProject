@@ -36,9 +36,12 @@ def main():
     if len(sys.argv) == 4:
         if sys.argv[2] == "-c":
             cherryTree = True
+        numRounds = int(sys.argv[3])
+    elif len(sys.argv) == 3:
+        numRounds = int(sys.argv[2])
         
     testFile = sys.argv[1]
-    numRounds = int(sys.argv[3])
+    
     
     xAxis = []
     baseCommand = 'python Run_2-SPP_OrthoAlign.py -f '
