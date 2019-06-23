@@ -83,17 +83,17 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
                 redoAlignment2 = False #Tracks whether we should redo the alignment to potentially get a better score
                 firstAttemptEvent = copy.deepcopy(event)
                 firstAttemptScore, firstAttemptEvent = performGlobalAlignment(op1.sequence, op2.sequence, firstAttemptEvent)
-                print(op1.sequence)
-                print(op2.sequence)
+                #print(op1.sequence)
+                #print(op2.sequence)
                 #Remove genes that were deleted twice in a row (check both fragments)
                 if len(event.fragmentDetails1.deletionDetailsList) > 0:
                     eventCopy1 = copy.deepcopy(firstAttemptEvent)
                     op1Copy = copy.deepcopy(op1)
-                    redoAlignment1, op1Copy, deletionDetailsList1 = removeGenesDeletedMultipleGenerations(eventCopy1, op1Copy, eventCopy1.operon1Gaps, eventCopy1.operon1GapPositions, eventCopy1.fragmentDetails1.fragmentIndex)
+                    redoAlignment1, op1Copy, deletionDetailsList1 = removeGenesDeletedMultipleGenerations(eventCopy1, op1Copy, eventCopy1.operon1Gaps, eventCopy1.operon1GapPositions, eventCopy1.fragmentDetails1.fragmentIndex, eventCopy1.fragmentDetails1.deletionDetailsList)
                 if len(event.fragmentDetails2.deletionDetailsList) > 0:
                     eventCopy2 = copy.deepcopy(firstAttemptEvent)
                     op2Copy = copy.deepcopy(op2)
-                    redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions, eventCopy2.fragmentDetails2.fragmentIndex)
+                    redoAlignment2, op2Copy, deletionDetailsList2 = removeGenesDeletedMultipleGenerations(eventCopy2, op2Copy, eventCopy2.operon2Gaps, eventCopy2.operon2GapPositions, eventCopy2.fragmentDetails2.fragmentIndex, eventCopy2.fragmentDetails2.deletionDetailsList)
 
                 #Redo the Alignment if any genes were removed from the operon
                 if redoAlignment1 or redoAlignment2:
@@ -151,7 +151,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 # Parameters:
 # Description: Checks if given gene and position exists in the deletion details list
 ######################################################
-def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions, fragmentId):
+def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositions, fragmentId, deletionList):
     redoAlignment = False
     if len(operonGaps) > 0:
         operonGaps.reverse()             #Reverse the arrays so we start removing from the highest positions
@@ -165,7 +165,7 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                 gene = genes[g]
                 position = positions[g]
                 #Check if this combination exists in the deletion tracker
-                removeGenes = checkDeletionEvents(gene, position, event.fragmentDetails1.deletionDetailsList, fragmentId)
+                removeGenes = checkDeletionEvents(gene, position, deletionList, fragmentId)
                 if removeGenes == True:
                     sequenceChanged = True
                     redoAlignment = True
@@ -187,7 +187,7 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                     stringOperon += geneCopy
             stringOperon += ']'
             op.originalSequence = stringOperon
-    return redoAlignment, op, event.fragmentDetails1.deletionDetailsList
+    return redoAlignment, op, deletionList
 
 ######################################################
 # checkDeletionEvents
@@ -703,13 +703,6 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
         for x in range(0, len(deletions)):
             deletion = deletions[x]
             if deletion.geneRemoved == True:
-                
-                #for y in range(0, len(deletions)):
-                    #if y != x:
-                        #otherDeletion = deletions[y]
-                        #Check if x deletion is smaller, 
-                
-                
                 #We have to update the ancestral strain
                 filteredList = iter(filter(lambda x : x.name == ancestralName, globals.strains))
                 ancestor = next(filteredList, None)
@@ -718,6 +711,20 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
                     filteredList = iter(filter(lambda x : x.fragmentIndex >= deletion.ancestralFragmentId, ancestor.genomeFragments))
                     fragment = next(filteredList, None)
                     while fragment:
+                        
+                        #Not needed
+                        #updates the indexes of the other deletion details so we keep track of the genes new position
+#                        otherDeletionList = fragment.deletionDetailsList
+#                        if len(otherDeletionList) > 0:
+#                            for y in range(0, len(otherDeletionList)):
+#                                otherDeletion = otherDeletionList[y]
+#                                #Check if index at deletion y is greater than deletion in x. If so decrement the position by 1
+#                                yPosition = int(otherDeletion.originalPosition)
+#                                xPosition = int(deletion.originalPosition)
+#                                if yPosition > xPosition:
+#                                    otherDeletion.ancestralPosition = yPosition - 1 #Shift to the left
+#                                    otherDeletion.originalPosition = otherDeletion.originalPosition - 1
+                        
                         if fragment.fragmentIndex == deletion.ancestralFragmentId:
                             #Replace the operon array and the string sequence
                             fragment.originalSequence = originalSequence

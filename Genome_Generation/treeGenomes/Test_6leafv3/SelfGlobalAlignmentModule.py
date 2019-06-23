@@ -167,7 +167,7 @@ def handleDuplicateDetails(event, strain):
             tempString = ''
             for gap in operon2Gaps:
                 for gene in gap:
-                    tempString += gene + ' ' +str(-1) + ', '
+                    tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
                 #Increment the size distribution for this particular gap
@@ -184,7 +184,7 @@ def handleDuplicateDetails(event, strain):
             tempString = ''
             for gap in operon1Gaps:
                 for gene in gap:
-                    tempString += gene + ' ' +str(-1) + ', '
+                    tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
                 #Increment the size distribution

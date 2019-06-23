@@ -35,7 +35,7 @@ Strain:Ancestor 2
 Codon Mismatch:
 Substitution:
 Duplication:16S 18, 23S 17, 5S 16;
-Deletion:Ser_UCG 12, Ala_GCC 11;Ser_UCG 19;
+Deletion:Ser_UCG 12, Ala_GCC 11;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -58,7 +58,7 @@ Inverted Transposition:
 Strain:Ancestor 3
 Codon Mismatch:
 Substitution:
-Duplication:16S 6;
+Duplication:16S 6;Ser_UCG 20;
 Deletion:
 Inversion:
 Transposition:
@@ -67,20 +67,20 @@ Strain:NC_000006
 Codon Mismatch:
 Substitution:
 Duplication:Ser_UCG 22;
-Deletion:Ser_UCG 20;Ser_UCG 24, Arg_CGA 25, Ser_UCG 26;
+Deletion:Ser_UCG 24, Arg_CGA 25, Ser_UCG 26;
 Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 4
 Codon Mismatch:
 Substitution:
-Duplication:Ser_UCG 25;
+Duplication:Ser_UCG 24;
 Deletion:Thr_ACC 19;
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 6, size: 2 count: 1, size: 3 count: 1, size: 5 count: 1
-Total Duplications: size: 1 count: 7, size: 2 count: 2, size: 3 count: 1
+Total Deletions: size: 1 count: 4, size: 2 count: 1, size: 3 count: 1, size: 5 count: 1
+Total Duplications: size: 1 count: 8, size: 2 count: 2, size: 3 count: 1
 Size Distribution of Inversions: 
 Size Distribution of Transpositions: 
 Size Distribution of Inverted Transpositions: 
