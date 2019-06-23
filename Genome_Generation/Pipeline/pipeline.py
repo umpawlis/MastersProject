@@ -1,5 +1,6 @@
 from genomeGenerator import generateTests
 from CompareResultsService import readFiles
+from CompareAncestors import compareAnc
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -27,15 +28,20 @@ def main():
     global probTrans
     global trans_pValue
     
-    if len(sys.argv) != 3:
+    cherryTree = False
+    if len(sys.argv) < 3:
         print "WARNING: Must provide a file for testing. Exiting..."
         sys.exit(0)
         
+    if len(sys.argv) == 4:
+        if sys.argv[2] == "-c":
+            cherryTree = True
+        
     testFile = sys.argv[1]
-    numRounds = int(sys.argv[2])
+    numRounds = int(sys.argv[3])
     
     xAxis = []
-    baseCommand = 'python main.py '
+    baseCommand = 'python Run_2-SPP_OrthoAlign.py -f '
     
     testingFile = open(testFile, "r")
     testDiff = testingFile.readline().strip()
@@ -49,11 +55,19 @@ def main():
     strictEventAccuracy = 0.0
     relaxedEventAccuracy = 0.0
     
+    totalEventsOrthoAveragesList = []
+    
     for test in tests:
         numEventsAppAveragesList = []
         numEventsGenAveragesList = []
         strictAccuracyAveragesList = []
         relaxedAccuracyAveragesList = []
+        
+        numEventsOrthoAveragesList = []
+        appFMeasureList = []
+        genFMeasureList = []
+        orthoFMeasureList = []
+        
         args = test.strip().split()
         count = 4
         
@@ -127,22 +141,63 @@ def main():
             numEventsGenAveragesList.append(totalEventsExpected)
             strictAccuracyAveragesList.append(strictEventAccuracy)
             relaxedAccuracyAveragesList.append(relaxedEventAccuracy)
+            
+            if cherryTree:
+                appCommand = baseCommand + testSetDir + '/NC_000001/sequence.txt ' + testSetDir + '/NC_000002/sequence.txt ' + testSetDir
+                os.system(appCommand)
+                
+                duplossOutFile = testSetDir + "/duploss.out"
+                orthoAlignOutFile = testSetDir + "/orthoAlign.out"
+                genRootFile = testSetDir + "/root.txt"
+                
+                with open(orthoAlignOutFile, "r") as f:
+                    line = f.readline()
+                    while line:
+                        splitted = line.split("ost = ")
+                        if len(splitted) > 1:
+                            cost = float(splitted[1])
+                            line = f.readline()
+                        if line.strip() == ">Ancestor:":
+                            orthoAncestor = f.readline().strip()
+                            break
+                        line = f.readline()
+                        
+                with open(genRootFile, "r") as f:
+                    genAncestor = f.readline()
+                
+                numEventsOrthoAveragesList.append(cost)
+                print cost
+                print orthoAncestor
+                print genAncestor
+                
+                recall, precision, fMeasure = compareAnc(orthoAncestor, genAncestor)
+                    
+#                appFMeasureList = []
+#                genFMeasureList = []
+                orthoFMeasureList.append(fMeasure)
+                
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
         totalStrictAccuracyAveragesList.append(strictAccuracyAveragesList)
         totalRelaxedAccuracyAveragesList.append(relaxedAccuracyAveragesList)
+        
+        totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
         print testSetDir
         
     outputData(totalEventsAppAveragesList, "appEventsData.txt")
     outputData(totalEventsGenAveragesList, "genEventsData.txt")
     outputData(totalStrictAccuracyAveragesList, "strictAccuracyData.txt")
     outputData(totalRelaxedAccuracyAveragesList, "relaxedAccuracyData.txt")
-    graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
     graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
     graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
+    
+    if cherryTree:
+        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList)
+    else:
+        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
 
-def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None):
+def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None):
     if graphType == "Events":
         title = "Average Number of Events"
         yAxisTitle = "Number of Events"
@@ -181,6 +236,21 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             average = currentSum / len(averagesList)
             averages2.append(average)
         line2, = plt.plot(xAxis, averages2, 'r^-', label='Generator')
+        plt.legend(handles=[line1, line2])
+    else:
+        plt.legend(handles=[line1])
+        
+    if totalAverages3 is not None:
+        averages3 = []
+        print totalAverages3
+        for averagesList in totalAverages3:
+            currentSum = 0.0    
+            for average in averagesList:
+                currentSum += average
+            
+            average = currentSum / len(averagesList)
+            averages3.append(average)
+        line2, = plt.plot(xAxis, averages3, 'gP-', label='OrthoAlign')
         plt.legend(handles=[line1, line2])
     else:
         plt.legend(handles=[line1])

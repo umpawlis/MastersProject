@@ -1034,12 +1034,22 @@ def createAncestor(maxLength, numOperons):
                         operon.extend(rnaSequence)
                     else:
                         operon = rnaSequence + operon
-            seqLength += len(operon)
-            currentSequence.append(operon)
-            currNumOperons += 1
+            if (seqLength + len(operon)) <= maxLength:
+                seqLength += len(operon)
+                currentSequence.append(operon)
+                currNumOperons += 1
         else:
-            currentSequence.append(random.choice(aminoAcids))
-            seqLength += 1
+            if seqLength + 1 <= maxLength:
+                currentSequence.append(random.choice(aminoAcids))
+                seqLength += 1
+        
+        if seqLength == maxLength and currNumOperons < numOperons:
+            beforeTerminus = []
+            afterTerminus = []
+            seqLength = 0
+            currNumOperons = 0
+            terminusAdded = False
+            currentSequence = beforeTerminus
 
         if terminusAdded == False and seqLength >= maxLength/2:
             terminusAdded = True
