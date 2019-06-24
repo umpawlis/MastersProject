@@ -1108,4 +1108,19 @@ def createFile(fileName, newickTree):
     file.close()
     
 if __name__ == '__main__':
+    #generateTests formatting
+    #generateTests(OutputFolderName, treeFileName, numGenesForGenome, minNumOperons, numEventsPerBranch, dupProb, dupPValue, lossProb, loss_p, invProb, inv_p, subProb, transProb, trans_p)
+    #OutputFolderName - folder where all your files will be output
+    #treeFileName - tree you want to create
+    #numGenesForGenome - number of genes each genome will have
+    #minNumOperons - the genomes will have atleast this many operons
+    #numEventsPerBranch - each branch will have exactly this many events
+    
+    #All probabilities determine how likely the event will occur. **Probabilities have to add up to 1
+    #All pValues determine how many genes the event will affect. The higher the pValue, the lower the chance that the event will be large
+    #Examples: code below creates genomes of size 25 with atleast 3 operons and 3 events for each genome. Only transpositions will occur though. None of the other events have a probability.
     generateTests("generatorTesting", "tree2Leaf.dnd", 25, 3, 3, 0.0, 0.7, 0.0, 0.7, 0.0, 0.7, 0.0, 1.0, 0.7)
+     #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
+    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7)
+     #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.
+    generateTests("generatorTesting", "tree2Leaf.dnd", 80, 4, 6, 0.4, 0.7, 0.4, 0.7, 0.05, 0.7, 0.05, 0.10, 0.7)

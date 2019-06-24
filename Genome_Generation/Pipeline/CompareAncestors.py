@@ -74,15 +74,15 @@ def compareAnc(inferred, real, outputPath):
     count += 1
     
     if tryAgain:
-        outputFile = open(duplossOutFile, "w+")
-        p = subprocess.Popen(['python', DUPLOSS_PATH + DUPLOSS_EXEC, '-eiqdt', inferred, real], stdout=outputFile).wait()
-#        out, err = p.communicate()
-#        with open(duplossOutFile, "w+") as f:
-#            f.write(out)
-#            f.write(err)
-        outputFile.close()
+#        outputFile = open(duplossOutFile, "w+")
+        p = subprocess.Popen(['python', DUPLOSS_PATH + DUPLOSS_EXEC, '-eiqdt', inferred, real], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        with open(duplossOutFile, "w+") as f:
+            f.write(out)
+            f.write(err)
+#        outputFile.close()
         count += 1
-#    print "Count: " + str(count)
+    print "Count: " + str(count)
     
     if Tp != 0:
         recall = Tp / (Tp + Fn)
