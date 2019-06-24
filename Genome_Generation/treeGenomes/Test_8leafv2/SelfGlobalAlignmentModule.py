@@ -94,21 +94,22 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                 coverageTracker[i] = True
                 duplicationEvents.append(bestEvent)
                 
-                duplicationDetails = ''
-                position = bestEvent.fragmentDetails1.startPositionInGenome
-                op = copy.deepcopy(bestEvent.fragmentDetails1.sequence)
+                #This is now being handled with the function handleDuplicateDetails
+                #duplicationDetails = ''
+                #position = bestEvent.fragmentDetails1.startPositionInGenome
+                #op = copy.deepcopy(bestEvent.fragmentDetails1.sequence)
                 
-                if bestEvent.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
-                    op.reverse()
+                #if bestEvent.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
+                    #op.reverse()
                 
-                for gene in op:
-                    duplicationDetails += gene + ' ' + str(position) + ', '
-                    position += 1
-                duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
-                duplicationDetails += ';'
+                #for gene in op:
+                    #duplicationDetails += gene + ' ' + str(position) + ', '
+                    #position += 1
+                #duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
+                #duplicationDetails += ';'
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
-                strain = addDuplicationEventsToStrain(strain, [len(bestEvent.fragmentDetails1.sequence)], duplicationDetails)
+                #strain = addDuplicationEventsToStrain(strain, [len(bestEvent.fragmentDetails1.sequence)], duplicationDetails)
                 
                 print('\n&&&&&& Self Global Alignment &&&&&')
                 print(bestEvent.toString())
@@ -166,7 +167,7 @@ def handleDuplicateDetails(event, strain):
             tempString = ''
             for gap in operon2Gaps:
                 for gene in gap:
-                    tempString += gene + ' ' +str(-1) + ', '
+                    tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
                 #Increment the size distribution for this particular gap
@@ -183,7 +184,7 @@ def handleDuplicateDetails(event, strain):
             tempString = ''
             for gap in operon1Gaps:
                 for gene in gap:
-                    tempString += gene + ' ' +str(-1) + ', '
+                    tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
                 #Increment the size distribution
