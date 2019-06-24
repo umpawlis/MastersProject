@@ -36,6 +36,7 @@ totalTranspositions = 0
 totalInvertedTrans = 0
 
 testFolder = ""
+equalEvents = False
 
 class Event:
     def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
@@ -110,7 +111,7 @@ class Node:
         #     print event
         outputFile.close()
 # Traverse the Newick tree and add events everytime you find more clades on a branch.
-def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events, dupProb, dup_p, lossProb, loss_p, invProb, inv_p, subProb, transProb, trans_p):
+def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events, dupProb, dup_p, lossProb, loss_p, invProb, inv_p, subProb, transProb, trans_p, equal):
     global probDup
     global dup_pValue
     global probLoss
@@ -124,6 +125,8 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     
     global testFolder
     testFolder = testSetDir
+    global equalEvents
+    equalEvents = equal
 
     probDup = dupProb
     dup_pValue = dup_p
@@ -255,9 +258,14 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 #    print ""
 
     count = 0
+    rand = 0.10
     while count < numEvents:
         newEvent = True
-        rand = random.random()
+        
+        if not equalEvents:
+            rand = random.random()
+        else:
+            rand = (rand + 0.25) % 1.0
 
         if rand < probDup:
             event, eventRange, genes, prevEventRange, sectionReversed = performDuplication(currentBefore, currentAfter, dup_pValue)
@@ -276,19 +284,25 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
             else:
                 totalLosses[len(genes)] = 1
         elif rand < probDup + probLoss + probInv:
-            if random.random() < invMultiplier:
+            if not equalEvents:
+                if random.random() < invMultiplier:
+                    event, eventRange, genes, size = performInversion(currentBefore, currentAfter, inv_pValue)
+                    inversionEvents.append(event)
+                    invMultiplier *= 0.5
+                else:
+                    newEvent = False
+                    count -= 1
+            else:
                 event, eventRange, genes, size = performInversion(currentBefore, currentAfter, inv_pValue)
                 inversionEvents.append(event)
-                invMultiplier *= 0.5
-
+                
+            if newEvent:
                 if size in distribInversions:
                     distribInversions[size] += 1
                 else:
                     distribInversions[size] = 1
                 totalInversions += 1
-            else:
-                newEvent = False
-                count -= 1
+                
         elif rand < probDup + probLoss + probInv + probSub:
             event, eventRange, genes = performSubstitution(currentBefore, currentAfter)
             substitutionEvents.append(event)

@@ -33,13 +33,17 @@ def main():
     global testFolder
     
     cherryTree = False
+    equalEvents = False
     if len(sys.argv) < 3:
         print "WARNING: Must provide a file for testing. Exiting..."
         sys.exit(0)
     
     if len(sys.argv) == 5:
-        if sys.argv[2] == "-c":
+        if 'c' in sys.argv[2]:
             cherryTree = True
+        if 'e' in sys.argv[2]:
+            equalEvents = True
+            
         numRounds = int(sys.argv[3])
         testFolder = sys.argv[4] + "/"
     elif len(sys.argv) == 4:
@@ -132,7 +136,7 @@ def main():
             
         for i in range(numRounds):
             testSetDir = testFolder + datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
-            generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue)
+            generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue, equalEvents)
 #            analyzeTree(tree, testSetDir)
 #            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
 #            os.system(appCommand)
