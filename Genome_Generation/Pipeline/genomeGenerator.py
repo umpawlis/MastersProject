@@ -59,13 +59,13 @@ class Event:
             event = ', '.join(gene + " " + str(index) for gene, index in zip(self.genes, self.range))
             event += ";"
             
-            if self.type == "T":
+            if self.type == "T" or self.type == "IT":
                 event += "|"
 
         return event
 
 class Node:
-    def __init__(self, before, after, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, branchEvents, lineageEvents, inversionBefores):
+    def __init__(self, before, after, parent, dupEvents, lossEvents, invEvents, subEvents, transEvents, invTransEvents, branchEvents, lineageEvents, inversionBefores):
         self.name = None
         self.before = before
         self.after = after
@@ -76,6 +76,7 @@ class Node:
         self.invEvents = invEvents
         self.subEvents = subEvents
         self.transEvents = transEvents
+        self.invTransEvents = invTransEvents
         self.branchEvents = branchEvents
         self.lineageEvents = lineageEvents
         self.inversionBefores = inversionBefores
@@ -101,7 +102,7 @@ class Node:
         outputFile.write("Deletion:%s\n" % (''.join(str(e) for e in self.lossEvents)))
         outputFile.write("Inversion:%s\n" % (''.join(str(e) for e in self.invEvents)))
         outputFile.write("Transposition:%s\n" % (''.join(str(e) for e in self.transEvents)))
-        outputFile.write("Inverted Transposition:\n") # % (self.invTransEvents)
+        outputFile.write("Inverted Transposition:%s\n" % (''.join(str(e) for e in self.invTransEvents)))
 
         # for k, v in sorted(totalLosses.items()):
         #     outputFile.write(" size: %s count: %s," % (str(k), str(v)))
@@ -134,9 +135,8 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     probTrans = transProb
     trans_pValue = trans_p
 
-#    if not os.path.exists(testSetDir):
-#    print testSetDir
-    os.makedirs(testFolder)
+    if not os.path.exists(testSetDir):
+        os.makedirs(testFolder)
 
     createAncestor(max(max_length, 15), num_operons)
 #    print "Ancestor:"
@@ -147,7 +147,7 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     sequenceFile.close()
     resetCounters()
 
-    root = Node(beforeTerminus, afterTerminus, None, "", "", "", "", "", None, None, None)
+    root = Node(beforeTerminus, afterTerminus, None, "", "", "", "", "", "", None, None, None)
 
 #    print('Reading in newick tree structure from file: %s...' % (treeStructure))
     newickTree = Phylo.read(treeStructure, 'newick')
@@ -240,6 +240,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
     inversionEvents = []
     substitutionEvents = []
     transpositionEvents = []
+    invertedTransEvents = []
     prevEventRange = []
     sectionReversed = False
     inversionBefores = []
@@ -294,13 +295,22 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 
         elif rand < probDup + probLoss + probInv + probSub + probTrans:
             event, eventRange, genes, prevEventRange, sectionReversed = performTransposition(currentBefore, currentAfter, trans_pValue)
-            transpositionEvents.append(event)
-
-            if len(genes) in distribTranspositions:
-                distribTranspositions[len(genes)] += 1
-            else:
-                distribTranspositions[len(genes)] = 1
-            totalTranspositions += 1
+            if event.type == "T":
+                transpositionEvents.append(event)
+    
+                if len(genes) in distribTranspositions:
+                    distribTranspositions[len(genes)] += 1
+                else:
+                    distribTranspositions[len(genes)] = 1
+                totalTranspositions += 1
+            elif event.type == "IT":
+                invertedTransEvents.append(event)
+                
+                if len(genes) in distribInvertedTrans:
+                    distribInvertedTrans[len(genes)] += 1
+                else:
+                    distribInvertedTrans[len(genes)] = 1
+                totalInvertedTrans += 1
 
         if newEvent:
             currentEvents.append(event)
@@ -316,7 +326,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 
         count += 1
 
-    currNode = Node(currentBefore, currentAfter, parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, branchEvents, currentEvents, inversionBefores)
+    currNode = Node(currentBefore, currentAfter, parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, invertedTransEvents, branchEvents, currentEvents, inversionBefores)
 
     if len(node.clades) > 0:
         left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode)
@@ -359,7 +369,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
         sequenceFile.close()
         eventsFile = open(completePath + "/events.txt", "w+")
         for eachEvent in currentEvents:
-            eventsFile.write(str(eachEvent) + "\n")
+            eventsFile.write(repr(eachEvent) + "\n")
         eventsFile.close()
 
         currNode.name = node.name
@@ -384,7 +394,7 @@ def calculateIndexes(before, after):
     return range(count)
 
 def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectionReversed = None):
-    overlap = checkOverlap(currIndexes, event.range, event.type)
+    overlap, overlapRange = checkOverlap(currIndexes, event.range, event.type)
 
     if event.type == "D":
         for index1 in prevEventRange:
@@ -406,7 +416,7 @@ def updateIndexes(event, origIndexes, currIndexes, prevEventRange = None, sectio
 
         for index1, index2 in zip(ordered, copyRange):
             currIndexes[index1] = index2
-    elif event.type == "T":
+    elif event.type == "T" or event.type == "IT":
 #        print prevEventRange
         ordered = getOrderedIndexes(currIndexes, prevEventRange)
         for i in range(len(currIndexes)):
@@ -454,7 +464,7 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
     for event in eventList:
 #        print newEvent.range
 #        print event
-        overlap = checkOverlap(event.range, newEvent.range, newEvent.type)
+        overlap, overlapRange = checkOverlap(event.range, newEvent.range, newEvent.type)
 
         if event.type != "L" or updateLosses:
             if newEvent.type == "D":
@@ -485,17 +495,26 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
             elif newEvent.type == "S":
                 if overlap and (len(overlap) == 1):
                     event.genes[overlap[0]] = newEvent.genes[0]
-            elif newEvent.type == "T":
-                prevOverlap = checkOverlap(prevEventRange, event.range, newEvent.type)
-                eventOverlap = checkOverlap(event.range, prevEventRange, newEvent.type)
+            elif newEvent.type == "T" or newEvent.type == "IT":
+                prevOverlap, overlapRange = checkOverlap(prevEventRange, event.range, newEvent.type)
+                eventOverlap, overlapRange = checkOverlap(event.range, prevEventRange, newEvent.type)
                 for i in range(len(event.range)):
                     if event.range[i] > prevEventRange[-1]:
                         event.range[i] = event.range[i] - len(prevEventRange)
                     if event.range[i] >= newEvent.range[0]:
-                        event.range[i] = event.range[i] + len(newEvent.range)
+                        if event.range[i] not in overlapRange:
+                            event.range[i] = event.range[i] + len(newEvent.range)
                 for index in eventOverlap:
                     for index2 in prevOverlap:
-                        if eventOverlap[index] == prevOverlap[index2]:
+#                        print "Prev Event Range"
+#                        print prevEventRange
+#                        print "Event range"
+#                        print event.range
+#                        print "Prev Event overlap"
+#                        print prevOverlap
+#                        print "Event overlap"
+#                        print eventOverlap
+                        if event.range[index] == prevEventRange[index2]:
                             event.range[index] = newEvent.range[index2]
                             break
             elif newEvent.type == "L":
@@ -508,15 +527,21 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
 
 def checkOverlap(range1, range2, eventType):
     overlapIndexes = []
+    overlapRange = []
 
     for i in range(len(range1)):
         if range1[i] in range2:
+#            if eventType == "T":
+#                print range1[i]
+#                print range2
             overlapIndexes.append(i)
+            overlapRange.append(range1[i])
         elif eventType == "I":
             if ((range2[0] <= range1[i]) and (range2[-1] >= range1[i])):
                 overlapIndexes.append(i)
+                overlapRange.append(range1[i])
 
-    return overlapIndexes
+    return overlapIndexes, overlapRange
 
 def getTerminusIndex(before):
     index = 1
@@ -620,17 +645,21 @@ def performTransposition(before, after, p):
     else:
         genome = after
         targetBefore = False
-
+        
+#    print transSection
+    eventType = "T"
     if fromBefore and not targetBefore:
         transSection.reverse()
         sectionReversed = True
+        eventType = "IT"
     elif not fromBefore and targetBefore:
         transSection.reverse()
         sectionReversed = True
+        eventType = "IT"
 
     targetIndex = random.randint(0, len(genome)-1)
     targetPos = 0
-
+    
     if isinstance(genome[targetIndex], list):
         # print "target in list"
         operon = genome[targetIndex]
@@ -672,7 +701,6 @@ def performTransposition(before, after, p):
 #    print formatGenome(before, after)
 #    print ""
 
-    eventType = "T"
     branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
     return branchEvent, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex), sectionReversed
 
@@ -1078,3 +1106,6 @@ def createFile(fileName, newickTree):
     file = open(fileName, "w+")
     Phylo.write(newickTree,fileName, 'newick') #Write the tree to the output file
     file.close()
+    
+if __name__ == '__main__':
+    generateTests("generatorTesting", "tree2Leaf.dnd", 25, 3, 3, 0.0, 0.7, 0.0, 0.7, 0.0, 0.7, 0.0, 1.0, 0.7)

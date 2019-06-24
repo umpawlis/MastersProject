@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 
 ### CONSTANTS ###
 DUPLOSS_PATH = "2-SPP/"  ##I recommend using an absolute path
@@ -36,8 +37,9 @@ def cleanUpGenomes(genome):
         op = negOpSplit[i][:negOpSplit[i].index(']')]  #slice of the operon
         op = op.replace(",", ",-")
         op = '-' + op
+        singletons = negOpSplit[i][negOpSplit[i].index(']') + 1:]
         #print "op" + str(i) + " = " + op
-        negOpSplit[i] = op
+        negOpSplit[i] = op + singletons
         
     genome = ",".join(negOpSplit)
     genome = genome.replace("[", "")
@@ -58,19 +60,29 @@ def compareAnc(inferred, real, outputPath):
     duplossOutFile = outputPath + "compareAnc-duploss.out"
     count = 0
     
-    tryAgain = True
-    while tryAgain and count < 2:
-        #Running Duploss
-        command = "python " + DUPLOSS_PATH + DUPLOSS_EXEC + " -eiqdt " + inferred + " " + real + " > " + duplossOutFile
-        os.system(command)
-        
-        Tp, Fp, Fn, tryAgain = getTpFpFn(duplossOutFile)
-        print "True positive numbers"
-        print Tp
-        print Fp
-        print Fn
+#    tryAgain = True
+#    while tryAgain and count < 2:
+    #Running Duploss
+    command = "python " + DUPLOSS_PATH + DUPLOSS_EXEC + " -eiqdt " + inferred + " " + real + " > " + duplossOutFile
+    os.system(command)
+    
+    Tp, Fp, Fn, tryAgain = getTpFpFn(duplossOutFile)
+#    print "True positive numbers"
+#    print Tp
+#    print Fp
+#    print Fn
+    count += 1
+    
+    if tryAgain:
+        outputFile = open(duplossOutFile, "w+")
+        p = subprocess.Popen(['python', DUPLOSS_PATH + DUPLOSS_EXEC, '-eiqdt', inferred, real], stdout=outputFile).wait()
+#        out, err = p.communicate()
+#        with open(duplossOutFile, "w+") as f:
+#            f.write(out)
+#            f.write(err)
+        outputFile.close()
         count += 1
-        print "Count: " + str(count)
+#    print "Count: " + str(count)
     
     if Tp != 0:
         recall = Tp / (Tp + Fn)
@@ -144,11 +156,11 @@ if __name__ == '__main__':
 #    real = ""
 #    inf = ""
     
-    real = "[o],Arg_AGG,Gly_GGA,Gly_GGU,Val_GUA,Ile_AUA,Ala_GCC,Ser_UCG,Ser_UCA,Asp_GAC,Ser_UCU,Ser_UCA,Gln_CAA,Ile_AUA,Ala_GCG,Gly_GGC,Phe_UUC,Tyr_UAU,Gly_GGG,Ala_GCA,Asp_GAU,Ser_UCU,Phe_UUU,Leu_CUU,Ile_AUU,16S,23S,5S,Ser_UCA,16S,23S,5S,Ala_GCA,Gly_GGC,Ala_GCA,Ser_UCU,Val_GUC,Ala_GCG,Leu_UUG,Leu_CUU,Pro_CCG,Ile_AUU,Val_GUG,Gly_GGG,Ala_GCG,Ile_AUA,-Ser_UCU,-5S,-23S,-16S,-Leu_UUG,-Ala_GCA,-Val_GUU,-Arg_AGA,-Ser_AGU,-Cys_UGU,-Gly_GGA,-Arg_CGC,-Ile_AUA,-Ser_UCA,-Arg_CGG,-Tyr_UAC,-Pro_CCU,-Trp_UGG,-Pro_CCC,-Gln_CAA,-Ala_GCC,-Leu_UUG,-Leu_CUC,-5S,-23S,-16S,-Arg_CGC,-His_CAU,-Gly_GGG,-Arg_CGA,-Arg_AGA,-Leu_UUA,-HIs_CAC,-Arg_CGU,-Ala_GCG,-Arg_CGC,-5S,-23S,-16S"
-    inf = "[o],Arg_AGG,Gly_GGA,Gly_GGU,Val_GUA,Ile_AUA,Ala_GCC,Ser_UCG,Ser_UCA,Asp_GAC,Ser_UCU,Ser_UCA,Gly_GGA,Ala_GCG,Gly_GGC,Gln_CAA,Ile_AUA,Phe_UUC,Tyr_UAU,Gly_GGG,Ala_GCA,Asp_GAU,Ser_UCU,Leu_CUU,Ile_AUU,16S,23S,5S,Phe_UUU,Ser_UCA,16S,23S,5S,Ala_GCA,Gly_GGC,Ala_GCA,Ser_UCU,Val_GUC,Ala_GCG,Leu_UUG,Leu_CUU,Pro_CCG,Ile_AUU,Val_GUG,Gly_GGG,16S,23S,5S,[t],-Leu_UUG,-Ala_GCA,-Val_GUU,-Arg_AGA,-Ile_AUA,-Ala_GCG,-Ser_AGU,-Cys_UGU,-Gly_GGA,-Arg_CGC,-Ile_AUA,-Ser_UCA,-Arg_CGG,-Tyr_UAC,-Pro_CCU,-Trp_UGG,-Pro_CCC,-Gln_CAA,-Ala_GCC,-Leu_UUG,-Leu_CUC,-5S,-23S,-16S,-Arg_CGC,-His_CAU,-Gly_GGG,-Arg_CGA,-Arg_AGA,-Leu_UUA,-HIs_CAC,-Arg_CGU,-Ala_GCG,-Arg_CGC,-5S,-23S,-16S"
+    real = "[o],Pro_CCU,Pro_CCU,Ala_GCU,Ala_GCA,Gly_GGG,Ser_AGC,Cys_UGC,Arg_CGA,Ile_AUU,Arg_AGA,Lys_AAA,Pro_CCA,Arg_AGG,Arg_AGG,16S,23S,5S,Gly_GGU,Thr_ACA,Ser_AGU,Pro_CCG,Gly_GGC,16S,23S,5S,16S,23S,5S,Leu_CUC,Met_AUG,Ser_UCC,Ile_AUU,Leu_CUC,Gln_CAG,Ser_AGC,Phe_UUU,Ser_AGC,Arg_AGG,HIs_CAC,Phe_UUC,Asp_GAU,Gln_CAG,Val_GUG,Leu_CUA,Tyr_UAU,-Cys_UGC,-Thr_ACA,-Thr_ACG,-Val_GUA,-5S,-23S,-16S,-Cys_UGU,-HIs_CAC,-Val_GUG,-5S,-23S,-16S,-5S,-23S,-16S,-Val_GUA,-Val_GUU,-Gln_CAG,-Thr_ACA,-Gly_GGU,-Lys_AAG,-Ile_AUU,-Phe_UUU,-5S,-23S,-16S,-Tyr_UAC,-HIs_CAC,-5S,-23S,-16S,-Asp_GAU,-Leu_CUG,-Ile_AUU,-Ser_UCU,-Ser_AGC"
+    inf = "[o],Pro_CCU,Pro_CCU,Ala_GCU,Ala_GCA,Gly_GGG,Ser_AGC,Cys_UGC,Arg_CGA,Ile_AUU,Arg_AGA,Lys_AAA,Pro_CCA,Arg_AGG,Arg_AGG,16S,23S,5S,Gly_GGU,Thr_ACA,Ser_AGU,Pro_CCG,Gly_GGC,16S,23S,5S,16S,23S,5S,Leu_CUC,Met_AUG,Ser_UCC,Ile_AUU,Leu_CUC,Gln_CAG,Ser_AGC,Phe_UUU,Ser_AGC,Arg_AGG,HIs_CAC,Phe_UUC,Asp_GAU,Gln_CAG,Val_GUG,Leu_CUA,Tyr_UAU,[t],-Phe_UUU,-Cys_UGC,-Thr_ACA,-Thr_ACG,-Val_GUA,-5S,-23S,-16S,-Cys_UGU,-HIs_CAC,-Val_GUG,-5S,-23S,-16S,-5S,-23S,-16S,-Val_GUA,-Val_GUU,-Gln_CAG,-Thr_ACA,-Lys_AAG,-Ile_AUU,-Phe_UUU,-5S,-23S,-16S,-Tyr_UAC,-HIs_CAC,-5S,-23S,-16S,-Asp_GAU,-Leu_CUG,-Ile_AUU,-Ser_UCU,-Ser_AGC"
         
     recall, precision, fMeasure = compareAnc(inf, real, "")
     
-    print "recall = " + str(recall)
-    print "precision = " + str(precision)
-    print "f-measure = " + str(fMeasure)
+#    print "recall = " + str(recall)
+#    print "precision = " + str(precision)
+#    print "f-measure = " + str(fMeasure)

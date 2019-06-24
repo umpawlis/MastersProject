@@ -226,26 +226,26 @@ def main():
         totalOrthoFMeasureList.append(orthoFMeasureList)
         totalDupFMeasureList.append(dupFMeasureList)
         
-    outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
-    outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
-    outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
-    outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
-    
-    outputData(totalStrictAccuracyAveragesList, testFolder + "strictAccuracyData.txt")
-    outputData(totalRelaxedAccuracyAveragesList, testFolder + "relaxedAccuracyData.txt")
-    
-    outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
-    outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
-    outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
-    
-    
-    graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
-    graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
-    if cherryTree:
-        graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
-        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
-    else:
-        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
+        outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
+        outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
+        outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
+        outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
+        
+        outputData(totalStrictAccuracyAveragesList, testFolder + "strictAccuracyData.txt")
+        outputData(totalRelaxedAccuracyAveragesList, testFolder + "relaxedAccuracyData.txt")
+        
+        outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
+        outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
+        outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
+        
+        
+        graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
+        graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
+        if cherryTree:
+            graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
+            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
+        else:
+            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
         
     if testFolder:
         copy(testFile, testFolder)
