@@ -51,20 +51,21 @@ def createAncestor(strain1, strain2, neighborStrain):
     
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
     neighborCopy = copy.deepcopy(neighborStrain) #Do a deep copy of the neighbor as well b/c we don't want to store those comparisons in the strain either
-
-    print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
+    if globals.printToConsole:
+        print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
     globals.enableDeletionReversions = True #Only do the backtrace between these two strains!
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
     globals.enableDeletionReversions = False
-    
-    print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
+    if globals.printToConsole:
+        print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
-    createDotPlot(points, strain1, strain2, testFileName)
+    if globals.printToConsole:
+        createDotPlot(points, strain1, strain2, testFileName)
 
-    createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
-    createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
-    createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
-    createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
+        createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
+        createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
+        createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
+        createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
 
     #Compute and output the inverted, transposed, and inverted transposed regions
     FCR, TR, IR, ITR = determineRegions(points)
@@ -76,10 +77,11 @@ def createAncestor(strain1, strain2, neighborStrain):
     
     #Compare one of the siblings to the neighbor if one exists
     if neighborCopy != None:
-        print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        if globals.printToConsole:
+            print('Now performing a series of alignments between the nighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
         neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor = constructEvents(strain1Copy, neighborCopy)
-
-        print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
+        if globals.printToConsole:
+            print('Constructing dot plot for the neighboring strains: %s, %s' % (strain1Copy.name, neighborCopy.name))
         neighborPoints, neighborLostPoints = normalizeIndexesForDotPlot(neighborEvents, duplicatesStrain1Copy, duplicatesStrainNeighbor, strain1Copy, neighborCopy)
         #createDotPlot(neighborPoints, strain1Copy, neighborCopy)
 
@@ -89,9 +91,11 @@ def createAncestor(strain1, strain2, neighborStrain):
         ancestralFragments, strain1, strain2 = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints, strain1, strain2)
     else:
         if neighborCopy == None:
-            print('No neighbor found!')
+            if globals.printToConsole:
+                print('No neighbor found!')
         elif len(TR) == 0 and len(IR) == 0 or len(ITR) == 0:
-            print('No inverted or transposed regions detected!!')
+            if globals.printToConsole:
+                print('No inverted or transposed regions detected!!')
         ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
     
     #Computes the total number of inversions, transpositions, inverted transpositions
@@ -116,12 +120,13 @@ def createAncestor(strain1, strain2, neighborStrain):
     #outputStrainDetailsToFile(outputFileName, strain2)
     
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
-    print(strain1.name)
-    for frag in strain1.genomeFragments:
-        print(frag.originalSequence)
-    print(strain2.name)
-    for frag in strain2.genomeFragments:
-        print(frag.originalSequence)
+    if globals.printToConsole:
+        print(strain1.name)
+        for frag in strain1.genomeFragments:
+            print(frag.originalSequence)
+        print(strain2.name)
+        for frag in strain2.genomeFragments:
+            print(frag.originalSequence)
     
     return ancestor
 
@@ -163,36 +168,39 @@ def constructEvents(strain1, strain2):
     lossEvents1 = []
     lossEvents2 = []
     newEvents = []
-    
-    print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
+    if globals.printToConsole:
+        print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
     events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
 
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
-    print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+    if globals.printToConsole:
+        print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 
     #Local Alignment operation
-    if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-        print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
-        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
-        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
-
-        numRemainingOperons1 = countRemainingOperons(coverageTracker1)
-        numRemainingOperons2 = countRemainingOperons(coverageTracker2)
-        print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
-        if len(localAlignmentEvents) > 0:
-            events.extend(localAlignmentEvents)
+#    if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
+#        print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
+#        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
+#        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+#
+#        numRemainingOperons1 = countRemainingOperons(coverageTracker1)
+#        numRemainingOperons2 = countRemainingOperons(coverageTracker2)
+#        print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+#        if len(localAlignmentEvents) > 0:
+#            events.extend(localAlignmentEvents)
 
     #Self Global Alignment
     if numRemainingOperons1 > 0:
         #Remember to insert the deletions into the sibling (that's how we defined it)
         duplicationEvents1, lossEvents1, coverageTracker1, strain1, strain2 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
-        print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
+        if globals.printToConsole:
+            print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
         
     if numRemainingOperons2 > 0:
         #Remember to insert the deletions into the sibling (that's how we defined it)
         duplicationEvents2, lossEvents2, coverageTracker2, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2, strain1)
-        print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
+        if globals.printToConsole:
+            print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
     
     #Try reducing the number of singleton deletions
     if len(lossEvents1) > 0 or len(lossEvents2) > 0:
@@ -208,7 +216,8 @@ def constructEvents(strain1, strain2):
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
     if numRemainingOperons1 > 0 or numRemainingOperons2 > 0:
-        print('Error! There are unmarked operons remaining!')
+        if globals.printToConsole:
+            print('Error! There are unmarked operons remaining!')
 
     return events, duplicationEvents1, duplicationEvents2
 ######################################################
@@ -229,7 +238,8 @@ def getNeighborStrain(currNode):
         if (neighbor == None and not('Ancestor' in currNode.name)):
             neighbor = createStrainFromFile(currNode)
             if neighbor != None:
-                print('Successfully created new strain from data file while looking for neighbor: %s' % (neighbor.name))
+                if globals.printToConsole:
+                    print('Successfully created new strain from data file while looking for neighbor: %s' % (neighbor.name))
                 strains.append(neighbor)
 
     if neighbor == None and len(currNode.clades) > 0:
@@ -253,9 +263,11 @@ def createStrainFromFile(node):
             genome = open(testFileName + node.name + '/sequence.txt', 'r').read()
             strain = processSequence(node.name, genome)
         else:
-            print('No sequence file found for node: %s' % node.name)
+            if globals.printToConsole:
+                print('No sequence file found for node: %s' % node.name)
     else:
-        print('No directory found for node: %s' % node.name)
+        if globals.printToConsole:
+            print('No directory found for node: %s' % node.name)
 
     return strain
 
@@ -282,7 +294,8 @@ def computeLineageCost(node, targetName, lineageCost):
             count = foundStrain.substitutionDetails.count(';')
             newLineageCost.totalSubstitutions += count
         if node.name == targetName: #Check if this is our target
-            print('Found  node in newick tree! The found node is: %s' % (targetName))
+            if globals.printToConsole:
+                print('Found  node in newick tree! The found node is: %s' % (targetName))
             return newLineageCost
         
     if len(node.clades) > 0:
@@ -336,18 +349,21 @@ def traverseNewickTree(node, parentNode):
         foundStrain = next(filteredList, None)
 
         if (foundStrain != None):
-            print('Retrieving strain from strains list: %s' % (foundStrain.name))
+            if globals.printToConsole:
+                print('Retrieving strain from strains list: %s' % (foundStrain.name))
             return foundStrain
         else:
             newStrain = createStrainFromFile(node)
             if newStrain != None:
-                print('Successfully created the following strain from data file: %s' % (newStrain.name))
+                if globals.printToConsole:
+                    print('Successfully created the following strain from data file: %s' % (newStrain.name))
                 strains.append(newStrain)
                 return newStrain
 
     #Case 1: Both siblings exist therefore we need to construct their ancestor
     if leftSibling != None and rightSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0 and rightSibling.genomeFragments != None and len(rightSibling.genomeFragments) > 0:
-        print('The following siblings will be compared, %s, %s...' % (leftSibling.name, rightSibling.name))
+        if globals.printToConsole:
+            print('The following siblings will be compared, %s, %s...' % (leftSibling.name, rightSibling.name))
 
         neighborStrain = None #Neighbor strain
         if parentNode != None:
@@ -359,9 +375,11 @@ def traverseNewickTree(node, parentNode):
             node.name = None #Put the name back the way it was so we don't mess up anything
 
         if neighborStrain != None:
-            print('In addition the following neighbor will be used during the comparison, %s' % (neighborStrain.name))
+            if globals.printToConsole:
+                print('In addition the following neighbor will be used during the comparison, %s' % (neighborStrain.name))
         else:
-            print('No neighbor found!')
+            if globals.printToConsole:
+                print('No neighbor found!')
 
         ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
         node.name = ancestor.name
@@ -382,6 +400,8 @@ def traverseNewickTree(node, parentNode):
 #                       main
 ######################################################
 def main():
+    globals.initialize() #Initialize the globals file
+    
     global newickFileName
     global outputFileName
     global testFileName
@@ -397,16 +417,19 @@ def main():
     print('Starting application...')
     startTime = time.time()
     
-    print('Reading newick tree from file: %s...' % (newickFileName))
+    if globals.printToConsole:
+        print('Reading newick tree from file: %s...' % (newickFileName))
     newickTree = Phylo.read(newickFileName, 'newick')
-    Phylo.draw(newickTree)
+    if globals.printToConsole:
+        Phylo.draw(newickTree)
     
-    globals.initialize() #Initialize the globals file
+    
     globals.strains = strains #Assign pointer to the global strains array so we can access it anywhere
     createFile(outputFileName, newickTree) #Creates file where data will be output
     
     #Traverses the newick tree recursively reconstructing ancestral genomes
-    print('Traversing newick tree...')
+    if globals.printToConsole:
+        print('Traversing newick tree...')
     result = traverseNewickTree(newickTree.clade, None)
     
     #Output ancestral genome to console
@@ -423,8 +446,9 @@ def main():
     with open(testFileName + "/appRoot.txt", "w+") as f:
         f.write(rootGenome)
     
-    #Output newick tree after the ancestors have been added to it
-    Phylo.draw(newickTree)
+    if globals.printToConsole:
+        #Output newick tree after the ancestors have been added to it
+        Phylo.draw(newickTree)
     
     #Need to traverse tree to ouput appropriate content to file
     newickTree.clade.name = '' #Make sure that the output for the root is not output
