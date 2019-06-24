@@ -1,6 +1,7 @@
 from genomeGenerator import generateTests
 from CompareResultsService import readFiles
 from CompareAncestors import compareAnc
+from shutil import copy
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -17,6 +18,8 @@ probSub = 0.0
 probTrans = 0.0
 trans_pValue = 0.0
 
+testFolder = ""
+
 def main():
     global probDup
     global dup_pValue
@@ -27,13 +30,19 @@ def main():
     global probSub
     global probTrans
     global trans_pValue
+    global testFolder
     
     cherryTree = False
     if len(sys.argv) < 3:
         print "WARNING: Must provide a file for testing. Exiting..."
         sys.exit(0)
-        
-    if len(sys.argv) == 4:
+    
+    if len(sys.argv) == 5:
+        if sys.argv[2] == "-c":
+            cherryTree = True
+        numRounds = int(sys.argv[3])
+        testFolder = sys.argv[4] + "/"
+    elif len(sys.argv) == 4:
         if sys.argv[2] == "-c":
             cherryTree = True
         numRounds = int(sys.argv[3])
@@ -54,6 +63,7 @@ def main():
     totalEventsAppAveragesList = []
     totalEventsGenAveragesList = []
     totalEventsOrthoAveragesList = []
+    totalEventsDupAveragesList = []
     totalStrictAccuracyAveragesList = []
     totalRelaxedAccuracyAveragesList = []
     strictEventAccuracy = 0.0
@@ -61,16 +71,20 @@ def main():
     
     totalAppFMeasureList = []
     totalOrthoFMeasureList = []
+    totalDupFMeasureList = []
     
     for test in tests:
-        numEventsOrthoAveragesList = []
         numEventsAppAveragesList = []
         numEventsGenAveragesList = []
+        numEventsOrthoAveragesList = []
+        numEventsDupAveragesList = []
+        
         strictAccuracyAveragesList = []
         relaxedAccuracyAveragesList = []
         
         appFMeasureList = []
         orthoFMeasureList = []
+        dupFMeasureList = []
         
         args = test.strip().split()
         count = 4
@@ -117,7 +131,7 @@ def main():
             sys.exit(0)
             
         for i in range(numRounds):
-            testSetDir = datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
+            testSetDir = testFolder + datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
             generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue)
 #            analyzeTree(tree, testSetDir)
 #            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
@@ -160,10 +174,22 @@ def main():
                     while line:
                         splitted = line.split("ost = ")
                         if len(splitted) > 1:
-                            cost = float(splitted[1])
+                            orthoCost = float(splitted[1])
                             line = f.readline()
                         if line.strip() == ">Ancestor:":
                             orthoAncestor = f.readline().strip()
+                            break
+                        line = f.readline()
+                        
+                with open(duplossOutFile, "r") as f:
+                    line = f.readline()
+                    while line:
+                        splitted = line.split("ost = ")
+                        if len(splitted) > 1:
+                            dupCost = float(splitted[1])
+                            line = f.readline()
+                        if line.strip() == ">Ancestor":
+                            dupAncestor = f.readline().strip()
                             break
                         line = f.readline()
                         
@@ -173,45 +199,58 @@ def main():
                 with open(genRootFile, "r") as f:
                     genAncestor = f.readline()
                 
-                numEventsOrthoAveragesList.append(cost)
-                print cost
+                numEventsOrthoAveragesList.append(orthoCost)
+                numEventsDupAveragesList.append(dupCost)
+                print orthoCost
+                print dupCost
                 print orthoAncestor
                 print genAncestor
                 
                 orthoRecall, orthoPrecision, orthofMeasure = compareAnc(orthoAncestor, genAncestor, testSetDir + "/ortho-")
                 appRecall, appPrecision, appfMeasure = compareAnc(appAncestor, genAncestor, testSetDir + "/app-")
+                dupRecall, dupPrecision, dupfMeasure = compareAnc(dupAncestor, genAncestor, testSetDir + "/dup-")
                 appFMeasureList.append(appfMeasure)
                 orthoFMeasureList.append(orthofMeasure)
+                dupFMeasureList.append(dupfMeasure)
                 
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
         totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
+        totalEventsDupAveragesList.append(numEventsDupAveragesList)
+        
         totalStrictAccuracyAveragesList.append(strictAccuracyAveragesList)
         totalRelaxedAccuracyAveragesList.append(relaxedAccuracyAveragesList)
         
         totalAppFMeasureList.append(appFMeasureList)
         totalOrthoFMeasureList.append(orthoFMeasureList)
-        print testSetDir
+        totalDupFMeasureList.append(dupFMeasureList)
         
-    outputData(totalEventsAppAveragesList, "appEventsData.txt")
-    outputData(totalEventsGenAveragesList, "genEventsData.txt")
-    outputData(totalEventsOrthoAveragesList, "orthoEventsData.txt")
-    outputData(totalStrictAccuracyAveragesList, "strictAccuracyData.txt")
-    outputData(totalRelaxedAccuracyAveragesList, "relaxedAccuracyData.txt")
-    outputData(totalAppFMeasureList, "appFMeasureData.txt")
-    outputData(totalOrthoFMeasureList, "orthoFMeasureData.txt")
+    outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
+    outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
+    outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
+    outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
+    
+    outputData(totalStrictAccuracyAveragesList, testFolder + "strictAccuracyData.txt")
+    outputData(totalRelaxedAccuracyAveragesList, testFolder + "relaxedAccuracyData.txt")
+    
+    outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
+    outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
+    outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
     
     
     graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
     graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
     if cherryTree:
-        graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList)
-        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList)
+        graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
+        graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
     else:
         graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
+        
+    if testFolder:
+        copy(testFile, testFolder)
 
-def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None):
+def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None):
     if graphType == "Events":
         title = "Average Number of Events"
         yAxisTitle = "Number of Events"
@@ -224,6 +263,8 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     elif graphType == "fMeasure":
         title = "Average F-measure"
         yAxisTitle = "F-measure"
+        
+    labels = []
         
     f = plt.figure()
     plt.title(title)
@@ -241,6 +282,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
         average = currentSum / len(averagesList)
         averages.append(average)
     line1, = plt.plot(xAxis, averages, 'o-', label='Application')
+    labels.append(line1)
     
     averages2 = []
     if totalAverages2 is not None:
@@ -253,9 +295,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             average = currentSum / len(averagesList)
             averages2.append(average)
         line2, = plt.plot(xAxis, averages2, 'r^-', label='Generator')
-        plt.legend(handles=[line1, line2])
-    else:
-        plt.legend(handles=[line1])
+        labels.append(line2)
         
     if totalAverages3 is not None:
         averages3 = []
@@ -267,14 +307,28 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             
             average = currentSum / len(averagesList)
             averages3.append(average)
-        line2, = plt.plot(xAxis, averages3, 'gP-', label='OrthoAlign')
-        plt.legend(handles=[line1, line2])
-    else:
-        plt.legend(handles=[line1])
+        line3, = plt.plot(xAxis, averages3, 'gP-', label='OrthoAlign')
+        labels.append(line3)
+        
+        
+    if totalAverages4 is not None:
+        averages4 = []
+        print totalAverages4
+        for averagesList in totalAverages4:
+            currentSum = 0.0    
+            for average in averagesList:
+                currentSum += average
+            
+            average = currentSum / len(averagesList)
+            averages4.append(average)
+        line4, = plt.plot(xAxis, averages4, 'mX-', label='DupLoss')
+        labels.append(line4)
+        
+    plt.legend(handles=labels)
         
     print averages
     plt.show()
-    f.savefig(graphType + ".pdf", bbox_inches='tight')
+    f.savefig(testFolder + graphType + ".pdf", bbox_inches='tight')
     
 def outputData(totalAverages, fileName):
     with open(fileName, 'w+') as f:

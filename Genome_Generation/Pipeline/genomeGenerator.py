@@ -58,6 +58,9 @@ class Event:
             #     event += gene + " " + str(index) + ","
             event = ', '.join(gene + " " + str(index) for gene, index in zip(self.genes, self.range))
             event += ";"
+            
+            if self.type == "T":
+                event += "|"
 
         return event
 
@@ -481,7 +484,7 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
                         event.range[index] = terminusIndex + diff
             elif newEvent.type == "S":
                 if overlap and (len(overlap) == 1):
-                    event.gene[overlap[0]] = newEvent.gene[0]
+                    event.genes[overlap[0]] = newEvent.genes[0]
             elif newEvent.type == "T":
                 prevOverlap = checkOverlap(prevEventRange, event.range, newEvent.type)
                 eventOverlap = checkOverlap(event.range, prevEventRange, newEvent.type)
