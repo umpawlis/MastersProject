@@ -16,10 +16,8 @@ import copy
 # Description: Performs a self global alignment to identify duplicate operons
 ######################################################
 def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
-    print('Performing self-global alignment on strain: %s' %(strain.name))
-    
-    if strain.name == 'NC_015634':
-        print('BREAK')
+    if globals.printToConsole:
+        print('Performing self-global alignment on strain: %s' %(strain.name))
         
     lossEvents = []
     duplicationEvents = []
@@ -110,10 +108,10 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                 
                 #Increment the duplicate counter with size of operon since the operon is a duplication
                 #strain = addDuplicationEventsToStrain(strain, [len(bestEvent.fragmentDetails1.sequence)], duplicationDetails)
-                
-                print('\n&&&&&& Self Global Alignment &&&&&')
-                print(bestEvent.toString())
-                print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+                if globals.printToConsole:
+                    print('\n&&&&&& Self Global Alignment &&&&&')
+                    print(bestEvent.toString())
+                    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
         
             else: #No match was found therefore it must have been lost in the sibling therefore we include it in the ancestor
                 coverageTracker[i] = True
@@ -144,10 +142,10 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
 #                
 #                #Increment the loss counter with the size of the operon since the operon is a loss
 #                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
-                
-                print('\n&&&&&& Self Global Alignment &&&&&')
-                print(event.toString())
-                print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
+                if globals.printToConsole:
+                    print('\n&&&&&& Self Global Alignment &&&&&')
+                    print(event.toString())
+                    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
                 
     return duplicationEvents, lossEvents, coverageTracker, strain, sibling
 

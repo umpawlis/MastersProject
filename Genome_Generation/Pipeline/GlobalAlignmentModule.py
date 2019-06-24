@@ -34,8 +34,8 @@ def findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageT
 # Description: Creates two matrices. a score matrix and a event matrix
 ######################################################
 def computeGlobalAlignmentMatrix(strain1, strain2):
-
-    print('Computing global alignment matrix for: {%s, %s}...' % (strain1.name, strain2.name))
+    if globals.printToConsole:
+        print('Computing global alignment matrix for: {%s, %s}...' % (strain1.name, strain2.name))
 
     #initialize the matrix to store the global alignment scores
     globalAlignmentMatrix = [[ 0.0 for x in range(0, len(strain2.genomeFragments))] for y in range(0, len(strain1.genomeFragments))]
@@ -141,7 +141,8 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
     ####################################
     ##End of Calculations
     ####################################
-    print ('Done computing global alignment matrix for {%s, %s}\n' % (strain1.name, strain2.name))
+    if globals.printToConsole:
+        print ('Done computing global alignment matrix for {%s, %s}\n' % (strain1.name, strain2.name))
     #outputResultsToExcel(strain1Name, strain2Name, firstOperonList, secondOperonList, globalAlignmentMatrix)
 
     return globalAlignmentMatrix, eventMatrix
@@ -499,7 +500,8 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
                         
         if bestEvent != None: #Good match was found so don't increment score incase more are found
             #We found an ortholog in the global alignment matrix
-            print('\n##### Global Alignment #####')
+            if globals.printToConsole:
+                print('\n##### Global Alignment #####')
             globals.trackingId += 1
             globalAlignmentCounter+=1
 
@@ -539,11 +541,12 @@ def scanGlobalAlignmentMatrixForOrthologs(globalAlignmentMatrix, eventMatrix, co
 
                 strain1.addSubstitutionDetails(substitutionDescription1)
                 strain2.addSubstitutionDetails(substitutionDescription2)
-
-            print(event.toString())
+            if globals.printToConsole:
+                print(event.toString())
             #Add the event to the tracking events list
             events.append(event)
-            print('###################################\n')     
+            if globals.printToConsole:
+                print('###################################\n')     
         else:
             currentScoreSelected += (-0.5) #No good match was found so move on
     return events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2
@@ -689,7 +692,8 @@ def removeGenesFromStrains(deletionList):
                             newDeletionDescription += description + ';' #Just leave it the way it is and put it back
                     strain.deletionDetails = newDeletionDescription #Insert the new deletion details into the strain
                 else:
-                    print('Error! Unable to find the following strain %s!' % (name))
+                    if globals.printToConsole:
+                        print('Error! Unable to find the following strain %s!' % (name))
 
 ######################################################
 # operonHadGenesRemoved
@@ -756,7 +760,8 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
                     newLine = inversionTranspositionIndexUpdate(start, ancestor.invertedTranspositionDetails.replace('Inverted Transposition:', ''), 1)
                     ancestor.invertedTranspositionDetails = 'Inverted Transposition:' + newLine
                 else:
-                    print('Error! Something went wrong because we failed to find ancestor %s!' % (ancestralName))   
+                    if globals.printToConsole:
+                        print('Error! Something went wrong because we failed to find ancestor %s!' % (ancestralName))   
                     
 ######################################################
 # constructStatement
@@ -767,7 +772,8 @@ def constructStatement(indexes, genes, fragmentDetails):
     temp = ''
 
     if len(indexes) != len(genes):
-        print('Error! These two arrays should be the same length for Codon Mismatch Substitution parallel arrays')
+        if globals.printToConsole:
+            print('Error! These two arrays should be the same length for Codon Mismatch Substitution parallel arrays')
     else:
         for x in range(0, len(indexes)):
             position = indexes[x]
@@ -794,22 +800,24 @@ def reconstructOperonSequence(event, strain1, strain2):
     operon2Gaps = event.operon2Gaps
 
     if len(operon1Gaps) == 0 and len(operon2Gaps) == 0:
-        print('No differences detected between these two operons')
+        if globals.printToConsole:
+            print('No differences detected between these two operons')
         event.setAncestralOperonGeneSequence(ancestralOperon)
     else:
-        print('Differences detected between these two operons!')
+        if globals.printToConsole:
+            print('Differences detected between these two operons!')
 
         operon1GapIndexes = event.operon1GapIndexes
         operon2GapIndexes = event.operon2GapIndexes
         operon1GapPositions = event.operon1GapPositions
         operon2GapPositions = event.operon2GapPositions
-
-        print('These are the extra genes for operon 1: %s' %(operon1Gaps))
-        print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
-        print('These are the positions of the extra genes in operon 1: %s' %(operon1GapPositions))
-        print('These are the extra genes for operon 2: %s' %(operon2Gaps))
-        print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
-        print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
+        if globals.printToConsole:
+            print('These are the extra genes for operon 1: %s' %(operon1Gaps))
+            print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
+            print('These are the positions of the extra genes in operon 1: %s' %(operon1GapPositions))
+            print('These are the extra genes for operon 2: %s' %(operon2Gaps))
+            print('These are the indexes for extra genes in operon 2: %s' %(operon2GapIndexes))
+            print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
 
         #Step 1: Check if these extra genes are the result of a duplicate event within the alignment, remove them if they are
         operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
@@ -1090,10 +1098,11 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             del positions[startIndex:endIndex]
             startIndex = endIndex
             endIndex += windowSize
-            #For making sure everything is working
-            print('Gap sequence found! Removing gap sequence!')
-            print('This is the gap that was removed, %s' % (duplicationDetails))
-            print('This is the sequence the gap was found in, %s' % (sequence))
+            if globals.printToConsole:
+                #For making sure everything is working
+                print('Gap sequence found! Removing gap sequence!')
+                print('This is the gap that was removed, %s' % (duplicationDetails))
+                print('This is the sequence the gap was found in, %s' % (sequence))
         else:
             startIndex+=1
             endIndex+=1
@@ -1171,7 +1180,8 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                         singleton = event2.ancestralOperonGeneSequence[0]
                         operon = event1.ancestralOperonGeneSequence
                     if singleton in operon:
-                        print('\n##### Global Alignment (Reducing number of singletons operation)#####')
+                        if globals.printToConsole:
+                            print('\n##### Global Alignment (Reducing number of singletons operation)#####')
                         #Mark these two as orthologs
                         coverageTracker1[event1.fragmentDetails1.fragmentIndex] = True
                         coverageTracker2[event2.fragmentDetails1.fragmentIndex] = True
@@ -1204,8 +1214,9 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                             strain2.addSubstitutionDetails(substitutionDescription2)
                         #Add new event to list
                         newEvents.append(newEvent)
-                        print(newEvent.toString())
-                        print('###################################\n')
+                        if globals.printToConsole:
+                            print(newEvent.toString())
+                            print('###################################\n')
         
         #Step 3: Put the unmarked operons back in the loss lists
         #Only add loss details after we fail to map a singleton to an operon

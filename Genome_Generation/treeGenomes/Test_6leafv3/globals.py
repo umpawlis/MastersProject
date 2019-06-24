@@ -2,6 +2,10 @@
 ###Global variables used in the script############
 ##################################################
 def initialize():
+    
+    global printToConsole
+    printToConsole = False
+    
     global enableDeletionReversions
     enableDeletionReversions = False
     

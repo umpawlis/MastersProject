@@ -150,8 +150,8 @@ def createDotPlot(events, strain1, strain2):
     #Red ones represent a local alignment
     red_x_coord = []
     red_y_coord = []
-
-    print("x" * 70)
+    if globals.printToConsole:
+        print("x" * 70)
     for i in range(0, len(events)):
         if events[i].technique == 'Global Alignment' or events[i].technique == 'Local Alignment':
             #Assign the coords to the appropriate array, the index represents the position of the operon with respect to the genome
@@ -177,7 +177,8 @@ def createDotPlot(events, strain1, strain2):
             y_coord.append(events[i].fragmentDetails2.point)
             #print('x-axis: %s, y-axis: %s' %(events[i].fragmentDetails1.point, events[i].fragmentDetails2.point))
     if len(black_x_coord) != 2:
-        print('BREAK!')
+        if globals.printToConsole:
+            print('BREAK!')
     
     #If we have any coordinates to plot, display them
     if len(green_x_coord) > 0 or len(yellow_x_coord) > 0 or len(orange_x_coord) > 0 or len(red_x_coord) > 0:
@@ -194,8 +195,10 @@ def createDotPlot(events, strain1, strain2):
         plt.show()
         f.savefig("%s %s.pdf" %(strain1.name, strain2.name), bbox_inches='tight')
     else:
-        print('No plot to display!')
-    print("x" * 70)
+        if globals.printToConsole:
+            print('No plot to display!')
+    if globals.printToConsole:
+        print("x" * 70)
 
 
 ######################################################

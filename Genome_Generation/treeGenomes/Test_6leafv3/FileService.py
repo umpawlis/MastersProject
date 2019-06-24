@@ -14,7 +14,8 @@ from BacterialStrain import BacterialStrain
 # Description: Adds the totals of each event to the output file
 ######################################################
 def outputTotalsToFile(fileName):
-    print('Outputting statistics for total events:')
+    if globals.printToConsole:
+        print('Outputting statistics for total events:')
 
     #Deletion info
     temp = 'Total Deletions: '
@@ -22,7 +23,8 @@ def outputTotalsToFile(fileName):
         for size, count in globals.deletionSizeCounter.items():
             temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
         temp = temp[:-2] #Removes the last two characters
-    print(temp)
+    if globals.printToConsole:
+        print(temp)
     appendToFile(fileName, temp + '\n')
 
     #Duplication info
@@ -31,7 +33,8 @@ def outputTotalsToFile(fileName):
         for size, count in globals.duplicationSizeCounter.items():
             temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
         temp = temp[:-2] #Removes the last two characters
-    print(temp)
+    if globals.printToConsole:
+        print(temp)
     appendToFile(fileName, temp + '\n')
     
     #Size distribution of inversions
@@ -40,7 +43,8 @@ def outputTotalsToFile(fileName):
         for size, count in globals.inversionSizeDistributionCounter.items():
             temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
         temp = temp[:-2] #Removes the last two characters
-    print(temp)
+    if globals.printToConsole:
+        print(temp)
     appendToFile(fileName, temp + '\n')
     
     #Size distribution of transpositions
@@ -49,7 +53,8 @@ def outputTotalsToFile(fileName):
         for size, count in globals.transpositionSizeDistributionCounter.items():
             temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
         temp = temp[:-2] #Removes the last two characters
-    print(temp)
+    if globals.printToConsole:
+        print(temp)
     appendToFile(fileName, temp + '\n')
     
     #Size distribution of inverted transpositions
@@ -58,13 +63,15 @@ def outputTotalsToFile(fileName):
         for size, count in globals.invertedTranspositionSizeDistributionCounter.items():
             temp+= 'size: ' + str(size)+ ' count: ' + str(count) + ', '
         temp = temp[:-2] #Removes the last two characters
-    print(temp)
+        if globals.printToConsole:
+            print(temp)
     appendToFile(fileName, temp + '\n')
     
-    #Inversions. transpositions, inverted transpositions
-    print('Total # of Inversions: %s' % (globals.inversionCounter))
-    print('Total # of Transpositions: %s' % (globals.transposedCounter))
-    print('Total # of Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
+    if globals.printToConsole:
+        #Inversions. transpositions, inverted transpositions
+        print('Total # of Inversions: %s' % (globals.inversionCounter))
+        print('Total # of Transpositions: %s' % (globals.transposedCounter))
+        print('Total # of Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
 
     appendToFile(fileName, 'Total Inversions: %s\n' % (globals.inversionCounter))
     appendToFile(fileName, 'Total Transpositions: %s\n' % (globals.transposedCounter))
@@ -86,15 +93,16 @@ def outputStrainDetailsToFile(fileName, strain):
     appendToFile(fileName, strain.inversionDetails + '\n')
     appendToFile(fileName, strain.transpositionDetails + '\n')
     appendToFile(fileName, strain.invertedTranspositionDetails + '\n')
-
-    print(strain.name)
-    print(strain.codonMismatchDetails)
-    print(strain.substitutionDetails)
-    print(strain.duplicationDetails)
-    print(strain.deletionDetails)
-    print(strain.inversionDetails)
-    print(strain.transpositionDetails)
-    print(strain.invertedTranspositionDetails)
+    
+    if globals.printToConsole:
+        print(strain.name)
+        print(strain.codonMismatchDetails)
+        print(strain.substitutionDetails)
+        print(strain.duplicationDetails)
+        print(strain.deletionDetails)
+        print(strain.inversionDetails)
+        print(strain.transpositionDetails)
+        print(strain.invertedTranspositionDetails)
 
 ######################################################
 # createFile
@@ -102,7 +110,8 @@ def outputStrainDetailsToFile(fileName, strain):
 # Description: Creates a file where the output will be stored
 ######################################################
 def createFile(fileName, newickTree):
-    print('Creating file %s...' % (fileName));
+    if globals.printToConsole:
+        print('Creating file %s...' % (fileName));
     file = open(fileName, "w+")
     Phylo.write(newickTree,fileName, 'newick') #Write the tree to the output file
     file.close()
@@ -150,7 +159,8 @@ def processSequence(name, genome):
             elif '< o >' in originOrTerminus:
                 description = 'Origin'
             else:
-                print('Error! Unhandled case!')
+                if globals.printToConsole:
+                    print('Error! Unhandled case!')
                 return None
 
             fragment = GenomeFragment(fragmentIndex, originOrTerminus, originOrTerminus.split(','), originOrTerminusPosition, description, False)

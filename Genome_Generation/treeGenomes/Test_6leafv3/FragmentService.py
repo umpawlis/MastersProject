@@ -97,31 +97,31 @@ def determineRegions(fragments):
                 invertedRegions.append(consecutiveRegion)
             else:                                                               #Else it's a transposition
                 invertedTransposedRegions.append(consecutiveRegion)
+    if globals.printToConsole:
+        print('Statistics for regions in the genome:')
+        print('Total number of tracking points on the graph: %s' % (len(fragments)))
+        print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
+        print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
+        print('Total number of inverted regions: %s' % len(invertedRegions))
+        print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
 
-    print('Statistics for regions in the genome:')
-    print('Total number of tracking points on the graph: %s' % (len(fragments)))
-    print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
-    print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
-    print('Total number of inverted regions: %s' % len(invertedRegions))
-    print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
-
-    #Prints indexs of the various regions computed
-    for region in conservedForwardRegions:
-        print('Forward Conserved Region')
-        for x in range(0, len(region)):
-            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
-    for region in transposedForwardRegions:
-        print('Forward Transposed Region')
-        for x in range(0, len(region)):
-            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
-    for region in invertedRegions:
-        print('Inverted Region')
-        for x in range(0, len(region)):
-            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
-    for region in invertedTransposedRegions:
-        print('Inverted Transposed Region')
-        for x in range(0, len(region)):
-            print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        #Prints indexs of the various regions computed
+        for region in conservedForwardRegions:
+            print('Forward Conserved Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in transposedForwardRegions:
+            print('Forward Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in invertedRegions:
+            print('Inverted Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in invertedTransposedRegions:
+            print('Inverted Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
 
     return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions
 
@@ -210,35 +210,36 @@ def computeOperonArrangements(events):
                     invertedRegions.append(consecutiveRegion)
                 else:                                                               #Else it's a transposition
                     invertedTransposedRegions.append(consecutiveRegion)
-
-    print('Statistics for regions in the genome:')
-    print('Total number of tracking events: %s' % (len(events)))
-    print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
-    print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
-    print('Total number of inverted regions: %s' % len(invertedRegions))
-    print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
-    print('Total number of lost operons: %s' % len(lostRegions))
-
-    #Prints indexs of the various regions computed
-    for region in conservedForwardRegions:
-        print('Forward Conserved Region')
-        for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
-    for region in transposedForwardRegions:
-        print('Forward Transposed Region')
-        for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
-    for region in invertedRegions:
-        print('Inverted Region')
-        for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
-    for region in invertedTransposedRegions:
-        print('Inverted Transposed Region')
-        for x in range(0, len(region)):
-            print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
-    for operon in lostRegions:
-        print('Lost operon')
-        print('%s, %s' %(operon.fragmentDetails1.fragmentIndex, operon.fragmentDetails2.fragmentIndex))
+    
+    if globals.printToConsole:
+        print('Statistics for regions in the genome:')
+        print('Total number of tracking events: %s' % (len(events)))
+        print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
+        print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
+        print('Total number of inverted regions: %s' % len(invertedRegions))
+        print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
+        print('Total number of lost operons: %s' % len(lostRegions))
+    
+        #Prints indexs of the various regions computed
+        for region in conservedForwardRegions:
+            print('Forward Conserved Region')
+            for x in range(0, len(region)):
+                print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
+        for region in transposedForwardRegions:
+            print('Forward Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
+        for region in invertedRegions:
+            print('Inverted Region')
+            for x in range(0, len(region)):
+                print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
+        for region in invertedTransposedRegions:
+            print('Inverted Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s' %(region[x].fragmentDetails1.fragmentIndex, region[x].fragmentDetails2.fragmentIndex))
+        for operon in lostRegions:
+            print('Lost operon')
+            print('%s, %s' %(operon.fragmentDetails1.fragmentIndex, operon.fragmentDetails2.fragmentIndex))
 
     return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions, lostRegions
 
