@@ -795,11 +795,11 @@ def performInversion(before, after, p):
         for operon in reversed(afterSection):
             if isinstance(operon, list):
                 for gene in operon:
-                    event += gene + " " + str(absoluteIndex) + ","
+                    event += gene + " " + str(absoluteIndex) + ", "
                     genes.append(gene)
                     indexes.append(absoluteIndex)
                     absoluteIndex += 1
-                event = event[:-1]
+                event = event[:-2]
                 event += ";"
             else:
                 event += operon + " " + str(absoluteIndex) + ";"
@@ -813,11 +813,11 @@ def performInversion(before, after, p):
         for operon in reversed(beforeSection):
             if isinstance(operon, list):
                 for gene in operon:
-                    event += gene + " " + str(absoluteIndex) + ","
+                    event += gene + " " + str(absoluteIndex) + ", "
                     genes.append(gene)
                     indexes.append(absoluteIndex)
                     absoluteIndex += 1
-                event = event[:-1]
+                event = event[:-2]
                 event += ";"
             else:
                 event += operon + " " + str(absoluteIndex) + ";"
