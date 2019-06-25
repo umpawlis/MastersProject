@@ -27,6 +27,10 @@ def cleanUpGenomes(genome):
     Changes <o> and <t> for [o] and [t].
     Returns the new string representing the updated genome.
     """
+    while genome.count("[t]") > 1: #testing for multiple termini (bug of OrthoAlign)
+		print "- one of the genomes have multiple termini, removing the first occurrence"
+		genome = genome.replace("[t],", "", 1)
+	
     if "< o >" not in genome:  #only does the work if it's in the operon format
         return genome
         
