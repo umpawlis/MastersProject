@@ -112,23 +112,36 @@ def main():
                 print "WARNING: Tree file must be in format tree#*.dnd where # is the number of leaves. Exiting..."
                 sys.exit(0)
         
+        basePValue = 0.0
         while count < len(args):
             if args[count] == "-d":
                 probDup = float(args[count+1])
                 dup_pValue = float(args[count+2])
+                basePValue = dup_pValue
             elif args[count] == "-l":
                 probLoss = float(args[count+1])
                 loss_pValue = float(args[count+2])
+                basePValue = loss_pValue
             elif args[count] == "-i":
                 probInv = float(args[count+1])
                 inv_pValue = float(args[count+2])
+                basePValue = inv_pValue
             elif args[count] == "-t":
                 probTrans = float(args[count+1])
                 trans_pValue = float(args[count+2])
+                basePValue = trans_pValue
             elif args[count] == "-s":
                 probSub = float(args[count+1])
                 count -= 1
             count += 3
+        
+        if testDiff == "pValue":
+            if basePValue != 0.0:
+                xAxisTitle = "Value of Geometric Sampling Parameter"
+                xAxis.append(basePValue)
+            else:
+                print "WARNING: Must have atleast one pValue for the test. Exiting..."
+                sys.exit(0)
             
         if probDup + probLoss + probInv + probSub + probTrans != 1.0:
             print "WARNING: Total probability for all events does not equal 1.0. Please change probabilities. Exiting..."
