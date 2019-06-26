@@ -1,6 +1,7 @@
 from genomeGenerator import generateTests
 from CompareResultsService import readFiles
 from CompareAncestors import compareAnc
+from ListEvents import outputEvents
 from shutil import copy
 import matplotlib.pyplot as plt
 import os
@@ -68,10 +69,14 @@ def main():
     totalEventsGenAveragesList = []
     totalEventsOrthoAveragesList = []
     totalEventsDupAveragesList = []
-    totalStrictAccuracyAveragesList = []
-    totalRelaxedAccuracyAveragesList = []
-    strictEventAccuracy = 0.0
-    relaxedEventAccuracy = 0.0
+    totalStrictAppAccuracyAveragesList = []
+    totalRelaxedAppAccuracyAveragesList = []
+    totalStrictOrthoAccuracyAveragesList = []
+    totalRelaxedOrthoAccuracyAveragesList = []
+    totalStrictDupAccuracyAveragesList = []
+    totalRelaxedDupAccuracyAveragesList = []
+    # strictEventAccuracy = 0.0
+    # relaxedEventAccuracy = 0.0
     
     totalAppFMeasureList = []
     totalOrthoFMeasureList = []
@@ -83,8 +88,12 @@ def main():
         numEventsOrthoAveragesList = []
         numEventsDupAveragesList = []
         
-        strictAccuracyAveragesList = []
-        relaxedAccuracyAveragesList = []
+        strictAppAccuracyAveragesList = []
+        relaxedAppAccuracyAveragesList = []
+        strictOrthoAccuracyAveragesList = []
+        relaxedOrthoAccuracyAveragesList = []
+        strictDupAccuracyAveragesList = []
+        relaxedDupAccuracyAveragesList = []
         
         appFMeasureList = []
         orthoFMeasureList = []
@@ -160,22 +169,22 @@ def main():
                 f.write(out)
                 f.write(err)
             
-            totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents = readFiles(testSetDir)
+            totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt')
             
-            print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
-            if totalEventsExpected > 0:
-                strictEventAccuracy = float(totalEventsFound)/float(totalEventsExpected) * 100.0
+            print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents))
+            if totalAppEventsExpected > 0:
+                strictAppEventAccuracy = float(totalAppEventsFound)/float(totalAppEventsExpected) * 100.0
             else:
-                strictEventAccuracy = 0.0
-            if totalGenesExpected > 0:
-                relaxedEventAccuracy = float(totalGenesFound)/float(totalGenesExpected) * 100.0
+                strictAppEventAccuracy = 0.0
+            if totalAppGenesExpected > 0:
+                relaxedAppEventAccuracy = float(totalAppGenesFound)/float(totalAppGenesExpected) * 100.0
             else:
-                relaxedEventAccuracy = 0.0
+                relaxedAppEventAccuracy = 0.0
                 
             numEventsAppAveragesList.append(totalAppEvents)
-            numEventsGenAveragesList.append(totalEventsExpected)
-            strictAccuracyAveragesList.append(strictEventAccuracy)
-            relaxedAccuracyAveragesList.append(relaxedEventAccuracy)
+            numEventsGenAveragesList.append(totalAppEventsExpected)
+            strictAppAccuracyAveragesList.append(strictAppEventAccuracy)
+            relaxedAppAccuracyAveragesList.append(relaxedAppEventAccuracy)
             
             if cherryTree:
                 appCommand = baseCommand + testSetDir + '/NC_000001/sequence.txt ' + testSetDir + '/NC_000002/sequence.txt ' + testSetDir
@@ -230,14 +239,49 @@ def main():
                 orthoFMeasureList.append(orthofMeasure)
                 dupFMeasureList.append(dupfMeasure)
                 
+                outputEvents(testSetDir + "/orthoAlign.out", testSetDir + "/orthoAlignEvents.out")                
+                totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt')
+            
+                print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents))
+                if totalOrthoEventsExpected > 0:
+                    strictOrthoEventAccuracy = float(totalOrthoEventsFound)/float(totalOrthoEventsExpected) * 100.0
+                else:
+                    strictOrthoEventAccuracy = 0.0
+                if totalOrthoGenesExpected > 0:
+                    relaxedOrthoEventAccuracy = float(totalOrthoGenesFound)/float(totalOrthoGenesExpected) * 100.0
+                else:
+                    relaxedOrthoEventAccuracy = 0.0
+
+                strictOrthoAccuracyAveragesList.append(strictOrthoEventAccuracy)
+                relaxedOrthoAccuracyAveragesList.append(relaxedOrthoEventAccuracy)
+                
+                outputEvents(testSetDir + "/duploss.out", testSetDir + "/duplossEvents.out")
+                totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt')
+            
+                print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents))
+                if totalDupEventsExpected > 0:
+                    strictDupEventAccuracy = float(totalDupEventsFound)/float(totalDupEventsExpected) * 100.0
+                else:
+                    strictDupEventAccuracy = 0.0
+                if totalDupGenesExpected > 0:
+                    relaxedDupEventAccuracy = float(totalDupGenesFound)/float(totalDupGenesExpected) * 100.0
+                else:
+                    relaxedDupEventAccuracy = 0.0
+
+                strictDupAccuracyAveragesList.append(strictDupEventAccuracy)
+                relaxedDupAccuracyAveragesList.append(relaxedDupEventAccuracy)
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
         totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
         totalEventsDupAveragesList.append(numEventsDupAveragesList)
         
-        totalStrictAccuracyAveragesList.append(strictAccuracyAveragesList)
-        totalRelaxedAccuracyAveragesList.append(relaxedAccuracyAveragesList)
+        totalStrictAppAccuracyAveragesList.append(strictAppAccuracyAveragesList)
+        totalRelaxedAppAccuracyAveragesList.append(relaxedAppAccuracyAveragesList)
+        totalStrictOrthoAccuracyAveragesList.append(strictOrthoAccuracyAveragesList)
+        totalRelaxedOrthoAccuracyAveragesList.append(relaxedOrthoAccuracyAveragesList)
+        totalStrictDupAccuracyAveragesList.append(strictDupAccuracyAveragesList)
+        totalRelaxedDupAccuracyAveragesList.append(relaxedDupAccuracyAveragesList)
         
         totalAppFMeasureList.append(appFMeasureList)
         totalOrthoFMeasureList.append(orthoFMeasureList)
@@ -248,21 +292,27 @@ def main():
         outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
         outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
         
-        outputData(totalStrictAccuracyAveragesList, testFolder + "strictAccuracyData.txt")
-        outputData(totalRelaxedAccuracyAveragesList, testFolder + "relaxedAccuracyData.txt")
+        outputData(totalStrictAppAccuracyAveragesList, testFolder + "strictAppAccuracyData.txt")
+        outputData(totalRelaxedAppAccuracyAveragesList, testFolder + "relaxedAppAccuracyData.txt")
+        outputData(totalStrictOrthoAccuracyAveragesList, testFolder + "strictOrthoAccuracyData.txt")
+        outputData(totalRelaxedOrthoAccuracyAveragesList, testFolder + "relaxedOrthoAccuracyData.txt")
+        outputData(totalStrictDupAccuracyAveragesList, testFolder + "strictDupAccuracyData.txt")
+        outputData(totalRelaxedDupAccuracyAveragesList, testFolder + "relaxedDupAccuracyData.txt")
         
         outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
         outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
         outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
         
-        
-        graphData("sAccuracy", totalStrictAccuracyAveragesList, xAxisTitle, xAxis)
-        graphData("rAccuracy", totalRelaxedAccuracyAveragesList, xAxisTitle, xAxis)
         if cherryTree:
+            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList)
+            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList)
             graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
             graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
         else:
+            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis)
+            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis)
             graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
+
         
     if testFolder:
         copy(testFile, testFolder)

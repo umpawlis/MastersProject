@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #These indicate the names of the output files
-outputFile1 = 'ApplicationOutput.txt'
-outputFile2 = 'generatorOutput.txt'
+#outputFile1 = 'ApplicationOutput.txt'
+#outputFile2 = 'generatorOutput.txt'
 
 ######################################################
 # constructDistributionGraph
@@ -290,7 +290,7 @@ def getTotalEvents(line):
 # Parameters:
 # Description: Reads two files and compares two files
 ######################################################
-def readFiles(fileDir):
+def readFiles(fileDir, outputFile1, outputFile2):
     newickTree1 = ''
     newickTree2 = ''
     outputFile = open(fileDir+ "/comparisonOutput.txt", "w+")
@@ -571,7 +571,7 @@ def readFiles(fileDir):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents
 
 ######## Main ########
-#if readFiles("compareTest"):
+#if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt'):
 #    print('Successfully processed the output files')
 #else:
 #    print('Error! An error has occured while processing the files!')
