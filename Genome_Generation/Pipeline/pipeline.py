@@ -374,7 +374,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             
             average = currentSum / len(averagesList)
             averages3.append(average)
-        line3, = plt.plot(xAxis, averages3, 'gP-', label='OrthoAlign')
+        line3, = plt.plot(xAxis, averages3, 'g+-', label='OrthoAlign')
         labels.append(line3)
         
         
@@ -388,13 +388,13 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             
             average = currentSum / len(averagesList)
             averages4.append(average)
-        line4, = plt.plot(xAxis, averages4, 'mX-', label='DupLoss')
+        line4, = plt.plot(xAxis, averages4, 'mx-', label='DupLoss')
         labels.append(line4)
         
     plt.legend(handles=labels)
         
     print averages
-    plt.show()
+#    plt.show()
     f.savefig(testFolder + graphType + ".pdf", bbox_inches='tight')
     
 def outputData(totalAverages, fileName):
