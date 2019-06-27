@@ -5,6 +5,8 @@ import argparse
 import random
 import copy
 
+printToConsole = True
+
 aminoAcids = ["Ala_GCU", "Ala_GCC", "Ala_GCA", "Ala_GCG", "Arg_CGU", "Arg_CGC", "Arg_CGA", "Arg_CGG", "Arg_AGA", 
     "Arg_AGG", "Asp_GAU", "Asp_GAC", "Cys_UGU", "Cys_UGC", "Glu_GAA", "Glu_GAG", "Gln_CAA", "Gln_CAG", "Gly_GGU", "Gly_GGC",
     "Gly_GGA", "Gly_GGG", "His_CAU", "HIs_CAC", "Ile_AUU", "Ile_AUC", "Ile_AUA", "Leu_UUA", "Leu_UUG", "Leu_CUU", "Leu_CUC", "Leu_CUA", "Leu_CUG",
@@ -53,7 +55,20 @@ class Event:
         event = ""
 
         if self.type == "I":
-            event = self.operonFormat + "|"
+            count = 0
+            if printToConsole:
+                print self.genes
+                print self.range
+            for operon in self.genes:
+                print operon
+                if isinstance(operon, list):
+                    event = ', '.join(gene + " " + str(index) for gene, index in zip(operon, self.range[count:count + len(operon)]))
+                    event += ";"
+                    count += len(operon)
+                else:
+                    event += operon + " " + str(self.range[count]) + ";"
+                    
+            event += "|"
         else:
             # for gene, index in zip(self.genes, self.range):
             #     event += gene + " " + str(index) + ","
@@ -142,17 +157,19 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
         os.makedirs(testFolder)
 
     createAncestor(max(max_length, 15), num_operons)
-#    print "Ancestor:"
-#    print formatGenome(beforeTerminus, afterTerminus)
-#    print ""
+    if printToConsole:
+        print "Ancestor:"
+        print formatGenome(beforeTerminus, afterTerminus)
+        print ""
     sequenceFile = open(testFolder + "/root.txt", "w+")
     sequenceFile.write(formatGenome(beforeTerminus, afterTerminus))
     sequenceFile.close()
     resetCounters()
 
     root = Node(beforeTerminus, afterTerminus, None, "", "", "", "", "", "", None, None, None)
-
-#    print('Reading in newick tree structure from file: %s...' % (treeStructure))
+    
+    if printToConsole:
+        print('Reading in newick tree structure from file: %s...' % (treeStructure))
     newickTree = Phylo.read(treeStructure, 'newick')
     currNode = newickTree.clade
 
@@ -160,7 +177,12 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
 
     listOfEvents = []
     if len(currNode.clades) > 0:
-        left = buildTreeData(currNode.clades[0], beforeTerminus, afterTerminus, num_events, listOfEvents, root)
+        invMultiplier = 1.0
+        if equal:
+            if random.random() < 0.5:
+                # Used so that there is a lower chance of both children having inversions (not common)
+                invMultiplier = 0.5
+        left = buildTreeData(currNode.clades[0], beforeTerminus, afterTerminus, num_events, listOfEvents, root, invMultiplier)
         hasRight = False
         if len(currNode.clades) > 1:
             if len(left.invEvents) > 0:
@@ -250,22 +272,38 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
 
     originalIndexes = calculateIndexes(currentBefore, currentAfter)
     currentIndexes = copy.deepcopy(originalIndexes)
-
-#    print "Previous Events:"
-#    print currentEvents
-#    print "Parent Genome:"
-#    print formatGenome(before, after)
-#    print ""
+    
+    if printToConsole:
+        print "Previous Events:"
+        print currentEvents
+        print "Parent Genome:"
+        print formatGenome(before, after)
+        print ""
 
     count = 0
-    rand = 0.10
+    if equalEvents:
+        eventOrder = []
+        numLoops = numEvents / 3
+        
+        for i in range(numLoops):
+            eventOrder.append(0.20)
+        for j in range(numLoops):
+            eventOrder.append(0.45)
+        for k in range(numLoops):
+            eventOrder.append(0.95)
+            
+        if invMultiplier == 1.0:
+            eventOrder.append(0.70)
+            numEvents += 1
+            
+        random.shuffle(eventOrder)
     while count < numEvents:
         newEvent = True
         
         if not equalEvents:
             rand = random.random()
         else:
-            rand = (rand + 0.25) % 1.0
+            rand = eventOrder[count]
 
         if rand < probDup:
             event, eventRange, genes, prevEventRange, sectionReversed = performDuplication(currentBefore, currentAfter, dup_pValue)
@@ -330,13 +368,15 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
             currentEvents.append(event)
             if event.type == "I":
                 inversionBefores.append(copy.deepcopy(currentBefore))
-
-#            print branchEvents
-#            print event
+                
+            if printToConsole:
+                print branchEvents
+                print event
             updateEvents(branchEvents, event, currentBefore, currentAfter, prevEventRange)
             updateIndexes(event, originalIndexes, currentIndexes, prevEventRange, sectionReversed)
             branchEvents.append(event)
-#            print branchEvents
+            if printToConsole:
+                print branchEvents
 
         count += 1
 
@@ -508,7 +548,27 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
                         event.range[index] = terminusIndex + diff
             elif newEvent.type == "S":
                 if overlap and (len(overlap) == 1):
-                    event.genes[overlap[0]] = newEvent.genes[0]
+                    updated = False
+                    if event.type == "I":
+                        count = 0
+                        for i in range(len(event.genes)):
+                            if isinstance(event.genes[i], list):
+                                for j in range(len(event.genes[i])):
+                                    if overlap[0] == count:
+                                        event.genes[i][j] = newEvent.genes[0]
+                                        updated = True
+                                    else:
+                                        count += 1
+                            else:
+                                if overlap[0] == count:
+                                    event.genes[i] = newEvent.genes[0]
+                                    updated = True
+                                else:
+                                    count += 1
+                        if updated == False:
+                            print "Event not updated properly"
+                    else:
+                        event.genes[overlap[0]] = newEvent.genes[0]
             elif newEvent.type == "T" or newEvent.type == "IT":
                 prevOverlap, overlapRange = checkOverlap(prevEventRange, event.range, newEvent.type)
                 eventOverlap, overlapRange = checkOverlap(event.range, prevEventRange, newEvent.type)
@@ -529,7 +589,17 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
 #                        print "Event overlap"
 #                        print eventOverlap
                         if event.range[index] == prevEventRange[index2]:
-                            event.range[index] = newEvent.range[index2]
+                            if newEvent.type == "T":
+                                event.range[index] = newEvent.range[index2]
+                            else:
+                                newIndex = len(prevEventRange)-1 - index2
+                                if printToConsole:
+                                    print event.range
+                                    print index
+                                    print prevEventRange
+                                    print index2
+                                    print newIndex
+                                event.range[index] = newEvent.range[newIndex]
                             break
             elif newEvent.type == "L":
                 for i in range(len(event.range)):
@@ -660,7 +730,8 @@ def performTransposition(before, after, p):
         genome = after
         targetBefore = False
         
-#    print transSection
+    if printToConsole:
+        print transSection
     eventType = "T"
     if fromBefore and not targetBefore:
         transSection.reverse()
@@ -682,9 +753,10 @@ def performTransposition(before, after, p):
         for gene in reversed(transSection):
             # print "inserting " + gene
             genome[targetIndex].insert(targetPos, gene)
-
+            
+        if printToConsole:
         # event = "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
-#        print "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
+            print "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
     else:
         # print "target in singleton"
         if operonTrans:
@@ -693,9 +765,10 @@ def performTransposition(before, after, p):
             for gene in reversed(transSection):
                 # print "inserting " + gene
                 genome.insert(targetIndex, gene)
-
+                
+        if printToConsole:
         # event = "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
-#        print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
+            print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
 
     absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
     startIndex = absoluteIndex
@@ -708,12 +781,14 @@ def performTransposition(before, after, p):
         event += gene + " " + str(absoluteIndex) + ","
         genes.append(gene)
         absoluteIndex += 1
-#    print event
+    if printToConsole:
+        print event
     stopIndex = absoluteIndex
-
-#    print "Transposition:"
-#    print formatGenome(before, after)
-#    print ""
+    
+    if printToConsole:
+        print "Transposition:"
+        print formatGenome(before, after)
+        print ""
 
     branchEvent = Event(eventType, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex))
     return branchEvent, range(startIndex, stopIndex), genes, range(beforeStartIndex, beforeStopIndex), sectionReversed
@@ -794,9 +869,10 @@ def performInversion(before, after, p):
     if afterSection:
         for operon in reversed(afterSection):
             if isinstance(operon, list):
+                genes.append(copy.deepcopy(operon))
                 for gene in operon:
                     event += gene + " " + str(absoluteIndex) + ", "
-                    genes.append(gene)
+#                    genes.append(gene)
                     indexes.append(absoluteIndex)
                     absoluteIndex += 1
                 event = event[:-2]
@@ -808,13 +884,16 @@ def performInversion(before, after, p):
                 absoluteIndex += 1
 
     event += "< t > " + str(absoluteIndex) + ";"
+    genes.append('< t >')
+    indexes.append(absoluteIndex)
     absoluteIndex += 1 # for the terminus
     if beforeSection:
         for operon in reversed(beforeSection):
             if isinstance(operon, list):
+                genes.append(copy.deepcopy(operon))
                 for gene in operon:
                     event += gene + " " + str(absoluteIndex) + ", "
-                    genes.append(gene)
+#                    genes.append(gene)
                     indexes.append(absoluteIndex)
                     absoluteIndex += 1
                 event = event[:-2]
@@ -824,13 +903,15 @@ def performInversion(before, after, p):
                 genes.append(operon)
                 indexes.append(absoluteIndex)
                 absoluteIndex += 1
-#    print event
+    if printToConsole:
+        print event
     stopIndex = absoluteIndex
-
-#    print "Performing inversions... Num before: %s Num after: %s" % (str(lengthBefore), str(lengthAfter))
-#    print "Inversion:"
-#    print formatGenome(before, after)
-#    print ""
+    
+    if printToConsole:
+        print "Performing inversions... Num before: %s Num after: %s" % (str(lengthBefore), str(lengthAfter))
+        print "Inversion:"
+        print formatGenome(before, after)
+        print ""
 
     eventType = "I"
     branchEvent = Event(eventType, indexes, genes, None, event)
@@ -1102,7 +1183,7 @@ def createAncestor(maxLength, numOperons):
 
 def createOperon():
     operon = []
-    size = max(geometricSampling(0.6), 2)
+    size = max(geometricSampling(0.45), 2)
 
     for i in range(size):
         operon.append(random.choice(aminoAcids))
@@ -1133,8 +1214,8 @@ if __name__ == '__main__':
     #All probabilities determine how likely the event will occur. **Probabilities have to add up to 1
     #All pValues determine how many genes the event will affect. The higher the pValue, the lower the chance that the event will be large
     #Examples: code below creates genomes of size 25 with atleast 3 operons and 3 events for each genome. Only transpositions will occur though. None of the other events have a probability.
-    generateTests("generatorTesting", "tree2Leaf.dnd", 25, 3, 3, 0.0, 0.7, 0.0, 0.7, 0.0, 0.7, 0.0, 1.0, 0.7)
+    generateTests("generatorTesting", "tree2Leaf.dnd", 25, 3, 6, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
-    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7)
+#    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.
-    generateTests("generatorTesting", "tree2Leaf.dnd", 80, 4, 6, 0.4, 0.7, 0.4, 0.7, 0.05, 0.7, 0.05, 0.10, 0.7)
+#    generateTests("generatorTesting", "tree2Leaf.dnd", 80, 4, 6, 0.4, 0.7, 0.4, 0.7, 0.05, 0.7, 0.05, 0.10, 0.7, False)
