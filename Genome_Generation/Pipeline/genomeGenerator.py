@@ -281,6 +281,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
         print ""
 
     count = 0
+    increasedNumEvents = False
     if equalEvents:
         eventOrder = []
         numLoops = numEvents / 3
@@ -295,14 +296,18 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
         if invMultiplier == 1.0:
             eventOrder.append(0.70)
             numEvents += 1
+            increasedNumEvents = True
             
         random.shuffle(eventOrder)
+        
     while count < numEvents:
         newEvent = True
         
         if not equalEvents:
             rand = random.random()
         else:
+            print eventOrder
+            print count
             rand = eventOrder[count]
 
         if rand < probDup:
@@ -379,7 +384,9 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
                 print branchEvents
 
         count += 1
-
+        
+    if increasedNumEvents:
+        numEvents -= 1
     currNode = Node(currentBefore, currentAfter, parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, invertedTransEvents, branchEvents, currentEvents, inversionBefores)
 
     if len(node.clades) > 0:
@@ -407,7 +414,7 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
             # print left.lossEvents
             # print right.lossEvents
 
-        currNode.name = "Ancestor " + str(ancestorCounter)
+        currNode.name = "genAncestor" + str(ancestorCounter)
         sequenceFile = open(testFolder + "/" + currNode.name + ".txt", "w+")
         sequenceFile.write(formatGenome(currentBefore, currentAfter))
         sequenceFile.close()

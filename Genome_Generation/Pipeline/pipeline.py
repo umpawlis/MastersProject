@@ -36,6 +36,7 @@ def main():
     global testFolder
     
     cherryTree = False
+    neighbour = False
     equalEvents = False
     if len(sys.argv) < 3:
         print "WARNING: Must provide a file for testing. Exiting..."
@@ -44,15 +45,26 @@ def main():
     if len(sys.argv) == 5:
         if 'c' in sys.argv[2]:
             cherryTree = True
+            if 'n' in sys.argv[2]:
+                neighbour = True
         if 'e' in sys.argv[2]:
             equalEvents = True
             
         numRounds = int(sys.argv[3])
         testFolder = sys.argv[4] + "/"
     elif len(sys.argv) == 4:
-        if sys.argv[2] == "-c":
+        if 'c' in sys.argv[2]:
             cherryTree = True
-        numRounds = int(sys.argv[3])
+            if 'n' in sys.argv[2]:
+                neighbour = True
+            numRounds = int(sys.argv[3])
+        if 'e' in sys.argv[2]:
+            equalEvents = True
+            numRounds = int(sys.argv[3])
+            
+        if not cherryTree and not equalEvents:
+            numRounds = int(sys.argv[2])
+            testFolder = sys.argv[3] + "/"
     elif len(sys.argv) == 3:
         numRounds = int(sys.argv[2])
         
@@ -71,6 +83,9 @@ def main():
     totalEventsGenAveragesList = []
     totalEventsOrthoAveragesList = []
     totalEventsDupAveragesList = []
+    
+    totalEventsAppNeighbourAveragesList = []
+    
     totalStrictAppAccuracyAveragesList = []
     totalRelaxedAppAccuracyAveragesList = []
     totalStrictOrthoAccuracyAveragesList = []
@@ -79,16 +94,21 @@ def main():
     totalRelaxedDupAccuracyAveragesList = []
     # strictEventAccuracy = 0.0
     # relaxedEventAccuracy = 0.0
+    totalStrictAppNeighbourAccuracyAveragesList = []
+    totalRelaxedAppNeighbourAccuracyAveragesList = []
     
     totalAppFMeasureList = []
     totalOrthoFMeasureList = []
     totalDupFMeasureList = []
+    
+    totalAppNeighbourFMeasureList = []
     
     for test in tests:
         numEventsAppAveragesList = []
         numEventsGenAveragesList = []
         numEventsOrthoAveragesList = []
         numEventsDupAveragesList = []
+        numEventsAppNeighbourAveragesList = []
         
         strictAppAccuracyAveragesList = []
         relaxedAppAccuracyAveragesList = []
@@ -97,9 +117,14 @@ def main():
         strictDupAccuracyAveragesList = []
         relaxedDupAccuracyAveragesList = []
         
+        strictAppNeighbourAccuracyAveragesList = []
+        relaxedAppNeighbourAccuracyAveragesList = []
+        
         appFMeasureList = []
         orthoFMeasureList = []
         dupFMeasureList = []
+        
+        appNeighbourFMeasureList = []
         
         args = test.strip().split()
         count = 4
@@ -160,7 +185,11 @@ def main():
             
         for i in range(numRounds):
             testSetDir = testFolder + datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
+            if neighbour:
+                tree = 'tree2LeafNeighbour.dnd'
             generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue, equalEvents)
+            if neighbour:
+                tree = args[0]
 #            analyzeTree(tree, testSetDir)
 #            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
 #            os.system(appCommand)
@@ -277,10 +306,44 @@ def main():
                 strictDupAccuracyAveragesList.append(strictDupEventAccuracy)
                 relaxedDupAccuracyAveragesList.append(relaxedDupEventAccuracy)
                 
+                if neighbour:
+                    p = subprocess.Popen(['python', 'main.py', 'tree2LeafNeighbour.dnd', testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    out, err = p.communicate()
+                    with open(testSetDir + '/appNeighbourTestingOutput.txt', "w+") as f:
+                        f.write(out)
+                        f.write(err)
+                        
+                    totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt')
+                    
+                    if printToConsole:
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents))
+                    if totalAppNeighbourEventsExpected > 0:
+                        strictAppNeighbourEventAccuracy = float(totalAppNeighbourEventsFound)/float(totalAppNeighbourEventsExpected) * 100.0
+                    else:
+                        strictAppNeighbourEventAccuracy = 0.0
+                    if totalAppNeighbourGenesExpected > 0:
+                        relaxedAppNeighbourEventAccuracy = float(totalAppNeighbourGenesFound)/float(totalAppNeighbourGenesExpected) * 100.0
+                    else:
+                        relaxedAppNeighbourEventAccuracy = 0.0
+                        
+                    numEventsAppNeighbourAveragesList.append(totalAppNeighbourEvents)
+                    strictAppNeighbourAccuracyAveragesList.append(strictAppNeighbourEventAccuracy)
+                    relaxedAppNeighbourAccuracyAveragesList.append(relaxedAppNeighbourEventAccuracy)
+                    
+                    appNeighbourRootFile = testSetDir + "/appNeighbourRoot.txt"
+                    with open(appNeighbourRootFile, "r") as f:
+                        appNeighbourAncestor = f.readline()
+                        
+                    appNeighbourRecall, appNeighbourPrecision, appNeighbourfMeasure = compareAnc(appNeighbourAncestor, genAncestor, testSetDir + "/appNeighbour-")
+                    appNeighbourFMeasureList.append(appNeighbourfMeasure)
+                    
+                
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
         totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
         totalEventsDupAveragesList.append(numEventsDupAveragesList)
+        
+        totalEventsAppNeighbourAveragesList.append(numEventsAppNeighbourAveragesList)
         
         totalStrictAppAccuracyAveragesList.append(strictAppAccuracyAveragesList)
         totalRelaxedAppAccuracyAveragesList.append(relaxedAppAccuracyAveragesList)
@@ -289,14 +352,21 @@ def main():
         totalStrictDupAccuracyAveragesList.append(strictDupAccuracyAveragesList)
         totalRelaxedDupAccuracyAveragesList.append(relaxedDupAccuracyAveragesList)
         
+        totalStrictAppNeighbourAccuracyAveragesList.append(strictAppNeighbourAccuracyAveragesList)
+        totalRelaxedAppNeighbourAccuracyAveragesList.append(relaxedAppNeighbourAccuracyAveragesList)
+        
         totalAppFMeasureList.append(appFMeasureList)
         totalOrthoFMeasureList.append(orthoFMeasureList)
         totalDupFMeasureList.append(dupFMeasureList)
+        
+        totalAppNeighbourFMeasureList.append(appNeighbourFMeasureList)
         
         outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
         outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
         outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
         outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
+        
+        outputData(totalEventsAppNeighbourAveragesList, testFolder + "appNeighbourEventsData.txt")
         
         outputData(totalStrictAppAccuracyAveragesList, testFolder + "strictAppAccuracyData.txt")
         outputData(totalRelaxedAppAccuracyAveragesList, testFolder + "relaxedAppAccuracyData.txt")
@@ -305,15 +375,20 @@ def main():
         outputData(totalStrictDupAccuracyAveragesList, testFolder + "strictDupAccuracyData.txt")
         outputData(totalRelaxedDupAccuracyAveragesList, testFolder + "relaxedDupAccuracyData.txt")
         
+        outputData(totalStrictAppNeighbourAccuracyAveragesList, testFolder + "strictAppNeighbourAccuracyData.txt")
+        outputData(totalRelaxedAppNeighbourAccuracyAveragesList, testFolder + "relaxedAppNeighbourAccuracyData.txt")
+        
         outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
         outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
         outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
         
+        outputData(totalAppNeighbourFMeasureList, testFolder + "appNeighbourFMeasureData.txt")
+        
         if cherryTree:
-            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList)
-            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList)
-            graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
-            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
+            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList)
+            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourAccuracyAveragesList)
+            graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList, totalAverages5 = totalAppNeighbourFMeasureList)
+            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList, totalEventsAppNeighbourAveragesList)
         else:
             graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis)
             graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis)
@@ -323,7 +398,7 @@ def main():
     if testFolder:
         copy(testFile, testFolder)
 
-def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None):
+def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None, totalAverages5 = None, totalAverages6 = None):
     if graphType == "Events":
         title = "Average Number of Events"
         yAxisTitle = "Number of Events"
@@ -400,6 +475,34 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             averages4.append(average)
         line4, = plt.plot(xAxis, averages4, 'mx-', label='DupLoss')
         labels.append(line4)
+        
+    if totalAverages5 is not None:
+        averages5 = []
+        if printToConsole:
+            print totalAverages5
+        for averagesList in totalAverages5:
+            currentSum = 0.0    
+            for average in averagesList:
+                currentSum += average
+            
+            average = currentSum / len(averagesList)
+            averages5.append(average)
+        line5, = plt.plot(xAxis, averages5, 'o--', label='Application with Neighbour')
+        labels.append(line5)
+        
+    if totalAverages6 is not None:
+        averages6 = []
+        if printToConsole:
+            print totalAverages6
+        for averagesList in totalAverages6:
+            currentSum = 0.0    
+            for average in averagesList:
+                currentSum += average
+            
+            average = currentSum / len(averagesList)
+            averages6.append(average)
+        line6, = plt.plot(xAxis, averages6, 'mx-', label='DupLoss')
+        labels.append(line6)
         
     plt.legend(handles=labels)
     
