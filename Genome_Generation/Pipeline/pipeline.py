@@ -9,6 +9,8 @@ import sys
 import subprocess
 import datetime
 
+printToConsole = True
+
 probDup = 0.0
 dup_pValue = 0.0
 probLoss = 0.0
@@ -171,7 +173,8 @@ def main():
             
             totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt')
             
-            print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents))
+            if printToConsole:
+                print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents))
             if totalAppEventsExpected > 0:
                 strictAppEventAccuracy = float(totalAppEventsFound)/float(totalAppEventsExpected) * 100.0
             else:
@@ -227,10 +230,11 @@ def main():
                 
                 numEventsOrthoAveragesList.append(orthoCost)
                 numEventsDupAveragesList.append(dupCost)
-                print orthoCost
-                print dupCost
-                print orthoAncestor
-                print genAncestor
+                if printToConsole:
+                    print orthoCost
+                    print dupCost
+                    print orthoAncestor
+                    print genAncestor
                 
                 orthoRecall, orthoPrecision, orthofMeasure = compareAnc(orthoAncestor, genAncestor, testSetDir + "/ortho-")
                 appRecall, appPrecision, appfMeasure = compareAnc(appAncestor, genAncestor, testSetDir + "/app-")
@@ -241,8 +245,9 @@ def main():
                 
                 outputEvents(testSetDir + "/orthoAlign.out", testSetDir + "/orthoAlignEvents.out")                
                 totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt')
-            
-                print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents))
+                
+                if printToConsole:
+                    print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents))
                 if totalOrthoEventsExpected > 0:
                     strictOrthoEventAccuracy = float(totalOrthoEventsFound)/float(totalOrthoEventsExpected) * 100.0
                 else:
@@ -257,8 +262,9 @@ def main():
                 
                 outputEvents(testSetDir + "/duploss.out", testSetDir + "/duplossEvents.out")
                 totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt')
-            
-                print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents))
+                
+                if printToConsole:
+                    print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents))
                 if totalDupEventsExpected > 0:
                     strictDupEventAccuracy = float(totalDupEventsFound)/float(totalDupEventsExpected) * 100.0
                 else:
@@ -340,7 +346,8 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     plt.grid(True)
         
     averages = [] 
-    print totalAverages
+    if printToConsole:
+        print totalAverages
     for averagesList in totalAverages:
         currentSum = 0.0    
         for average in averagesList:
@@ -353,7 +360,8 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     
     averages2 = []
     if totalAverages2 is not None:
-        print totalAverages2
+        if printToConsole:
+            print totalAverages2
         for averagesList in totalAverages2:
             currentSum = 0.0    
             for average in averagesList:
@@ -366,7 +374,8 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
         
     if totalAverages3 is not None:
         averages3 = []
-        print totalAverages3
+        if printToConsole:
+            print totalAverages3
         for averagesList in totalAverages3:
             currentSum = 0.0    
             for average in averagesList:
@@ -380,7 +389,8 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
         
     if totalAverages4 is not None:
         averages4 = []
-        print totalAverages4
+        if printToConsole:
+            print totalAverages4
         for averagesList in totalAverages4:
             currentSum = 0.0    
             for average in averagesList:
@@ -392,8 +402,9 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
         labels.append(line4)
         
     plt.legend(handles=labels)
-        
-    print averages
+    
+    if printToConsole:
+        print averages
 #    plt.show()
     f.savefig(testFolder + graphType + ".pdf", bbox_inches='tight')
     

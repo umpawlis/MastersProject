@@ -485,7 +485,7 @@ def readFiles(fileDir, outputFile1, outputFile2):
                     line2 = line2.replace('Size Distribution of Inversions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inversions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inversions')
                 else:
                     print('Error! Expected size distribution of inversions')
                 
@@ -497,7 +497,7 @@ def readFiles(fileDir, outputFile1, outputFile2):
                     line2 = line2.replace('Size Distribution of Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Transpositions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Transpositions')
                 else:
                     print('Error! Expected size distribution of transpositions')
                     
@@ -509,7 +509,7 @@ def readFiles(fileDir, outputFile1, outputFile2):
                     line2 = line2.replace('Size Distribution of Inverted Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inverted Transpositions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inverted Transpositions')
                 else:
                     print('Error! Expected size distribution of inverted transpositions')
                     
