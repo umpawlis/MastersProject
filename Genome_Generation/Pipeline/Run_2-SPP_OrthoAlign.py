@@ -2,6 +2,8 @@ import os
 import sys
 import getopt
 
+printToConsole = True
+
 ### CONSTANTS ###
 ORTHOALIGN_PATH =  "OrthoAlign/OrthoAlign/"; ##I recommend using an absolute path
 ORTHOALIGN_EXEC = "Aligning"
@@ -137,7 +139,8 @@ if __name__ == '__main__':
     orthoCost, orthoAncestor = getCostAndAncestorFromOutFile(orthoAlignOutFile)
     duplossCost, duplossAncestor = getCostAndAncestorFromOutFile(duplossOutFile)
     
-    print "Duploss cost = " + str(duplossCost)
-    print "Duploss ancestor =    " + duplossAncestor
-    print "OrthoAlign cost = " + str(orthoCost)
-    print "OrthoAlign ancestor = " + orthoAncestor
+    if printToConsole:
+        print "Duploss cost = " + str(duplossCost)
+        print "Duploss ancestor =    " + duplossAncestor
+        print "OrthoAlign cost = " + str(orthoCost)
+        print "OrthoAlign ancestor = " + orthoAncestor

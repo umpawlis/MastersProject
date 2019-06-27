@@ -411,7 +411,10 @@ def main():
         sys.exit(0)
     
     newickFileName = sys.argv[1]
-    outputFileName = sys.argv[2] + "/ApplicationOutput.txt"
+    if newickFileName == "tree2LeafNeighbour.dnd":
+        outputFileName = sys.argv[2] + "/ApplicationNeighbourOutput.txt"
+    else:
+        outputFileName = sys.argv[2] + "/ApplicationOutput.txt"
     testFileName = sys.argv[2] + '/'
     
     print('Starting application...')
@@ -433,18 +436,40 @@ def main():
     result = traverseNewickTree(newickTree.clade, None)
     
     #Output ancestral genome to console
-    print('This is the root ancestral genome!')
+    if globals.printToConsole:
+        print('This is the root ancestral genome!')
+        
     root = newickTree.clade
     rootGenome = []
-    if root.name != None and len(root.name) > 0:
-        filteredList = iter(filter(lambda x: x.name == root.name, strains))
-        foundStrain = next(filteredList, None)
-        if foundStrain != None:
-            ancestralFragments = foundStrain.genomeFragments
-            rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
-                
-    with open(testFileName + "/appRoot.txt", "w+") as f:
-        f.write(rootGenome)
+    if newickFileName == "tree2LeafNeighbour.dnd":
+        if len(root.clades) == 2:
+            child = root.clades[0]
+            if len(child.clades) != 2:
+                child = root.clades[1]
+                neighbour = root.clades[0]
+            else:
+                neighbour = root.clades[1]
+            if child.name != None and len(child.name) > 0:
+                filteredList = iter(filter(lambda x: x.name == child.name, strains))
+                foundStrain = next(filteredList, None)
+                if foundStrain != None:
+                    ancestralFragments = foundStrain.genomeFragments
+                    rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
+                        
+            with open(testFileName + "appNeighbourRoot.txt", "w+") as f:
+                f.write(rootGenome)
+            neighbour.name = ''
+            child.name = ''
+    else:
+        if root.name != None and len(root.name) > 0:
+            filteredList = iter(filter(lambda x: x.name == root.name, strains))
+            foundStrain = next(filteredList, None)
+            if foundStrain != None:
+                ancestralFragments = foundStrain.genomeFragments
+                rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
+                    
+        with open(testFileName + "appRoot.txt", "w+") as f:
+            f.write(rootGenome)
     
     if globals.printToConsole:
         #Output newick tree after the ancestors have been added to it

@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #These indicate the names of the output files
-outputFile1 = 'ApplicationOutput.txt'
-outputFile2 = 'generatorOutput.txt'
+#outputFile1 = 'ApplicationOutput.txt'
+#outputFile2 = 'generatorOutput.txt'
 
 ######################################################
 # constructDistributionGraph
@@ -85,16 +85,16 @@ def parseSizeDistribution(line):
 # Parameters:
 # Description: Compares results of inversions, transpositions, and inverted transpositions
 ######################################################
-def inversionTranspositionComparison(data1, data2):
+def inversionTranspositionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
 
     #Parse the data
     regions1 = data1.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
-    print regions1
+    outputFile.write('|'.join(regions1) + "\n")
     regions2 = data2.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
-    print regions2
+    outputFile.write('|'.join(regions2)  + "\n")
     
     numEventsFound = 0
     numEventsExpected = len(regions2) - 1
@@ -112,6 +112,10 @@ def inversionTranspositionComparison(data1, data2):
                     dict1[data[1]] = data[0]
     for region in regions2:
         if region != '':
+#            outputFile.write("Reversing Section\n")
+#            outputFile.write(region + '\n')
+            reversedRegion = getReversed(region) +';'
+#            outputFile.write(reversedRegion + '\n')
             if region in regions1:
                 numEventsFound += 1
             operons = region.split(';')
@@ -143,14 +147,14 @@ def inversionTranspositionComparison(data1, data2):
 # Parameters:
 # Description: Compares results of codon mismatches and substitutions
 ######################################################
-def duplicationDeletionComparison(data1, data2):
+def duplicationDeletionComparison(data1, data2, outputFile):
     percentage = 0
 
     #Parse the data
     segments1 = data1.strip().split(';')
-    print segments1
+    outputFile.write('|'.join(segments1) + "\n")
     segments2 = data2.strip().split(';')
-    print segments2
+    outputFile.write('|'.join(segments2) + "\n")
     dict1 = {}
     dict2 = {}
     
@@ -168,6 +172,13 @@ def duplicationDeletionComparison(data1, data2):
                 dict1[data[1]] = data[0]
     for segment in segments2:
         if segment != '':
+            if ',' in segment:
+#                outputFile.write("Reversing Section\n")
+#                outputFile.write(segment + '\n')
+                reversedSegment = getReversed(segment)
+#                outputFile.write(reversedSegment + '\n')
+                if reversedSegment in segments1:
+                    numEventsFound += 1
             if segment in segments1:
                 numEventsFound += 1
             genes = segment.split(', ')
@@ -197,16 +208,16 @@ def duplicationDeletionComparison(data1, data2):
 # Parameters:
 # Description: Compares results of codon mismatches and substitutions
 ######################################################
-def codonMismatchSubstitutionComparison(data1, data2):
+def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
 
     #Parse the data
     array1 = data1.strip().split(';')
-    print array1
+    outputFile.write('|'.join(array1) + "\n")
     array2 = data2.strip().split(';')
-    print array2
+    outputFile.write('|'.join(array2) + "\n")
     
     numEventsFound = 0
     numEventsExpected = len(array2) - 1
@@ -237,6 +248,22 @@ def codonMismatchSubstitutionComparison(data1, data2):
 
     return (numEventsFound, numEventsExpected, numAppEvents)
 
+def getReversed(section):
+    operons = section.strip().split(';')
+    operons.reverse()
+    
+    reversedSection = []
+    for operon in operons:
+        if operon != "":
+            if ', ' in operon:
+                genes = operon.strip().split(', ')
+                genes.reverse()
+                reversedSection.append(', '.join(genes))
+            else:
+                reversedSection.append(operon)
+                
+    return ';'.join(reversedSection)
+
 ######################################################
 # getTotalEvents
 # Parameters:
@@ -263,7 +290,7 @@ def getTotalEvents(line):
 # Parameters:
 # Description: Reads two files and compares two files
 ######################################################
-def readFiles(fileDir):
+def readFiles(fileDir, outputFile1, outputFile2):
     newickTree1 = ''
     newickTree2 = ''
     outputFile = open(fileDir+ "/comparisonOutput.txt", "w+")
@@ -305,7 +332,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the codon mismatches between the strains!\n')
                         line1 = line1.replace('Codon Mismatch:', '')
                         line2 = line2.replace('Codon Mismatch:', '')
-                        result = codonMismatchSubstitutionComparison(line1, line2)
+                        result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[0]
@@ -323,7 +350,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the substitutions between the strains!\n')
                         line1 = line1.replace('Substitution:', '')
                         line2 = line2.replace('Substitution:', '')
-                        result = codonMismatchSubstitutionComparison(line1, line2)
+                        result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[0]
@@ -341,7 +368,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the duplications between the strains!\n')
                         line1 = line1.replace('Duplication:', '')
                         line2 = line2.replace('Duplication:', '')
-                        result = duplicationDeletionComparison(line1, line2)
+                        result = duplicationDeletionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[2]
@@ -359,7 +386,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the deletions between the strains!\n')
                         line1 = line1.replace('Deletion:', '')
                         line2 = line2.replace('Deletion:', '')
-                        result = duplicationDeletionComparison(line1, line2)
+                        result = duplicationDeletionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[2]
@@ -377,7 +404,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the inversions between the strains!\n')
                         line1 = line1.replace('Inversion:', '')
                         line2 = line2.replace('Inversion:', '')
-                        result = inversionTranspositionComparison(line1, line2)
+                        result = inversionTranspositionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[2]
@@ -395,7 +422,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the transpositions between the strains!\n')
                         line1 = line1.replace('Transposition:', '')
                         line2 = line2.replace('Transposition:', '')
-                        result = inversionTranspositionComparison(line1, line2)
+                        result = inversionTranspositionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[2]
@@ -413,7 +440,7 @@ def readFiles(fileDir):
                         outputFile.write('Comparing the inverted transposition between the strains!\n')
                         line1 = line1.replace('Inverted Transposition:', '')
                         line2 = line2.replace('Inverted Transposition:', '')
-                        result = inversionTranspositionComparison(line1, line2)
+                        result = inversionTranspositionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
                         totalEventsExpected += result[1]
                         totalGenesFound += result[2]
@@ -458,7 +485,7 @@ def readFiles(fileDir):
                     line2 = line2.replace('Size Distribution of Inversions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inversions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inversions')
                 else:
                     print('Error! Expected size distribution of inversions')
                 
@@ -470,7 +497,7 @@ def readFiles(fileDir):
                     line2 = line2.replace('Size Distribution of Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Transpositions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Transpositions')
                 else:
                     print('Error! Expected size distribution of transpositions')
                     
@@ -482,7 +509,7 @@ def readFiles(fileDir):
                     line2 = line2.replace('Size Distribution of Inverted Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
                     dict2 = parseSizeDistribution(line2)
-                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inverted Transpositions')
+#                    constructDistributionGraph(dict1, dict2, 'Size Distribution for Inverted Transpositions')
                 else:
                     print('Error! Expected size distribution of inverted transpositions')
                     
@@ -544,7 +571,7 @@ def readFiles(fileDir):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents
 
 ######## Main ########
-#if readFiles():
+#if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt'):
 #    print('Successfully processed the output files')
 #else:
 #    print('Error! An error has occured while processing the files!')
