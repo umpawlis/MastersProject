@@ -39,6 +39,7 @@ totalInvertedTrans = 0
 
 testFolder = ""
 equalEvents = False
+neighbour = False
 
 class Event:
     def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
@@ -142,6 +143,9 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     testFolder = testSetDir
     global equalEvents
     equalEvents = equal
+    global neighbour
+    if treeStructure == 'tree2LeafNeighbour.dnd':
+        neighbour = True
 
     probDup = dupProb
     dup_pValue = dup_p
@@ -228,7 +232,12 @@ def printTree(currNode):
         printTree(currNode.children[0])
         if len(currNode.children) > 1:
             printTree(currNode.children[1])
-    currNode.printNode()
+    
+    if neighbour:
+        if currNode.name == "NC_000001" or currNode.name == "NC_000002":
+            currNode.printNode()
+    else:
+        currNode.printNode()
 
 
 def printTotals():

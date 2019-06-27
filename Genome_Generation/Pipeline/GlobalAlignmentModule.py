@@ -649,12 +649,13 @@ def removeGenesFromStrains(deletionList):
                     newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
-                            
+                            print description
+                            print stringToRemove
                             otherStrain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
                             
                             listOfGenes = description.split(', ')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
-                            
+                            print listOfGenes
                             #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0 both in the strain and global counter
                             globals.deletionSizeCounter[count] += -1
                             strain.deletionCounts[count] += -1

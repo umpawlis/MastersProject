@@ -114,7 +114,7 @@ def inversionTranspositionComparison(data1, data2, outputFile):
         if region != '':
 #            outputFile.write("Reversing Section\n")
 #            outputFile.write(region + '\n')
-            reversedRegion = getReversed(region) +';'
+#            reversedRegion = getReversed(region) +';'
 #            outputFile.write(reversedRegion + '\n')
             if region in regions1:
                 numEventsFound += 1
@@ -172,13 +172,13 @@ def duplicationDeletionComparison(data1, data2, outputFile):
                 dict1[data[1]] = data[0]
     for segment in segments2:
         if segment != '':
-            if ',' in segment:
+#            if ',' in segment:
 #                outputFile.write("Reversing Section\n")
 #                outputFile.write(segment + '\n')
-                reversedSegment = getReversed(segment)
+#                reversedSegment = getReversed(segment)
 #                outputFile.write(reversedSegment + '\n')
-                if reversedSegment in segments1:
-                    numEventsFound += 1
+#                if reversedSegment in segments1:
+#                    numEventsFound += 1
             if segment in segments1:
                 numEventsFound += 1
             genes = segment.split(', ')

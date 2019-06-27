@@ -1,6 +1,8 @@
 from genomeGenerator import generateTests
 from CompareResultsService import readFiles
 from CompareAncestors import compareAnc
+from CompareAncestors import getFirstLineFromFile
+from CompareAncestors import cleanUpGenomes
 from ListEvents import outputEvents
 from shutil import copy
 import matplotlib.pyplot as plt
@@ -9,6 +11,11 @@ import sys
 import subprocess
 import datetime
 
+### CONSTANTS ###
+ORTHOALIGN_PATH =  "OrthoAlign/OrthoAlign/"; ##I recommend using an absolute path
+ORTHOALIGN_EXEC = "Aligning"
+DUPLOSS_PATH = "2-SPP/"  ##I recommend using an absolute path
+DUPLOSS_EXEC = "duploss"
 printToConsole = True
 
 probDup = 0.0
@@ -85,6 +92,7 @@ def main():
     totalEventsDupAveragesList = []
     
     totalEventsAppNeighbourAveragesList = []
+    totalEventsOrthoNeighbourAveragesList = []
     
     totalStrictAppAccuracyAveragesList = []
     totalRelaxedAppAccuracyAveragesList = []
@@ -96,12 +104,15 @@ def main():
     # relaxedEventAccuracy = 0.0
     totalStrictAppNeighbourAccuracyAveragesList = []
     totalRelaxedAppNeighbourAccuracyAveragesList = []
+    totalStrictOrthoNeighbourAccuracyAveragesList = []
+    totalRelaxedOrthoNeighbourAccuracyAveragesList = []
     
     totalAppFMeasureList = []
     totalOrthoFMeasureList = []
     totalDupFMeasureList = []
     
     totalAppNeighbourFMeasureList = []
+    totalOrthoNeighbourFMeasureList = []
     
     for test in tests:
         numEventsAppAveragesList = []
@@ -109,6 +120,7 @@ def main():
         numEventsOrthoAveragesList = []
         numEventsDupAveragesList = []
         numEventsAppNeighbourAveragesList = []
+        numEventsOrthoNeighbourAveragesList = []
         
         strictAppAccuracyAveragesList = []
         relaxedAppAccuracyAveragesList = []
@@ -119,12 +131,15 @@ def main():
         
         strictAppNeighbourAccuracyAveragesList = []
         relaxedAppNeighbourAccuracyAveragesList = []
+        strictOrthoNeighbourAccuracyAveragesList = []
+        relaxedOrthoNeighbourAccuracyAveragesList = []
         
         appFMeasureList = []
         orthoFMeasureList = []
         dupFMeasureList = []
         
         appNeighbourFMeasureList = []
+        orthoNeighbourFMeasureList = []
         
         args = test.strip().split()
         count = 4
@@ -225,7 +240,10 @@ def main():
                 duplossOutFile = testSetDir + "/duploss.out"
                 orthoAlignOutFile = testSetDir + "/orthoAlign.out"
                 appRootFile = testSetDir + "/appRoot.txt"
-                genRootFile = testSetDir + "/root.txt"
+                if neighbour:
+                    genRootFile = testSetDir + "/genAncestor1.txt"
+                else:
+                    genRootFile = testSetDir + "/root.txt"
                 
                 with open(orthoAlignOutFile, "r") as f:
                     line = f.readline()
@@ -337,6 +355,54 @@ def main():
                     appNeighbourRecall, appNeighbourPrecision, appNeighbourfMeasure = compareAnc(appNeighbourAncestor, genAncestor, testSetDir + "/appNeighbour-")
                     appNeighbourFMeasureList.append(appNeighbourfMeasure)
                     
+                    genome1 = getFirstLineFromFile(testSetDir + '/NC_000001/sequence.txt ')
+                    genome2 = getFirstLineFromFile(testSetDir + '/NC_000002/sequence.txt ')
+                    genome3 = getFirstLineFromFile(testSetDir + '/NC_000003/sequence.txt ')
+                    
+                    genome1 = cleanUpGenomes(genome1)
+                    genome2 = cleanUpGenomes(genome2)
+                    genome3 = cleanUpGenomes(genome3)
+                    
+                    #Running Duploss with neighbour
+                    command = "java -classpath " + ORTHOALIGN_PATH + " " + ORTHOALIGN_EXEC + " -dt " + genome1 + " " + genome2 + " " + genome3 + " > " + testSetDir + "/orthoAlignNeighbour.out"
+                    print command
+                    os.system(command)
+                    
+                    orthoAlignNeighbourOutFile = testSetDir + "/orthoAlignNeighbour.out"
+                    
+                    with open(orthoAlignNeighbourOutFile, "r") as f:
+                        line = f.readline()
+                        while line:
+                            splitted = line.split("ost = ")
+                            if len(splitted) > 1:
+                                orthoNeighbourCost = float(splitted[1])
+                                line = f.readline()
+                            if line.strip() == ">Ancestor:":
+                                orthoNeighbourAncestor = f.readline().strip()
+                                break
+                            line = f.readline()
+                            
+                    numEventsOrthoNeighbourAveragesList.append(orthoNeighbourCost)
+                    orthoNeighbourRecall, orthoNeighbourPrecision, orthoNeighbourfMeasure = compareAnc(orthoNeighbourAncestor, genAncestor, testSetDir + "/orthoNeighbour-")
+                    orthoNeighbourFMeasureList.append(orthoNeighbourfMeasure)
+                    
+                    outputEvents(testSetDir + "/orthoAlignNeighbour.out", testSetDir + "/orthoAlignNeighbourEvents.out")                
+                    totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents = readFiles(testSetDir, 'orthoAlignNeighbourEvents.out', 'generatorOutput.txt')
+                    
+                    if printToConsole:
+                        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents))
+                    if totalOrthoNeighbourEventsExpected > 0:
+                        strictOrthoNeighbourEventAccuracy = float(totalOrthoNeighbourEventsFound)/float(totalOrthoNeighbourEventsExpected) * 100.0
+                    else:
+                        strictOrthoNeighbourEventAccuracy = 0.0
+                    if totalOrthoNeighbourGenesExpected > 0:
+                        relaxedOrthoNeighbourEventAccuracy = float(totalOrthoNeighbourGenesFound)/float(totalOrthoNeighbourGenesExpected) * 100.0
+                    else:
+                        relaxedOrthoNeighbourEventAccuracy = 0.0
+    
+                    strictOrthoNeighbourAccuracyAveragesList.append(strictOrthoNeighbourEventAccuracy)
+                    relaxedOrthoNeighbourAccuracyAveragesList.append(relaxedOrthoNeighbourEventAccuracy)
+                    
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
@@ -344,6 +410,7 @@ def main():
         totalEventsDupAveragesList.append(numEventsDupAveragesList)
         
         totalEventsAppNeighbourAveragesList.append(numEventsAppNeighbourAveragesList)
+        totalEventsOrthoNeighbourAveragesList.append(numEventsOrthoNeighbourAveragesList)
         
         totalStrictAppAccuracyAveragesList.append(strictAppAccuracyAveragesList)
         totalRelaxedAppAccuracyAveragesList.append(relaxedAppAccuracyAveragesList)
@@ -354,12 +421,15 @@ def main():
         
         totalStrictAppNeighbourAccuracyAveragesList.append(strictAppNeighbourAccuracyAveragesList)
         totalRelaxedAppNeighbourAccuracyAveragesList.append(relaxedAppNeighbourAccuracyAveragesList)
+        totalStrictOrthoNeighbourAccuracyAveragesList.append(strictOrthoNeighbourAccuracyAveragesList)
+        totalRelaxedOrthoNeighbourAccuracyAveragesList.append(relaxedOrthoNeighbourAccuracyAveragesList)
         
         totalAppFMeasureList.append(appFMeasureList)
         totalOrthoFMeasureList.append(orthoFMeasureList)
         totalDupFMeasureList.append(dupFMeasureList)
         
         totalAppNeighbourFMeasureList.append(appNeighbourFMeasureList)
+        totalOrthoNeighbourFMeasureList.append(orthoFMeasureList)
         
         outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
         outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
@@ -367,6 +437,7 @@ def main():
         outputData(totalEventsDupAveragesList, testFolder + "dupEventsData.txt")
         
         outputData(totalEventsAppNeighbourAveragesList, testFolder + "appNeighbourEventsData.txt")
+        outputData(totalEventsOrthoNeighbourAveragesList, testFolder + "orthoNeighbourEventsData.txt")
         
         outputData(totalStrictAppAccuracyAveragesList, testFolder + "strictAppAccuracyData.txt")
         outputData(totalRelaxedAppAccuracyAveragesList, testFolder + "relaxedAppAccuracyData.txt")
@@ -377,18 +448,27 @@ def main():
         
         outputData(totalStrictAppNeighbourAccuracyAveragesList, testFolder + "strictAppNeighbourAccuracyData.txt")
         outputData(totalRelaxedAppNeighbourAccuracyAveragesList, testFolder + "relaxedAppNeighbourAccuracyData.txt")
+        outputData(totalStrictOrthoNeighbourAccuracyAveragesList, testFolder + "strictOrthoNeighbourAccuracyData.txt")
+        outputData(totalRelaxedOrthoNeighbourAccuracyAveragesList, testFolder + "relaxedOrthoNeighbourAccuracyData.txt")
         
         outputData(totalAppFMeasureList, testFolder + "appFMeasureData.txt")
         outputData(totalOrthoFMeasureList, testFolder + "orthoFMeasureData.txt")
         outputData(totalDupFMeasureList, testFolder + "dupFMeasureData.txt")
         
         outputData(totalAppNeighbourFMeasureList, testFolder + "appNeighbourFMeasureData.txt")
+        outputData(totalOrthoNeighbourFMeasureList, testFolder + "orthoNeighbourFMeasureData.txt")
         
         if cherryTree:
-            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList)
-            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourAccuracyAveragesList)
-            graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList, totalAverages5 = totalAppNeighbourFMeasureList)
-            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList, totalEventsAppNeighbourAveragesList)
+            if neighbour: 
+                graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourAccuracyAveragesList)
+                graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourAccuracyAveragesList)
+                graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList, totalAverages5 = totalAppNeighbourFMeasureList, totalAverages6 = totalOrthoNeighbourFMeasureList)
+                graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList, totalEventsAppNeighbourAveragesList, totalEventsOrthoNeighbourAveragesList)
+            else:
+                graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList)
+                graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList)
+                graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
+                graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
         else:
             graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis)
             graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis)
@@ -501,7 +581,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             
             average = currentSum / len(averagesList)
             averages6.append(average)
-        line6, = plt.plot(xAxis, averages6, 'mx-', label='DupLoss')
+        line6, = plt.plot(xAxis, averages6, 'yx--', label='OrthoAlign with Neighbour')
         labels.append(line6)
         
     plt.legend(handles=labels)
