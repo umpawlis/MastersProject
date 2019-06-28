@@ -11,7 +11,7 @@ Strain:NC02
 Codon Mismatch:
 Substitution:
 Duplication:16S 6, 23S 7, 5S 8;
-Deletion:Met_AUG 7, Ser_UCG 6;!Ile_AUC -1, !Ala_GCG -1;Thr_ACG 14;
+Deletion:Ser_UCG 6, Met_AUG 7;!Ala_GCG -1, !Ile_AUC -1;Thr_ACG 14;
 Inversion:Lys_AAA 14;Phe_UUC 13;< t > 12;His_CAU 9, Ser_UCG 10, Met_AUG 11;|
 Transposition:
 Inverted Transposition:
