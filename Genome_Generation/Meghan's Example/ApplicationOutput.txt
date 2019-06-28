@@ -1,0 +1,25 @@
+(NC01:0.00000,NC02:0.00000):0.00000;
+Strain:NC01
+Codon Mismatch:
+Substitution:
+Duplication:Arg_AGA 21;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC02
+Codon Mismatch:
+Substitution:
+Duplication:Pro_CCG 43;Leu_CUG 59;Ser_UCC 85;
+Deletion:Pro_CCG 16;Val_GUA 24;
+Inversion:16S 46, 23S 47; < t > 48; Thr_ACA 49, Gly_GGU 50, Ala_GCA 51, Ser_UCC 52; Glu_GAG 53; Asp_GAU 54; Phe_UUU 55, Phe_UUC 56, Ile_AUC 57, Gly_GGC 58; |
+Transposition:Lys_AAA 6; |
+Inverted Transposition:
+Total Deletions: size: 1 count: 2
+Total Duplications: size: 1 count: 4
+Size Distribution of Inversions: size: 13 count: 1
+Size Distribution of Transpositions: size: 1 count: 1
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 1
+Total Transpositions: 1
+Total Inverted Transpositions: 0
