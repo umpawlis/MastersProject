@@ -10,7 +10,7 @@ Inverted Transposition:
 Strain:NC02
 Codon Mismatch:
 Substitution:
-Duplication:23S 12, 5S 11;
+Duplication:5S 11, 23S 12;
 Deletion:
 Inversion:
 Transposition:

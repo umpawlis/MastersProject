@@ -1105,9 +1105,9 @@ def checkForMatch(gap, positions, sequence, fragment, size):
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
                 if fragment.isNegativeOrientation:
-                    duplicationDetails += gene + ' ' + str(genePos) + ', '
-                else:
                     duplicationDetails = gene + ' ' + str(genePos) + ', ' + duplicationDetails
+                else:
+                    duplicationDetails += gene + ' ' + str(genePos) + ', '
                     
             duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
