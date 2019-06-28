@@ -409,6 +409,8 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
         #Insert the fragments into the dictionary based on the counter
         addedDetails1 = False;
         addedDetails2 = False;
+        size1 = 0
+        size2 = 0
         for x in range(0, len(region)):
             fragment = region[x]
             if count > 0:
@@ -416,6 +418,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
                 #Constructs the description of the region
                 seq = fragment.fragmentDetails1.sequence
+                size2 += len(seq)
                 startPosition = fragment.fragmentDetails1.startPositionInGenome
                 for i in range(0, len(seq)):
                     if fragment.fragmentDetails1.isNegativeOrientation:
@@ -430,6 +433,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
                 #Constructs the description of the region
                 seq = fragment.fragmentDetails2.sequence
+                size1 += len(seq)
                 startPosition = fragment.fragmentDetails2.startPositionInGenome
                 for i in range(0, len(seq)):
                     if fragment.fragmentDetails2.isNegativeOrientation:
@@ -449,18 +453,16 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
             details2 += '|'
-            size = len(region)
-            if size in details2Counter:
-                details2Counter[size] += 1
+            if size2 in details2Counter:
+                details2Counter[size2] += 1
             else:
-                details2Counter[size] = 1
+                details2Counter[size2] = 1
         if addedDetails1:
             details1 += '|'
-            size = len(region)
-            if size in details1Counter:
-                details1Counter[size] += 1
+            if size1 in details1Counter:
+                details1Counter[size1] += 1
             else:
-                details1Counter[size] = 1
+                details1Counter[size1] = 1
 
     return arrangedFragments, details1, details1Counter, details2, details2Counter
 
