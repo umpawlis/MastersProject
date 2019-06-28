@@ -16,7 +16,7 @@ ORTHOALIGN_PATH =  "OrthoAlign/OrthoAlign/"; ##I recommend using an absolute pat
 ORTHOALIGN_EXEC = "Aligning"
 DUPLOSS_PATH = "2-SPP/"  ##I recommend using an absolute path
 DUPLOSS_EXEC = "duploss"
-printToConsole = True
+printToConsole = False
 
 probDup = 0.0
 dup_pValue = 0.0
@@ -215,7 +215,7 @@ def main():
                 f.write(out)
                 f.write(err)
             
-            totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt')
+            totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-')
             
             if printToConsole:
                 print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents))
@@ -291,7 +291,7 @@ def main():
                 dupFMeasureList.append(dupfMeasure)
                 
                 outputEvents(testSetDir + "/orthoAlign.out", testSetDir + "/orthoAlignEvents.out")                
-                totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt')
+                totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt', 'ortho-')
                 
                 if printToConsole:
                     print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents))
@@ -308,7 +308,7 @@ def main():
                 relaxedOrthoAccuracyAveragesList.append(relaxedOrthoEventAccuracy)
                 
                 outputEvents(testSetDir + "/duploss.out", testSetDir + "/duplossEvents.out")
-                totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt')
+                totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt', 'dup-')
                 
                 if printToConsole:
                     print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents))
@@ -331,7 +331,7 @@ def main():
                         f.write(out)
                         f.write(err)
                         
-                    totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt')
+                    totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt', 'appNeighbour-')
                     
                     if printToConsole:
                         print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents))
@@ -387,7 +387,7 @@ def main():
                     orthoNeighbourFMeasureList.append(orthoNeighbourfMeasure)
                     
                     outputEvents(testSetDir + "/orthoAlignNeighbour.out", testSetDir + "/orthoAlignNeighbourEvents.out")                
-                    totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents = readFiles(testSetDir, 'orthoAlignNeighbourEvents.out', 'generatorOutput.txt')
+                    totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents = readFiles(testSetDir, 'orthoAlignNeighbourEvents.out', 'generatorOutput.txt', 'orthoNeighbour-')
                     
                     if printToConsole:
                         print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents))

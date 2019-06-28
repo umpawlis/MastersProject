@@ -290,10 +290,10 @@ def getTotalEvents(line):
 # Parameters:
 # Description: Reads two files and compares two files
 ######################################################
-def readFiles(fileDir, outputFile1, outputFile2):
+def readFiles(fileDir, outputFile1, outputFile2, prefix):
     newickTree1 = ''
     newickTree2 = ''
-    outputFile = open(fileDir+ "/comparisonOutput.txt", "w+")
+    outputFile = open(fileDir+ "/" + prefix + "comparisonOutput.txt", "w+")
     outputFile.write('Opening %s %s...\n' % (outputFile1, outputFile2))
     file1 = open(fileDir+ "/" + outputFile1, "r")
     file2 = open(fileDir+ "/" + outputFile2, "r")

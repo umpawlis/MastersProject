@@ -63,11 +63,12 @@ class Event:
             for operon in self.genes:
                 print operon
                 if isinstance(operon, list):
-                    event = ', '.join(gene + " " + str(index) for gene, index in zip(operon, self.range[count:count + len(operon)]))
+                    event += ', '.join(gene + " " + str(index) for gene, index in zip(operon, self.range[count:count + len(operon)]))
                     event += ";"
                     count += len(operon)
                 else:
                     event += operon + " " + str(self.range[count]) + ";"
+                    count += 1
                     
             event += "|"
         else:
@@ -302,10 +303,17 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
         for k in range(numLoops):
             eventOrder.append(0.95)
             
-        if invMultiplier == 1.0:
-            eventOrder.append(0.70)
-            numEvents += 1
-            increasedNumEvents = True
+        if neighbour:
+            if node.name == "NC_000001" or node.name == "NC_000002":
+                if invMultiplier == 1.0:
+                    eventOrder.append(0.70)
+                    numEvents += 1
+                    increasedNumEvents = True
+        else:
+            if invMultiplier == 1.0:
+                eventOrder.append(0.70)
+                numEvents += 1
+                increasedNumEvents = True
             
         random.shuffle(eventOrder)
         
@@ -315,8 +323,9 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
         if not equalEvents:
             rand = random.random()
         else:
-            print eventOrder
-            print count
+            if printToConsole:
+                print eventOrder
+                print count
             rand = eventOrder[count]
 
         if rand < probDup:
@@ -399,7 +408,12 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
     currNode = Node(currentBefore, currentAfter, parent, duplicationEvents, lossEvents, inversionEvents, substitutionEvents, transpositionEvents, invertedTransEvents, branchEvents, currentEvents, inversionBefores)
 
     if len(node.clades) > 0:
-        left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode)
+        invMultiplier = 1.0
+        if equalEvents:
+            if random.random() < 0.5:
+                # Used so that there is a lower chance of both children having inversions (not common)
+                invMultiplier = 0.5
+        left = buildTreeData(node.clades[0], currentBefore, currentAfter, numEvents, currentEvents, currNode, invMultiplier)
         currNode.children.append(left)
         hasRight = False
         if len(node.clades) > 1:
@@ -550,13 +564,19 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
                 for index in newEvent.range:
                     if index > terminusIndex:
                         numAfter += 1
-                    else:
+                    elif index < terminusIndex:
                         numBefore += 1
 
                 oldterminusIndex = terminusIndex + (numAfter - numBefore)
+                if printToConsole:
+                    print terminusIndex
+                    print oldterminusIndex
 #                print "Terminus index: %d" % (oldterminusIndex)
                 for index in overlap:
                     diff = abs(oldterminusIndex - event.range[index])
+                    if printToConsole:
+                        print "Event index: " + str(event.range[index])
+                        print "Diff: " + str(diff)
 #                    print "index: %d diff: %d" % (event.range[index], diff)
                     if event.range[index] > oldterminusIndex:
                         event.range[index] = terminusIndex - diff
@@ -738,6 +758,8 @@ def performTransposition(before, after, p):
 
     beforeStartIndex = getAbsoluteIndex(fromBefore, before, after, index, startPos)
     beforeStopIndex = beforeStartIndex + len(transSection)
+    if printToConsole:
+        print "Old position: " + str(beforeStartIndex) + " " + str(beforeStopIndex-1)
 
     if random.random() < 0.5:
         genome = before
@@ -861,13 +883,61 @@ def performInversion(before, after, p):
         lengthAfter = min(geometricSampling(p), len(after))
     else:
         lengthAfter = min(geometricSampling(p, 0), len(after))
+    
+    if neighbour:
+        # Make sure we have at least 10 genes in our inversion
+        numGenes = 0
+        for i in range(len(before)-lengthBefore, len(before)):
+            if isinstance(before[i], list):
+                numGenes += len(before[i])
+            else:
+                numGenes += 1
+        for j in range(lengthAfter):
+            if isinstance(after[j], list):
+                numGenes += len(after[j])
+            else:
+                numGenes += 1
+                
+        if printToConsole:
+            print str(numGenes)
+            print "Before length: " + str(lengthBefore)
+            print "After length: " + str(lengthAfter)
+                
+        if numGenes < 10:
+            if random.random() > 0.5:
+                # Extending lengthBefore
+                count = 1
+                while numGenes < 10:
+                    if isinstance(before[len(before)-(lengthBefore + count)], list):
+                        numGenes += len(before[len(before)-(lengthBefore + count)])
+                    else:
+                        numGenes += 1
+                    if numGenes < 10:
+                        count += 1
+                lengthBefore += count
+            else:
+                # Extending lengthAfter
+                count = 0
+                while numGenes < 10:
+                    if isinstance(after[lengthAfter + count], list):
+                        numGenes += len(after[lengthAfter + count])
+                    else:
+                        numGenes += 1
+                    if numGenes < 10:
+                        count += 1
+                lengthAfter += (count + 1)
+                
+            if printToConsole:
+                print str(numGenes)
+                print "Before length: " + str(lengthBefore)
+                print "After length: " + str(lengthAfter)
 
     beforeSection = before[len(before)-lengthBefore:]
     afterSection = after[:lengthAfter]
     index = len(before)-lengthBefore
-    # print len(before)
-    # print before
-    # print lengthBefore
+    if printToConsole:
+        print beforeSection
+        print afterSection
     fromBefore = True
 
     del before[len(before)-lengthBefore:]
@@ -1230,8 +1300,8 @@ if __name__ == '__main__':
     #All probabilities determine how likely the event will occur. **Probabilities have to add up to 1
     #All pValues determine how many genes the event will affect. The higher the pValue, the lower the chance that the event will be large
     #Examples: code below creates genomes of size 25 with atleast 3 operons and 3 events for each genome. Only transpositions will occur though. None of the other events have a probability.
-    generateTests("generatorTesting", "tree2Leaf.dnd", 25, 3, 6, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
+    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 60, 3, 1, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
 #    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.
-#    generateTests("generatorTesting", "tree2Leaf.dnd", 80, 4, 6, 0.4, 0.7, 0.4, 0.7, 0.05, 0.7, 0.05, 0.10, 0.7, False)
+#    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 80, 4, 3, 0.25, 0.7, 0.25, 0.7, 0.25, 0.4, 0.0, 0.25, 0.7, True)
