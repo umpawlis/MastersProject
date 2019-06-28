@@ -1,0 +1,41 @@
+((NC01:0.00000,NC02:0.00000):0.00000,NC03:0.00000):0.00000;
+Strain:NC01
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:Ser_UCC 6, Gly_GGA 7, 16S 8, 23S 9, 5S 10; Ile_AUA 11; < t > 12; |
+Transposition:
+Inverted Transposition:
+Strain:NC02
+Codon Mismatch:
+Substitution:
+Duplication:5S 11, 23S 12;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC03
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Total Deletions: 
+Total Duplications: size: 2 count: 1
+Size Distribution of Inversions: size: 3 count: 1
+Size Distribution of Transpositions: 
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 1
+Total Transpositions: 0
+Total Inverted Transpositions: 0

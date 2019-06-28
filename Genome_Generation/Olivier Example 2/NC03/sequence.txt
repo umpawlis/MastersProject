@@ -1,0 +1,1 @@
+< o >, [16S, 23S, 5S, Ile_AUC, Ala_GCG], Ile_AUA, < t >, -[5S, 23S, 16S, Gly_GGA, Ser_UCC]
