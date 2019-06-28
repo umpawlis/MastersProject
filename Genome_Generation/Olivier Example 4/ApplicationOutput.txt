@@ -1,0 +1,25 @@
+(NC01:0.00000,NC02:0.00000):0.00000;
+Strain:NC01
+Codon Mismatch:
+Substitution:
+Duplication:Ser_UCG 6, Met_AUG 7;
+Deletion:His_CAU 10;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC02
+Codon Mismatch:
+Substitution:
+Duplication:16S 6, 23S 7, 5S 8, Ala_GCG 9;
+Deletion:!Ile_AUC -1;Thr_ACG 14;
+Inversion:His_CAU 10, Ser_UCG 11, Met_AUG 12; < t > 13; Phe_UUC 14; Lys_AAA 15; |
+Transposition:
+Inverted Transposition:
+Total Deletions: size: 1 count: 3
+Total Duplications: size: 2 count: 1, size: 4 count: 1
+Size Distribution of Inversions: size: 6 count: 1
+Size Distribution of Transpositions: 
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 1
+Total Transpositions: 0
+Total Inverted Transpositions: 0

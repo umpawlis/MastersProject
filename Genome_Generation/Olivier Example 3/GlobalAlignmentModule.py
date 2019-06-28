@@ -161,7 +161,6 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
         for t in range(0, len(operonGaps)):
             genes = operonGaps[t]
             positions = operonGapPositions[t]
-            count = 0
             for g in range(0, len(genes)):
                 gene = genes[g]
                 position = positions[g]
@@ -170,14 +169,14 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                 if removeGenes == True:
                     sequenceChanged = True
                     redoAlignment = True
-                    del op.sequence[position - count]
-                    count += 1
-                    
                     #print(position)
-                    #print(op.sequence)                    
-                    #currIndex = g + 1
-                    #for c in range(currIndex, len(positions)):
-                        #positions[c] = positions[c] - 1
+                    #print(op.sequence)
+                    del op.sequence[position]
+                    
+                    currIndex = g + 1
+                    for c in range(currIndex, len(positions)):
+                        positions[c] = positions[c] - 1
+                    
         #Reconstruct the operon string sequence now
         if sequenceChanged:
             sequenceCopy = copy.deepcopy(op.sequence)
@@ -655,13 +654,12 @@ def removeGenesFromStrains(deletionList):
                     newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
-                            print description
-                            print stringToRemove
+                            
                             otherStrain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
                             
-                            listOfGenes = description.split(', ')                #Split the sequence
+                            listOfGenes = description.split(',')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
-                            print listOfGenes
+                            
                             #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0 both in the strain and global counter
                             globals.deletionSizeCounter[count] += -1
                             strain.deletionCounts[count] += -1
@@ -686,12 +684,13 @@ def removeGenesFromStrains(deletionList):
                                 otherStrain.duplicationCounts[1] += 1
                             else:
                                 otherStrain.duplicationCounts[1] = 1
-                                
+                            
                             #print(stringToRemove)
                             #print(listOfGenes)
-                            #for m in range(0, len(listOfGenes)):
-                                #listOfGenes[m] = listOfGenes[m].strip()
-                                
+                            
+                            for m in range(0, len(listOfGenes)):
+                                listOfGenes[m] = listOfGenes[m].strip()
+                            
                             listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
                             if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
                                 newString = ''
@@ -740,7 +739,7 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
 #                                if yPosition > xPosition:
 #                                    otherDeletion.ancestralPosition = yPosition - 1 #Shift to the left
 #                                    otherDeletion.originalPosition = otherDeletion.originalPosition - 1
-                        
+                                    
                         if fragment.fragmentIndex == deletion.ancestralFragmentId:
                             #Replace the operon array and the string sequence
                             fragment.originalSequence = originalSequence
@@ -823,6 +822,7 @@ def reconstructOperonSequence(event, strain1, strain2):
         operon2GapIndexes = event.operon2GapIndexes
         operon1GapPositions = event.operon1GapPositions
         operon2GapPositions = event.operon2GapPositions
+        
         if globals.printToConsole:
             print('These are the extra genes for operon 1: %s' %(operon1Gaps))
             print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
@@ -886,11 +886,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
+                        
                         if event.fragmentDetails1.isNegativeOrientation:
                             deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -930,11 +931,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
+                        
                         if event.fragmentDetails2.isNegativeOrientation:
                             deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -974,11 +976,13 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
+                        
                         if event.fragmentDetails1.isNegativeOrientation:
                             deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -1018,11 +1022,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
+                        
                         if event.fragmentDetails2.isNegativeOrientation:
                             deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -1112,11 +1117,11 @@ def checkForMatch(gap, positions, sequence, fragment, size):
                     genePos = pos + fragment.startPositionInGenome
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
-
                 if fragment.isNegativeOrientation:
                     duplicationDetails = gene + ' ' + str(genePos) + ', ' + duplicationDetails
                 else:
                     duplicationDetails += gene + ' ' + str(genePos) + ', '
+                    
             duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
 

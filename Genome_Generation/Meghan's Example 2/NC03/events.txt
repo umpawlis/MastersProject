@@ -1,0 +1,3 @@
+Event(Type = 'L', Range = [46], Genes: ['Asp_GAC']
+Event(Type = 'IT', Range = [83, 84], Genes: ['Leu_CUA', 'Ala_GCA']
+Event(Type = 'D', Range = [11, 12, 13], Genes: ['16S', '23S', '5S']

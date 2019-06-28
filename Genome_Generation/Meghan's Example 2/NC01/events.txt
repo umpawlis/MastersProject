@@ -1,0 +1,6 @@
+Event(Type = 'L', Range = [82], Genes: ['Lys_AAA']
+Event(Type = 'T', Range = [63, 64, 65, 66], Genes: ['Arg_CGC', 'Leu_CUC', 'Gln_CAG', 'Ala_GCA']
+Event(Type = 'D', Range = [50], Genes: ['Ala_GCA']
+Event(Type = 'L', Range = [84], Genes: ['Glu_GAA']
+Event(Type = 'D', Range = [53], Genes: ['5S']
+Event(Type = 'T', Range = [108, 109], Genes: ['Cys_UGU', 'Cys_UGU']
