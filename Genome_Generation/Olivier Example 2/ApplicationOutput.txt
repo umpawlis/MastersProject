@@ -33,7 +33,7 @@ Transposition:
 Inverted Transposition:
 Total Deletions: 
 Total Duplications: size: 2 count: 1
-Size Distribution of Inversions: size: 3 count: 1
+Size Distribution of Inversions: size: 7 count: 1
 Size Distribution of Transpositions: 
 Size Distribution of Inverted Transpositions: 
 Total Inversions: 1
