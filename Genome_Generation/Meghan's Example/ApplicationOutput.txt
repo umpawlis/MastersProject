@@ -12,12 +12,12 @@ Codon Mismatch:
 Substitution:
 Duplication:Pro_CCG 43;Leu_CUG 59;Ser_UCC 85;
 Deletion:Pro_CCG 16;Val_GUA 24;
-Inversion:Gly_GGC 55, Ile_AUC 56, Phe_UUC 57, Phe_UUU 58;Asp_GAU 54;Glu_GAG 53;Ser_UCC 49, Ala_GCA 50, Gly_GGU 51, Thr_ACA 52;< t > 48;16S 46, 23S 47;|
-Transposition:Lys_AAA 6;|
+Inversion:16S 46, 23S 47; < t > 48; Thr_ACA 49, Gly_GGU 50, Ala_GCA 51, Ser_UCC 52; Glu_GAG 53; Asp_GAU 54; Phe_UUU 55, Phe_UUC 56, Ile_AUC 57, Gly_GGC 58; |
+Transposition:Lys_AAA 6; |
 Inverted Transposition:
 Total Deletions: size: 1 count: 2
 Total Duplications: size: 1 count: 4
-Size Distribution of Inversions: size: 6 count: 1
+Size Distribution of Inversions: size: 13 count: 1
 Size Distribution of Transpositions: size: 1 count: 1
 Size Distribution of Inverted Transpositions: 
 Total Inversions: 1

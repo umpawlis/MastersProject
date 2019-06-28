@@ -420,13 +420,15 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 seq = fragment.fragmentDetails1.sequence
                 size2 += len(seq)
                 startPosition = fragment.fragmentDetails1.startPositionInGenome
+                temp = ''
                 for i in range(0, len(seq)):
                     if fragment.fragmentDetails1.isNegativeOrientation:
-                        details2 = seq[i] + ' ' + str(startPosition + i) + ', ' + details2
+                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
                     else:
-                        details2 += seq[i] + ' ' + str(startPosition + i) + ', '
-                details2 = details2[0:(len(details2) - 2)]
-                details2 += '; '
+                        temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
+                temp = temp[0:(len(temp) - 2)]
+                temp += '; '
+                details2 += temp
                 addedDetails2 = True
             else:
                 targetIndex = fragment.fragmentDetails1.fragmentIndex #Neighbor's arrangement does not match Strain 1
@@ -435,13 +437,15 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                 seq = fragment.fragmentDetails2.sequence
                 size1 += len(seq)
                 startPosition = fragment.fragmentDetails2.startPositionInGenome
+                temp = ''
                 for i in range(0, len(seq)):
                     if fragment.fragmentDetails2.isNegativeOrientation:
-                        details1 = seq[i] + ' ' + str(startPosition + i) + ', ' + details1
+                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
                     else:
-                        details1 += seq[i] + ' ' + str(startPosition + i) + ', '
-                details1 = details1[0:(len(details1) - 2)]
-                details1 += '; '
+                        temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
+                temp = temp[0:(len(temp) - 2)]
+                temp += '; '
+                details1 += temp
                 addedDetails1 = True
 
             if targetIndex in arrangedFragments:
@@ -585,7 +589,11 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
     #Transposed/Inverted/Transposed Inverted
     for region in fragments:
+        size = 0
         addedDetails2 = False; #Tracks whether we added a region
+        
+        #Sort region
+        region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
         for x in range(0, len(region)):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
@@ -593,11 +601,19 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
             #We will assume Strain 2 was transposed, inverted, inverted transposed if no neighbor is present
             seq = fragment.fragmentDetails2.sequence
+            size += len(seq)
             startPosition = fragment.fragmentDetails2.startPositionInGenome
+            temp = ''
             for i in range(0, len(seq)):
-                details2 += seq[i] + ' ' + str(startPosition + i) + ', '
-            details2 = details2[0:(len(details2) - 2)]
-            details2 += ';'
+                
+                if fragment.fragmentDetails2.isNegativeOrientation:
+                    temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
+                else:
+                    temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
+
+            temp = temp[0:(len(temp) - 2)]
+            temp += '; '
+            details2 += temp
             addedDetails2 = True
 
             if index1 in arrangedFragments:
@@ -608,7 +624,6 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
             details2 += '|'
-            size = len(region)
             if size in details2Counter:
                 details2Counter[size] += 1
             else:
