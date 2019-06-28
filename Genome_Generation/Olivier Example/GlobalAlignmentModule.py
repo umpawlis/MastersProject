@@ -873,8 +873,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                        
+                        if event.fragmentDetails1.isNegativeOrientation:
+                            deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                        else:
+                            deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -914,8 +918,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                        
+                        if event.fragmentDetails2.isNegativeOrientation:
+                            deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                        else:
+                            deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -955,8 +963,13 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
-                        deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                        
+                        if event.fragmentDetails1.isNegativeOrientation:
+                            deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
+                        else:
+                            deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -996,8 +1009,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
-                        deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                        
+                        if event.fragmentDetails2.isNegativeOrientation:
+                            deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
+                        else:
+                            deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -1087,8 +1104,11 @@ def checkForMatch(gap, positions, sequence, fragment, size):
                     genePos = pos + fragment.startPositionInGenome
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
-
-                duplicationDetails += gene + ' ' + str(genePos) + ', '
+                if fragment.isNegativeOrientation:
+                    duplicationDetails += gene + ' ' + str(genePos) + ', '
+                else:
+                    duplicationDetails = gene + ' ' + str(genePos) + ', ' + duplicationDetails
+                    
             duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
             duplicationDetails += ';' #This indicates end of duplication fragment
 
@@ -1232,7 +1252,10 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                     op.reverse()
                 
                 for gene in op:
-                    deletionDetails += gene + ' ' + str(position) + ', '
+                    if event.fragmentDetails1.isNegativeOrientation:
+                        deletionDetails += gene + ' ' + str(position) + ', '
+                    else:                        
+                        deletionDetails = gene + ' ' + str(position) + ', ' + deletionDetails
                     position += 1
                 deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                 deletionDetails += ';'
@@ -1253,7 +1276,10 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                     op.reverse()
                 
                 for gene in op:
-                    deletionDetails += gene + ' ' + str(position) + ', '
+                    if event.fragmentDetails1.isNegativeOrientation:
+                        deletionDetails += gene + ' ' + str(position) + ', '
+                    else:
+                        deletionDetails = gene + ' ' + str(position) + ', ' + deletionDetails
                     position += 1
                 deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                 deletionDetails += ';'
