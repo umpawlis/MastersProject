@@ -278,8 +278,8 @@ def computeRegionDetails(regions, description):
                 temp2 += currGene + ' ' + str(currPos) + ', '
             temp2 = temp2[0:(len(temp2) - 2)]
             temp2 += ';'
-        temp1 += '|' #End of region
-        temp2 += '|' #End of region
+        temp1 = temp1.strip() + '|' #End of region
+        temp2 = temp2.strip() + '|' #End of region
 
     return temp1, temp2
 
@@ -464,13 +464,13 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
 
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
+            details2 = details2.strip() + '|'
             if size2 in details2Counter:
                 details2Counter[size2] += 1
             else:
                 details2Counter[size2] = 1
         if addedDetails1:
-            details1 += '|'
+            details1 = details1.strip() + '|'
             if size1 in details1Counter:
                 details1Counter[size1] += 1
             else:
@@ -631,7 +631,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
                 arrangedFragments[index1].append(fragment)
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
+            details2 = details2.strip() + '|'
             if size in details2Counter:
                 details2Counter[size] += 1
             else:
