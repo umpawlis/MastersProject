@@ -78,8 +78,8 @@ def parseOutputFile(filename):
 			if len(operationSplit) > 0:
 				if operationSplit[0] == "Substitution":
 					#subs.append(splitted[0].replace(" ", "") + "<->" + splitted[1].split("Substitution")[0].replace(" ", ""))
-					#now splitting them into two events
-					subs.append(splitted[0].replace(" ", ""))
+					#now splitting them into two events --> not anymore, I realized they always assign it to genome Y
+					#subs.append(splitted[0].replace(" ", ""))  #gene in genome X is always considered to be the ancestral one
 					subs.append(splitted[1].split("Substitution")[0].replace(" ", ""))
 				else:
 					genesAffected = operationSplit[2]
@@ -109,7 +109,7 @@ def parseOutputFile(filename):
 										genesAffected = startEndSplit[0]
 						dups.append(genesAffected)
 					elif operationSplit[0] == "Inversion":
-						invs.append(genesAffected)
+						#invs.append(genesAffected)  --> not anymore, I realized they always assign it to genome Y
 						otherGenesAffected = operationSplit[4]
 						startEndSplit = operationSplit[4].split("...")
 						if len(startEndSplit) > 1:
@@ -117,7 +117,8 @@ def parseOutputFile(filename):
 								otherGenesAffected = startEndSplit[0]
 						invs.append(otherGenesAffected)
 					elif operationSplit[0] == "transposition":
-						transpos.append(genesAffected)
+						if "." in splitted[0]: #Now adding the transposition only on genome Y, because I realized that's where they always put it
+							transpos.append(genesAffected)
 					else:
 						print "BIG PROBLEM: operation " + operationSplit[0] + " not recognized"
 			
@@ -277,7 +278,7 @@ if __name__ == '__main__':
 	#outputEvents("test-orthoAlign.out", "testevents.out")
 	#outputEvents("orthoAlign-transpo.out", "testevents.out")
 	#outputEvents("orthoAlign.out", "testevents.out")
-	outputEvents("orthoAlign-bigTest.out", "testevents.out")
+	#outputEvents("orthoAlign-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTestMOD.out", "testevents.out")
-	#outputEvents("orthoAlign-buggy.out", "testevents.out")
+	outputEvents("orthoAlign-buggy.out", "testevents.out")

@@ -119,14 +119,15 @@ def inversionTranspositionComparison(data1, data2, outputFile):
             if region in regions1:
                 numEventsFound += 1
             operons = region.split(';')
-            if operon != '':
-                for operon in operons:
-                    genes = operon.split(', ')
-                    numGenesExpected += len(genes)
-                    for gene in genes:
-                        data = gene.split(' ')
-                        if len(data) == 2:
-                            dict2[data[1]] = data[0]
+            for operon in operons:
+                if operon != '':
+                    for operon in operons:
+                        genes = operon.split(', ')
+                        numGenesExpected += len(genes)
+                        for gene in genes:
+                            data = gene.split(' ')
+                            if len(data) == 2:
+                                dict2[data[1]] = data[0]
     #Compute a percentage
     keys = dict1.keys()
     count = 0
