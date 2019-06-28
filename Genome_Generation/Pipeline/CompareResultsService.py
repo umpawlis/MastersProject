@@ -121,13 +121,12 @@ def inversionTranspositionComparison(data1, data2, outputFile):
             operons = region.split(';')
             for operon in operons:
                 if operon != '':
-                    for operon in operons:
-                        genes = operon.split(', ')
-                        numGenesExpected += len(genes)
-                        for gene in genes:
-                            data = gene.split(' ')
-                            if len(data) == 2:
-                                dict2[data[1]] = data[0]
+                    genes = operon.split(', ')
+                    numGenesExpected += len(genes)
+                    for gene in genes:
+                        data = gene.split(' ')
+                        if len(data) == 2:
+                            dict2[data[1]] = data[0]
     #Compute a percentage
     keys = dict1.keys()
     count = 0
@@ -304,6 +303,10 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     totalGenesFound = 0
     totalGenesExpected = 0
     totalAppEvents = 0
+    
+    orthoFile = False
+    if 'ortho' in outputFile1:
+        orthoFile = True
 
     if file1.mode == "r" and file2.mode == "r":
         newickTree1 = file1.readline() #Newick tree 1
@@ -434,12 +437,16 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                     else:
                         print('Error! This line should be the transpositions')
                         return False
-
-                    line1 = file1.readline() #Inverted Transposition
-                    line2 = file2.readline() #Inverted Transposition
-                    if 'Inverted Transposition' in line1 and 'Inverted Transposition' in line2:
+                    
+                    if orthoFile:
+                        line2 = file2.readline() #Ortho files put all transpositions and inverted transpositions onto the same line
+                    else:
+                        line1 = file1.readline() #Inverted Transposition
+                        line2 = file2.readline() #Inverted Transposition
+                    if ('Inverted Transposition' in line1 and 'Inverted Transposition' in line2) or orthoFile:
                         outputFile.write('Comparing the inverted transposition between the strains!\n')
-                        line1 = line1.replace('Inverted Transposition:', '')
+                        if not orthoFile:
+                            line1 = line1.replace('Inverted Transposition:', '')
                         line2 = line2.replace('Inverted Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2, outputFile)
                         totalEventsFound += result[0]
@@ -452,6 +459,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                     else:
                         print('Error! This line should be the inverted transpositions')
                         return False
+                    if orthoFile:
+                        line1 = file1.readline()
                     
             elif 'Total Deletions' in line1 and 'Total Deletions' in line2:
                 outputFile.write('Comparing total deletions between files!\n')
