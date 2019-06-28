@@ -5,7 +5,7 @@ import argparse
 import random
 import copy
 
-printToConsole = True
+printToConsole = False
 
 aminoAcids = ["Ala_GCU", "Ala_GCC", "Ala_GCA", "Ala_GCG", "Arg_CGU", "Arg_CGC", "Arg_CGA", "Arg_CGG", "Arg_AGA", 
     "Arg_AGG", "Asp_GAU", "Asp_GAC", "Cys_UGU", "Cys_UGC", "Glu_GAA", "Glu_GAG", "Gln_CAA", "Gln_CAG", "Gly_GGU", "Gly_GGC",
