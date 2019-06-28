@@ -1261,9 +1261,9 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                 
                 for gene in op:
                     if event.fragmentDetails1.isNegativeOrientation:
-                        deletionDetails += gene + ' ' + str(position) + ', '
-                    else:                        
                         deletionDetails = gene + ' ' + str(position) + ', ' + deletionDetails
+                    else:                        
+                        deletionDetails += gene + ' ' + str(position) + ', '
                     position += 1
                 deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                 deletionDetails += ';'
@@ -1285,9 +1285,9 @@ def reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverag
                 
                 for gene in op:
                     if event.fragmentDetails1.isNegativeOrientation:
-                        deletionDetails += gene + ' ' + str(position) + ', '
-                    else:
                         deletionDetails = gene + ' ' + str(position) + ', ' + deletionDetails
+                    else:
+                        deletionDetails += gene + ' ' + str(position) + ', '
                     position += 1
                 deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                 deletionDetails += ';'
