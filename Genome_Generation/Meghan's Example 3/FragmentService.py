@@ -407,8 +407,8 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
             if match:
                 count += 1
         #Insert the fragments into the dictionary based on the counter
-        addedDetails1 = False;
-        addedDetails2 = False;
+        addedDetails1 = False
+        addedDetails2 = False
         size1 = 0
         size2 = 0
         
@@ -435,7 +435,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                         temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
                 temp = temp[0:(len(temp) - 2)]
                 temp += '; '
-                details1 += temp
+                details1 += temp.strip()
                 addedDetails1 = True
                 
             else:
@@ -453,7 +453,7 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                         temp += seq[i] + ' ' + str(startPosition + i) + ', '
                 temp = temp[0:(len(temp) - 2)]
                 temp += '; '
-                details2 += temp
+                details2 += temp.strip()
                 addedDetails2 = True
 
             if targetIndex in arrangedFragments:
@@ -598,7 +598,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
     #Transposed/Inverted/Transposed Inverted
     for region in fragments:
         size = 0
-        addedDetails2 = False; #Tracks whether we added a region
+        addedDetails2 = False #Tracks whether we added a region
         
         #Sort region
         region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
@@ -621,7 +621,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
             temp = temp[0:(len(temp) - 2)]
             temp += '; '
-            details2 += temp
+            details2 += temp.strip()
             addedDetails2 = True
 
             if index1 in arrangedFragments:
