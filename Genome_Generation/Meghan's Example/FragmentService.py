@@ -278,8 +278,8 @@ def computeRegionDetails(regions, description):
                 temp2 += currGene + ' ' + str(currPos) + ', '
             temp2 = temp2[0:(len(temp2) - 2)]
             temp2 += ';'
-        temp1 += '|' #End of region
-        temp2 += '|' #End of region
+        temp1 = temp1.strip() + '|' #End of region
+        temp2 = temp2.strip() + '|' #End of region
 
     return temp1, temp2
 
@@ -407,30 +407,20 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
             if match:
                 count += 1
         #Insert the fragments into the dictionary based on the counter
-        addedDetails1 = False;
-        addedDetails2 = False;
+        addedDetails1 = False
+        addedDetails2 = False
         size1 = 0
         size2 = 0
+        
+        #Sort region so the correct sequence is generated
+        if count > 0:
+            region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
+        else:
+            region.sort(key=lambda x:x.fragmentDetails1.fragmentIndex, reverse=False)
+        
         for x in range(0, len(region)):
             fragment = region[x]
             if count > 0:
-                targetIndex = fragment.fragmentDetails2.fragmentIndex #Same arrangement exists in the neighbor
-                fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
-                #Constructs the description of the region
-                seq = fragment.fragmentDetails1.sequence
-                size2 += len(seq)
-                startPosition = fragment.fragmentDetails1.startPositionInGenome
-                temp = ''
-                for i in range(0, len(seq)):
-                    if fragment.fragmentDetails1.isNegativeOrientation:
-                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
-                    else:
-                        temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
-                temp = temp[0:(len(temp) - 2)]
-                temp += '; '
-                details2 += temp
-                addedDetails2 = True
-            else:
                 targetIndex = fragment.fragmentDetails1.fragmentIndex #Neighbor's arrangement does not match Strain 1
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
                 #Constructs the description of the region
@@ -445,8 +435,26 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
                         temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
                 temp = temp[0:(len(temp) - 2)]
                 temp += '; '
-                details1 += temp
+                details1 += temp.strip()
                 addedDetails1 = True
+                
+            else:
+                targetIndex = fragment.fragmentDetails2.fragmentIndex #Same arrangement exists in the neighbor
+                fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
+                #Constructs the description of the region
+                seq = fragment.fragmentDetails1.sequence
+                size2 += len(seq)
+                startPosition = fragment.fragmentDetails1.startPositionInGenome
+                temp = ''
+                for i in range(0, len(seq)):
+                    if fragment.fragmentDetails1.isNegativeOrientation:
+                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
+                    else:
+                        temp += seq[i] + ' ' + str(startPosition + i) + ', '
+                temp = temp[0:(len(temp) - 2)]
+                temp += '; '
+                details2 += temp.strip()
+                addedDetails2 = True
 
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
@@ -456,13 +464,13 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
 
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
+            details2 = details2.strip() + '|'
             if size2 in details2Counter:
                 details2Counter[size2] += 1
             else:
                 details2Counter[size2] = 1
         if addedDetails1:
-            details1 += '|'
+            details1 = details1.strip() + '|'
             if size1 in details1Counter:
                 details1Counter[size1] += 1
             else:
@@ -590,7 +598,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
     #Transposed/Inverted/Transposed Inverted
     for region in fragments:
         size = 0
-        addedDetails2 = False; #Tracks whether we added a region
+        addedDetails2 = False #Tracks whether we added a region
         
         #Sort region
         region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
@@ -613,7 +621,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
             temp = temp[0:(len(temp) - 2)]
             temp += '; '
-            details2 += temp
+            details2 += temp.strip()
             addedDetails2 = True
 
             if index1 in arrangedFragments:
@@ -623,7 +631,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
                 arrangedFragments[index1].append(fragment)
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
+            details2 = details2.strip() + '|'
             if size in details2Counter:
                 details2Counter[size] += 1
             else:

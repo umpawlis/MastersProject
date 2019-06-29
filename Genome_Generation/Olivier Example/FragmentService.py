@@ -278,8 +278,8 @@ def computeRegionDetails(regions, description):
                 temp2 += currGene + ' ' + str(currPos) + ', '
             temp2 = temp2[0:(len(temp2) - 2)]
             temp2 += ';'
-        temp1 += '|' #End of region
-        temp2 += '|' #End of region
+        temp1 = temp1.strip() + '|' #End of region
+        temp2 = temp2.strip() + '|' #End of region
 
     return temp1, temp2
 
@@ -335,52 +335,52 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(TR, NFCR, arrangedFragments)
     if len(details1Counter) > 0:
         for size, count in details1Counter.items():
-            if size in strain1.transpositionCounts:
-                strain1.transpositionCounts[size] += count
-            else:
-                strain1.transpositionCounts[size] = count
-        strain1.transpositionDetails += details1
-    if len(details2Counter) > 0:
-        for size, count in details2Counter.items():
             if size in strain2.transpositionCounts:
                 strain2.transpositionCounts[size] += count
             else:
                 strain2.transpositionCounts[size] = count
-        strain2.transpositionDetails += details2
+        strain2.transpositionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain1.transpositionCounts:
+                strain1.transpositionCounts[size] += count
+            else:
+                strain1.transpositionCounts[size] = count
+        strain1.transpositionDetails += details2
 
     #Inverted regions
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(IR, NFCR, arrangedFragments)
     if len(details1Counter) > 0:
         for size, count in details1Counter.items():
-            if size in strain1.inversionCounts:
-                strain1.inversionCounts[size] += count
-            else:
-                strain1.inversionCounts[size] = count
-        strain1.inversionDetails += details1
-    if len(details2Counter) > 0:
-        for size, count in details2Counter.items():
             if size in strain2.inversionCounts:
                 strain2.inversionCounts[size] += count
             else:
                 strain2.inversionCounts[size] = count
-        strain2.inversionDetails += details2
+        strain2.inversionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain1.inversionCounts:
+                strain1.inversionCounts[size] += count
+            else:
+                strain1.inversionCounts[size] = count
+        strain1.inversionDetails += details2
 
     #Inverted Transposed regions
     arrangedFragments, details1, details1Counter, details2, details2Counter = insertRegionIntoDictionary(ITR, NFCR, arrangedFragments)
     if len(details1Counter) > 0:
         for size, count in details1Counter.items():
             if size in strain1.invertedTranspositionCounts:
-                strain1.invertedTranspositionCounts[size] += count
-            else:
-                strain1.invertedTranspositionCounts[size] = count
-        strain1.invertedTranspositionDetails += details1
-    if len(details2Counter) > 0:
-        for size, count in details2Counter.items():
-            if size in strain2.invertedTranspositionCounts:
                 strain2.invertedTranspositionCounts[size] += count
             else:
                 strain2.invertedTranspositionCounts[size] = count
-        strain2.invertedTranspositionDetails += details2
+        strain2.invertedTranspositionDetails += details1
+    if len(details2Counter) > 0:
+        for size, count in details2Counter.items():
+            if size in strain2.invertedTranspositionCounts:
+                strain1.invertedTranspositionCounts[size] += count
+            else:
+                strain1.invertedTranspositionCounts[size] = count
+        strain1.invertedTranspositionDetails += details2
 
     #Construct the return the genome
     ancestralFragments = constructGenome(arrangedFragments)
@@ -407,32 +407,54 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
             if match:
                 count += 1
         #Insert the fragments into the dictionary based on the counter
-        addedDetails1 = False;
-        addedDetails2 = False;
+        addedDetails1 = False
+        addedDetails2 = False
+        size1 = 0
+        size2 = 0
+        
+        #Sort region so the correct sequence is generated
+        if count > 0:
+            region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
+        else:
+            region.sort(key=lambda x:x.fragmentDetails1.fragmentIndex, reverse=False)
+        
         for x in range(0, len(region)):
             fragment = region[x]
             if count > 0:
-                targetIndex = fragment.fragmentDetails1.fragmentIndex #Same arrangement exists in the neighbor
+                targetIndex = fragment.fragmentDetails1.fragmentIndex #Neighbor's arrangement does not match Strain 1
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails1.isNegativeOrientation) #Identifies the orientation of the ancestral operon
                 #Constructs the description of the region
                 seq = fragment.fragmentDetails2.sequence
+                size1 += len(seq)
                 startPosition = fragment.fragmentDetails2.startPositionInGenome
+                temp = ''
                 for i in range(0, len(seq)):
-                    details2 += seq[i] + ' ' + str(startPosition + i) + ', '
-                details2 = details2[0:(len(details2) - 2)]
-                details2 += ';'
-                addedDetails2 = True
+                    if fragment.fragmentDetails2.isNegativeOrientation:
+                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
+                    else:
+                        temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
+                temp = temp[0:(len(temp) - 2)]
+                temp += '; '
+                details1 += temp.strip()
+                addedDetails1 = True
+                
             else:
-                targetIndex = fragment.fragmentDetails2.fragmentIndex #Neighbor's arrangement does not match Strain 1
+                targetIndex = fragment.fragmentDetails2.fragmentIndex #Same arrangement exists in the neighbor
                 fragment.setAncestralOperonNegativeOrientation(fragment.fragmentDetails2.isNegativeOrientation) #Identifies the orientation of the ancestral operon
                 #Constructs the description of the region
                 seq = fragment.fragmentDetails1.sequence
+                size2 += len(seq)
                 startPosition = fragment.fragmentDetails1.startPositionInGenome
+                temp = ''
                 for i in range(0, len(seq)):
-                    details1 += seq[i] + ' ' + str(startPosition + i) + ', '
-                details1 = details1[0:(len(details1) - 2)]
-                details1 += ';'
-                addedDetails1 = True
+                    if fragment.fragmentDetails1.isNegativeOrientation:
+                        temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
+                    else:
+                        temp += seq[i] + ' ' + str(startPosition + i) + ', '
+                temp = temp[0:(len(temp) - 2)]
+                temp += '; '
+                details2 += temp.strip()
+                addedDetails2 = True
 
             if targetIndex in arrangedFragments:
                 arrangedFragments[targetIndex].append(fragment)
@@ -442,19 +464,17 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
 
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
-            size = len(region)
-            if size in details2Counter:
-                details2Counter[size] += 1
+            details2 = details2.strip() + '|'
+            if size2 in details2Counter:
+                details2Counter[size2] += 1
             else:
-                details2Counter[size] = 1
+                details2Counter[size2] = 1
         if addedDetails1:
-            details1 += '|'
-            size = len(region)
-            if size in details1Counter:
-                details1Counter[size] += 1
+            details1 = details1.strip() + '|'
+            if size1 in details1Counter:
+                details1Counter[size1] += 1
             else:
-                details1Counter[size] = 1
+                details1Counter[size1] = 1
 
     return arrangedFragments, details1, details1Counter, details2, details2Counter
 
@@ -577,7 +597,11 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
     #Transposed/Inverted/Transposed Inverted
     for region in fragments:
-        addedDetails2 = False; #Tracks whether we added a region
+        size = 0
+        addedDetails2 = False #Tracks whether we added a region
+        
+        #Sort region
+        region.sort(key=lambda x:x.fragmentDetails2.fragmentIndex, reverse=False)
         for x in range(0, len(region)):
             fragment = region[x]
             index1 = fragment.fragmentDetails1.fragmentIndex
@@ -585,11 +609,19 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
 
             #We will assume Strain 2 was transposed, inverted, inverted transposed if no neighbor is present
             seq = fragment.fragmentDetails2.sequence
+            size += len(seq)
             startPosition = fragment.fragmentDetails2.startPositionInGenome
+            temp = ''
             for i in range(0, len(seq)):
-                details2 += seq[i] + ' ' + str(startPosition + i) + ', '
-            details2 = details2[0:(len(details2) - 2)]
-            details2 += ';'
+                
+                if fragment.fragmentDetails2.isNegativeOrientation:
+                    temp = seq[i] + ' ' + str(startPosition + len(seq) - i - 1) + ', ' + temp
+                else:
+                    temp += seq[i] + ' ' + str(startPosition + i) + ', ' 
+
+            temp = temp[0:(len(temp) - 2)]
+            temp += '; '
+            details2 += temp.strip()
             addedDetails2 = True
 
             if index1 in arrangedFragments:
@@ -599,8 +631,7 @@ def insertFragmentsIntoGenome(fragments, arrangedFragments):
                 arrangedFragments[index1].append(fragment)
         #Add a delimiter if a region was added and increment the appropriate counter
         if addedDetails2:
-            details2 += '|'
-            size = len(region)
+            details2 = details2.strip() + '|'
             if size in details2Counter:
                 details2Counter[size] += 1
             else:
