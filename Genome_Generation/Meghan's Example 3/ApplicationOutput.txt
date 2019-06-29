@@ -4,7 +4,7 @@ Codon Mismatch:
 Substitution:
 Duplication:Cys_UGC 72;16S 78;
 Deletion:
-Inversion:Gly_GGG 57, Gly_GGC 58; < t > 59; Ala_GCG 60, Pro_CCG 61, Gly_GGA 62, Arg_CGG 63, Gly_GGA 64; His_CAU 65;|
+Inversion:Gly_GGG 57, Gly_GGC 58;< t > 59;Ala_GCG 60, Pro_CCG 61, Gly_GGA 62, Arg_CGG 63, Gly_GGA 64;His_CAU 65;|
 Transposition:5S 69, 23S 70, 16S 71;|
 Inverted Transposition:
 Strain:NC02
