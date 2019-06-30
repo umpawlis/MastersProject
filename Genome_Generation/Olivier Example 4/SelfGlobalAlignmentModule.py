@@ -164,43 +164,43 @@ def handleDuplicateDetails(event, strain):
             #These are the extra genes in the source therefore they were deleted in the target
             tempString = ''
             for gap in operon2Gaps:
+                tempString = ''
                 for gene in gap:
                     if event.fragmentDetails2.isNegativeOrientation:
-                        tempString += '!' + gene + ' ' +str(-1) + ', '
-                    else:
                         tempString = '!' + gene + ' ' +str(-1) + ', ' + tempString
-                        
+                    else:
+                        tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
+                strain.deletionDetails += tempString
+                
                 #Increment the size distribution for this particular gap
                 sizeOfDeltion = len(gap)
                 if sizeOfDeltion in strain.deletionCounts:
                     strain.deletionCounts[sizeOfDeltion] += 1
                 else:
                     strain.deletionCounts[sizeOfDeltion] = 1
-            #Here wer have the complete string, insert as deletion into target
-            strain.deletionDetails += tempString
-            
+                    
         if len(operon1Gaps) > 0:
             #These are the extra genes in the target, therefore there were duplicated into the target
             tempString = ''
             for gap in operon1Gaps:
+                tempString = ''
                 for gene in gap:
                     if event.fragmentDetails1.isNegativeOrientation:
-                        tempString += '!' + gene + ' ' +str(-1) + ', '
-                    else:
                         tempString = '!' + gene + ' ' +str(-1) + ', ' + tempString
+                    else:
+                        tempString += '!' + gene + ' ' +str(-1) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
+                strain.duplicationDetails += tempString
                 #Increment the size distribution
                 sizeOfDuplication = len(gap)
                 if sizeOfDuplication in strain.duplicationCounts:
                     strain.duplicationCounts[sizeOfDuplication] += 1
                 else:
                     strain.duplicationCounts[sizeOfDuplication] = 1
-            #Here wer have the complete string, insert as duplication into the target
-            strain.duplicationDetails += tempString
-            
+                    
     #Indicate the whole operon was duplicated
     index = 0
     tempString = ''
