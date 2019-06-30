@@ -217,9 +217,9 @@ def handleDuplicateDetails(event, strain):
             index += 1
         else:
             if event.fragmentDetails1.isNegativeOrientation == False:
-                tempString += sequenceDuplicated[x] + ' ' + str(-1) + ', '
+                tempString += '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', '
             else:
-                tempString = sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
+                tempString = '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
                 
     tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
     tempString += ';'
