@@ -201,21 +201,51 @@ def handleDuplicateDetails(event, strain):
             #Here wer have the complete string, insert as duplication into the target
             strain.duplicationDetails += tempString
             
-    #Now handle the match region details, the matched regions are duplications with a normal index
+    #Indicate the whole operon was duplicated
+    index = 0
     tempString = ''
-    sequence = event.ancestralOperonGeneSequence
+    sequenceAligned = event.ancestralOperonGeneSequence
+    sequenceDuplicated = event.fragmentDetails2.sequence
     position = event.fragmentDetails1.startPositionInGenome
-    for x in range(0, len(sequence)):
-        if event.fragmentDetails1.isNegativeOrientation == False:
-            tempString += sequence[x] + ' ' + str(x + position) + ', '
+    
+    for x in range(0, len(sequenceDuplicated)):
+        if index < len(sequenceAligned) and sequenceDuplicated[x] == sequenceAligned[index]:
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
+            else:
+                tempString = sequenceDuplicated[x] + ' ' + str(position + len(event.fragmentDetails1.sequence) - index - 1) + ', ' + tempString
+            index += 1
         else:
-            tempString = sequence[x] + ' ' + str(position + len(sequence) - x - 1) + ', ' + tempString
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                tempString += sequenceDuplicated[x] + ' ' + str(-1) + ', '
+            else:
+                tempString = sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
+                
     tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
     tempString += ';'
     strain.duplicationDetails += tempString
     
-    sizeOfDuplication = len(sequence)
+    sizeOfDuplication = len(sequenceDuplicated)
     if sizeOfDuplication in strain.duplicationCounts:
         strain.duplicationCounts[sizeOfDuplication] += 1
     else:
         strain.duplicationCounts[sizeOfDuplication] = 1
+        
+    #Now handle the match region details, the matched regions are duplications with a normal index
+#    tempString = ''
+#    sequence = event.ancestralOperonGeneSequence
+#    position = event.fragmentDetails1.startPositionInGenome
+#    for x in range(0, len(sequence)):
+#        if event.fragmentDetails1.isNegativeOrientation == False:
+#            tempString += sequence[x] + ' ' + str(x + position) + ', '
+#        else:
+#            tempString = sequence[x] + ' ' + str(position + len(sequence) - x - 1) + ', ' + tempString
+#    tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
+#    tempString += ';'
+#    strain.duplicationDetails += tempString
+#    
+#    sizeOfDuplication = len(sequence)
+#    if sizeOfDuplication in strain.duplicationCounts:
+#        strain.duplicationCounts[sizeOfDuplication] += 1
+#    else:
+#        strain.duplicationCounts[sizeOfDuplication] = 1

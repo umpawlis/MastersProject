@@ -10,13 +10,13 @@ Inverted Transposition:
 Strain:NC02
 Codon Mismatch:
 Substitution:
-Duplication:16S 6, 23S 7, 5S 8;
+Duplication:16S 6, 23S 7, 5S 8, Ile_AUC -1, Ala_GCG -1;
 Deletion:!Ala_GCG -1, !Ile_AUC -1;Thr_ACG 14;
-Inversion:His_CAU 9, Ser_UCG 10, Met_AUG 11; < t > 12; Phe_UUC 13; Lys_AAA 14; |
+Inversion:His_CAU 9, Ser_UCG 10, Met_AUG 11;< t > 12;Phe_UUC 13;Lys_AAA 14;|
 Transposition:
 Inverted Transposition:
 Total Deletions: size: 1 count: 2, size: 2 count: 1
-Total Duplications: size: 2 count: 1, size: 3 count: 1
+Total Duplications: size: 2 count: 1, size: 5 count: 1
 Size Distribution of Inversions: size: 6 count: 1
 Size Distribution of Transpositions: 
 Size Distribution of Inverted Transpositions: 
