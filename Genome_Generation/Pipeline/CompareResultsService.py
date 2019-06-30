@@ -304,7 +304,33 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     totalGenesFound = 0
     totalGenesExpected = 0
     totalAppEvents = 0
+    
+    #Track total counts for each event type
+    totalDuplicationEventsFound = 0
+    totalDuplicationEventsExpected = 0
+    totalDuplicationGenesFound = 0
+    totalDuplicationGenesExpected = 0
 
+    totalDeletionEventsFound = 0
+    totalDeletionEventsExpected = 0
+    totalDeletionGenesFound = 0
+    totalDeletionGenesExpected = 0
+    
+    totalInversionEventsFound = 0
+    totalInversionEventsExpected = 0
+    totalInversionGenesFound = 0
+    totalInversionGenesExpected = 0
+    
+    totalTranspositionEventsFound = 0
+    totalTranspositionEventsExpected = 0
+    totalTranspositionGenesFound = 0
+    totalTranspositionGenesExpected = 0
+    
+    totalInvertedTranspositionEventsFound = 0
+    totalInvertedTranspositionEventsExpected = 0
+    totalInvertedTranspositionGenesFound = 0
+    totalInvertedTranspositionGenesExpected = 0
+    
     if file1.mode == "r" and file2.mode == "r":
         newickTree1 = file1.readline() #Newick tree 1
         newickTree2 = file2.readline() #Newick tree 2
@@ -370,10 +396,19 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         line1 = line1.replace('Duplication:', '')
                         line2 = line2.replace('Duplication:', '')
                         result = duplicationDeletionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        totalDuplicationEventsFound += result[0]
+                        
                         totalEventsExpected += result[1]
+                        totalDuplicationEventsExpected += result[1]
+                        
                         totalGenesFound += result[2]
+                        totalDuplicationGenesFound += result[2]
+                        
                         totalGenesExpected += result[3]
+                        totalDuplicationGenesExpected += result[3]
+                        
                         totalAppEvents += result[4]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Duplications is: %s percent' % (result))
@@ -388,10 +423,19 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         line1 = line1.replace('Deletion:', '')
                         line2 = line2.replace('Deletion:', '')
                         result = duplicationDeletionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        totalDeletionEventsFound += result[0]
+                        
                         totalEventsExpected += result[1]
+                        totalDeletionEventsExpected += result[1]
+                        
                         totalGenesFound += result[2]
+                        totalDeletionGenesFound += result[2]
+                        
                         totalGenesExpected += result[3]
+                        totalDeletionGenesExpected += result[3]
+                        
                         totalAppEvents += result[4]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Deletions is: %s percent' % (result))
@@ -406,10 +450,19 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         line1 = line1.replace('Inversion:', '')
                         line2 = line2.replace('Inversion:', '')
                         result = inversionTranspositionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        totalInversionEventsFound += result[0]
+                        
                         totalEventsExpected += result[1]
+                        totalInversionEventsExpected += result[1]
+                        
                         totalGenesFound += result[2]
+                        totalInversionGenesFound += result[2]
+                        
                         totalGenesExpected += result[3]
+                        totalInversionGenesExpected += result[3]
+                        
                         totalAppEvents += result[4]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Inversion is: %s percent' % (result))
@@ -424,10 +477,19 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         line1 = line1.replace('Transposition:', '')
                         line2 = line2.replace('Transposition:', '')
                         result = inversionTranspositionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        totalTranspositionEventsFound += result[0]
+                        
                         totalEventsExpected += result[1]
+                        totalTranspositionEventsExpected += result[1]
+                        
                         totalGenesFound += result[2]
+                        totalTranspositionGenesFound += result[2]
+                        
                         totalGenesExpected += result[3]
+                        totalTranspositionGenesExpected += result[3]
+                        
                         totalAppEvents += result[4]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Transposition is: %s percent' % (result))
@@ -441,11 +503,20 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         outputFile.write('Comparing the inverted transposition between the strains!\n')
                         line1 = line1.replace('Inverted Transposition:', '')
                         line2 = line2.replace('Inverted Transposition:', '')
-                        result = inversionTranspositionComparison(line1, line2, outputFile)
+                        result = inversionTranspositionComparison(line1, line2, outputFile)                        
+                        
                         totalEventsFound += result[0]
+                        totalInvertedTranspositionEventsFound += result[0]                        
+                        
                         totalEventsExpected += result[1]
+                        totalInvertedTranspositionEventsExpected += result[1]                        
+                        
                         totalGenesFound += result[2]
+                        totalInvertedTranspositionGenesFound += result[2]                        
+                        
                         totalGenesExpected += result[3]
+                        totalInvertedTranspositionGenesExpected += result[3]
+                        
                         totalAppEvents += result[4]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Inverted Transposition is: %s percent' % (result))
@@ -564,6 +635,13 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
             line2 = file2.readline() #Strain 2 or Totals at the end
     else:
         print('Unable to process output files!')
+        
+    outputFile.write('Duplication Events Found: %s Duplication Events Expected: %s Duplication Genes Found: %s Duplication Genes Expected: %s\n' % (totalDuplicationEventsFound, totalDuplicationEventsExpected, totalDuplicationGenesFound, totalDuplicationGenesExpected))
+    outputFile.write('Deletion Events Found: %s Deletion Events Expected: %s Deletion Genes Found: %s Deletion Genes Expected: %s\n' % (totalDeletionEventsFound, totalDeletionEventsExpected, totalDeletionGenesFound, totalDeletionGenesExpected))
+    outputFile.write('Inversion Events Found: %s Inversion Events Expected: %s Inversion Genes Found: %s Inversion Genes Expected: %s\n' % (totalInversionEventsFound, totalInversionEventsExpected, totalInversionGenesFound, totalInversionGenesExpected))
+    outputFile.write('Transposition Events Found: %s Transposition Events Expected: %s Transposition Genes Found: %s Transposition Genes Expected: %s\n' % (totalTranspositionEventsFound, totalTranspositionEventsExpected, totalTranspositionGenesFound, totalTranspositionGenesExpected))
+    outputFile.write('Inverted Transposition Events Found: %s Inverted Transposition Events Expected: %s Inverted TranspositionInverted Transposition Genes Found: %s Inverted Transposition Genes Expected: %s\n' % (totalInvertedTranspositionEventsFound, totalInvertedTranspositionEventsExpected, totalInvertedTranspositionGenesFound, totalInvertedTranspositionGenesExpected))
+    
     print('Closing files...')
     outputFile.close()
     file1.close()
