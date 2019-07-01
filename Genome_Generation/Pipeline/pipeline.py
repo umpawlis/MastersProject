@@ -107,6 +107,66 @@ def main():
     totalStrictOrthoNeighbourAccuracyAveragesList = []
     totalRelaxedOrthoNeighbourAccuracyAveragesList = []
     
+    #App total accuracies for different event types
+    totalStrictAppDupAccuracyAveragesList = []
+    totalRelaxedAppDupAccuracyAveragesList = []
+    totalStrictAppLossAccuracyAveragesList = []
+    totalRelaxedAppLossAccuracyAveragesList = []
+    totalStrictAppInvAccuracyAveragesList = []
+    totalRelaxedAppInvAccuracyAveragesList = []
+    totalStrictAppTransAccuracyAveragesList = []
+    totalRelaxedAppTransAccuracyAveragesList = []
+#    totalStrictAppInvTransAccuracyAveragesList = []
+#    totalRelaxedAppInvTransAccuracyAveragesList = []
+    
+    #orthoAlign total accuracies for different event types
+    totalStrictOrthoDupAccuracyAveragesList = []
+    totalRelaxedOrthoDupAccuracyAveragesList = []
+    totalStrictOrthoLossAccuracyAveragesList = []
+    totalRelaxedOrthoLossAccuracyAveragesList = []
+    totalStrictOrthoInvAccuracyAveragesList = []
+    totalRelaxedOrthoInvAccuracyAveragesList = []
+    totalStrictOrthoTransAccuracyAveragesList = []
+    totalRelaxedOrthoTransAccuracyAveragesList = []
+#    totalStrictOrthoInvTransAccuracyAveragesList = []
+#    totalRelaxedOrthoInvTransAccuracyAveragesList = []
+    
+    #Duploss total accuracies for different event types
+    totalStrictDupDupAccuracyAveragesList = []
+    totalRelaxedDupDupAccuracyAveragesList = []
+    totalStrictDupLossAccuracyAveragesList = []
+    totalRelaxedDupLossAccuracyAveragesList = []
+    totalStrictDupInvAccuracyAveragesList = []
+    totalRelaxedDupInvAccuracyAveragesList = []
+    totalStrictDupTransAccuracyAveragesList = []
+    totalRelaxedDupTransAccuracyAveragesList = []
+#    totalStrictDupInvTransAccuracyAveragesList = []
+#    totalRelaxedDupInvTransAccuracyAveragesList = []
+    
+    #AppNeighbour total accuracies for different event types
+    totalStrictAppNeighbourDupAccuracyAveragesList = []
+    totalRelaxedAppNeighbourDupAccuracyAveragesList = []
+    totalStrictAppNeighbourLossAccuracyAveragesList = []
+    totalRelaxedAppNeighbourLossAccuracyAveragesList = []
+    totalStrictAppNeighbourInvAccuracyAveragesList = []
+    totalRelaxedAppNeighbourInvAccuracyAveragesList = []
+    totalStrictAppNeighbourTransAccuracyAveragesList = []
+    totalRelaxedAppNeighbourTransAccuracyAveragesList = []
+#    totalStrictAppNeighbourInvTransAccuracyAveragesList = []
+#    totalRelaxedAppNeighbourInvTransAccuracyAveragesList = []
+    
+    #OrthoNeighbour total accuracies for different event types
+    totalStrictOrthoNeighbourDupAccuracyAveragesList = []
+    totalRelaxedOrthoNeighbourDupAccuracyAveragesList = []
+    totalStrictOrthoNeighbourLossAccuracyAveragesList = []
+    totalRelaxedOrthoNeighbourLossAccuracyAveragesList = []
+    totalStrictOrthoNeighbourInvAccuracyAveragesList = []
+    totalRelaxedOrthoNeighbourInvAccuracyAveragesList = []
+    totalStrictOrthoNeighbourTransAccuracyAveragesList = []
+    totalRelaxedOrthoNeighbourTransAccuracyAveragesList = []
+#    totalStrictOrthoNeighbourInvTransAccuracyAveragesList = []
+#    totalRelaxedOrthoNeighbourInvTransAccuracyAveragesList = []
+    
     totalAppFMeasureList = []
     totalOrthoFMeasureList = []
     totalDupFMeasureList = []
@@ -133,6 +193,66 @@ def main():
         relaxedAppNeighbourAccuracyAveragesList = []
         strictOrthoNeighbourAccuracyAveragesList = []
         relaxedOrthoNeighbourAccuracyAveragesList = []
+        
+        #App accuracies for different event types
+        strictAppDupAccuracyAveragesList = []
+        relaxedAppDupAccuracyAveragesList = []
+        strictAppLossAccuracyAveragesList = []
+        relaxedAppLossAccuracyAveragesList = []
+        strictAppInvAccuracyAveragesList = []
+        relaxedAppInvAccuracyAveragesList = []
+        strictAppTransAccuracyAveragesList = []
+        relaxedAppTransAccuracyAveragesList = []
+#        strictAppInvTransAccuracyAveragesList = []
+#        relaxedAppInvTransAccuracyAveragesList = []
+        
+        #orthoAlign accuracies for different event types
+        strictOrthoDupAccuracyAveragesList = []
+        relaxedOrthoDupAccuracyAveragesList = []
+        strictOrthoLossAccuracyAveragesList = []
+        relaxedOrthoLossAccuracyAveragesList = []
+        strictOrthoInvAccuracyAveragesList = []
+        relaxedOrthoInvAccuracyAveragesList = []
+        strictOrthoTransAccuracyAveragesList = []
+        relaxedOrthoTransAccuracyAveragesList = []
+#        strictOrthoInvTransAccuracyAveragesList = []
+#        relaxedOrthoInvTransAccuracyAveragesList = []
+        
+        #duploss accuracies for different event types
+        strictDupDupAccuracyAveragesList = []
+        relaxedDupDupAccuracyAveragesList = []
+        strictDupLossAccuracyAveragesList = []
+        relaxedDupLossAccuracyAveragesList = []
+        strictDupInvAccuracyAveragesList = []
+        relaxedDupInvAccuracyAveragesList = []
+        strictDupTransAccuracyAveragesList = []
+        relaxedDupTransAccuracyAveragesList = []
+#        strictDupInvTransAccuracyAveragesList = []
+#        relaxedDupInvTransAccuracyAveragesList = []
+        
+        #AppNeighbour accuracies for different event types
+        strictAppNeighbourDupAccuracyAveragesList = []
+        relaxedAppNeighbourDupAccuracyAveragesList = []
+        strictAppNeighbourLossAccuracyAveragesList = []
+        relaxedAppNeighbourLossAccuracyAveragesList = []
+        strictAppNeighbourInvAccuracyAveragesList = []
+        relaxedAppNeighbourInvAccuracyAveragesList = []
+        strictAppNeighbourTransAccuracyAveragesList = []
+        relaxedAppNeighbourTransAccuracyAveragesList = []
+#        strictAppNeighbourInvTransAccuracyAveragesList = []
+#        relaxedAppNeighbourInvTransAccuracyAveragesList = []
+        
+        #orthoNeighbour accuracies for different event types
+        strictOrthoNeighbourDupAccuracyAveragesList = []
+        relaxedOrthoNeighbourDupAccuracyAveragesList = []
+        strictOrthoNeighbourLossAccuracyAveragesList = []
+        relaxedOrthoNeighbourLossAccuracyAveragesList = []
+        strictOrthoNeighbourInvAccuracyAveragesList = []
+        relaxedOrthoNeighbourInvAccuracyAveragesList = []
+        strictOrthoNeighbourTransAccuracyAveragesList = []
+        relaxedOrthoNeighbourTransAccuracyAveragesList = []
+#        strictOrthoNeighbourInvTransAccuracyAveragesList = []
+#        relaxedOrthoNeighbourInvTransAccuracyAveragesList = []
         
         appFMeasureList = []
         orthoFMeasureList = []
@@ -215,7 +335,12 @@ def main():
                 f.write(out)
                 f.write(err)
             
-            totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-')
+            totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-')
+            strictAppDupEventAccuracy, relaxedAppDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
+            strictAppLossEventAccuracy, relaxedAppLossEventAccuracy = calculateAccuracy(lossTotals[0], lossTotals[1], lossTotals[2], lossTotals[3])
+            strictAppInvEventAccuracy, relaxedAppInvEventAccuracy = calculateAccuracy(inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3])
+            strictAppTransEventAccuracy, relaxedAppTransEventAccuracy = calculateAccuracy(transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3])
+#            strictAppInvTransEventAccuracy, relaxedAppInvTransEventAccuracy = calculateAccuracy(invertedTranspositionTotals[0], invertedTranspositionTotals[1], invertedTranspositionTotals[2], invertedTranspositionTotals[3])
             
             if printToConsole:
                 print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents))
@@ -232,6 +357,17 @@ def main():
             numEventsGenAveragesList.append(totalAppEventsExpected)
             strictAppAccuracyAveragesList.append(strictAppEventAccuracy)
             relaxedAppAccuracyAveragesList.append(relaxedAppEventAccuracy)
+            
+            strictAppDupAccuracyAveragesList.append(strictAppDupEventAccuracy)
+            relaxedAppDupAccuracyAveragesList.append(relaxedAppDupEventAccuracy)
+            strictAppLossAccuracyAveragesList.append(strictAppLossEventAccuracy)
+            relaxedAppLossAccuracyAveragesList.append(relaxedAppLossEventAccuracy)
+            strictAppInvAccuracyAveragesList.append(strictAppInvEventAccuracy)
+            relaxedAppInvAccuracyAveragesList.append(relaxedAppInvEventAccuracy)
+            strictAppTransAccuracyAveragesList.append(strictAppTransEventAccuracy)
+            relaxedAppTransAccuracyAveragesList.append(relaxedAppTransEventAccuracy)
+#            strictAppInvTransAccuracyAveragesList.append(strictAppInvTransEventAccuracy)
+#            relaxedAppInvTransAccuracyAveragesList.append(relaxedAppInvTransEventAccuracy)
             
             if cherryTree:
                 appCommand = baseCommand + testSetDir + '/NC_000001/sequence.txt ' + testSetDir + '/NC_000002/sequence.txt ' + testSetDir
@@ -291,7 +427,11 @@ def main():
                 dupFMeasureList.append(dupfMeasure)
                 
                 outputEvents(testSetDir + "/orthoAlign.out", testSetDir + "/orthoAlignEvents.out")                
-                totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt', 'ortho-')
+                totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'orthoAlignEvents.out', 'generatorOutput.txt', 'ortho-')
+                strictOrthoDupEventAccuracy, relaxedOrthoDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
+                strictOrthoLossEventAccuracy, relaxedOrthoLossEventAccuracy = calculateAccuracy(lossTotals[0], lossTotals[1], lossTotals[2], lossTotals[3])
+                strictOrthoInvEventAccuracy, relaxedOrthoInvEventAccuracy = calculateAccuracy(inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3])
+                strictOrthoTransEventAccuracy, relaxedOrthoTransEventAccuracy = calculateAccuracy(transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3])
                 
                 if printToConsole:
                     print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoEventsFound, totalOrthoEventsExpected, totalOrthoGenesFound, totalOrthoGenesExpected, totalOrthoEvents))
@@ -307,8 +447,21 @@ def main():
                 strictOrthoAccuracyAveragesList.append(strictOrthoEventAccuracy)
                 relaxedOrthoAccuracyAveragesList.append(relaxedOrthoEventAccuracy)
                 
+                strictOrthoDupAccuracyAveragesList.append(strictOrthoDupEventAccuracy)
+                relaxedOrthoDupAccuracyAveragesList.append(relaxedOrthoDupEventAccuracy)
+                strictOrthoLossAccuracyAveragesList.append(strictOrthoLossEventAccuracy)
+                relaxedOrthoLossAccuracyAveragesList.append(relaxedOrthoLossEventAccuracy)
+                strictOrthoInvAccuracyAveragesList.append(strictOrthoInvEventAccuracy)
+                relaxedOrthoInvAccuracyAveragesList.append(relaxedOrthoInvEventAccuracy)
+                strictOrthoTransAccuracyAveragesList.append(strictOrthoTransEventAccuracy)
+                relaxedOrthoTransAccuracyAveragesList.append(relaxedOrthoTransEventAccuracy)
+                
                 outputEvents(testSetDir + "/duploss.out", testSetDir + "/duplossEvents.out")
-                totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt', 'dup-')
+                totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'duplossEvents.out', 'generatorOutput.txt', 'dup-')
+                strictDupDupEventAccuracy, relaxedDupDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
+                strictDupLossEventAccuracy, relaxedDupLossEventAccuracy = calculateAccuracy(lossTotals[0], lossTotals[1], lossTotals[2], lossTotals[3])
+                strictDupInvEventAccuracy, relaxedDupInvEventAccuracy = calculateAccuracy(inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3])
+                strictDupTransEventAccuracy, relaxedDupTransEventAccuracy = calculateAccuracy(transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3])
                 
                 if printToConsole:
                     print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalDupEventsFound, totalDupEventsExpected, totalDupGenesFound, totalDupGenesExpected, totalDupEvents))
@@ -324,6 +477,15 @@ def main():
                 strictDupAccuracyAveragesList.append(strictDupEventAccuracy)
                 relaxedDupAccuracyAveragesList.append(relaxedDupEventAccuracy)
                 
+                strictDupDupAccuracyAveragesList.append(strictDupDupEventAccuracy)
+                relaxedDupDupAccuracyAveragesList.append(relaxedDupDupEventAccuracy)
+                strictDupLossAccuracyAveragesList.append(strictDupLossEventAccuracy)
+                relaxedDupLossAccuracyAveragesList.append(relaxedDupLossEventAccuracy)
+                strictDupInvAccuracyAveragesList.append(strictDupInvEventAccuracy)
+                relaxedDupInvAccuracyAveragesList.append(relaxedDupInvEventAccuracy)
+                strictDupTransAccuracyAveragesList.append(strictDupTransEventAccuracy)
+                relaxedDupTransAccuracyAveragesList.append(relaxedDupTransEventAccuracy)
+                
                 if neighbour:
                     p = subprocess.Popen(['python', 'main.py', 'tree2LeafNeighbour.dnd', testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out, err = p.communicate()
@@ -331,7 +493,13 @@ def main():
                         f.write(out)
                         f.write(err)
                         
-                    totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt', 'appNeighbour-')
+                    totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt', 'appNeighbour-')
+                    strictAppNeighbourDupEventAccuracy, relaxedAppNeighbourDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
+                    strictAppNeighbourLossEventAccuracy, relaxedAppNeighbourLossEventAccuracy = calculateAccuracy(lossTotals[0], lossTotals[1], lossTotals[2], lossTotals[3])
+                    strictAppNeighbourInvEventAccuracy, relaxedAppNeighbourInvEventAccuracy = calculateAccuracy(inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3])
+                    strictAppNeighbourTransEventAccuracy, relaxedAppNeighbourTransEventAccuracy = calculateAccuracy(transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3])
+#                    strictAppNeighbourInvTransEventAccuracy, relaxedAppNeighbourInvTransEventAccuracy = calculateAccuracy(invertedTranspositionTotals[0], invertedTranspositionTotals[1], invertedTranspositionTotals[2], invertedTranspositionTotals[3])
+                    
                     
                     if printToConsole:
                         print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents))
@@ -347,6 +515,17 @@ def main():
                     numEventsAppNeighbourAveragesList.append(totalAppNeighbourEvents)
                     strictAppNeighbourAccuracyAveragesList.append(strictAppNeighbourEventAccuracy)
                     relaxedAppNeighbourAccuracyAveragesList.append(relaxedAppNeighbourEventAccuracy)
+                    
+                    strictAppNeighbourDupAccuracyAveragesList.append(strictAppNeighbourDupEventAccuracy)
+                    relaxedAppNeighbourDupAccuracyAveragesList.append(relaxedAppNeighbourDupEventAccuracy)
+                    strictAppNeighbourLossAccuracyAveragesList.append(strictAppNeighbourLossEventAccuracy)
+                    relaxedAppNeighbourLossAccuracyAveragesList.append(relaxedAppNeighbourLossEventAccuracy)
+                    strictAppNeighbourInvAccuracyAveragesList.append(strictAppNeighbourInvEventAccuracy)
+                    relaxedAppNeighbourInvAccuracyAveragesList.append(relaxedAppNeighbourInvEventAccuracy)
+                    strictAppNeighbourTransAccuracyAveragesList.append(strictAppNeighbourTransEventAccuracy)
+                    relaxedAppNeighbourTransAccuracyAveragesList.append(relaxedAppNeighbourTransEventAccuracy)
+#                    strictAppNeighbourInvTransAccuracyAveragesList.append(strictAppNeighbourInvTransEventAccuracy)
+#                    relaxedAppNeighbourInvTransAccuracyAveragesList.append(relaxedAppNeighbourInvTransEventAccuracy)
                     
                     appNeighbourRootFile = testSetDir + "/appNeighbourRoot.txt"
                     with open(appNeighbourRootFile, "r") as f:
@@ -387,7 +566,11 @@ def main():
                     orthoNeighbourFMeasureList.append(orthoNeighbourfMeasure)
                     
                     outputEvents(testSetDir + "/orthoAlignNeighbour.out", testSetDir + "/orthoAlignNeighbourEvents.out")                
-                    totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents = readFiles(testSetDir, 'orthoAlignNeighbourEvents.out', 'generatorOutput.txt', 'orthoNeighbour-')
+                    totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'orthoAlignNeighbourEvents.out', 'generatorOutput.txt', 'orthoNeighbour-')
+                    strictOrthoNeighbourDupEventAccuracy, relaxedOrthoNeighbourDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
+                    strictOrthoNeighbourLossEventAccuracy, relaxedOrthoNeighbourLossEventAccuracy = calculateAccuracy(lossTotals[0], lossTotals[1], lossTotals[2], lossTotals[3])
+                    strictOrthoNeighbourInvEventAccuracy, relaxedOrthoNeighbourInvEventAccuracy = calculateAccuracy(inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3])
+                    strictOrthoNeighbourTransEventAccuracy, relaxedOrthoNeighbourTransEventAccuracy = calculateAccuracy(transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3])
                     
                     if printToConsole:
                         print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s' % (totalOrthoNeighbourEventsFound, totalOrthoNeighbourEventsExpected, totalOrthoNeighbourGenesFound, totalOrthoNeighbourGenesExpected, totalOrthoNeighbourEvents))
@@ -402,6 +585,15 @@ def main():
     
                     strictOrthoNeighbourAccuracyAveragesList.append(strictOrthoNeighbourEventAccuracy)
                     relaxedOrthoNeighbourAccuracyAveragesList.append(relaxedOrthoNeighbourEventAccuracy)
+                    
+                    strictOrthoNeighbourDupAccuracyAveragesList.append(strictOrthoNeighbourDupEventAccuracy)
+                    relaxedOrthoNeighbourDupAccuracyAveragesList.append(relaxedOrthoNeighbourDupEventAccuracy)
+                    strictOrthoNeighbourLossAccuracyAveragesList.append(strictOrthoNeighbourLossEventAccuracy)
+                    relaxedOrthoNeighbourLossAccuracyAveragesList.append(relaxedOrthoNeighbourLossEventAccuracy)
+                    strictOrthoNeighbourInvAccuracyAveragesList.append(strictOrthoNeighbourInvEventAccuracy)
+                    relaxedOrthoNeighbourInvAccuracyAveragesList.append(relaxedOrthoNeighbourInvEventAccuracy)
+                    strictOrthoNeighbourTransAccuracyAveragesList.append(strictOrthoNeighbourTransEventAccuracy)
+                    relaxedOrthoNeighbourTransAccuracyAveragesList.append(relaxedOrthoNeighbourTransEventAccuracy)
                     
                 
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
@@ -423,6 +615,55 @@ def main():
         totalRelaxedAppNeighbourAccuracyAveragesList.append(relaxedAppNeighbourAccuracyAveragesList)
         totalStrictOrthoNeighbourAccuracyAveragesList.append(strictOrthoNeighbourAccuracyAveragesList)
         totalRelaxedOrthoNeighbourAccuracyAveragesList.append(relaxedOrthoNeighbourAccuracyAveragesList)
+        
+        totalStrictAppDupAccuracyAveragesList.append(strictAppDupAccuracyAveragesList)
+        totalRelaxedAppDupAccuracyAveragesList.append(relaxedAppDupAccuracyAveragesList)
+        totalStrictAppLossAccuracyAveragesList.append(strictAppLossAccuracyAveragesList)
+        totalRelaxedAppLossAccuracyAveragesList.append(relaxedAppLossAccuracyAveragesList)
+        totalStrictAppInvAccuracyAveragesList.append(strictAppInvAccuracyAveragesList)
+        totalRelaxedAppInvAccuracyAveragesList.append(relaxedAppInvAccuracyAveragesList)
+        totalStrictAppTransAccuracyAveragesList.append(strictAppTransAccuracyAveragesList)
+        totalRelaxedAppTransAccuracyAveragesList.append(relaxedAppTransAccuracyAveragesList)
+#        totalStrictAppInvTransAccuracyAveragesList.append(strictAppInvTransAccuracyAveragesList)
+#        totalRelaxedAppInvTransAccuracyAveragesList.append(relaxedAppInvTransAccuracyAveragesList)
+        
+        totalStrictOrthoDupAccuracyAveragesList.append(strictOrthoDupAccuracyAveragesList)
+        totalRelaxedOrthoDupAccuracyAveragesList.append(relaxedOrthoDupAccuracyAveragesList)
+        totalStrictOrthoLossAccuracyAveragesList.append(strictOrthoLossAccuracyAveragesList)
+        totalRelaxedOrthoLossAccuracyAveragesList.append(relaxedOrthoLossAccuracyAveragesList)
+        totalStrictOrthoInvAccuracyAveragesList.append(strictOrthoInvAccuracyAveragesList)
+        totalRelaxedOrthoInvAccuracyAveragesList.append(relaxedOrthoInvAccuracyAveragesList)
+        totalStrictOrthoTransAccuracyAveragesList.append(strictOrthoTransAccuracyAveragesList)
+        totalRelaxedOrthoTransAccuracyAveragesList.append(relaxedOrthoTransAccuracyAveragesList)
+        
+        totalStrictDupDupAccuracyAveragesList.append(strictDupDupAccuracyAveragesList)
+        totalRelaxedDupDupAccuracyAveragesList.append(relaxedDupDupAccuracyAveragesList)
+        totalStrictDupLossAccuracyAveragesList.append(strictDupLossAccuracyAveragesList)
+        totalRelaxedDupLossAccuracyAveragesList.append(relaxedDupLossAccuracyAveragesList)
+        totalStrictDupInvAccuracyAveragesList.append(strictDupInvAccuracyAveragesList)
+        totalRelaxedDupInvAccuracyAveragesList.append(relaxedDupInvAccuracyAveragesList)
+        totalStrictDupTransAccuracyAveragesList.append(strictDupTransAccuracyAveragesList)
+        totalRelaxedDupTransAccuracyAveragesList.append(relaxedDupTransAccuracyAveragesList)
+        
+        totalStrictAppNeighbourDupAccuracyAveragesList.append(strictAppNeighbourDupAccuracyAveragesList)
+        totalRelaxedAppNeighbourDupAccuracyAveragesList.append(relaxedAppNeighbourDupAccuracyAveragesList)
+        totalStrictAppNeighbourLossAccuracyAveragesList.append(strictAppNeighbourLossAccuracyAveragesList)
+        totalRelaxedAppNeighbourLossAccuracyAveragesList.append(relaxedAppNeighbourLossAccuracyAveragesList)
+        totalStrictAppNeighbourInvAccuracyAveragesList.append(strictAppNeighbourInvAccuracyAveragesList)
+        totalRelaxedAppNeighbourInvAccuracyAveragesList.append(relaxedAppNeighbourInvAccuracyAveragesList)
+        totalStrictAppNeighbourTransAccuracyAveragesList.append(strictAppNeighbourTransAccuracyAveragesList)
+        totalRelaxedAppNeighbourTransAccuracyAveragesList.append(relaxedAppNeighbourTransAccuracyAveragesList)
+#        totalStrictAppNeighbourInvTransAccuracyAveragesList.append(strictAppNeighbourInvTransAccuracyAveragesList)
+#        totalRelaxedAppNeighbourInvTransAccuracyAveragesList.append(relaxedAppNeighbourInvTransAccuracyAveragesList)
+        
+        totalStrictOrthoNeighbourDupAccuracyAveragesList.append(strictOrthoNeighbourDupAccuracyAveragesList)
+        totalRelaxedOrthoNeighbourDupAccuracyAveragesList.append(relaxedOrthoNeighbourDupAccuracyAveragesList)
+        totalStrictOrthoNeighbourLossAccuracyAveragesList.append(strictOrthoNeighbourLossAccuracyAveragesList)
+        totalRelaxedOrthoNeighbourLossAccuracyAveragesList.append(relaxedOrthoNeighbourLossAccuracyAveragesList)
+        totalStrictOrthoNeighbourInvAccuracyAveragesList.append(strictOrthoNeighbourInvAccuracyAveragesList)
+        totalRelaxedOrthoNeighbourInvAccuracyAveragesList.append(relaxedOrthoNeighbourInvAccuracyAveragesList)
+        totalStrictOrthoNeighbourTransAccuracyAveragesList.append(strictOrthoNeighbourTransAccuracyAveragesList)
+        totalRelaxedOrthoNeighbourTransAccuracyAveragesList.append(relaxedOrthoNeighbourTransAccuracyAveragesList)
         
         totalAppFMeasureList.append(appFMeasureList)
         totalOrthoFMeasureList.append(orthoFMeasureList)
@@ -464,6 +705,15 @@ def main():
                 graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourAccuracyAveragesList)
                 graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList, totalAverages5 = totalAppNeighbourFMeasureList, totalAverages6 = totalOrthoNeighbourFMeasureList)
                 graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList, totalEventsAppNeighbourAveragesList, totalEventsOrthoNeighbourAveragesList)
+                
+                graphData("sAccuracyDup", totalStrictAppDupAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoDupAccuracyAveragesList, totalAverages4 = totalStrictDupDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourDupAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourDupAccuracyAveragesList)
+                graphData("rAccuracyDup", totalRelaxedAppDupAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoDupAccuracyAveragesList, totalAverages4 = totalRelaxedDupDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourDupAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourDupAccuracyAveragesList)
+                graphData("sAccuracyLoss", totalStrictAppLossAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoLossAccuracyAveragesList, totalAverages4 = totalStrictDupLossAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourLossAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourLossAccuracyAveragesList)
+                graphData("rAccuracyLoss", totalRelaxedAppLossAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoLossAccuracyAveragesList, totalAverages4 = totalRelaxedDupLossAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourLossAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourLossAccuracyAveragesList)
+                graphData("sAccuracyInv", totalStrictAppInvAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoInvAccuracyAveragesList, totalAverages4 = totalStrictDupInvAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourInvAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourInvAccuracyAveragesList)
+                graphData("rAccuracyInv", totalRelaxedAppInvAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoInvAccuracyAveragesList, totalAverages4 = totalRelaxedDupInvAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourInvAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourInvAccuracyAveragesList)
+                graphData("sAccuracyTrans", totalStrictAppTransAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoTransAccuracyAveragesList, totalAverages4 = totalStrictDupTransAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourTransAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourTransAccuracyAveragesList)
+                graphData("rAccuracyTrans", totalRelaxedAppTransAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoTransAccuracyAveragesList, totalAverages4 = totalRelaxedDupTransAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourTransAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourTransAccuracyAveragesList)
             else:
                 graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList)
                 graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList)
@@ -477,6 +727,20 @@ def main():
         
     if testFolder:
         copy(testFile, testFolder)
+        
+def calculateAccuracy(totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected):
+    if printToConsole:
+        print('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected))
+    if totalEventsExpected > 0:
+        strictEventAccuracy = float(totalEventsFound)/float(totalEventsExpected) * 100.0
+    else:
+        strictEventAccuracy = 0.0
+    if totalGenesExpected > 0:
+        relaxedEventAccuracy = float(totalGenesFound)/float(totalGenesExpected) * 100.0
+    else:
+        relaxedEventAccuracy = 0.0
+        
+    return strictEventAccuracy, relaxedEventAccuracy
 
 def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None, totalAverages5 = None, totalAverages6 = None):
     if graphType == "Events":
@@ -491,6 +755,41 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     elif graphType == "fMeasure":
         title = "Average F-measure"
         yAxisTitle = "F-measure"
+        
+    elif graphType == "sAccuracyDup":
+        title = "Average Strict Duplication Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+    elif graphType == "rAccuracyDup":
+        title = "Average Relaxed Duplication Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+        
+    elif graphType == "sAccuracyLoss":
+        title = "Average Strict Loss Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+    elif graphType == "rAccuracyLoss":
+        title = "Average Relaxed Loss Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+        
+    elif graphType == "sAccuracyInv":
+        title = "Average Strict Inversion Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+    elif graphType == "rAccuracyInv":
+        title = "Average Relaxed Inversion Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+        
+    elif graphType == "sAccuracyTrans":
+        title = "Average Strict Transposition Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+    elif graphType == "rAccuracyTrans":
+        title = "Average Relaxed Transposition Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+        
+    elif graphType == "sAccuracyInvTrans":
+        title = "Average Strict Inverted Transposition Accuracy"
+        yAxisTitle = "Accuracy Percentage"
+    elif graphType == "rAccuracyInvTrans":
+        title = "Average Relaxed Inverted Transposition Accuracy"
+        yAxisTitle = "Accuracy Percentage"
         
     labels = []
         

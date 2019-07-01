@@ -27,6 +27,7 @@ def parseOutputFile(filename):
 	dups = []
 	invs = []
 	transpos = []
+	invTranspos = [] #new!
 	subs = []
 	
 	#Keeping track of some positions --> will be useful to convert positions
@@ -118,7 +119,10 @@ def parseOutputFile(filename):
 						invs.append(otherGenesAffected)
 					elif operationSplit[0] == "transposition":
 						if "." in splitted[0]: #Now adding the transposition only on genome Y, because I realized that's where they always put it
-							transpos.append(genesAffected)
+							if ("-" in genesAffected and "-" in operationSplit[4]) or ("-" not in genesAffected and "-" not in operationSplit[4]):  #regular transpo
+								transpos.append(genesAffected)
+							else: #inverted transpo
+								invTranspos.append(genesAffected)
 					else:
 						print "BIG PROBLEM: operation " + operationSplit[0] + " not recognized"
 			
@@ -135,14 +139,14 @@ def parseOutputFile(filename):
 	#print posTerminusY
 	#print indexToGeneDict
 	
-	return dels, dups, invs, transpos, subs, posTerminusX, posLastGeneX, posTerminusY, indexToGeneDict
+	return dels, dups, invs, transpos, invTranspos, subs, posTerminusX, posLastGeneX, posTerminusY, indexToGeneDict
 	
 	
 def outputEvents(algoOutput, outputFile):
 
 	f = open(outputFile, 'w')
 	
-	dels, dups, invs, transpos, subs, posTerminusX, posLastGeneX, posTerminusY, indexToGeneDict = parseOutputFile(algoOutput)
+	dels, dups, invs, transpos, invTranspos, subs, posTerminusX, posLastGeneX, posTerminusY, indexToGeneDict = parseOutputFile(algoOutput)
 	
 	#Header stuff
 	eventsStrX = "#tree\n"
@@ -224,8 +228,17 @@ def outputEvents(algoOutput, outputFile):
 	eventsStrY += "\n"
 	
 	### Inverted transpositions ###
-	eventsStrX += "Inverted Transposition:\n"  #none for now
-	eventsStrY += "Inverted Transposition:\n"  #none for now
+	eventsStrX += "Inverted Transposition:"
+	eventsStrY += "Inverted Transposition:"
+	
+	for invTranspo in invTranspos:
+		s, pos = getEventStr(invTranspo, indexToGeneDict, posLastGeneX, True)
+		if pos > posLastGeneX:
+			eventsStrY += s
+		else: eventsStrX += s
+		
+	eventsStrX += "\n"
+	eventsStrY += "\n"
 	
 	try:
 		f.write(eventsStrX + eventsStrY)
@@ -278,7 +291,7 @@ if __name__ == '__main__':
 	#outputEvents("test-orthoAlign.out", "testevents.out")
 	#outputEvents("orthoAlign-transpo.out", "testevents.out")
 	#outputEvents("orthoAlign.out", "testevents.out")
-	#outputEvents("orthoAlign-bigTest.out", "testevents.out")
+	outputEvents("orthoAlign-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTestMOD.out", "testevents.out")
-	outputEvents("orthoAlign-buggy.out", "testevents.out")
+	#outputEvents("orthoAlign-buggy.out", "testevents.out")

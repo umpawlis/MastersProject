@@ -692,7 +692,9 @@ def removeGenesFromStrains(deletionList):
                             #for m in range(0, len(listOfGenes)):
                                 #listOfGenes[m] = listOfGenes[m].strip()
                                 
-                            listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
+                            if listOfGenes.count(stringToRemove) > 0:
+                                listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
+                                print "Removed: " + stringToRemove
                             if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
                                 newString = ''
                                 for x in range(0, len(listOfGenes)):
