@@ -11,9 +11,9 @@ Bacillus thuringiensis serovar kurstaki str. HD73 		thur hd73			See list below		
 Bacillus thuringiensis BMB171 							thur bmb17			NC_014171			714359.3
 Bacillus thuringiensis serovar konkukian str. 97-27 	thuring				NC_005957			281309.8
 
-Bacillus cereus E33L 				e33l				NC_006274			288681.15
-Bacillus cereus ATCC 14579 			atcc14579			NC_004722			226900.8
-Bacillus cereus ATCC 10987			atcc1098			NC_003909			222523.6
+Bacillus cereus E33L 									e33l				NC_006274			288681.15
+Bacillus cereus ATCC 14579 								atcc14579			NC_004722			226900.8
+Bacillus cereus ATCC 10987								atcc1098			NC_003909			222523.6
 
 
 List: NC_020238.1,NC_020250.1,NC_020249.1,NC_020240.1,NC_020239.1,NC_020241.1,NC_020242.1,NC_020243.1
