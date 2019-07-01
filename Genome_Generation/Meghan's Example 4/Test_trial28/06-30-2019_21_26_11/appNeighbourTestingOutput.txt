@@ -1,0 +1,71 @@
+Starting application...
+Glu_GAA 87, HIs_CAC 88, Ser_AGC 89, Gly_GGC 90, Val_GUC 94, Thr_ACG 95
+Val_GUC 94
+['Glu_GAA 87', 'HIs_CAC 88', 'Ser_AGC 89', 'Gly_GGC 90', 'Val_GUC 94', 'Thr_ACG 95']
+Removed: Val_GUC 94
+Glu_GAA 87, HIs_CAC 88, Ser_AGC 89, Gly_GGC 90, Thr_ACG 95
+Thr_ACG 95
+['Glu_GAA 87', 'HIs_CAC 88', 'Ser_AGC 89', 'Gly_GGC 90', 'Thr_ACG 95']
+Removed: Thr_ACG 95
+Gly_GGG 47
+Gly_GGG 47
+['Gly_GGG 47']
+Removed: Gly_GGG 47
+Leu_UUA 20
+Leu_UUA 20
+['Leu_UUA 20']
+Removed: Leu_UUA 20
+Ser_AGC 43, Tyr_UAC 44, Leu_UUA 45, Arg_CGA 46
+Tyr_UAC 44
+['Ser_AGC 43', 'Tyr_UAC 44', 'Leu_UUA 45', 'Arg_CGA 46']
+Removed: Tyr_UAC 44
+Ser_AGC 43, Leu_UUA 45, Arg_CGA 46
+Leu_UUA 45
+['Ser_AGC 43', 'Leu_UUA 45', 'Arg_CGA 46']
+Removed: Leu_UUA 45
+Ser_AGC 43, Arg_CGA 46
+Arg_CGA 46
+['Ser_AGC 43', 'Arg_CGA 46']
+Removed: Arg_CGA 46
+Ala_GCU 54
+Ala_GCU 54
+['Ala_GCU 54']
+Removed: Ala_GCU 54
+Val_GUA 93
+Val_GUA 93
+['Val_GUA 93']
+Removed: Val_GUA 93
+Val_GUU 98
+Val_GUU 98
+['Val_GUU 98']
+Removed: Val_GUU 98
+Ser_AGC 105
+Ser_AGC 105
+['Ser_AGC 105']
+Removed: Ser_AGC 105
+Gly_GGG 84
+Gly_GGG 84
+['Gly_GGG 84']
+Removed: Gly_GGG 84
+Ser_UCA 86, Glu_GAA 87, HIs_CAC 89, Ser_AGC 90, Ser_AGC 91, Gly_GGC 92
+Ser_UCA 86
+['Ser_UCA 86', 'Glu_GAA 87', 'HIs_CAC 89', 'Ser_AGC 90', 'Ser_AGC 91', 'Gly_GGC 92']
+Removed: Ser_UCA 86
+Glu_GAA 87, HIs_CAC 89, Ser_AGC 90, Ser_AGC 91, Gly_GGC 92
+HIs_CAC 89
+['Glu_GAA 87', 'HIs_CAC 89', 'Ser_AGC 90', 'Ser_AGC 91', 'Gly_GGC 92']
+Removed: HIs_CAC 89
+Glu_GAA 87, Ser_AGC 90, Ser_AGC 91, Gly_GGC 92
+Ser_AGC 90
+['Glu_GAA 87', 'Ser_AGC 90', 'Ser_AGC 91', 'Gly_GGC 92']
+Removed: Ser_AGC 90
+Glu_GAA 87, Ser_AGC 91, Gly_GGC 92
+Ser_AGC 91
+['Glu_GAA 87', 'Ser_AGC 91', 'Gly_GGC 92']
+Removed: Ser_AGC 91
+Pro_CCU 117
+Pro_CCU 117
+['Pro_CCU 117']
+Removed: Pro_CCU 117
+Total time (in seconds): 2.5680000782
+Ending application...

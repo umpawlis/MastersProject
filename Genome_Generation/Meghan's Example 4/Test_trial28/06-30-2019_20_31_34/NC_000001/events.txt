@@ -1,0 +1,7 @@
+Event(Type = 'L', Range = [44], Genes: ['Val_GUC']
+Event(Type = 'D', Range = [42, 43, 44, 45], Genes: ['Glu_GAA', 'Tyr_UAU', 'Phe_UUC', 'Ala_GCC']
+Event(Type = 'T', Range = [82, 83], Genes: ['Ile_AUU', 'Ser_UCU']
+Event(Type = 'L', Range = [77], Genes: ['His_CAU']
+Event(Type = 'I', Range = [50, 51, 52, 53, 54, 55, 56, 57, 58, 60, 61, 62, 63, 65, 66, 67, 68, 69], Genes: [['Val_GUC', 'Phe_UUU', 'Ser_AGU', 'Gly_GGG'], '< t >', ['Ile_AUA', 'Pro_CCU'], 'Gly_GGA', ['Glu_GAA', 'HIs_CAC'], ['Asp_GAU', 'Gly_GGC', 'Ala_GCG', 'Ser_UCA', 'Ala_GCC', 'Phe_UUC', 'Tyr_UAU', 'Glu_GAA']]
+Event(Type = 'D', Range = [64], Genes: ['Gln_CAG']
+Event(Type = 'IT', Range = [59], Genes: ['HIs_CAC']

@@ -1,0 +1,75 @@
+Starting application...
+5S 55
+5S 55
+['5S 55']
+Removed: 5S 55
+16S 42, Arg_CGU 43, Arg_CGC 44, 23S 45
+Arg_CGC 44
+['16S 42', 'Arg_CGU 43', 'Arg_CGC 44', '23S 45']
+Removed: Arg_CGC 44
+16S 42, Arg_CGU 43, 23S 45
+Arg_CGU 43
+['16S 42', 'Arg_CGU 43', '23S 45']
+Removed: Arg_CGU 43
+Ser_UCA 35
+Ser_UCA 35
+['Ser_UCA 35']
+Removed: Ser_UCA 35
+Pro_CCC 91, Pro_CCA 92, Asp_GAC 93
+Pro_CCC 91
+['Pro_CCC 91', 'Pro_CCA 92', 'Asp_GAC 93']
+Removed: Pro_CCC 91
+Pro_CCA 92, Asp_GAC 93
+Pro_CCA 92
+['Pro_CCA 92', 'Asp_GAC 93']
+Removed: Pro_CCA 92
+Asp_GAC 93
+Asp_GAC 93
+['Asp_GAC 93']
+Removed: Asp_GAC 93
+Ser_AGU 98
+Ser_AGU 98
+['Ser_AGU 98']
+Removed: Ser_AGU 98
+Ala_GCU 105, Arg_CGU 106, Thr_ACG 108
+Thr_ACG 108
+['Ala_GCU 105', 'Arg_CGU 106', 'Thr_ACG 108']
+Removed: Thr_ACG 108
+Ala_GCG 7, Val_GUC 8, Pro_CCA 9, Arg_CGG 10
+Arg_CGG 10
+['Ala_GCG 7', 'Val_GUC 8', 'Pro_CCA 9', 'Arg_CGG 10']
+Removed: Arg_CGG 10
+Ala_GCG 7, Val_GUC 8, Pro_CCA 9
+Pro_CCA 9
+['Ala_GCG 7', 'Val_GUC 8', 'Pro_CCA 9']
+Removed: Pro_CCA 9
+Ala_GCG 7, Val_GUC 8
+Val_GUC 8
+['Ala_GCG 7', 'Val_GUC 8']
+Removed: Val_GUC 8
+Ala_GCG 7
+Ala_GCG 7
+['Ala_GCG 7']
+Removed: Ala_GCG 7
+Gln_CAG 109
+Gln_CAG 109
+['Gln_CAG 109']
+Removed: Gln_CAG 109
+Glu_GAG 113, Asp_GAU 114
+Glu_GAG 113
+['Glu_GAG 113', 'Asp_GAU 114']
+Removed: Glu_GAG 113
+Asp_GAU 114
+Asp_GAU 114
+['Asp_GAU 114']
+Removed: Asp_GAU 114
+Asp_GAU 62
+Asp_GAU 62
+['Asp_GAU 62']
+Removed: Asp_GAU 62
+Gly_GGA 14
+Gly_GGA 14
+['Gly_GGA 14']
+Removed: Gly_GGA 14
+Total time (in seconds): 3.39999985695
+Ending application...

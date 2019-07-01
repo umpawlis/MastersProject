@@ -1,0 +1,11 @@
+Starting application...
+Gln_CAG 64
+Gln_CAG 64
+['Gln_CAG 64']
+Removed: Gln_CAG 64
+Gly_GGA 96
+Gly_GGA 96
+['Gly_GGA 96']
+Removed: Gly_GGA 96
+Total time (in seconds): 2.76499986649
+Ending application...

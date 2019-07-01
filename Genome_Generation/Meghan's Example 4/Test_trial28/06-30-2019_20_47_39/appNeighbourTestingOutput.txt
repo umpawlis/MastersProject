@@ -1,0 +1,23 @@
+Starting application...
+Tyr_UAU 81, Ile_AUA 82
+Tyr_UAU 81
+['Tyr_UAU 81', 'Ile_AUA 82']
+Removed: Tyr_UAU 81
+Ile_AUA 82
+Ile_AUA 82
+['Ile_AUA 82']
+Removed: Ile_AUA 82
+Ala_GCU 59, His_CAU 60
+Ala_GCU 59
+['Ala_GCU 59', 'His_CAU 60']
+Removed: Ala_GCU 59
+His_CAU 60
+His_CAU 60
+['His_CAU 60']
+Removed: His_CAU 60
+Gln_CAA 101
+Gln_CAA 101
+['Gln_CAA 101']
+Removed: Gln_CAA 101
+Total time (in seconds): 2.42500019073
+Ending application...

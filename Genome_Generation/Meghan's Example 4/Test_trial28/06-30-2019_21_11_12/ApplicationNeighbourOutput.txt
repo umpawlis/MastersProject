@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:Ala_GCG 85;
+Substitution:Gln_CAG 86;Leu_CUA 93;
+Duplication:Glu_GAG 21;Arg_AGA 31, !Tyr_UAC -1, !Thr_ACA -1;Arg_AGG 81;Ile_AUU 53;Asp_GAC 47;Arg_CGG 46;Gly_GGA 45;Ile_AUU 109;Phe_UUU 110;Arg_AGG 32;
+Deletion:Val_GUC 41;Glu_GAG 69;5S 84, Arg_CGG 85;Ala_GCU 45, Leu_CUG 44;Gly_GGA 49, Arg_CGG 48, Asp_GAC 47, Ile_AUU 46;
+Inversion:
+Transposition:Lys_AAA 36;|5S 39;|Lys_AAA 40;|Gly_GGA 45, Arg_CGG 46, Asp_GAC 47, Gly_GGG 48, Ser_AGC 49, 16S 50, 23S 51, 5S 52, Ile_AUU 53;|Leu_CUA 82;|Thr_ACA 83;|
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:Ala_GCU 86;
+Substitution:Ala_GCG 87;5S 94;
+Duplication:Thr_ACA 1;Lys_AAA 2;Val_GUA 3;Leu_UUA 25;Ile_AUU 30, !Phe_UUC -1;Val_GUA 33;Asp_GAC 43, !HIs_CAC -1;!5S -1, 23S 66, !16S -1, !Ser_AGC -1, !Gly_GGG -1;!Lys_AAA -1, Leu_UUA 104, !5S -1, !23S -1, !Leu_CUA -1, !Arg_CGA -1, !16S -1;Leu_CUA 101;Arg_CGA 102;Lys_AAA 79;Met_AUG 53;5S 16;Ala_GCU 73;Thr_ACC 74;Ile_AUU 106;Ile_AUC 107;
+Deletion:Arg_AGA 1, Tyr_UAC 2, Thr_ACA 3;Arg_CGA 4, Ile_AUA 5, Ile_AUU 6, Leu_CUA 7;Glu_GAG 9;Thr_ACC 14, Lys_AAA 15, Ala_GCU 16;Leu_UUG 17;Asp_GAC 55, HIs_CAC 56;
+Inversion:
+Transposition:Leu_UUA 50;|Arg_AGG 29;|Leu_UUA 68;|
+Inverted Transposition:Leu_CUC 34, Ala_GCC 35;Val_GUA 36;|16S 37, 23S 38, 5S 39, Ile_AUA 40, Val_GUC 41;< t > 42;|
+Total Deletions: size: 1 count: 14, size: 2 count: 12, size: 3 count: 4, size: 4 count: 3, size: 5 count: 1, size: 8 count: 2
+Total Duplications: size: 1 count: 24, size: 2 count: 2, size: 3 count: 11, size: 4 count: 1, size: 5 count: 5, size: 7 count: 2
+Size Distribution of Inversions: size: 5 count: 1
+Size Distribution of Transpositions: size: 1 count: 10, size: 2 count: 1, size: 3 count: 2, size: 5 count: 2, size: 9 count: 1
+Size Distribution of Inverted Transpositions: size: 8 count: 1, size: 3 count: 1, size: 4 count: 1, size: 6 count: 1
+Total Inversions: 1
+Total Transpositions: 16
+Total Inverted Transpositions: 4

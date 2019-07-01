@@ -1,0 +1,31 @@
+Starting application...
+Ala_GCU 84
+Ala_GCU 84
+['Ala_GCU 84']
+Removed: Ala_GCU 84
+Ser_UCU 68, Arg_CGG 70, Ser_UCA 71
+Ser_UCA 71
+['Ser_UCU 68', 'Arg_CGG 70', 'Ser_UCA 71']
+Removed: Ser_UCA 71
+Ser_UCU 68, Arg_CGG 70
+Arg_CGG 70
+['Ser_UCU 68', 'Arg_CGG 70']
+Removed: Arg_CGG 70
+Ser_UCU 68
+Ser_UCU 68
+['Ser_UCU 68']
+Removed: Ser_UCU 68
+Leu_CUU 22
+Leu_CUU 22
+['Leu_CUU 22']
+Removed: Leu_CUU 22
+Val_GUG 7
+Val_GUG 7
+['Val_GUG 7']
+Removed: Val_GUG 7
+Arg_AGG 9
+Arg_AGG 9
+['Arg_AGG 9']
+Removed: Arg_AGG 9
+Total time (in seconds): 3.56299996376
+Ending application...

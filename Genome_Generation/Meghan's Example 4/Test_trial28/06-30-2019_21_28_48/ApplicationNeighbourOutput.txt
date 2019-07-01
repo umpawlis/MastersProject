@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:Pro_CCC 72;
+Substitution:Arg_CGG 26;
+Duplication:!Val_GUG -1;!Thr_ACU -1;!16S -1, !23S -1, !5S -1;!Ala_GCG -1;!Gln_CAG -1, !Gln_CAA -1, !Glu_GAA -1;!Tyr_UAU -1, !Ala_GCA -1, !Leu_CUG -1, Arg_CGA 35;!Pro_CCU -1, Tyr_UAU 45, !Met_AUG -1, !Tyr_UAC -1, !Tyr_UAU -1, !Arg_CGU -1;Arg_CGA 85, !Leu_CUG -1, !Ala_GCA -1, !Tyr_UAU -1;!Thr_ACU -1, !5S -1, !23S -1, !16S -1, Val_GUG 87;Val_GUG 102;!Arg_CGA -1;!5S -1, 23S 110, 16S 111;Ser_UCA 114;Val_GUU 74;Arg_CGA 116;5S 82;Ser_UCA 22;Arg_AGG 53;
+Deletion:Leu_CUA 75;Ala_GCG 79;Glu_GAG 13;Pro_CCC 25, Ile_AUA 26;Gly_GGU 1, Val_GUG 2, Thr_ACU 3;16S 96, 23S 95, Ala_GCU 94, Gln_CAA 93, Glu_GAG 92, Val_GUU 91, 16S 90, 23S 89, 5S 88, 5S 87;
+Inversion:Pro_CCU 59, Tyr_UAU 60, Met_AUG 61, Tyr_UAC 62, Tyr_UAU 63, Arg_CGU 64;Asp_GAU 65, Tyr_UAU 66, Gln_CAG 67, Ser_AGC 68;< t > 69;Ile_AUU 70, Ser_UCU 71;Gly_GGA 77;|
+Transposition:Arg_CGG 26, Ser_UCA 27;|Tyr_UAC 37, Phe_UUU 38, Thr_ACA 39, Gly_GGC 40, Trp_UGG 41, Ser_AGU 42, Gln_CAG 43;Ile_AUU 44;|Pro_CCC 72, 5S 73, Val_GUU 74, 23S 75, 16S 76;|Val_GUU 78, Lys_AAA 79, Gly_GGA 80;|Glu_GAG 86;|5S 90, 23S 91, 16S 92;|Leu_UUA 112, Tyr_UAC 113;|5S 122;|
+Inverted Transposition:Asp_GAU 29, Ser_AGU 30, Pro_CCG 31, Pro_CCA 32, Glu_GAG 33, Arg_CGU 34;Gly_GGA 36;|
+Strain:NC_000002
+Codon Mismatch:Pro_CCG 110;
+Substitution:Val_GUG 102;
+Duplication:!Ala_GCG -1, !Pro_CCU -1, !Tyr_UAU -1, Met_AUG 11, !Leu_CUA -1, !Tyr_UAC -1, !Tyr_UAU -1, !Arg_CGU -1;!16S -1, !23S -1, !Glu_GAG -1, !5S -1, Ile_AUU 17, !Val_GUC -1, !Val_GUA -1;Arg_AGG 27;16S 62, !23S -1, !5S -1, !Pro_CCC -1, !Ile_AUA -1;!Arg_CGU -1, !Tyr_UAU -1, !Tyr_UAC -1, Leu_CUA 119, !Met_AUG -1, !Tyr_UAU -1, !Pro_CCU -1, !Ala_GCG -1;Glu_GAG 6;Ala_GCG 46;Pro_CCC 45;Arg_CGA 44;Gly_GGA 106;Arg_AGG 107;Glu_GAG 116;
+Deletion:Arg_CGC 97;Pro_CCC 55, Ala_GCG 56;Ala_GCU 96, Gln_CAA 95, 16S 94, 23S 93;Leu_CUA 121, Ile_AUU 120;
+Inversion:Arg_AGG 16;Asp_GAU 18;Gln_CAG 19, Gln_CAA 20, Glu_GAA 21;|
+Transposition:
+Inverted Transposition:
+Total Deletions: size: 1 count: 12, size: 2 count: 9, size: 3 count: 3, size: 4 count: 4, size: 6 count: 1, size: 8 count: 1, size: 10 count: 2
+Total Duplications: size: 1 count: 25, size: 2 count: 2, size: 3 count: 5, size: 4 count: 9, size: 5 count: 5, size: 6 count: 1, size: 7 count: 2, size: 8 count: 2
+Size Distribution of Inversions: size: 5 count: 1, size: 14 count: 1
+Size Distribution of Transpositions: size: 1 count: 7, size: 2 count: 2, size: 3 count: 2, size: 4 count: 1, size: 5 count: 3, size: 6 count: 2, size: 8 count: 1
+Size Distribution of Inverted Transpositions: size: 7 count: 2
+Total Inversions: 2
+Total Transpositions: 18
+Total Inverted Transpositions: 2

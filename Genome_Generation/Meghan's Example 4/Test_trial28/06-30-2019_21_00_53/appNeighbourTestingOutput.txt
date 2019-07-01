@@ -1,0 +1,47 @@
+Starting application...
+Tyr_UAC 93
+Tyr_UAC 93
+['Tyr_UAC 93']
+Removed: Tyr_UAC 93
+Leu_CUA 95, Ser_UCC 96
+Leu_CUA 95
+['Leu_CUA 95', 'Ser_UCC 96']
+Removed: Leu_CUA 95
+Ser_UCC 96
+Ser_UCC 96
+['Ser_UCC 96']
+Removed: Ser_UCC 96
+Ile_AUC 117
+Ile_AUC 117
+['Ile_AUC 117']
+Removed: Ile_AUC 117
+Ile_AUA 8, 16S 9
+Ile_AUA 8
+['Ile_AUA 8', '16S 9']
+Removed: Ile_AUA 8
+Asp_GAU 3
+Asp_GAU 3
+['Asp_GAU 3']
+Removed: Asp_GAU 3
+Cys_UGC 1
+Cys_UGC 1
+['Cys_UGC 1']
+Removed: Cys_UGC 1
+Leu_CUC 116
+Leu_CUC 116
+['Leu_CUC 116']
+Removed: Leu_CUC 116
+16S 66
+16S 66
+['16S 66']
+Removed: 16S 66
+Trp_UGG 68
+Trp_UGG 68
+['Trp_UGG 68']
+Removed: Trp_UGG 68
+16S 24
+16S 24
+['16S 24']
+Removed: 16S 24
+Total time (in seconds): 4.48099994659
+Ending application...

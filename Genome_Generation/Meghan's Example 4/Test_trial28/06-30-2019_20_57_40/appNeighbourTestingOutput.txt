@@ -1,0 +1,31 @@
+Starting application...
+Val_GUG 1
+Val_GUG 1
+['Val_GUG 1']
+Removed: Val_GUG 1
+Val_GUC 15
+Val_GUC 15
+['Val_GUC 15']
+Removed: Val_GUC 15
+Met_AUG 47
+Met_AUG 47
+['Met_AUG 47']
+Removed: Met_AUG 47
+Ala_GCC 36
+Ala_GCC 36
+['Ala_GCC 36']
+Removed: Ala_GCC 36
+Arg_CGC 69
+Arg_CGC 69
+['Arg_CGC 69']
+Removed: Arg_CGC 69
+Lys_AAA 52, Ser_UCC 53
+Ser_UCC 53
+['Lys_AAA 52', 'Ser_UCC 53']
+Removed: Ser_UCC 53
+Lys_AAA 52
+Lys_AAA 52
+['Lys_AAA 52']
+Removed: Lys_AAA 52
+Total time (in seconds): 4.34599995613
+Ending application...

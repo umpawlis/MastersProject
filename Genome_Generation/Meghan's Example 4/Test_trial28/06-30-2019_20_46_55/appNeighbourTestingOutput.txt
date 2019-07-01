@@ -1,0 +1,19 @@
+Starting application...
+Val_GUC 88, Ala_GCU 89
+Val_GUC 88
+['Val_GUC 88', 'Ala_GCU 89']
+Removed: Val_GUC 88
+Ala_GCU 89
+Ala_GCU 89
+['Ala_GCU 89']
+Removed: Ala_GCU 89
+Gln_CAA 42, Arg_AGA 43
+Arg_AGA 43
+['Gln_CAA 42', 'Arg_AGA 43']
+Removed: Arg_AGA 43
+Gln_CAA 42
+Gln_CAA 42
+['Gln_CAA 42']
+Removed: Gln_CAA 42
+Total time (in seconds): 2.76800012589
+Ending application...

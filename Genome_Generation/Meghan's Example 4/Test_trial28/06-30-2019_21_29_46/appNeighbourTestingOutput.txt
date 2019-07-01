@@ -1,0 +1,35 @@
+Starting application...
+Met_AUG 108, Ser_AGC 109
+Met_AUG 108
+['Met_AUG 108', 'Ser_AGC 109']
+Removed: Met_AUG 108
+Ser_AGC 109
+Ser_AGC 109
+['Ser_AGC 109']
+Removed: Ser_AGC 109
+Pro_CCC 63
+Pro_CCC 63
+['Pro_CCC 63']
+Removed: Pro_CCC 63
+Pro_CCG 91, Met_AUG 92
+Pro_CCG 91
+['Pro_CCG 91', 'Met_AUG 92']
+Removed: Pro_CCG 91
+Met_AUG 92
+Met_AUG 92
+['Met_AUG 92']
+Removed: Met_AUG 92
+Ser_UCC 81
+Ser_UCC 81
+['Ser_UCC 81']
+Removed: Ser_UCC 81
+23S 87
+23S 87
+['23S 87']
+Removed: 23S 87
+Arg_CGC 86
+Arg_CGC 86
+['Arg_CGC 86']
+Removed: Arg_CGC 86
+Total time (in seconds): 4.06599998474
+Ending application...

@@ -1,0 +1,186 @@
+X:[o],Ala_GCC,16S,23S,5S,Val_GUG,Pro_CCU,Ile_AUC,Arg_CGC,Pro_CCG,Leu_CUC,16S,23S,5S,Ser_AGU,Ile_AUC,Glu_GAA,Cys_UGU,Leu_UUG,Thr_ACC,Gln_CAG,Ser_UCU,Ser_UCA,Arg_CGU,Ser_UCG,Ser_UCG,Cys_UGC,Gly_GGU,23S,5S,Gly_GGA,Leu_CUC,Leu_UUG,Arg_CGU,Tyr_UAU,5S,Leu_CUU,16S,23S,23S,5S,His_CAU,Cys_UGC,Trp_UGG,Gly_GGG,Lys_AAG,Ile_AUC,Arg_AGA,Arg_AGA,Asp_GAU,Thr_ACG,Ile_AUC,Thr_ACC,Val_GUC,His_CAU,Arg_AGG,Asp_GAU,Thr_ACG,His_CAU,Pro_CCC,Glu_GAG,Phe_UUC,16S,Lys_AAA,Trp_UGG,23S,5S,Arg_CGG,Leu_CUU,Arg_AGA,HIs_CAC,Val_GUG,Gly_GGU,Ala_GCC,Gly_GGG,Thr_ACC,Lys_AAA,[t],-Cys_UGC,-Val_GUG,-Asp_GAU,-Arg_CGU,-16S,-Thr_ACU,-Arg_AGA,-5S,-23S,-His_CAU,-Thr_ACG,-5S,-23S,-16S,-16S,-Gln_CAA,-Ile_AUC,-Tyr_UAC,-Tyr_UAU,-Thr_ACC,-Val_GUC,-Ser_UCA,-Cys_UGC,-Thr_ACU,-23S,-16S,-Leu_UUG,-Lys_AAA,-Ser_AGU,-Val_GUC,-Gly_GGA,-Gln_CAG,-Pro_CCA,-Gly_GGC,-Glu_GAG,-Ile_AUC,-Ser_AGC,-Arg_CGC
+Y:[o],Ala_GCC,16S,23S,5S,Val_GUG,Pro_CCU,Ile_AUC,Arg_CGC,Pro_CCG,Leu_CUC,16S,23S,5S,Trp_UGG,Gly_GGG,Lys_AAG,Thr_ACC,Ser_AGU,Ile_AUC,Thr_ACU,Glu_GAA,Cys_UGU,Leu_UUG,Thr_ACC,Gln_CAG,Ser_UCU,Ser_UCA,Arg_CGU,Ser_UCG,Ser_UCG,Arg_AGA,Arg_AGA,Asp_GAU,Thr_ACG,Ile_AUC,Gly_GGU,Ile_AUC,Pro_CCG,Tyr_UAC,16S,Lys_AAA,23S,5S,Gly_GGA,Leu_CUC,Leu_UUG,Leu_CUU,Ile_AUC,Gln_CAA,16S,16S,23S,5S,Thr_ACG,His_CAU,23S,Lys_AAA,Leu_UUG,16S,5S,23S,5S,Val_GUC,His_CAU,Arg_AGG,Asp_GAU,16S,23S,5S,Thr_ACG,Pro_CCC,Glu_GAG,Phe_UUC,16S,Lys_AAA,Trp_UGG,23S,5S,[t],-Arg_CGU,-Gly_GGG,-Gly_GGU,-Val_GUG,-Arg_AGA,-Leu_CUU,-Arg_CGG,-Cys_UGC,-Ile_AUC,-Asp_GAU,-Arg_CGU,-Thr_ACC,-Val_GUC,-Gly_GGU,-Ser_UCA,-Thr_ACU,-5S,-Ile_AUC,-23S,-16S,-Ser_AGU,-Gly_GGU,-5S,-23S,-16S,-Thr_ACU,-Arg_AGA,-Val_GUC,-5S,-Arg_CGU,-Phe_UUC,-Tyr_UAU,-Cys_UGC,-Cys_UGC,-Gly_GGA,-Gln_CAG,-Pro_CCA,-Gly_GGC,-Glu_GAG,-Ser_AGC,-Arg_CGC
+------------------------
+**********************************************************
+LP running time: 0 hour(s), 00 minutes(s) and 00 second(s)
+**********************************************************
+
+Detailed Results
+****************
+   Genome X         Genome Y   Operation
+   ========         ========   =========
+    [o]_1     ---   [o]_117    
+  Ala_GCC_2   --- Ala_GCC_118  
+    16S_3     ---   16S_119    
+    23S_4     ---   23S_120    
+     5S_5     ---    5S_121    
+  Val_GUG_6   --- Val_GUG_122  
+  Pro_CCU_7   --- Pro_CCU_123  
+  Ile_AUC_8   --- Ile_AUC_124  
+  Arg_CGC_9   --- Arg_CGC_125  
+  Pro_CCG_10  --- Pro_CCG_126  
+  Leu_CUC_11  --- Leu_CUC_127  
+    16S_12    ---   16S_128    
+    23S_13    ---   23S_129    
+    5S_14     ---    5S_130    
+      .       --- Trp_UGG_131  Duplication of Trp_UGG_131 to Trp_UGG_131 copied from Trp_UGG_193 to Trp_UGG_193
+      .       --- Gly_GGG_132  Loss of Gly_GGG_132
+      .       --- Lys_AAG_133  Loss of Lys_AAG_133
+      .       --- Thr_ACC_134  Inverted Duplication of Thr_ACC_134 to Thr_ACC_134 copied from -Thr_ACC_208 to -Thr_ACC_208
+  Ser_AGU_15  --- Ser_AGU_135  
+  Ile_AUC_16  --- Ile_AUC_136  
+      .       --- Thr_ACU_137  Loss of Thr_ACU_137
+  Glu_GAA_17  --- Glu_GAA_138  
+  Cys_UGU_18  --- Cys_UGU_139  
+  Leu_UUG_19  --- Leu_UUG_140  
+  Thr_ACC_20  --- Thr_ACC_141  
+  Gln_CAG_21  --- Gln_CAG_142  
+  Ser_UCU_22  --- Ser_UCU_143  
+  Ser_UCA_23  --- Ser_UCA_144  
+  Arg_CGU_24  --- Arg_CGU_145  
+  Ser_UCG_25  --- Ser_UCG_146  
+  Ser_UCG_26  --- Ser_UCG_147  
+  Cys_UGC_27  ---      .       Loss of Cys_UGC_27
+      .       --- Arg_AGA_148  Loss of Arg_AGA_148
+      .       --- Arg_AGA_149  Loss of Arg_AGA_149
+      .       --- Asp_GAU_150  Loss of Asp_GAU_150
+      .       --- Thr_ACG_151  Loss of Thr_ACG_151
+      .       --- Ile_AUC_152  Duplication of Ile_AUC_152 to Ile_AUC_152 copied from Ile_AUC_124 to Ile_AUC_124
+  Gly_GGU_28  --- Gly_GGU_153  
+      .       --- Ile_AUC_154  Inverted Duplication of Ile_AUC_154 to Ile_AUC_154 copied from -Ile_AUC_214 to -Ile_AUC_214
+      .       --- Pro_CCG_155  Loss of Pro_CCG_155
+      .       --- Tyr_UAC_156  Loss of Tyr_UAC_156
+      .       ---   16S_157    Duplication of 16S_157 to Lys_AAA_158 copied from 16S_191 to Lys_AAA_192
+      .       --- Lys_AAA_158  
+    23S_29    ---   23S_159    
+    5S_30     ---    5S_160    
+  Gly_GGA_31  --- Gly_GGA_161  
+  Leu_CUC_32  --- Leu_CUC_162  
+  Leu_UUG_33  --- Leu_UUG_163  
+  Arg_CGU_34  ---      .       Loss of Arg_CGU_34
+  Tyr_UAU_35  ---      .       Loss of Tyr_UAU_35
+    5S_36     ---      .       Inverted Duplication of 5S_36 to 5S_36 copied from -5S_86 to -5S_86
+  Leu_CUU_37  --- Leu_CUU_164  
+      .       --- Ile_AUC_165  Loss of Ile_AUC_165
+      .       --- Gln_CAA_166  Loss of Gln_CAA_166
+    16S_38    ---   16S_167    
+      .       ---   16S_168    Loss of 16S_168
+    23S_39    ---   23S_169    
+    23S_40    ---      .       Duplication of 23S_40 to 23S_40 copied from 23S_4 to 23S_4
+    5S_41     ---    5S_170    
+  His_CAU_42  ---      .       Loss of His_CAU_42
+  Cys_UGC_43  ---      .       Loss of Cys_UGC_43
+  Trp_UGG_44  ---      .       Loss of Trp_UGG_44
+  Gly_GGG_45  ---      .       Loss of Gly_GGG_45
+  Lys_AAG_46  ---      .       Loss of Lys_AAG_46
+  Ile_AUC_47  ---      .       Inverted Duplication of Ile_AUC_47 to Ile_AUC_47 copied from -Ile_AUC_95 to -Ile_AUC_95
+  Arg_AGA_48  ---      .       Loss of Arg_AGA_48
+  Arg_AGA_49  ---      .       Inverted Duplication of Arg_AGA_49 to Arg_AGA_49 copied from -Arg_AGA_85 to -Arg_AGA_85
+  Asp_GAU_50  ---      .       Loss of Asp_GAU_50
+  Thr_ACG_51  --- Thr_ACG_171  
+  Ile_AUC_52  ---      .       Duplication of Ile_AUC_52 to Ile_AUC_52 copied from Ile_AUC_8 to Ile_AUC_8
+  Thr_ACC_53  ---      .       Inverted Duplication of Thr_ACC_53 to Thr_ACC_53 copied from -Thr_ACC_98 to -Thr_ACC_98
+      .       --- His_CAU_172  Loss of His_CAU_172
+      .       ---   23S_173    Duplication of 23S_173 to 23S_173 copied from 23S_120 to 23S_120
+      .       --- Lys_AAA_174  Loss of Lys_AAA_174
+      .       --- Leu_UUG_175  Loss of Leu_UUG_175
+      .       ---   16S_176    Loss of 16S_176
+      .       ---    5S_177    Duplication of 5S_177 to 5S_177 copied from 5S_130 to 5S_130
+      .       ---   23S_178    Inverted Duplication of 23S_178 to 5S_179 copied from -5S_219 to -23S_220
+      .       ---    5S_179    
+  Val_GUC_54  --- Val_GUC_180  
+  His_CAU_55  --- His_CAU_181  
+  Arg_AGG_56  --- Arg_AGG_182  
+  Asp_GAU_57  --- Asp_GAU_183  
+      .       ---   16S_184    Duplication of 16S_184 to 16S_184 copied from 16S_128 to 16S_128
+      .       ---   23S_185    Inverted Duplication of 23S_185 to 5S_186 copied from -5S_219 to -23S_220
+      .       ---    5S_186    
+  Thr_ACG_58  --- Thr_ACG_187  
+  His_CAU_59  ---      .       Duplication of His_CAU_59 to His_CAU_59 copied from His_CAU_42 to His_CAU_42
+  Pro_CCC_60  --- Pro_CCC_188  
+  Glu_GAG_61  --- Glu_GAG_189  
+  Phe_UUC_62  --- Phe_UUC_190  
+    16S_63    ---   16S_191    
+  Lys_AAA_64  --- Lys_AAA_192  
+  Trp_UGG_65  --- Trp_UGG_193  
+    23S_66    ---   23S_194    
+    5S_67     ---    5S_195    
+  Arg_CGG_68  ---      .       Loss of Arg_CGG_68
+  Leu_CUU_69  ---      .       Loss of Leu_CUU_69
+  Arg_AGA_70  ---      .       Duplication of Arg_AGA_70 to Arg_AGA_70 copied from Arg_AGA_48 to Arg_AGA_48
+  HIs_CAC_71  ---      .       Loss of HIs_CAC_71
+  Val_GUG_72  ---      .       Loss of Val_GUG_72
+  Gly_GGU_73  ---      .       Loss of Gly_GGU_73
+  Ala_GCC_74  ---      .       Duplication of Ala_GCC_74 to Ala_GCC_74 copied from Ala_GCC_2 to Ala_GCC_2
+  Gly_GGG_75  ---      .       Loss of Gly_GGG_75
+  Thr_ACC_76  ---      .       Inverted Duplication of Thr_ACC_76 to Thr_ACC_76 copied from -Thr_ACC_98 to -Thr_ACC_98
+  Lys_AAA_77  ---      .       Loss of Lys_AAA_77
+    [t]_78    ---   [t]_196    
+ -Cys_UGC_79  ---      .       Duplication of -Cys_UGC_79 to -Cys_UGC_79 copied from -Cys_UGC_101 to -Cys_UGC_101
+      .       --- -Arg_CGU_197 Loss of -Arg_CGU_197
+      .       --- -Gly_GGG_198 Loss of -Gly_GGG_198
+      .       --- -Gly_GGU_199 Loss of -Gly_GGU_199
+ -Val_GUG_80  --- -Val_GUG_200 
+ -Asp_GAU_81  ---      .       Inverted Duplication of -Asp_GAU_81 to -Asp_GAU_81 copied from Asp_GAU_50 to Asp_GAU_50
+ -Arg_CGU_82  ---      .       Loss of -Arg_CGU_82
+   -16S_83    ---      .       Duplication of -16S_83 to -16S_83 copied from -16S_104 to -16S_104
+ -Thr_ACU_84  ---      .       Loss of -Thr_ACU_84
+ -Arg_AGA_85  --- -Arg_AGA_201 
+    -5S_86    ---      .       Inverted Duplication of -5S_86 to -23S_87 copied from 23S_29 to 5S_30
+   -23S_87    ---      .       
+ -His_CAU_88  ---      .       Loss of -His_CAU_88
+ -Thr_ACG_89  ---      .       Loss of -Thr_ACG_89
+    -5S_90    ---      .       Inverted Duplication of -5S_90 to -23S_91 copied from 23S_29 to 5S_30
+   -23S_91    ---      .       
+   -16S_92    ---      .       Duplication of -16S_92 to -16S_92 copied from -16S_104 to -16S_104
+   -16S_93    ---      .       Inverted Duplication of -16S_93 to -16S_93 copied from 16S_12 to 16S_12
+ -Gln_CAA_94  ---      .       Loss of -Gln_CAA_94
+      .       --- -Leu_CUU_202 Loss of -Leu_CUU_202
+      .       --- -Arg_CGG_203 Loss of -Arg_CGG_203
+      .       --- -Cys_UGC_204 Loss of -Cys_UGC_204
+ -Ile_AUC_95  --- -Ile_AUC_205 
+ -Tyr_UAC_96  ---      .       Loss of -Tyr_UAC_96
+ -Tyr_UAU_97  ---      .       Loss of -Tyr_UAU_97
+      .       --- -Asp_GAU_206 Loss of -Asp_GAU_206
+      .       --- -Arg_CGU_207 Loss of -Arg_CGU_207
+ -Thr_ACC_98  --- -Thr_ACC_208 
+ -Val_GUC_99  --- -Val_GUC_209 
+      .       --- -Gly_GGU_210 Loss of -Gly_GGU_210
+ -Ser_UCA_100 --- -Ser_UCA_211 
+ -Cys_UGC_101 ---      .       Loss of -Cys_UGC_101
+ -Thr_ACU_102 --- -Thr_ACU_212 
+      .       ---   -5S_213    Inverted Duplication of -5S_213 to -5S_213 copied from 5S_160 to 5S_160
+      .       --- -Ile_AUC_214 Loss of -Ile_AUC_214
+   -23S_103   ---   -23S_215   
+   -16S_104   ---   -16S_216   
+ -Leu_UUG_105 ---      .       Loss of -Leu_UUG_105
+ -Lys_AAA_106 ---      .       Loss of -Lys_AAA_106
+ -Ser_AGU_107 --- -Ser_AGU_217 
+      .       --- -Gly_GGU_218 Loss of -Gly_GGU_218
+      .       ---   -5S_219    Duplication of -5S_219 to -5S_219 copied from -5S_213 to -5S_213
+      .       ---   -23S_220   Duplication of -23S_220 to -16S_221 copied from -23S_215 to -16S_216
+      .       ---   -16S_221   
+      .       --- -Thr_ACU_222 Loss of -Thr_ACU_222
+      .       --- -Arg_AGA_223 Inverted Duplication of -Arg_AGA_223 to -Arg_AGA_223 copied from Arg_AGA_149 to Arg_AGA_149
+ -Val_GUC_108 --- -Val_GUC_224 
+      .       ---   -5S_225    Inverted Duplication of -5S_225 to -5S_225 copied from 5S_121 to 5S_121
+      .       --- -Arg_CGU_226 Loss of -Arg_CGU_226
+      .       --- -Phe_UUC_227 Loss of -Phe_UUC_227
+      .       --- -Tyr_UAU_228 Loss of -Tyr_UAU_228
+      .       --- -Cys_UGC_229 Tandem Duplication of -Cys_UGC_229 to -Cys_UGC_229 copied from -Cys_UGC_230 to -Cys_UGC_230
+      .       --- -Cys_UGC_230 Loss of -Cys_UGC_230
+ -Gly_GGA_109 --- -Gly_GGA_231 
+ -Gln_CAG_110 --- -Gln_CAG_232 
+ -Pro_CCA_111 --- -Pro_CCA_233 
+ -Gly_GGC_112 --- -Gly_GGC_234 
+ -Glu_GAG_113 --- -Glu_GAG_235 
+ -Ile_AUC_114 ---      .       Inverted Duplication of -Ile_AUC_114 to -Ile_AUC_114 copied from Ile_AUC_8 to Ile_AUC_8
+ -Ser_AGC_115 --- -Ser_AGC_236 
+ -Arg_CGC_116 --- -Arg_CGC_237 
+
+Total Cost = 93.0
+
+Genome X: [o] , Ala_GCC , 16S , 23S , 5S , Val_GUG , Pro_CCU , Ile_AUC , Arg_CGC , Pro_CCG , Leu_CUC , 16S , 23S , 5S , Ser_AGU , Ile_AUC , Glu_GAA , Cys_UGU , Leu_UUG , Thr_ACC , Gln_CAG , Ser_UCU , Ser_UCA , Arg_CGU , Ser_UCG , Ser_UCG , Cys_UGC , Gly_GGU , 23S , 5S , Gly_GGA , Leu_CUC , Leu_UUG , Arg_CGU , Tyr_UAU , 5S , Leu_CUU , 16S , 23S , 23S , 5S , His_CAU , Cys_UGC , Trp_UGG , Gly_GGG , Lys_AAG , Ile_AUC , Arg_AGA , Arg_AGA , Asp_GAU , Thr_ACG , Ile_AUC , Thr_ACC , Val_GUC , His_CAU , Arg_AGG , Asp_GAU , Thr_ACG , His_CAU , Pro_CCC , Glu_GAG , Phe_UUC , 16S , Lys_AAA , Trp_UGG , 23S , 5S , Arg_CGG , Leu_CUU , Arg_AGA , HIs_CAC , Val_GUG , Gly_GGU , Ala_GCC , Gly_GGG , Thr_ACC , Lys_AAA , [t] , -Cys_UGC , -Val_GUG , -Asp_GAU , -Arg_CGU , -16S , -Thr_ACU , -Arg_AGA , -5S , -23S , -His_CAU , -Thr_ACG , -5S , -23S , -16S , -16S , -Gln_CAA , -Ile_AUC , -Tyr_UAC , -Tyr_UAU , -Thr_ACC , -Val_GUC , -Ser_UCA , -Cys_UGC , -Thr_ACU , -23S , -16S , -Leu_UUG , -Lys_AAA , -Ser_AGU , -Val_GUC , -Gly_GGA , -Gln_CAG , -Pro_CCA , -Gly_GGC , -Glu_GAG , -Ile_AUC , -Ser_AGC , -Arg_CGC
+Genome Y: [o] , Ala_GCC , 16S , 23S , 5S , Val_GUG , Pro_CCU , Ile_AUC , Arg_CGC , Pro_CCG , Leu_CUC , 16S , 23S , 5S , Trp_UGG , Gly_GGG , Lys_AAG , Thr_ACC , Ser_AGU , Ile_AUC , Thr_ACU , Glu_GAA , Cys_UGU , Leu_UUG , Thr_ACC , Gln_CAG , Ser_UCU , Ser_UCA , Arg_CGU , Ser_UCG , Ser_UCG , Arg_AGA , Arg_AGA , Asp_GAU , Thr_ACG , Ile_AUC , Gly_GGU , Ile_AUC , Pro_CCG , Tyr_UAC , 16S , Lys_AAA , 23S , 5S , Gly_GGA , Leu_CUC , Leu_UUG , Leu_CUU , Ile_AUC , Gln_CAA , 16S , 16S , 23S , 5S , Thr_ACG , His_CAU , 23S , Lys_AAA , Leu_UUG , 16S , 5S , 23S , 5S , Val_GUC , His_CAU , Arg_AGG , Asp_GAU , 16S , 23S , 5S , Thr_ACG , Pro_CCC , Glu_GAG , Phe_UUC , 16S , Lys_AAA , Trp_UGG , 23S , 5S , [t] , -Arg_CGU , -Gly_GGG , -Gly_GGU , -Val_GUG , -Arg_AGA , -Leu_CUU , -Arg_CGG , -Cys_UGC , -Ile_AUC , -Asp_GAU , -Arg_CGU , -Thr_ACC , -Val_GUC , -Gly_GGU , -Ser_UCA , -Thr_ACU , -5S , -Ile_AUC , -23S , -16S , -Ser_AGU , -Gly_GGU , -5S , -23S , -16S , -Thr_ACU , -Arg_AGA , -Val_GUC , -5S , -Arg_CGU , -Phe_UUC , -Tyr_UAU , -Cys_UGC , -Cys_UGC , -Gly_GGA , -Gln_CAG , -Pro_CCA , -Gly_GGC , -Glu_GAG , -Ser_AGC , -Arg_CGC
+>Ancestor 
+[o],Ala_GCC,16S,23S,5S,Val_GUG,Pro_CCU,Ile_AUC,Arg_CGC,Pro_CCG,Leu_CUC,16S,23S,5S,Gly_GGG,Lys_AAG,Ser_AGU,Ile_AUC,Thr_ACU,Glu_GAA,Cys_UGU,Leu_UUG,Thr_ACC,Gln_CAG,Ser_UCU,Ser_UCA,Arg_CGU,Ser_UCG,Ser_UCG,Cys_UGC,Arg_AGA,Arg_AGA,Asp_GAU,Thr_ACG,Gly_GGU,Pro_CCG,Tyr_UAC,23S,5S,Gly_GGA,Leu_CUC,Leu_UUG,Arg_CGU,Tyr_UAU,Leu_CUU,Ile_AUC,Gln_CAA,16S,16S,23S,5S,His_CAU,Cys_UGC,Trp_UGG,Gly_GGG,Lys_AAG,Arg_AGA,Asp_GAU,Thr_ACG,His_CAU,Lys_AAA,Leu_UUG,16S,Val_GUC,His_CAU,Arg_AGG,Asp_GAU,Thr_ACG,Pro_CCC,Glu_GAG,Phe_UUC,16S,Lys_AAA,Trp_UGG,23S,5S,Arg_CGG,Leu_CUU,HIs_CAC,Val_GUG,Gly_GGU,Gly_GGG,Lys_AAA,[t],-Arg_CGU,-Gly_GGG,-Gly_GGU,-Val_GUG,-Arg_CGU,-Thr_ACU,-Arg_AGA,-His_CAU,-Thr_ACG,-Gln_CAA,-Leu_CUU,-Arg_CGG,-Cys_UGC,-Ile_AUC,-Tyr_UAC,-Tyr_UAU,-Asp_GAU,-Arg_CGU,-Thr_ACC,-Val_GUC,-Gly_GGU,-Ser_UCA,-Cys_UGC,-Thr_ACU,-Ile_AUC,-23S,-16S,-Leu_UUG,-Lys_AAA,-Ser_AGU,-Gly_GGU,-Thr_ACU,-Val_GUC,-Arg_CGU,-Phe_UUC,-Tyr_UAU,-Cys_UGC,-Gly_GGA,-Gln_CAG,-Pro_CCA,-Gly_GGC,-Glu_GAG,-Ser_AGC,-Arg_CGC

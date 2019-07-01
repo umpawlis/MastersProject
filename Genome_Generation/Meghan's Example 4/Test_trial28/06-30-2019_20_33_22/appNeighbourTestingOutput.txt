@@ -1,0 +1,19 @@
+Starting application...
+Thr_ACA 8, Thr_ACA 9
+Thr_ACA 9
+['Thr_ACA 8', 'Thr_ACA 9']
+Removed: Thr_ACA 9
+Thr_ACA 8
+Thr_ACA 8
+['Thr_ACA 8']
+Removed: Thr_ACA 8
+Phe_UUU 119
+Phe_UUU 119
+['Phe_UUU 119']
+Removed: Phe_UUU 119
+HIs_CAC 72
+HIs_CAC 72
+['HIs_CAC 72']
+Removed: HIs_CAC 72
+Total time (in seconds): 2.882999897
+Ending application...

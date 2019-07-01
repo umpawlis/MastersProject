@@ -1,0 +1,23 @@
+Starting application...
+Pro_CCG 34
+Pro_CCG 34
+['Pro_CCG 34']
+Removed: Pro_CCG 34
+Ala_GCG 32
+Ala_GCG 32
+['Ala_GCG 32']
+Removed: Ala_GCG 32
+Arg_CGC 7, Glu_GAA 8
+Glu_GAA 8
+['Arg_CGC 7', 'Glu_GAA 8']
+Removed: Glu_GAA 8
+Arg_CGC 7
+Arg_CGC 7
+['Arg_CGC 7']
+Removed: Arg_CGC 7
+Ile_AUA 99
+Ile_AUA 99
+['Ile_AUA 99']
+Removed: Ile_AUA 99
+Total time (in seconds): 4.36199998856
+Ending application...

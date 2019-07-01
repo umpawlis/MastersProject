@@ -1,0 +1,55 @@
+Starting application...
+Arg_AGG 29
+Arg_AGG 29
+['Arg_AGG 29']
+Removed: Arg_AGG 29
+Arg_CGU 18, Arg_CGA 19, Leu_CUG 20
+Leu_CUG 20
+['Arg_CGU 18', 'Arg_CGA 19', 'Leu_CUG 20']
+Removed: Leu_CUG 20
+Arg_CGU 18, Arg_CGA 19
+Arg_CGA 19
+['Arg_CGU 18', 'Arg_CGA 19']
+Removed: Arg_CGA 19
+Arg_CGU 18
+Arg_CGU 18
+['Arg_CGU 18']
+Removed: Arg_CGU 18
+Arg_CGU 52
+Arg_CGU 52
+['Arg_CGU 52']
+Removed: Arg_CGU 52
+Thr_ACC 40
+Thr_ACC 40
+['Thr_ACC 40']
+Removed: Thr_ACC 40
+Gly_GGA 46, 23S 47
+23S 47
+['Gly_GGA 46', '23S 47']
+Removed: 23S 47
+Gly_GGA 46
+Gly_GGA 46
+['Gly_GGA 46']
+Removed: Gly_GGA 46
+Gln_CAG 40
+Gln_CAG 40
+['Gln_CAG 40']
+Removed: Gln_CAG 40
+Leu_UUA 58
+Leu_UUA 58
+['Leu_UUA 58']
+Removed: Leu_UUA 58
+Ser_AGU 62, Pro_CCG 63, Ser_UCC 64, Ser_AGU 65
+Ser_AGU 65
+['Ser_AGU 62', 'Pro_CCG 63', 'Ser_UCC 64', 'Ser_AGU 65']
+Removed: Ser_AGU 65
+Ser_AGU 62, Pro_CCG 63, Ser_UCC 64
+Ser_UCC 64
+['Ser_AGU 62', 'Pro_CCG 63', 'Ser_UCC 64']
+Removed: Ser_UCC 64
+Ser_UCG 98
+Ser_UCG 98
+['Ser_UCG 98']
+Removed: Ser_UCG 98
+Total time (in seconds): 4.53900003433
+Ending application...

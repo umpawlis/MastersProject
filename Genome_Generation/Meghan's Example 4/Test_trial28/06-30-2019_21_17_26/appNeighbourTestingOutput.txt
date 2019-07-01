@@ -1,0 +1,19 @@
+Starting application...
+Glu_GAA 109
+Glu_GAA 109
+['Glu_GAA 109']
+Removed: Glu_GAA 109
+Ser_AGU 6
+Ser_AGU 6
+['Ser_AGU 6']
+Removed: Ser_AGU 6
+Arg_AGG 3, Leu_CUC 4
+Leu_CUC 4
+['Arg_AGG 3', 'Leu_CUC 4']
+Removed: Leu_CUC 4
+Arg_AGG 3
+Arg_AGG 3
+['Arg_AGG 3']
+Removed: Arg_AGG 3
+Total time (in seconds): 3.14099979401
+Ending application...

@@ -1,0 +1,39 @@
+Starting application...
+Cys_UGC 14
+Cys_UGC 14
+['Cys_UGC 14']
+Removed: Cys_UGC 14
+Arg_CGC 117
+Arg_CGC 117
+['Arg_CGC 117']
+Removed: Arg_CGC 117
+Lys_AAG 116
+Lys_AAG 116
+['Lys_AAG 116']
+Removed: Lys_AAG 116
+HIs_CAC 7
+HIs_CAC 7
+['HIs_CAC 7']
+Removed: HIs_CAC 7
+Leu_CUA 107
+Leu_CUA 107
+['Leu_CUA 107']
+Removed: Leu_CUA 107
+HIs_CAC 109, Pro_CCG 110
+HIs_CAC 109
+['HIs_CAC 109', 'Pro_CCG 110']
+Removed: HIs_CAC 109
+Pro_CCG 110
+Pro_CCG 110
+['Pro_CCG 110']
+Removed: Pro_CCG 110
+Ala_GCA 96
+Ala_GCA 96
+['Ala_GCA 96']
+Removed: Ala_GCA 96
+His_CAU 104
+His_CAU 104
+['His_CAU 104']
+Removed: His_CAU 104
+Total time (in seconds): 3.42499995232
+Ending application...

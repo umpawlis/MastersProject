@@ -1,0 +1,35 @@
+Starting application...
+Tyr_UAC 40, Leu_UUG 41
+Leu_UUG 41
+['Tyr_UAC 40', 'Leu_UUG 41']
+Removed: Leu_UUG 41
+Tyr_UAC 40
+Tyr_UAC 40
+['Tyr_UAC 40']
+Removed: Tyr_UAC 40
+Arg_CGC 35
+Arg_CGC 35
+['Arg_CGC 35']
+Removed: Arg_CGC 35
+Gly_GGC 5
+Gly_GGC 5
+['Gly_GGC 5']
+Removed: Gly_GGC 5
+Leu_CUA 69, Ser_AGU 70
+Leu_CUA 69
+['Leu_CUA 69', 'Ser_AGU 70']
+Removed: Leu_CUA 69
+Ser_AGU 70
+Ser_AGU 70
+['Ser_AGU 70']
+Removed: Ser_AGU 70
+Cys_UGC 75
+Cys_UGC 75
+['Cys_UGC 75']
+Removed: Cys_UGC 75
+Thr_ACA 55
+Thr_ACA 55
+['Thr_ACA 55']
+Removed: Thr_ACA 55
+Total time (in seconds): 5.22799992561
+Ending application...

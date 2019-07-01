@@ -1,0 +1,15 @@
+Starting application...
+Ser_UCC 98, Asp_GAU 99
+Ser_UCC 98
+['Ser_UCC 98', 'Asp_GAU 99']
+Removed: Ser_UCC 98
+Asp_GAU 99
+Asp_GAU 99
+['Asp_GAU 99']
+Removed: Asp_GAU 99
+16S 2
+16S 2
+['16S 2']
+Removed: 16S 2
+Total time (in seconds): 2.57800006866
+Ending application...

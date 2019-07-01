@@ -1,0 +1,63 @@
+Opening duplossEvents.out generatorOutput.txt...
+Comparing the following strain between the two files: NC_000001
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the substitutions between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the duplications between the strains!
+HIs_CAC 54|Leu_UUG 63|Leu_UUG 105, Gly_GGU 106|
+Leu_UUG 105, Gly_GGU 106|
+Events Found: 1 Events Expected: 1 Genes Found: 2 Genes Expected: 2 Total App Events: 3
+Comparing the deletions between the strains!
+Thr_ACU 14|Leu_UUG 51|Ser_UCC 52|Glu_GAG 53|Pro_CCC 54|Val_GUA 55|Val_GUC 61|Arg_CGC 91|Gly_GGU 92|Phe_UUU 107|Leu_CUC 108|
+Arg_CGC 91, Gly_GGU 92|
+Events Found: 1 Events Expected: 2 Genes Found: 4 Genes Expected: 4 Total App Events: 14
+Comparing the inversions between the strains!
+
+Val_GUC 53, HIs_CAC 54, Ser_UCG 55;< t > 56;Val_GUA 57, Pro_CCC 58;Leu_UUA 59, Val_GUU 60;Glu_GAG 61, Ser_UCC 62, Leu_UUG 63;|
+Events Found: 1 Events Expected: 3 Genes Found: 4 Genes Expected: 15 Total App Events: 14
+Comparing the transpositions between the strains!
+
+
+Events Found: 1 Events Expected: 3 Genes Found: 4 Genes Expected: 15 Total App Events: 14
+Comparing the inverted transposition between the strains!
+
+Leu_CUC 19, Phe_UUU 20;|
+Events Found: 1 Events Expected: 4 Genes Found: 4 Genes Expected: 17 Total App Events: 14
+Comparing the following strain between the two files: NC_000002
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 1 Events Expected: 4 Genes Found: 4 Genes Expected: 17 Total App Events: 14
+Comparing the substitutions between the strains!
+
+
+Events Found: 1 Events Expected: 4 Genes Found: 4 Genes Expected: 17 Total App Events: 14
+Comparing the duplications between the strains!
+Ser_UCG 57|HIs_CAC 58|
+Thr_ACU 14|
+Events Found: 1 Events Expected: 5 Genes Found: 4 Genes Expected: 18 Total App Events: 16
+Comparing the deletions between the strains!
+16S 3|Leu_CUC 19|Phe_UUU 20|Val_GUC 53|Ser_UCG 55|Val_GUA 57|Pro_CCC 58|Glu_GAG 61|Ser_UCC 62|
+16S 3|
+Events Found: 2 Events Expected: 6 Genes Found: 5 Genes Expected: 19 Total App Events: 25
+Comparing the inversions between the strains!
+
+
+Events Found: 2 Events Expected: 6 Genes Found: 5 Genes Expected: 19 Total App Events: 25
+Comparing the transpositions between the strains!
+
+
+Events Found: 2 Events Expected: 6 Genes Found: 5 Genes Expected: 19 Total App Events: 25
+Comparing the inverted transposition between the strains!
+
+Leu_UUA 59, Val_GUU 60;|
+Events Found: 2 Events Expected: 7 Genes Found: 5 Genes Expected: 21 Total App Events: 25
+Duplication Events Found: 1 Duplication Events Expected: 2 Duplication Genes Found: 2 Duplication Genes Expected: 3
+Deletion Events Found: 1 Deletion Events Expected: 2 Deletion Genes Found: 3 Deletion Genes Expected: 3
+Inversion Events Found: 0 Inversion Events Expected: 1 Inversion Genes Found: 0 Inversion Genes Expected: 11
+Transposition Events Found: 0 Transposition Events Expected: 2 Transposition Genes Found: 0 Transposition Genes Expected: 4

@@ -1,0 +1,19 @@
+Starting application...
+Asp_GAC 10
+Asp_GAC 10
+['Asp_GAC 10']
+Removed: Asp_GAC 10
+16S 103
+16S 103
+['16S 103']
+Removed: 16S 103
+Asp_GAU 80
+Asp_GAU 80
+['Asp_GAU 80']
+Removed: Asp_GAU 80
+Ser_UCG 60
+Ser_UCG 60
+['Ser_UCG 60']
+Removed: Ser_UCG 60
+Total time (in seconds): 4.4960000515
+Ending application...

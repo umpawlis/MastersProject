@@ -1,0 +1,43 @@
+Starting application...
+Phe_UUC 61
+Phe_UUC 61
+['Phe_UUC 61']
+Removed: Phe_UUC 61
+Tyr_UAC 23, Leu_CUG 24, Tyr_UAC 25, Arg_CGU 26
+Arg_CGU 26
+['Tyr_UAC 23', 'Leu_CUG 24', 'Tyr_UAC 25', 'Arg_CGU 26']
+Removed: Arg_CGU 26
+Tyr_UAC 23, Leu_CUG 24, Tyr_UAC 25
+Tyr_UAC 25
+['Tyr_UAC 23', 'Leu_CUG 24', 'Tyr_UAC 25']
+Removed: Tyr_UAC 25
+Tyr_UAC 23, Leu_CUG 24
+Leu_CUG 24
+['Tyr_UAC 23', 'Leu_CUG 24']
+Removed: Leu_CUG 24
+Tyr_UAC 23
+Tyr_UAC 23
+['Tyr_UAC 23']
+Removed: Tyr_UAC 23
+Ala_GCA 32, Thr_ACC 33
+Thr_ACC 33
+['Ala_GCA 32', 'Thr_ACC 33']
+Removed: Thr_ACC 33
+Ala_GCA 32
+Ala_GCA 32
+['Ala_GCA 32']
+Removed: Ala_GCA 32
+Val_GUU 115, Asp_GAU 117
+Val_GUU 115
+['Val_GUU 115', 'Asp_GAU 117']
+Removed: Val_GUU 115
+Asp_GAU 117
+Asp_GAU 117
+['Asp_GAU 117']
+Removed: Asp_GAU 117
+Thr_ACA 14
+Thr_ACA 14
+['Thr_ACA 14']
+Removed: Thr_ACA 14
+Total time (in seconds): 3.13599991798
+Ending application...

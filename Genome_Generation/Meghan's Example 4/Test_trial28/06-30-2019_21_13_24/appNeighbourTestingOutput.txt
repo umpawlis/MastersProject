@@ -1,0 +1,35 @@
+Starting application...
+Thr_ACA 20, Gln_CAG 21, 16S 22
+16S 22
+['Thr_ACA 20', 'Gln_CAG 21', '16S 22']
+Removed: 16S 22
+Thr_ACA 20, Gln_CAG 21
+Gln_CAG 21
+['Thr_ACA 20', 'Gln_CAG 21']
+Removed: Gln_CAG 21
+Thr_ACA 20
+Thr_ACA 20
+['Thr_ACA 20']
+Removed: Thr_ACA 20
+Asp_GAC 96, Gly_GGC 97
+Asp_GAC 96
+['Asp_GAC 96', 'Gly_GGC 97']
+Removed: Asp_GAC 96
+Gly_GGC 97
+Gly_GGC 97
+['Gly_GGC 97']
+Removed: Gly_GGC 97
+Asp_GAC 61
+Asp_GAC 61
+['Asp_GAC 61']
+Removed: Asp_GAC 61
+Leu_UUA 103
+Leu_UUA 103
+['Leu_UUA 103']
+Removed: Leu_UUA 103
+Cys_UGC 5
+Cys_UGC 5
+['Cys_UGC 5']
+Removed: Cys_UGC 5
+Total time (in seconds): 4.82700014114
+Ending application...

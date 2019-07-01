@@ -1,0 +1,17 @@
+#tree
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Thr_ACC 6;Pro_CCG 13, Ser_UCC 14;Leu_UUA 20;16S 37;Arg_CGC 44;Ser_UCG 45, HIs_CAC 46;5S 51;HIs_CAC 52;Leu_UUA 53;Ile_AUA 56, Leu_CUU 57;Ser_UCC 62;16S 65;23S 66, 5S 67, HIs_CAC 68;Met_AUG 70;Ser_UCG 82;Arg_CGC 86;Ser_UCC 90;Met_AUG 108;
+Deletion:Leu_CUU 8;Leu_UUA 16;Leu_CUG 24;Met_AUG 25;Ala_GCG 38;Arg_AGA 44;Thr_ACA 45;Thr_ACC 46;5S 47;Phe_UUC 50;Gly_GGA 51;Arg_AGA 52;Asp_GAU 53;Leu_CUU 54;Ile_AUA 55;Gln_CAA 56;Pro_CCC 57;5S 59;Thr_ACC 69;Ser_UCA 71;23S 74;16S 75;Val_GUA 76;Ala_GCU 78;Gly_GGU 79;Ala_GCU 80;Leu_CUC 89;Gln_CAG 90;Pro_CCG 91;Ser_AGC 110;Leu_CUU 113;Ala_GCU 114;Arg_CGC 117;Arg_AGA 118;Leu_CUG 122;Lys_AAA 120;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Gly_GGU 6;Ser_UCG 7;Thr_ACC 18;16S 19;Ser_UCG 20;Met_AUG 23;Arg_CGC 31;Ser_UCC 37;Pro_CCG 48;Ser_UCC 49;HIs_CAC 58;23S 60, 16S 61;Glu_GAA 62;Ser_UCC 64;Met_AUG 70;HIs_CAC 72, 5S 73;23S 87;Met_AUG 92;Met_AUG 109;Ser_UCG 111;Leu_UUA 112;
+Deletion:Leu_CUC 1;Pro_CCC 2;16S 3;Leu_CUC 4;5S 5;Thr_ACA 7;Arg_AGA 8;Arg_AGA 16;Gln_CAG 18;Leu_CUC 19;Cys_UGC 25;Glu_GAA 48;16S 49;Pro_CCC 54;Gln_CAA 55;Asp_GAU 58;Arg_AGA 59;Gly_GGA 60;Phe_UUC 61;Pro_CCC 63;Val_GUA 64;Ser_UCA 69;Thr_ACC 71;Gln_CAG 74;Gln_CAG 75;Leu_CUU 80;Ser_UCC 81;Gly_GGU 83;Ala_GCU 87;Leu_CUU 88;Ile_AUA 89;Arg_CGC 97;Ser_AGC 109;Val_GUA 117;Leu_CUC 120;Met_AUG 121;
+Inversion:
+Transposition:
+Inverted Transposition:

@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Ser_UCU 85;Val_GUA 67, Val_GUC 68;Ser_UCU 19;Ser_UCU -1;Ser_UCU 2;
+Deletion:Gln_CAA 39;Arg_CGA 31;Ala_GCA 1;5S 88;Ser_UCU -1;
+Inversion:
+Transposition:Val_GUA 86;|Leu_CUC 43, Asp_GAU 44;|HIs_CAC 119;|Arg_CGC 56;|
+Inverted Transposition:Leu_CUC 55;|
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Thr_ACU 96;Ser_UCU 74;Thr_ACA 51, Ala_GCC 52;Ile_AUA 100;Gln_CAA 78;
+Deletion:Asp_GAC 119;5S 116, 23S 117;Arg_CGG 66;Arg_CGC 59;Ser_UCU 115;
+Inversion:Ala_GCA 54;< t > 55;Leu_CUG 56, Phe_UUC 57, Ala_GCU 58, Phe_UUC 59;Ser_AGU 60, Ser_UCU 61;Arg_CGU 62;Lys_AAG 63, Pro_CCG 64;|
+Transposition:Phe_UUU 5;|Leu_CUC 98;|
+Inverted Transposition:Trp_UGG 65;|Ser_UCG 115, Pro_CCG 116;|Leu_CUG 16;|
+Total Deletions: size: 1 count: 16, size: 2 count: 4
+Total Duplications: size: 1 count: 16, size: 2 count: 4
+Size Distribution of Inversions: size: 6 count: 1
+Size Distribution of Transpositions: size: 1 count: 5, size: 2 count: 2, size: 3 count: 1
+Size Distribution of Inverted Transpositions: size: 1 count: 6, size: 2 count: 4, size: 3 count: 2
+Total Inversions: 1
+Total Transpositions: 8
+Total Inverted Transpositions: 12

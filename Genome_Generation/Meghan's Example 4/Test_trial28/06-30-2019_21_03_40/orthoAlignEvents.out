@@ -1,0 +1,17 @@
+#tree
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUU 70, Phe_UUC 71;
+Deletion:Ile_AUU 3;Arg_CGC 17;Val_GUA 30;Ile_AUC 49, Ser_UCA 50, Ile_AUC 51;Leu_UUA 60;Pro_CCU 78;Met_AUG 92;Ile_AUU 95;Ile_AUU 98;Phe_UUC 122;Asp_GAU 118, Ile_AUA 119;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:Asp_GAU 28;Tyr_UAU 48;Ile_AUU 73;Thr_ACC 74;Arg_CGC 101;
+Duplication:23S 42, 5S 43;Val_GUA 56, Asp_GAU 57, Ala_GCC 58, Pro_CCU 59;Glu_GAA 62, Ile_AUU 63;
+Deletion:5S 6;Tyr_UAC 19, Tyr_UAC 20;Phe_UUC 22;Ile_AUU 34;Tyr_UAC 68, Tyr_UAU 69;Arg_AGG 97;Leu_CUA 104;Ala_GCG 109;Ser_UCG 111;
+Inversion:
+Transposition:Gly_GGC 7, Lys_AAG 8;|Glu_GAG 64, Arg_CGA 65, 5S 66, 23S 67, 16S 68, Arg_AGG 69, Val_GUC 70, Gln_CAG 71;|Ser_UCG 91;|
+Inverted Transposition:Gln_CAG 22, Thr_ACG 23, Pro_CCA 24, Asp_GAU 25;|Gly_GGC 52, Gly_GGU 53;|Tyr_UAU 54, Lys_AAA 55;|Val_GUC 86, Val_GUG 87, Arg_CGC 88, Leu_UUA 89, Pro_CCU 90;|Asp_GAU 105, Gly_GGG 106, Pro_CCC 107, Val_GUU 108, Leu_UUG 109, Ser_AGC 110;|

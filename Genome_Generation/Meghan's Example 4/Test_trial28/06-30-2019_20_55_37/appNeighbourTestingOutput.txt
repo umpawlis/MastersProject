@@ -1,0 +1,23 @@
+Starting application...
+Leu_CUG 16
+Leu_CUG 16
+['Leu_CUG 16']
+Removed: Leu_CUG 16
+Phe_UUU 5
+Phe_UUU 5
+['Phe_UUU 5']
+Removed: Phe_UUU 5
+Ser_UCG 115, Pro_CCG 116
+Ser_UCG 115
+['Ser_UCG 115', 'Pro_CCG 116']
+Removed: Ser_UCG 115
+Pro_CCG 116
+Pro_CCG 116
+['Pro_CCG 116']
+Removed: Pro_CCG 116
+Gln_CAA 78
+Gln_CAA 78
+['Gln_CAA 78']
+Removed: Gln_CAA 78
+Total time (in seconds): 3.93499994278
+Ending application...

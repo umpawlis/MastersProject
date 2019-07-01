@@ -1,0 +1,67 @@
+Starting application...
+Leu_CUA 101, Arg_CGA 102
+Leu_CUA 101
+['Leu_CUA 101', 'Arg_CGA 102']
+Removed: Leu_CUA 101
+Arg_CGA 102
+Arg_CGA 102
+['Arg_CGA 102']
+Removed: Arg_CGA 102
+Ile_AUU 53
+Ile_AUU 53
+['Ile_AUU 53']
+Removed: Ile_AUU 53
+Gly_GGA 45, Arg_CGG 46, Asp_GAC 47
+Asp_GAC 47
+['Gly_GGA 45', 'Arg_CGG 46', 'Asp_GAC 47']
+Removed: Asp_GAC 47
+Gly_GGA 45, Arg_CGG 46
+Arg_CGG 46
+['Gly_GGA 45', 'Arg_CGG 46']
+Removed: Arg_CGG 46
+Gly_GGA 45
+Gly_GGA 45
+['Gly_GGA 45']
+Removed: Gly_GGA 45
+Lys_AAA 79
+Lys_AAA 79
+['Lys_AAA 79']
+Removed: Lys_AAA 79
+Met_AUG 53
+Met_AUG 53
+['Met_AUG 53']
+Removed: Met_AUG 53
+Ile_AUU 109, Phe_UUU 110
+Ile_AUU 109
+['Ile_AUU 109', 'Phe_UUU 110']
+Removed: Ile_AUU 109
+Phe_UUU 110
+Phe_UUU 110
+['Phe_UUU 110']
+Removed: Phe_UUU 110
+Arg_AGG 32
+Arg_AGG 32
+['Arg_AGG 32']
+Removed: Arg_AGG 32
+5S 16
+5S 16
+['5S 16']
+Removed: 5S 16
+Ala_GCU 73, Thr_ACC 74
+Ala_GCU 73
+['Ala_GCU 73', 'Thr_ACC 74']
+Removed: Ala_GCU 73
+Thr_ACC 74
+Thr_ACC 74
+['Thr_ACC 74']
+Removed: Thr_ACC 74
+Ile_AUU 106, Ile_AUC 107
+Ile_AUU 106
+['Ile_AUU 106', 'Ile_AUC 107']
+Removed: Ile_AUU 106
+Ile_AUC 107
+Ile_AUC 107
+['Ile_AUC 107']
+Removed: Ile_AUC 107
+Total time (in seconds): 5.56399989128
+Ending application...

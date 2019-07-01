@@ -1,0 +1,51 @@
+Starting application...
+Leu_CUU 19, Val_GUC 20
+Val_GUC 20
+['Leu_CUU 19', 'Val_GUC 20']
+Removed: Val_GUC 20
+Leu_CUU 19
+Leu_CUU 19
+['Leu_CUU 19']
+Removed: Leu_CUU 19
+Ser_UCG 57, Trp_UGG 58
+Trp_UGG 58
+['Ser_UCG 57', 'Trp_UGG 58']
+Removed: Trp_UGG 58
+Lys_AAA 49, Trp_UGG 50, Ala_GCA 51
+Ala_GCA 51
+['Lys_AAA 49', 'Trp_UGG 50', 'Ala_GCA 51']
+Removed: Ala_GCA 51
+Lys_AAA 49, Trp_UGG 50
+Trp_UGG 50
+['Lys_AAA 49', 'Trp_UGG 50']
+Removed: Trp_UGG 50
+Lys_AAA 49
+Lys_AAA 49
+['Lys_AAA 49']
+Removed: Lys_AAA 49
+Ala_GCA 45
+Ala_GCA 45
+['Ala_GCA 45']
+Removed: Ala_GCA 45
+Ser_UCU 95
+Ser_UCU 95
+['Ser_UCU 95']
+Removed: Ser_UCU 95
+Ala_GCU 39, Thr_ACG 40, Gly_GGU 41, Ala_GCU 42
+Gly_GGU 41
+['Ala_GCU 39', 'Thr_ACG 40', 'Gly_GGU 41', 'Ala_GCU 42']
+Removed: Gly_GGU 41
+Ala_GCU 39, Thr_ACG 40, Ala_GCU 42
+Thr_ACG 40
+['Ala_GCU 39', 'Thr_ACG 40', 'Ala_GCU 42']
+Removed: Thr_ACG 40
+Asp_GAU 14
+Asp_GAU 14
+['Asp_GAU 14']
+Removed: Asp_GAU 14
+Ser_UCG 10
+Ser_UCG 10
+['Ser_UCG 10']
+Removed: Ser_UCG 10
+Total time (in seconds): 4.17500019073
+Ending application...

@@ -1,0 +1,25 @@
+(NC_000001:0.00000,NC_000002:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:Leu_CUG 24;
+Substitution:23S 21;Pro_CCA 90;Ala_GCG 93;
+Duplication:Phe_UUU 13, Ala_GCU 14;23S 64;!Ile_AUC -1, !His_CAU -1, !16S -1, 23S 34, !5S -1;Gly_GGA 36, !His_CAU -1, !Gln_CAA -1, !Phe_UUU -1, !Ala_GCU -1, !Pro_CCC -1, !Leu_CUG -1, !Ser_UCC -1, !Val_GUU -1, !Arg_AGA -1, !Ile_AUC -1;Ser_UCA 37, !Leu_CUA -1, !Ala_GCC -1, !Ser_UCU -1, !Ser_AGU -1, !Ile_AUA -1, !Gly_GGU -1;Cys_UGC 39;!Leu_CUG -1, !5S -1, His_CAU 94, !23S -1, !16S -1;Gly_GGA 95;Leu_CUU 121;
+Deletion:5S 73;Gly_GGG 52, Gly_GGG 53;5S 83, Gly_GGG 84;Arg_AGA 6;Pro_CCG 94;Leu_CUC 99, Leu_CUA 100, Trp_UGG 102;Arg_CGA 39, Gln_CAG 40;Pro_CCA 35, Ile_AUU 36;Cys_UGU 41;Val_GUA 91;Ser_UCG 114;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:Leu_CUU 20;
+Substitution:Ser_UCU 17;Arg_CGG 119;Arg_CGA 122;
+Duplication:16S 87;Tyr_UAU 101;!Ser_UCU -1, Val_GUG 77, !16S -1, !Leu_CUU -1, !23S -1, !5S -1;!5S -1, !Gly_GGG -1, !23S -1, !16S -1, !16S -1, !Pro_CCU -1, Tyr_UAU 90;!5S -1, Pro_CCG 92, !23S -1, !16S -1, !Tyr_UAU -1, !Asp_GAC -1, !Leu_CUC -1, !Leu_CUA -1, !Tyr_UAU -1, !Trp_UGG -1;!Arg_CGG -1, !Tyr_UAU -1, !Gly_GGG -1, Arg_CGA 116;5S 117, !23S -1, !16S -1;Cys_UGC 37;
+Deletion:Val_GUG 5;Cys_UGU 1;Ser_UCA 113;His_CAU 7;Arg_CGA 32, Gly_GGG 33;Arg_CGG 35;Leu_CUU 41;Cys_UGC 49, Cys_UGC 50, Arg_CGA 51, Ser_UCC 52, Val_GUU 53, Pro_CCG 54, Gln_CAG 55;
+Inversion:
+Transposition:Arg_CGA 75;|5S 93, Pro_CCG 94, 23S 95, 16S 96, Tyr_UAU 97, Asp_GAC 98, Leu_CUC 99, Leu_CUA 100, Tyr_UAU 101, Trp_UGG 102;|< t > 78;|Arg_CGG 119, Tyr_UAU 120, Gly_GGG 121, Arg_CGA 122;|Tyr_UAC 79, Lys_AAA 80;|Ile_AUC 69, Val_GUU 70, Ile_AUU 71, Phe_UUU 72, 5S 73, Ala_GCU 74;|Met_AUG 42, 16S 43, Ser_AGU 44, 23S 45, 5S 46;|
+Inverted Transposition:
+Total Deletions: size: 1 count: 12, size: 2 count: 5, size: 3 count: 1, size: 7 count: 1
+Total Duplications: size: 1 count: 7, size: 2 count: 1, size: 3 count: 1, size: 4 count: 1, size: 5 count: 2, size: 6 count: 1, size: 7 count: 2, size: 10 count: 1, size: 11 count: 1
+Size Distribution of Inversions: 
+Size Distribution of Transpositions: size: 1 count: 2, size: 2 count: 1, size: 4 count: 1, size: 5 count: 1, size: 6 count: 1, size: 10 count: 1
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 0
+Total Transpositions: 7
+Total Inverted Transpositions: 0

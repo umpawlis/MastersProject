@@ -1,0 +1,27 @@
+Starting application...
+Arg_CGG 88
+Arg_CGG 88
+['Arg_CGG 88']
+Removed: Arg_CGG 88
+16S 24
+16S 24
+['16S 24']
+Removed: 16S 24
+Leu_CUU 53, His_CAU 54
+His_CAU 54
+['Leu_CUU 53', 'His_CAU 54']
+Removed: His_CAU 54
+Leu_CUU 53
+Leu_CUU 53
+['Leu_CUU 53']
+Removed: Leu_CUU 53
+Leu_UUA 43, Leu_UUG 44
+Leu_UUG 44
+['Leu_UUA 43', 'Leu_UUG 44']
+Removed: Leu_UUG 44
+Leu_UUA 43
+Leu_UUA 43
+['Leu_UUA 43']
+Removed: Leu_UUA 43
+Total time (in seconds): 3.58599996567
+Ending application...

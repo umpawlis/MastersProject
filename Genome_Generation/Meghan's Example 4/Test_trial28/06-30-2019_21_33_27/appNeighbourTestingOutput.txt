@@ -1,0 +1,27 @@
+Starting application...
+5S 45
+5S 45
+['5S 45']
+Removed: 5S 45
+Arg_CGU 50
+Arg_CGU 50
+['Arg_CGU 50']
+Removed: Arg_CGU 50
+Ile_AUA 102
+Ile_AUA 102
+['Ile_AUA 102']
+Removed: Ile_AUA 102
+Thr_ACC 104
+Thr_ACC 104
+['Thr_ACC 104']
+Removed: Thr_ACC 104
+Ile_AUA 87, Asp_GAU 88, Ser_UCA 89
+Asp_GAU 88
+['Ile_AUA 87', 'Asp_GAU 88', 'Ser_UCA 89']
+Removed: Asp_GAU 88
+Ile_AUA 87, Ser_UCA 89
+Ile_AUA 87
+['Ile_AUA 87', 'Ser_UCA 89']
+Removed: Ile_AUA 87
+Total time (in seconds): 5.00199985504
+Ending application...

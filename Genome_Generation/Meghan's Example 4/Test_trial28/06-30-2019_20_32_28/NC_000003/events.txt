@@ -1,0 +1,3 @@
+Event(Type = 'D', Range = [24], Genes: ['Ser_AGC']
+Event(Type = 'IT', Range = [110, 111], Genes: ['Ser_AGC', 'Gly_GGC']
+Event(Type = 'L', Range = [41], Genes: ['Ser_UCU']

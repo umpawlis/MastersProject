@@ -1,0 +1,35 @@
+Starting application...
+5S 87
+5S 87
+['5S 87']
+Removed: 5S 87
+Thr_ACU 44
+Thr_ACU 44
+['Thr_ACU 44']
+Removed: Thr_ACU 44
+Val_GUG 24, Leu_CUC 25
+Leu_CUC 25
+['Val_GUG 24', 'Leu_CUC 25']
+Removed: Leu_CUC 25
+Val_GUG 24
+Val_GUG 24
+['Val_GUG 24']
+Removed: Val_GUG 24
+Leu_UUA 76
+Leu_UUA 76
+['Leu_UUA 76']
+Removed: Leu_UUA 76
+His_CAU 3
+His_CAU 3
+['His_CAU 3']
+Removed: His_CAU 3
+Arg_CGG 61
+Arg_CGG 61
+['Arg_CGG 61']
+Removed: Arg_CGG 61
+Leu_UUG 70
+Leu_UUG 70
+['Leu_UUG 70']
+Removed: Leu_UUG 70
+Total time (in seconds): 4.36299991608
+Ending application...

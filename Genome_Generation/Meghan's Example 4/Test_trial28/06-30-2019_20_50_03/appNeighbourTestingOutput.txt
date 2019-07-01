@@ -1,0 +1,35 @@
+Starting application...
+Lys_AAG 55, Val_GUG 56, Asp_GAU 57
+Asp_GAU 57
+['Lys_AAG 55', 'Val_GUG 56', 'Asp_GAU 57']
+Removed: Asp_GAU 57
+Lys_AAG 55, Val_GUG 56
+Val_GUG 56
+['Lys_AAG 55', 'Val_GUG 56']
+Removed: Val_GUG 56
+Lys_AAG 55
+Lys_AAG 55
+['Lys_AAG 55']
+Removed: Lys_AAG 55
+HIs_CAC 115
+HIs_CAC 115
+['HIs_CAC 115']
+Removed: HIs_CAC 115
+Thr_ACG 82, Ala_GCA 83
+Thr_ACG 82
+['Thr_ACG 82', 'Ala_GCA 83']
+Removed: Thr_ACG 82
+Ala_GCA 83
+Ala_GCA 83
+['Ala_GCA 83']
+Removed: Ala_GCA 83
+16S 43
+16S 43
+['16S 43']
+Removed: 16S 43
+Leu_UUA 8
+Leu_UUA 8
+['Leu_UUA 8']
+Removed: Leu_UUA 8
+Total time (in seconds): 4.05100011826
+Ending application...

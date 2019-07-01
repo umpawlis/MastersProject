@@ -1,0 +1,66 @@
+Starting application...
+Ser_AGC 88
+Ser_AGC 88
+['Ser_AGC 88']
+Removed: Ser_AGC 88
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Gly_GGU 18, Pro_CCC 19, Ile_AUU 20, Ser_UCU 21, Val_GUU 26, Phe_UUU 27
+Phe_UUU 27
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Gly_GGU 18', 'Pro_CCC 19', 'Ile_AUU 20', 'Ser_UCU 21', 'Val_GUU 26', 'Phe_UUU 27']
+Removed: Phe_UUU 27
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Gly_GGU 18, Pro_CCC 19, Ile_AUU 20, Ser_UCU 21, Val_GUU 26
+Ser_UCU 21
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Gly_GGU 18', 'Pro_CCC 19', 'Ile_AUU 20', 'Ser_UCU 21', 'Val_GUU 26']
+Removed: Ser_UCU 21
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Gly_GGU 18, Pro_CCC 19, Ile_AUU 20, Val_GUU 26
+Ile_AUU 20
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Gly_GGU 18', 'Pro_CCC 19', 'Ile_AUU 20', 'Val_GUU 26']
+Removed: Ile_AUU 20
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Gly_GGU 18, Pro_CCC 19, Val_GUU 26
+Pro_CCC 19
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Gly_GGU 18', 'Pro_CCC 19', 'Val_GUU 26']
+Removed: Pro_CCC 19
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Gly_GGU 18, Val_GUU 26
+Gly_GGU 18
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Gly_GGU 18', 'Val_GUU 26']
+Removed: Gly_GGU 18
+Thr_ACC 12, Lys_AAG 13
+Lys_AAG 13
+['Thr_ACC 12', 'Lys_AAG 13']
+Removed: Lys_AAG 13
+Thr_ACC 12
+Thr_ACC 12
+['Thr_ACC 12']
+Removed: Thr_ACC 12
+HIs_CAC 3, Lys_AAG 4
+Lys_AAG 4
+['HIs_CAC 3', 'Lys_AAG 4']
+Removed: Lys_AAG 4
+HIs_CAC 3
+HIs_CAC 3
+['HIs_CAC 3']
+Removed: HIs_CAC 3
+Ser_UCU 1, His_CAU 2
+His_CAU 2
+['Ser_UCU 1', 'His_CAU 2']
+Removed: His_CAU 2
+Ser_UCU 1
+Ser_UCU 1
+['Ser_UCU 1']
+Removed: Ser_UCU 1
+Ser_UCU 15, Pro_CCU 16, Leu_CUA 17, Val_GUU 26
+Ser_UCU 1
+['Ser_UCU 15', 'Pro_CCU 16', 'Leu_CUA 17', 'Val_GUU 26']
+Thr_ACC 107
+Thr_ACC 107
+['Thr_ACC 107']
+Removed: Thr_ACC 107
+Ser_UCU 94
+Ser_UCU 94
+['Ser_UCU 94']
+Removed: Ser_UCU 94
+Cys_UGC 49
+Cys_UGC 49
+['Cys_UGC 49']
+Removed: Cys_UGC 49
+Total time (in seconds): 5.53400015831
+Ending application...

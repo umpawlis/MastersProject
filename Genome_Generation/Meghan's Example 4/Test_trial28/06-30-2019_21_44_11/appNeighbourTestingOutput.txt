@@ -1,0 +1,31 @@
+Starting application...
+Ser_UCA 73
+Ser_UCA 73
+['Ser_UCA 73']
+Removed: Ser_UCA 73
+Asp_GAU 27
+Asp_GAU 27
+['Asp_GAU 27']
+Removed: Asp_GAU 27
+Pro_CCG 20
+Pro_CCG 20
+['Pro_CCG 20']
+Removed: Pro_CCG 20
+5S 36, Leu_UUA 37
+Leu_UUA 37
+['5S 36', 'Leu_UUA 37']
+Removed: Leu_UUA 37
+5S 36
+5S 36
+['5S 36']
+Removed: 5S 36
+23S 111
+23S 111
+['23S 111']
+Removed: 23S 111
+16S 23
+16S 23
+['16S 23']
+Removed: 16S 23
+Total time (in seconds): 3.54400014877
+Ending application...
