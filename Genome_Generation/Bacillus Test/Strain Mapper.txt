@@ -1,7 +1,7 @@
 Name													Short hand			Accession#			Genome Id
-Bacillus amyloliquefaciens DSM 7 						amylo dsm7			NC_014551			692420.6
-Bacillus amyloliquefaciens subsp. plantarum CAU B946 	amylo caub			NC_016784.1			1114958.9		NOT FOUND!
-Bacillus amyloliquefaciens FZB42 						amylo fzb4			NC_009725			326423.5
+Bacillus amyloliquefaciens DSM 7 						amylo_dsm7			NC_014551			692420.6
+Bacillus amyloliquefaciens subsp. plantarum CAU B946 	amylo_caub			NC_016784.1			1114958.9		NOT FOUND!
+Bacillus amyloliquefaciens FZB42 						amylo_fzb42			NC_009725			326423.5
 
 Bacillus subtilis subsp. spizizenii TU-B-10 			subspiz tu			NC_016047.1			1052585.4		NOT FOUND!
 Bacillus subtilis subsp. spizizenii str. W23 			subspiz w2			NC_014479			655816.3
