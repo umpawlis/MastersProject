@@ -1,0 +1,1 @@
+< o >, [16S, 23S, 5S, Ile_AUC, Ala_GCG, Ser_UCG, Met_AUG], Lys_AAA, Phe_UUC, < t >, -[Met_AUG, Ser_UCG], -Gly_GGA, -Thr_ACG
