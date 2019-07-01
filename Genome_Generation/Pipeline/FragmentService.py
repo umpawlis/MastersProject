@@ -370,14 +370,16 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
     if len(details1Counter) > 0:
         for size, count in details1Counter.items():
             if size in strain1.invertedTranspositionCounts:
-                strain2.invertedTranspositionCounts[size] += count
+                if size in strain2.invertedTranspositionCounts:
+                    strain2.invertedTranspositionCounts[size] += count
             else:
                 strain2.invertedTranspositionCounts[size] = count
         strain2.invertedTranspositionDetails += details1
     if len(details2Counter) > 0:
         for size, count in details2Counter.items():
             if size in strain2.invertedTranspositionCounts:
-                strain1.invertedTranspositionCounts[size] += count
+                if size in strain1.invertedTranspositionCounts:
+                    strain1.invertedTranspositionCounts[size] += count
             else:
                 strain1.invertedTranspositionCounts[size] = count
         strain1.invertedTranspositionDetails += details2
