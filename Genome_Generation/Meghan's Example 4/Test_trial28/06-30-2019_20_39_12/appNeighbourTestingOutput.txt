@@ -1,0 +1,27 @@
+Starting application...
+Leu_CUC 35
+Leu_CUC 35
+['Leu_CUC 35']
+Removed: Leu_CUC 35
+Leu_CUA 116
+Leu_CUA 116
+['Leu_CUA 116']
+Removed: Leu_CUA 116
+Thr_ACU 11
+Thr_ACU 11
+['Thr_ACU 11']
+Removed: Thr_ACU 11
+Thr_ACG 81, Gly_GGU 82
+Thr_ACG 81
+['Thr_ACG 81', 'Gly_GGU 82']
+Removed: Thr_ACG 81
+Gly_GGU 82
+Gly_GGU 82
+['Gly_GGU 82']
+Removed: Gly_GGU 82
+Gly_GGU 73
+Gly_GGU 73
+['Gly_GGU 73']
+Removed: Gly_GGU 73
+Total time (in seconds): 5.0119998455
+Ending application...

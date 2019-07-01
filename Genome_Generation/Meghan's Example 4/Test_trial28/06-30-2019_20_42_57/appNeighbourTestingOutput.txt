@@ -1,0 +1,15 @@
+Starting application...
+Ser_UCC 28
+Ser_UCC 28
+['Ser_UCC 28']
+Removed: Ser_UCC 28
+Ser_AGU 120
+Ser_AGU 120
+['Ser_AGU 120']
+Removed: Ser_AGU 120
+Ala_GCG 72
+Ala_GCG 72
+['Ala_GCG 72']
+Removed: Ala_GCG 72
+Total time (in seconds): 2.49900007248
+Ending application...

@@ -1,0 +1,15 @@
+Starting application...
+5S 82, Ser_AGU 83
+Ser_AGU 83
+['5S 82', 'Ser_AGU 83']
+Removed: Ser_AGU 83
+Thr_ACG 107
+Thr_ACG 107
+['Thr_ACG 107']
+Removed: Thr_ACG 107
+Arg_CGA 20
+Arg_CGA 20
+['Arg_CGA 20']
+Removed: Arg_CGA 20
+Total time (in seconds): 2.28799986839
+Ending application...

@@ -1,0 +1,75 @@
+Starting application...
+Leu_CUC 93, Met_AUG 94
+Leu_CUC 93
+['Leu_CUC 93', 'Met_AUG 94']
+Removed: Leu_CUC 93
+Tyr_UAC 83
+Tyr_UAC 83
+['Tyr_UAC 83']
+Removed: Tyr_UAC 83
+Gly_GGG 54, Ala_GCA 55
+Ala_GCA 55
+['Gly_GGG 54', 'Ala_GCA 55']
+Removed: Ala_GCA 55
+Gly_GGG 54
+Gly_GGG 54
+['Gly_GGG 54']
+Removed: Gly_GGG 54
+Tyr_UAC 111
+Tyr_UAC 111
+['Tyr_UAC 111']
+Removed: Tyr_UAC 111
+Val_GUU 77
+Val_GUU 77
+['Val_GUU 77']
+Removed: Val_GUU 77
+Val_GUC 84
+Val_GUC 84
+['Val_GUC 84']
+Removed: Val_GUC 84
+Phe_UUU 87, Tyr_UAC 88, Ala_GCC 89
+Phe_UUU 87
+['Phe_UUU 87', 'Tyr_UAC 88', 'Ala_GCC 89']
+Removed: Phe_UUU 87
+Tyr_UAC 88, Ala_GCC 89
+Tyr_UAC 88
+['Tyr_UAC 88', 'Ala_GCC 89']
+Removed: Tyr_UAC 88
+Ala_GCC 89
+Ala_GCC 89
+['Ala_GCC 89']
+Removed: Ala_GCC 89
+Ala_GCA 61, Ser_AGC 62, Val_GUU 63, Arg_CGU 67, Arg_CGG 68, Leu_UUA 69, Arg_AGG 70, Arg_CGC 71
+Leu_UUA 69
+['Ala_GCA 61', 'Ser_AGC 62', 'Val_GUU 63', 'Arg_CGU 67', 'Arg_CGG 68', 'Leu_UUA 69', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Leu_UUA 69
+Ala_GCA 61, Ser_AGC 62, Val_GUU 63, Arg_CGU 67, Arg_CGG 68, Arg_AGG 70, Arg_CGC 71
+Arg_CGG 68
+['Ala_GCA 61', 'Ser_AGC 62', 'Val_GUU 63', 'Arg_CGU 67', 'Arg_CGG 68', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Arg_CGG 68
+Ala_GCA 61, Ser_AGC 62, Val_GUU 63, Arg_CGU 67, Arg_AGG 70, Arg_CGC 71
+Arg_CGU 67
+['Ala_GCA 61', 'Ser_AGC 62', 'Val_GUU 63', 'Arg_CGU 67', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Arg_CGU 67
+Ala_GCA 61, Ser_AGC 62, Val_GUU 63, Arg_AGG 70, Arg_CGC 71
+Val_GUU 63
+['Ala_GCA 61', 'Ser_AGC 62', 'Val_GUU 63', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Val_GUU 63
+Ala_GCA 61, Ser_AGC 62, Arg_AGG 70, Arg_CGC 71
+Ser_AGC 62
+['Ala_GCA 61', 'Ser_AGC 62', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Ser_AGC 62
+Ala_GCA 61, Arg_AGG 70, Arg_CGC 71
+Ala_GCA 61
+['Ala_GCA 61', 'Arg_AGG 70', 'Arg_CGC 71']
+Removed: Ala_GCA 61
+Lys_AAA 43
+Lys_AAA 43
+['Lys_AAA 43']
+Removed: Lys_AAA 43
+Tyr_UAC 37
+Tyr_UAC 37
+['Tyr_UAC 37']
+Removed: Tyr_UAC 37
+Total time (in seconds): 2.99100017548
+Ending application...

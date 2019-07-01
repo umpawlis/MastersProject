@@ -1,0 +1,23 @@
+Starting application...
+Leu_CUC 19, Phe_UUU 20
+Phe_UUU 20
+['Leu_CUC 19', 'Phe_UUU 20']
+Removed: Phe_UUU 20
+Leu_CUC 19
+Leu_CUC 19
+['Leu_CUC 19']
+Removed: Leu_CUC 19
+Thr_ACU 14
+Thr_ACU 14
+['Thr_ACU 14']
+Removed: Thr_ACU 14
+Leu_UUA 59, Val_GUU 60
+Leu_UUA 59
+['Leu_UUA 59', 'Val_GUU 60']
+Removed: Leu_UUA 59
+Val_GUU 60
+Val_GUU 60
+['Val_GUU 60']
+Removed: Val_GUU 60
+Total time (in seconds): 2.98099994659
+Ending application...

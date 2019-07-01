@@ -1,0 +1,19 @@
+Starting application...
+Ala_GCG 48, Leu_CUG 49
+Leu_CUG 49
+['Ala_GCG 48', 'Leu_CUG 49']
+Removed: Leu_CUG 49
+Ala_GCG 48
+Ala_GCG 48
+['Ala_GCG 48']
+Removed: Ala_GCG 48
+Gly_GGU 11
+Gly_GGU 11
+['Gly_GGU 11']
+Removed: Gly_GGU 11
+Gln_CAA 73
+Gln_CAA 73
+['Gln_CAA 73']
+Removed: Gln_CAA 73
+Total time (in seconds): 3.91300010681
+Ending application...

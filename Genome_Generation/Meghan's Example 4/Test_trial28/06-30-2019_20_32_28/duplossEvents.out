@@ -1,0 +1,17 @@
+#tree
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Thr_ACU 50;Ile_AUC 51;16S 52, 23S 53, 5S 54;HIs_CAC 76;Trp_UGG 77;5S 78;
+Deletion:Ser_UCG 55;HIs_CAC 67;Ser_UCU 68;Ser_UCG 69;Lys_AAA 70;Thr_ACC 71;Val_GUA 72;Glu_GAA 86;Gln_CAA 105;Thr_ACU 119;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:16S 60, 23S 61, 5S 62;Trp_UGG 66;5S 115;23S 116, 16S 117;Ile_AUC 118;
+Deletion:Gln_CAA 11;Pro_CCU 35;Val_GUA 70;Thr_ACC 71;Lys_AAA 72;Ser_UCG 73;Thr_ACA 74;Ser_UCU 75;23S 79;16S 80;
+Inversion:
+Transposition:
+Inverted Transposition:

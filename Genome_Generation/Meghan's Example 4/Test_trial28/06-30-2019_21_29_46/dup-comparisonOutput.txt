@@ -1,0 +1,63 @@
+Opening duplossEvents.out generatorOutput.txt...
+Comparing the following strain between the two files: NC_000001
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the substitutions between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the duplications between the strains!
+Thr_ACC 6|Pro_CCG 13, Ser_UCC 14|Leu_UUA 20|16S 37|Arg_CGC 44|Ser_UCG 45, HIs_CAC 46|5S 51|HIs_CAC 52|Leu_UUA 53|Ile_AUA 56, Leu_CUU 57|Ser_UCC 62|16S 65|23S 66, 5S 67, HIs_CAC 68|Met_AUG 70|Ser_UCG 82|Arg_CGC 86|Ser_UCC 90|Met_AUG 108|
+Leu_CUC 120|16S 3|Leu_CUC 1|Leu_UUA 53|Pro_CCG 13, Ser_UCC 14|Pro_CCC 2, Val_GUA 117|Arg_CGC 86|Ser_UCC 81|Gln_CAG 75|Arg_CGC 44, Ser_UCG 45, HIs_CAC 46|
+Events Found: 3 Events Expected: 10 Genes Found: 7 Genes Expected: 14 Total App Events: 18
+Comparing the deletions between the strains!
+Leu_CUU 8|Leu_UUA 16|Leu_CUG 24|Met_AUG 25|Ala_GCG 38|Arg_AGA 44|Thr_ACA 45|Thr_ACC 46|5S 47|Phe_UUC 50|Gly_GGA 51|Arg_AGA 52|Asp_GAU 53|Leu_CUU 54|Ile_AUA 55|Gln_CAA 56|Pro_CCC 57|5S 59|Thr_ACC 69|Ser_UCA 71|23S 74|16S 75|Val_GUA 76|Ala_GCU 78|Gly_GGU 79|Ala_GCU 80|Leu_CUC 89|Gln_CAG 90|Pro_CCG 91|Ser_AGC 110|Leu_CUU 113|Ala_GCU 114|Arg_CGC 117|Arg_AGA 118|Leu_CUG 122|Lys_AAA 120|
+Leu_UUG 95|Pro_CCG 46|Thr_ACU 0, Ser_UCC 0|Ser_UCG 87, Met_AUG 26|Lys_AAA 25|Lys_AAA 113|Ser_UCA 64|Ala_GCU 114|Ala_GCG 39|Pro_CCG 92, Met_AUG 93|
+Events Found: 4 Events Expected: 20 Genes Found: 8 Genes Expected: 27 Total App Events: 54
+Comparing the inversions between the strains!
+
+
+Events Found: 4 Events Expected: 20 Genes Found: 8 Genes Expected: 27 Total App Events: 54
+Comparing the transpositions between the strains!
+
+Ser_UCG -1;|Ala_GCU 87, Ile_AUA 89;|Met_AUG 108, Ser_AGC 109;|Leu_UUA 20;|5S 5, Thr_ACC 6, Thr_ACA 7, Arg_AGA 8;|Ser_UCC 81, Ser_UCG 82, Gly_GGU 83;|
+Events Found: 4 Events Expected: 26 Genes Found: 8 Genes Expected: 40 Total App Events: 54
+Comparing the inverted transposition between the strains!
+
+Gln_CAG 18, Leu_CUC 19, Leu_UUA 20;|Leu_CUU 88;|Cys_UGC 25;|Val_GUA 117;|
+Events Found: 4 Events Expected: 30 Genes Found: 8 Genes Expected: 46 Total App Events: 54
+Comparing the following strain between the two files: NC_000002
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 4 Events Expected: 30 Genes Found: 8 Genes Expected: 46 Total App Events: 54
+Comparing the substitutions between the strains!
+
+
+Events Found: 4 Events Expected: 30 Genes Found: 8 Genes Expected: 46 Total App Events: 54
+Comparing the duplications between the strains!
+Gly_GGU 6|Ser_UCG 7|Thr_ACC 18|16S 19|Ser_UCG 20|Met_AUG 23|Arg_CGC 31|Ser_UCC 37|Pro_CCG 48|Ser_UCC 49|HIs_CAC 58|23S 60, 16S 61|Glu_GAA 62|Ser_UCC 64|Met_AUG 70|HIs_CAC 72, 5S 73|23S 87|Met_AUG 92|Met_AUG 109|Ser_UCG 111|Leu_UUA 112|
+Arg_CGC 9|16S 19, 23S 87|Ser_UCC 37|23S 42|Ala_GCU 80|Ala_GCU 78|Leu_UUA 16|Thr_ACC 18|Gly_GGU 79|Ser_UCG 111|
+Events Found: 7 Events Expected: 40 Genes Found: 13 Genes Expected: 57 Total App Events: 75
+Comparing the deletions between the strains!
+Leu_CUC 1|Pro_CCC 2|16S 3|Leu_CUC 4|5S 5|Thr_ACA 7|Arg_AGA 8|Arg_AGA 16|Gln_CAG 18|Leu_CUC 19|Cys_UGC 25|Glu_GAA 48|16S 49|Pro_CCC 54|Gln_CAA 55|Asp_GAU 58|Arg_AGA 59|Gly_GGA 60|Phe_UUC 61|Pro_CCC 63|Val_GUA 64|Ser_UCA 69|Thr_ACC 71|Gln_CAG 74|Gln_CAG 75|Leu_CUU 80|Ser_UCC 81|Gly_GGU 83|Ala_GCU 87|Leu_CUU 88|Ile_AUA 89|Arg_CGC 97|Ser_AGC 109|Val_GUA 117|Leu_CUC 120|Met_AUG 121|
+Ser_UCA 28|Pro_CCC 64|Ala_GCU 96, Ile_AUA 98|Thr_ACU 116, Ser_UCC -1|Leu_UUG 0|Cys_UGC 74|16S 37|Gln_CAG 75|Leu_CUC 4|Lys_AAA -1|
+Events Found: 9 Events Expected: 50 Genes Found: 15 Genes Expected: 69 Total App Events: 111
+Comparing the inversions between the strains!
+
+23S 42;< t > 43;Arg_AGA 44, Thr_ACA 45, Thr_ACC 46, 5S 47;Pro_CCG 48;Ser_UCC 49, Phe_UUC 50;Gly_GGA 51, Arg_AGA 52, Asp_GAU 53, Leu_CUU 54, Ile_AUA 55, Gln_CAA 56, Pro_CCC 57, HIs_CAC 58, 5S 59, 23S 60, 16S 61, Glu_GAA 62;|
+Events Found: 9 Events Expected: 51 Genes Found: 15 Genes Expected: 90 Total App Events: 111
+Comparing the transpositions between the strains!
+
+Leu_CUC -1;|Leu_CUU 113;|Ser_UCC 64;|Lys_AAA -1;|
+Events Found: 9 Events Expected: 55 Genes Found: 15 Genes Expected: 94 Total App Events: 111
+Comparing the inverted transposition between the strains!
+
+Gly_GGU 6, Ser_UCG 7;|Arg_CGC 31;|Thr_ACC 69, Met_AUG 70, Ser_UCA 71, HIs_CAC 72, 5S 73, 23S 74, 16S 75, Val_GUA 76;|Arg_CGC 117, Arg_AGA 118;|Leu_CUG 24, Met_AUG 25;|23S 87;|
+Events Found: 9 Events Expected: 61 Genes Found: 15 Genes Expected: 110 Total App Events: 111
+Duplication Events Found: 6 Duplication Events Expected: 20 Duplication Genes Found: 12 Duplication Genes Expected: 25
+Deletion Events Found: 3 Deletion Events Expected: 20 Deletion Genes Found: 3 Deletion Genes Expected: 25
+Inversion Events Found: 0 Inversion Events Expected: 1 Inversion Genes Found: 0 Inversion Genes Expected: 21
+Transposition Events Found: 0 Transposition Events Expected: 20 Transposition Genes Found: 0 Transposition Genes Expected: 39

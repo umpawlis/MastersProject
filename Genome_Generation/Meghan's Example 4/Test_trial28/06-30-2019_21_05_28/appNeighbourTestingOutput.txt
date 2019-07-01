@@ -1,0 +1,27 @@
+Starting application...
+Ile_AUC 113
+Ile_AUC 113
+['Ile_AUC 113']
+Removed: Ile_AUC 113
+Ala_GCC 73
+Ala_GCC 73
+['Ala_GCC 73']
+Removed: Ala_GCC 73
+Cys_UGC 113
+Cys_UGC 113
+['Cys_UGC 113']
+Removed: Cys_UGC 113
+Lys_AAA 57, Leu_UUG 58, 5S 60
+5S 60
+['Lys_AAA 57', 'Leu_UUG 58', '5S 60']
+Removed: 5S 60
+Lys_AAA 57, Leu_UUG 58
+Leu_UUG 58
+['Lys_AAA 57', 'Leu_UUG 58']
+Removed: Leu_UUG 58
+Lys_AAA 57
+Lys_AAA 57
+['Lys_AAA 57']
+Removed: Lys_AAA 57
+Total time (in seconds): 2.35199999809
+Ending application...

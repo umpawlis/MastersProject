@@ -1,0 +1,25 @@
+(NC_000001:0.00000,NC_000002:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:Tyr_UAC 107;
+Duplication:Ser_UCU 26, Thr_ACG 27;Gly_GGG 88, Thr_ACG 89;23S 81;5S 79;!Pro_CCU -1;16S 8, !23S -1, !5S -1;16S 37, !Ser_UCU -1, !Thr_ACG -1, !23S -1, !5S -1, !Leu_CUA -1, !Val_GUA -1, !Gly_GGA -1, !Ile_AUA -1;!16S -1, !Ser_UCU -1, !Thr_ACG -1, 23S 39, !5S -1, !Leu_CUA -1, !Val_GUA -1, !Gly_GGA -1, !Ile_AUA -1;!16S -1, !Ser_UCU -1, !Thr_ACG -1, !23S -1, 5S 40, !Leu_CUA -1, !Val_GUA -1, !Gly_GGA -1, !Ile_AUA -1;Thr_ACG 50, !Gly_GGG -1, !Ala_GCG -1, !Arg_CGU -1;!23S -1, !5S -1, !Val_GUG -1, Leu_CUA 52, !Ser_UCA -1;!Gly_GGG -1, Thr_ACG 87, !Arg_CGU -1, !Gly_GGU -1, !Lys_AAA -1, !Ser_UCU -1, !Thr_ACA -1, !Trp_UGG -1, !Ser_UCG -1, !Pro_CCA -1, !Glu_GAA -1;!Gly_GGG -1, !Thr_ACG -1, !Arg_CGU -1, !Gly_GGU -1, !Lys_AAA -1, !Ser_UCU -1, !Thr_ACA -1, !Trp_UGG -1, !Ser_UCG -1, !Pro_CCA -1, Glu_GAA 115;
+Deletion:16S 119;Thr_ACG 54;5S 47;Pro_CCC 43;Thr_ACU 10;Gly_GGC 78;16S 121;Thr_ACG 73, Ser_UCU 74;Thr_ACU 65;Gln_CAA 13, Gly_GGG 14;Ala_GCG 37, Ala_GCG 38, Ser_AGU 39, Arg_CGU 40;Lys_AAA 56, Pro_CCA 57;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:Thr_ACG 94;
+Duplication:5S 110, 23S 111;!Thr_ACU -1, !Thr_ACG -1, !Gly_GGU -1;Ala_GCG 35, !Arg_CGU -1;Ser_UCA 48;!Ala_GCU -1;!Arg_AGG -1, !Thr_ACU -1;
+Deletion:Lys_AAA 92;Tyr_UAC 23;Ser_UCA 60;Pro_CCA 17;Lys_AAA 12, Ser_UCA 13;Val_GUG 78;Cys_UGU 18;Ala_GCU 41, Ser_UCA 42;Thr_ACG 43, Gly_GGG 44, Ala_GCG 45, Arg_CGU 46;Asp_GAC 47;Ser_UCU 73, Thr_ACG 72;
+Inversion:23S 51, 5S 52, Val_GUG 53, Thr_ACG 54, Leu_CUA 55;Gly_GGG 58;Gly_GGC 60, Trp_UGG 61, Tyr_UAC 62;< t > 63;Thr_ACA 66, Pro_CCA 67;|
+Transposition:Pro_CCU 6;|5S 110, 23S 111, Gln_CAG 112, Pro_CCG 113, Ile_AUC 114, Leu_CUC 115, Pro_CCA 116, Ser_AGU 117, Gly_GGU 118, 16S 119;|Leu_CUC 42, Pro_CCC 43, Ile_AUC 44, 16S 45, 23S 46, 5S 47;|Arg_AGG 64, Thr_ACU 65;|Pro_CCC 59;|16S 15, 23S 16, 5S 17;|
+Inverted Transposition:Leu_CUC 7, Arg_CGG 8, Arg_CGC 9;Thr_ACU 10, Thr_ACG 11, Gly_GGU 12;|
+Total Deletions: size: 1 count: 15, size: 2 count: 6, size: 4 count: 2
+Total Duplications: size: 1 count: 5, size: 2 count: 5, size: 3 count: 2, size: 4 count: 1, size: 5 count: 1, size: 9 count: 3, size: 11 count: 2
+Size Distribution of Inversions: size: 12 count: 1
+Size Distribution of Transpositions: size: 1 count: 2, size: 10 count: 1, size: 3 count: 1, size: 2 count: 1, size: 6 count: 1
+Size Distribution of Inverted Transpositions: size: 6 count: 1
+Total Inversions: 1
+Total Transpositions: 6
+Total Inverted Transpositions: 1

@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:16S 4;Glu_GAA 65, Val_GUC 66;Ser_UCC 23, !Ser_UCA -1, !Glu_GAG -1;Arg_AGG 24, !Pro_CCA -1, !16S -1, !23S -1, !5S -1;!HIs_CAC -1, Lys_AAA 25;!Ser_UCA -1, Arg_AGA 33, !Thr_ACU -1;!5S -1, !23S -1, !16S -1, !Leu_UUA -1, Phe_UUC 36;Gln_CAA 68, Ile_AUU 69;!Thr_ACU -1, Arg_AGA 80, !Ser_UCA -1;!5S -1, !23S -1, !16S -1, !Pro_CCA -1, !Arg_AGG -1;Ser_AGU 6;
+Deletion:Ser_UCA 42;Pro_CCU 77;Glu_GAA 48;5S 83;Ser_UCA 86, Thr_ACC 87, Thr_ACC 88, Arg_CGU 89;Glu_GAA 6, Glu_GAA 7, Ser_UCA 8, Ser_UCC 9;Glu_GAA 68, Val_GUA 67, Ser_UCA 66;Cys_UGC 100, Pro_CCG 99;
+Inversion:Glu_GAG 40, Ser_UCC 41;5S 42, 23S 43, 16S 44, Leu_UUA 45, Phe_UUC 46;|
+Transposition:Cys_UGC 1, Asp_GAU 2, Ser_UCA 3, 16S 4, 16S 5, Ser_AGU 6, 23S 7, 5S 8;|Ser_UCC 9, Ser_UCA 10, Glu_GAG 11;|5S 71, 23S 72, 16S 73;|5S 87, 23S 88, 16S 89, Pro_CCA 90, Arg_AGG 91;|Glu_GAA 103;|
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:16S 40, 23S 41;5S 43;23S 32, 5S 33;!16S -1, !23S -1, !5S -1, His_CAU 22, !Val_GUU -1;Glu_GAA 36;!Ser_UCG -1;!Arg_AGG -1;!Val_GUU -1, !His_CAU -1, 5S 57, 23S 58, 16S 59;Thr_ACU 102, !Ser_UCA -1;Glu_GAA 109;Leu_CUC 4;Arg_AGG 3;
+Deletion:Arg_AGA 107;Arg_AGA 94;Ser_UCG 27, His_CAU 28, Thr_ACC 29;Arg_CGU 55, Glu_GAA 54, Thr_ACC 53, Thr_ACC 52, Ser_UCA 51;Glu_GAA 63, Val_GUA 62, Tyr_UAC 61, 16S 60, 23S 59, 5S 58, Ser_UCC 57, Ser_UCA 56;
+Inversion:
+Transposition:Pro_CCA 1;Pro_CCG 2, Arg_AGG 3, Leu_CUC 4, Ala_GCU 5;|Glu_GAA 10, Leu_UUG 11, Ala_GCU 12;|< t > 51;|16S 14, 23S 15, 5S 16;|
+Inverted Transposition:
+Total Deletions: size: 1 count: 17, size: 2 count: 6, size: 3 count: 5, size: 4 count: 3, size: 5 count: 1, size: 7 count: 1, size: 8 count: 2, size: 10 count: 1
+Total Duplications: size: 1 count: 15, size: 2 count: 7, size: 3 count: 6, size: 4 count: 2, size: 5 count: 8, size: 7 count: 1, size: 9 count: 1
+Size Distribution of Inversions: size: 11 count: 1, size: 7 count: 1
+Size Distribution of Transpositions: size: 8 count: 1, size: 1 count: 4, size: 3 count: 4, size: 4 count: 1, size: 5 count: 3
+Size Distribution of Inverted Transpositions: size: 4 count: 1
+Total Inversions: 2
+Total Transpositions: 13
+Total Inverted Transpositions: 1

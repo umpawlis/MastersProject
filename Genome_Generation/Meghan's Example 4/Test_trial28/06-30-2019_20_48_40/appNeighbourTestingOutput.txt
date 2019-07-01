@@ -1,0 +1,19 @@
+Starting application...
+Val_GUA 52, Glu_GAA 53
+Val_GUA 52
+['Val_GUA 52', 'Glu_GAA 53']
+Removed: Val_GUA 52
+Glu_GAA 53
+Glu_GAA 53
+['Glu_GAA 53']
+Removed: Glu_GAA 53
+Pro_CCC 41
+Pro_CCC 41
+['Pro_CCC 41']
+Removed: Pro_CCC 41
+Thr_ACA 46
+Thr_ACA 46
+['Thr_ACA 46']
+Removed: Thr_ACA 46
+Total time (in seconds): 4.04299998283
+Ending application...

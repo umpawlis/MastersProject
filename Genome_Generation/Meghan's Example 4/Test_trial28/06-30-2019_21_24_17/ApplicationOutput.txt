@@ -1,0 +1,25 @@
+(NC_000001:0.00000,NC_000002:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:Gln_CAG 102;Arg_CGC 30;Thr_ACC 120;
+Duplication:His_CAU 107;Arg_CGC 29;!Arg_CGG -1, !Pro_CCA -1, Ser_UCA 58, !Ile_AUU -1, !Thr_ACC -1, !Pro_CCG -1, !Tyr_UAC -1, !Val_GUC -1, !Thr_ACC -1, !Ser_AGU -1, !Tyr_UAC -1;!Gln_CAG -1, !Ile_AUU -1, !Thr_ACC -1, !Ala_GCC -1, Glu_GAG 59, !Asp_GAU -1, !Pro_CCG -1;!Pro_CCC -1, !Pro_CCA -1, !Asp_GAC -1, !Pro_CCU -1, !Val_GUG -1, !Arg_CGC -1, !Cys_UGU -1, !Pro_CCU -1, !Gly_GGU -1, !Ala_GCC -1, !Ala_GCG -1, Gln_CAG 76, !His_CAU -1, !Leu_CUC -1, !Ala_GCU -1, !Arg_CGU -1, !His_CAU -1, !Thr_ACG -1;!Pro_CCC -1, !Pro_CCA -1, !Asp_GAC -1, !Pro_CCU -1, !Val_GUG -1, !Arg_CGC -1, !Cys_UGU -1, !Pro_CCU -1, !Gly_GGU -1, !Ala_GCC -1, !Ala_GCG -1, Gln_CAG 87, !His_CAU -1, !Leu_CUC -1, !Ala_GCU -1, !Arg_CGU -1, !His_CAU -1, !Thr_ACG -1;Ser_UCA 116;!Gly_GGA -1, Val_GUC 117;!Pro_CCC -1, !Pro_CCA -1, !Asp_GAC -1, !Pro_CCU -1, !Val_GUG -1, !Arg_CGC -1, !Cys_UGU -1, !Pro_CCU -1, !Gly_GGU -1, !Ala_GCC -1, Ala_GCG 118, !Gln_CAG -1, !His_CAU -1, !Leu_CUC -1, !Ala_GCU -1, !Arg_CGU -1, !His_CAU -1, !Thr_ACG -1;
+Deletion:Ser_UCA 35;Ser_AGU 98;Ala_GCG 7, Val_GUC 8, Pro_CCA 9, Arg_CGG 10;Leu_UUG 5;Ser_UCA 26, His_CAU 27, Arg_CGU 28, Ala_GCU 29, Asp_GAC 30;Val_GUA 43, Val_GUA 44, Leu_CUC 45;Ser_AGU 55, Val_GUA 56, Glu_GAG 57;Tyr_UAC 111, Ser_UCA 110;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:Glu_GAG 97;Gly_GGA 32;Arg_CGC 47;
+Duplication:16S 73;!Ala_GCU -1, !Tyr_UAC -1, !Val_GUC -1, !Ser_AGU -1, !Gln_CAG -1, !Asp_GAU -1, !Arg_AGG -1, !16S -1, !23S -1, 5S 3, !Arg_CGU -1;!Leu_CUC -1, His_CAU 4, !Ser_AGU -1, !Glu_GAG -1, !Ala_GCG -1, !Ala_GCC -1, !Gly_GGU -1, !Pro_CCU -1, !Cys_UGU -1, !Arg_CGC -1, !Val_GUG -1, !Pro_CCU -1;!Ser_UCA -1, !Gln_CAG -1, !Asp_GAC -1, !Ala_GCG -1, !HIs_CAC -1, !16S -1, !23S -1, 5S 46;!Arg_CGU -1;!Leu_UUG -1;!5S -1, !23S -1, 16S 80;!Leu_UUG -1, !5S -1, !23S -1, Arg_CGU 81, !16S -1;!Pro_CCU -1, !Val_GUG -1, !Arg_CGC -1, !Cys_UGU -1, !Pro_CCU -1, !Gly_GGU -1, !Ala_GCC -1, !Ala_GCG -1, !Glu_GAG -1, !Ser_AGU -1, His_CAU 82, !Leu_CUC -1;!Ile_AUU -1, !Thr_ACC -1, !Ala_GCC -1, Pro_CCG 88;!Arg_CGG -1, !Thr_ACA -1, !Asp_GAU -1, Leu_CUU 116;Phe_UUU 117;!Ile_AUU -1, Thr_ACC 118, !Ala_GCC -1, !Pro_CCG -1;
+Deletion:Gly_GGA 14;5S 55;16S 42, Arg_CGU 43, Arg_CGC 44, 23S 45;Lys_AAG 69;Asp_GAU 62;Pro_CCC 91, Pro_CCA 92, Asp_GAC 93;Ala_GCU 105, Arg_CGU 106, Thr_ACG 108;Gln_CAG 109;Glu_GAG 113, Asp_GAU 114;Tyr_UAC 17, Ser_AGU 18, Thr_ACC 19, Val_GUC 20, Tyr_UAC 21, Pro_CCG 22, Thr_ACC 23, Ile_AUU 24, Ser_UCA 25, Pro_CCA 26, Arg_CGG 27;Gln_CAA 40, Leu_CUU 41;Arg_AGA 80;
+Inversion:Val_GUA 49;Arg_CGU 50;16S 51, 23S 52, 16S 53, 5S 54;< t > 58;Asp_GAU 59;|
+Transposition:Ala_GCA 101, Val_GUU 102, Thr_ACU 103, Met_AUG 104, Ser_UCU 105, Pro_CCA 106, Cys_UGC 107, Leu_CUA 108, Tyr_UAC 109;|Ser_UCA 83;|Val_GUC 1, Gly_GGA 2;Pro_CCG 6;|Ala_GCG 66;|Arg_CGC 47, Arg_CGC 48;|
+Inverted Transposition:
+Total Deletions: size: 1 count: 9, size: 2 count: 3, size: 3 count: 4, size: 4 count: 2, size: 5 count: 1, size: 11 count: 1
+Total Duplications: size: 1 count: 7, size: 2 count: 1, size: 3 count: 1, size: 4 count: 3, size: 5 count: 1, size: 7 count: 1, size: 8 count: 1, size: 11 count: 2, size: 12 count: 2, size: 18 count: 3
+Size Distribution of Inversions: size: 8 count: 1
+Size Distribution of Transpositions: size: 9 count: 1, size: 2 count: 1, size: 3 count: 1, size: 1 count: 2
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 1
+Total Transpositions: 5
+Total Inverted Transpositions: 0

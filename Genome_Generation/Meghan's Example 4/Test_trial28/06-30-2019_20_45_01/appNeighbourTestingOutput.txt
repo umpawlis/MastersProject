@@ -1,0 +1,31 @@
+Starting application...
+Gln_CAG 49
+Gln_CAG 49
+['Gln_CAG 49']
+Removed: Gln_CAG 49
+Pro_CCC 83
+Pro_CCC 83
+['Pro_CCC 83']
+Removed: Pro_CCC 83
+Met_AUG 34, Thr_ACC 35
+Thr_ACC 35
+['Met_AUG 34', 'Thr_ACC 35']
+Removed: Thr_ACC 35
+Met_AUG 34
+Met_AUG 34
+['Met_AUG 34']
+Removed: Met_AUG 34
+Val_GUA 11
+Val_GUA 11
+['Val_GUA 11']
+Removed: Val_GUA 11
+HIs_CAC 57, Ala_GCA 58
+Ala_GCA 58
+['HIs_CAC 57', 'Ala_GCA 58']
+Removed: Ala_GCA 58
+HIs_CAC 57
+HIs_CAC 57
+['HIs_CAC 57']
+Removed: HIs_CAC 57
+Total time (in seconds): 3.74799990654
+Ending application...

@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:Met_AUG 7;
+Duplication:5S 6;Met_AUG 10;!Thr_ACU -1, !Arg_AGG -1, Arg_CGA 12, !5S -1, !Ala_GCU -1;Thr_ACC 15;Trp_UGG 31, !Val_GUA -1;!16S -1, 23S 49, 5S 50;!Phe_UUC -1, Thr_ACU 82;Val_GUA 113, Trp_UGG 114;Trp_UGG 72;Ser_AGU 57;Leu_CUA 97;Thr_ACA 100;Gly_GGA 64;Tyr_UAU 65;
+Deletion:!16S -1;Pro_CCU 8, Ile_AUC 9, Thr_ACC 10;Gly_GGG 48, Glu_GAG 49, Leu_CUU 50, Thr_ACU 51, Arg_AGG 52, 16S 53, 23S 54, 5S 55;Ser_UCA 65, Tyr_UAU 64, Gly_GGA 63;Ser_AGU 88, Glu_GAA 87, Thr_ACG 86, Thr_ACU 85;Thr_ACA 110, Leu_CUA 109, Leu_CUG 108;
+Inversion:Val_GUG 51, Arg_CGC 52;Val_GUU 53, Tyr_UAU 54;Ile_AUU 55, Ile_AUA 56, Ser_AGU 57;Ser_UCA 58;Gly_GGA 61;< t > 62;|5S 79, 23S 80, 16S 81;Thr_ACC 83;Tyr_UAU 84;5S 85, 23S 86, 16S 87;|
+Transposition:Pro_CCA 13;|Phe_UUC 92, Thr_ACU 93;|Phe_UUU 106, Leu_CUC 107, Ser_UCG 108, Tyr_UAU 109, Ile_AUC 110;|
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:Ser_UCA 3;
+Duplication:Ser_UCA 23, !16S -1, !23S -1, !5S -1;Thr_ACA 30;!Thr_ACU -1, Thr_ACG 103, !Glu_GAA -1, !Ser_AGU -1;Val_GUA 111, !Trp_UGG -1;
+Deletion:Tyr_UAC 30;Ser_UCA 59, Arg_AGG 60;Ser_AGC 105, Asp_GAU 104, Ile_AUC 103, Gly_GGA 102, Leu_CUC 101;
+Inversion:
+Transposition:Met_AUG 26, Gln_CAA 27, Asp_GAC 28;|Lys_AAA 24;|Ala_GCA 71, Ala_GCG 72;|
+Inverted Transposition:
+Total Deletions: size: 1 count: 15, size: 2 count: 5, size: 3 count: 3, size: 4 count: 1, size: 5 count: 1, size: 8 count: 1
+Total Duplications: size: 1 count: 11, size: 2 count: 9, size: 3 count: 4, size: 4 count: 3, size: 5 count: 1
+Size Distribution of Inversions: size: 8 count: 1, size: 9 count: 1, size: 10 count: 1
+Size Distribution of Transpositions: size: 1 count: 3, size: 2 count: 6, size: 3 count: 2, size: 4 count: 1, size: 5 count: 1
+Size Distribution of Inverted Transpositions: size: 4 count: 1, size: 5 count: 1
+Total Inversions: 3
+Total Transpositions: 13
+Total Inverted Transpositions: 2

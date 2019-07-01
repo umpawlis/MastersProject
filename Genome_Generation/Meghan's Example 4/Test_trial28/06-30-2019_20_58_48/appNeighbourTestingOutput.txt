@@ -1,0 +1,27 @@
+Starting application...
+Trp_UGG 72
+Trp_UGG 72
+['Trp_UGG 72']
+Removed: Trp_UGG 72
+Ser_AGU 57
+Ser_AGU 57
+['Ser_AGU 57']
+Removed: Ser_AGU 57
+Leu_CUA 97
+Leu_CUA 97
+['Leu_CUA 97']
+Removed: Leu_CUA 97
+Thr_ACA 100
+Thr_ACA 100
+['Thr_ACA 100']
+Removed: Thr_ACA 100
+Gly_GGA 64, Tyr_UAU 65
+Gly_GGA 64
+['Gly_GGA 64', 'Tyr_UAU 65']
+Removed: Gly_GGA 64
+Tyr_UAU 65
+Tyr_UAU 65
+['Tyr_UAU 65']
+Removed: Tyr_UAU 65
+Total time (in seconds): 2.92499995232
+Ending application...

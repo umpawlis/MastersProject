@@ -1,0 +1,63 @@
+Opening orthoAlignNeighbourEvents.out generatorOutput.txt...
+Comparing the following strain between the two files: NC_000001
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the substitutions between the strains!
+
+
+Events Found: 0 Events Expected: 0 Genes Found: 0 Genes Expected: 0 Total App Events: 0
+Comparing the duplications between the strains!
+Cys_UGC 26|His_CAU 41|Ile_AUC 46|His_CAU 58|HIs_CAC 70|Ala_GCC 73|Gly_GGG 74|Thr_ACC 75|Lys_AAA 76|Arg_AGA 84|His_CAU 87|Thr_ACG 88|5S 89|23S 90|16S 91|Gln_CAA 93|Ile_AUC 113|
+Tyr_UAU 96|Ile_AUC 113|Ala_GCC 73|Val_GUG 79|23S 38|His_CAU 58|Tyr_UAU 34|
+Events Found: 3 Events Expected: 7 Genes Found: 3 Genes Expected: 7 Total App Events: 17
+Comparing the deletions between the strains!
+Lys_AAA 57, Leu_UUG 58|Gly_GGG 81|
+5S 108|16S 100, 23S 99, Ile_AUC 98|16S 41|Tyr_UAU 111|Phe_UUC 110|Ile_AUC 38, Pro_CCG 39, Tyr_UAC 40|5S -1, 23S 102|
+Events Found: 3 Events Expected: 14 Genes Found: 3 Genes Expected: 19 Total App Events: 19
+Comparing the inversions between the strains!
+
+Arg_CGG 67, Leu_CUU 68, Arg_AGA 69, HIs_CAC 70;Val_GUG 71, Gly_GGU 72, Gly_GGG 74;Thr_ACC 75;Arg_CGU 33;Lys_AAA 75;< t > 77;|
+Events Found: 3 Events Expected: 15 Genes Found: 3 Genes Expected: 30 Total App Events: 19
+Comparing the transpositions between the strains!
+
+Ile_AUC 46;|Cys_UGC 100;|Ile_AUC 46, Arg_AGA 47, Arg_AGA 48, Asp_GAU 49, Thr_ACG 50, Ile_AUC 51;|Arg_CGU 33;|
+Events Found: 3 Events Expected: 19 Genes Found: 3 Genes Expected: 39 Total App Events: 19
+Comparing the inverted transposition between the strains!
+
+16S -1, 23S -1, Ile_AUC -1, 5S 35;|5S 85, 23S 86, His_CAU 87, Thr_ACG 88, 5S 89, 23S 90, 16S 91, 16S 92, Gln_CAA 93, Ile_AUC 94;|16S 37, 23S 38, 23S 39, 5S 40;|
+Events Found: 3 Events Expected: 22 Genes Found: 3 Genes Expected: 57 Total App Events: 19
+Comparing the following strain between the two files: NC_000002
+Comparing the codon mismatches between the strains!
+
+
+Events Found: 3 Events Expected: 22 Genes Found: 3 Genes Expected: 57 Total App Events: 19
+Comparing the substitutions between the strains!
+Ile_AUC 37|Pro_CCG 38|Tyr_UAC 39|5S 60|Ile_AUC 88|Gly_GGU 93|23S 98|16S 99|Ser_AGU 100|Gly_GGU 101|5S 102|Arg_CGU 109|Phe_UUC 110|Tyr_UAU 111|Cys_UGC 112|
+
+Events Found: 3 Events Expected: 22 Genes Found: 3 Genes Expected: 57 Total App Events: 34
+Comparing the duplications between the strains!
+Thr_ACC 17|Thr_ACU 20|16S 40, Lys_AAA 41|Ile_AUC 48, Gln_CAA 49, 16S 50, 16S 51, 23S 52, 5S 53, Thr_ACG 54, His_CAU 55, 23S 56|16S 67, 23S 68, 5S 69|Arg_CGU 80|Ser_UCA 94|Thr_ACU 105|Arg_AGA 106|Val_GUC 107, 5S 108|Cys_UGC 113|
+Gly_GGU 101|His_CAU -1|5S 60|Gly_GGU 93|Thr_ACU 20|Ile_AUC 88|Arg_CGU 109|
+Events Found: 4 Events Expected: 29 Genes Found: 4 Genes Expected: 64 Total App Events: 45
+Comparing the deletions between the strains!
+Cys_UGC 42|Thr_ACC 52|23S 86|16S 92|
+Ile_AUC 5|Cys_UGC 52|Thr_ACC 78|Tyr_UAC 100|His_CAU 94|His_CAU 94|HIs_CAC 79|
+Events Found: 4 Events Expected: 36 Genes Found: 4 Genes Expected: 71 Total App Events: 49
+Comparing the inversions between the strains!
+
+
+Events Found: 4 Events Expected: 36 Genes Found: 4 Genes Expected: 71 Total App Events: 49
+Comparing the transpositions between the strains!
+Trp_UGG 14, Gly_GGG 15, Lys_AAG 16;|Arg_AGA 31, Arg_AGA 32, Asp_GAU 33, Thr_ACG 34, Ile_AUC 35;|23S 42, 5S 43, Gly_GGA 44, Leu_CUC 45, Leu_UUG 46;|Thr_ACC 91, Val_GUC 92;|
+23S 61, 16S 59, Leu_UUG 58, Lys_AAA 57;|Trp_UGG 14, Gly_GGG 15, Lys_AAG 16, Thr_ACC 17;|5S 102, 23S 103, 16S 104, Thr_ACU 105, Arg_AGA 106;|
+Events Found: 4 Events Expected: 39 Genes Found: 7 Genes Expected: 84 Total App Events: 53
+Comparing the inverted transposition between the strains!
+Gly_GGU 82, Val_GUG 83;|Arg_AGA 84, Leu_CUU 85, Arg_CGG 86;|
+Cys_UGC 113;|16S 67, 23S 68, 5S 69;|Lys_AAA 57, Leu_UUG 58, 16S 59, 5S 60, 23S 61;|Lys_AAA 41;|
+Events Found: 4 Events Expected: 43 Genes Found: 7 Genes Expected: 94 Total App Events: 55
+Duplication Events Found: 4 Duplication Events Expected: 14 Duplication Genes Found: 4 Duplication Genes Expected: 14
+Deletion Events Found: 0 Deletion Events Expected: 14 Deletion Genes Found: 0 Deletion Genes Expected: 19
+Inversion Events Found: 0 Inversion Events Expected: 1 Inversion Genes Found: 0 Inversion Genes Expected: 11
+Transposition Events Found: 0 Transposition Events Expected: 14 Transposition Genes Found: 3 Transposition Genes Expected: 50

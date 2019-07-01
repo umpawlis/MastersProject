@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Leu_CUC 120;16S 3;Leu_CUC 1;Leu_UUA 53;Pro_CCG 13, Ser_UCC 14;Pro_CCC 2, Val_GUA 117;Arg_CGC 86;Ser_UCC 81;Gln_CAG 75;Arg_CGC 44, Ser_UCG 45, HIs_CAC 46;
+Deletion:Leu_UUG 95;Pro_CCG 46;Thr_ACU 0, Ser_UCC 0;Ser_UCG 87, Met_AUG 26;Lys_AAA 25;Lys_AAA 113;Ser_UCA 64;Ala_GCU 114;Ala_GCG 39;Pro_CCG 92, Met_AUG 93;
+Inversion:
+Transposition:Ser_UCG -1;|Ala_GCU 87, Ile_AUA 89;|Met_AUG 108, Ser_AGC 109;|Leu_UUA 20;|5S 5, Thr_ACC 6, Thr_ACA 7, Arg_AGA 8;|Ser_UCC 81, Ser_UCG 82, Gly_GGU 83;|
+Inverted Transposition:Gln_CAG 18, Leu_CUC 19, Leu_UUA 20;|Leu_CUU 88;|Cys_UGC 25;|Val_GUA 117;|
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Arg_CGC 9;16S 19, 23S 87;Ser_UCC 37;23S 42;Ala_GCU 80;Ala_GCU 78;Leu_UUA 16;Thr_ACC 18;Gly_GGU 79;Ser_UCG 111;
+Deletion:Ser_UCA 28;Pro_CCC 64;Ala_GCU 96, Ile_AUA 98;Thr_ACU 116, Ser_UCC -1;Leu_UUG 0;Cys_UGC 74;16S 37;Gln_CAG 75;Leu_CUC 4;Lys_AAA -1;
+Inversion:23S 42;< t > 43;Arg_AGA 44, Thr_ACA 45, Thr_ACC 46, 5S 47;Pro_CCG 48;Ser_UCC 49, Phe_UUC 50;Gly_GGA 51, Arg_AGA 52, Asp_GAU 53, Leu_CUU 54, Ile_AUA 55, Gln_CAA 56, Pro_CCC 57, HIs_CAC 58, 5S 59, 23S 60, 16S 61, Glu_GAA 62;|
+Transposition:Leu_CUC -1;|Leu_CUU 113;|Ser_UCC 64;|Lys_AAA -1;|
+Inverted Transposition:Gly_GGU 6, Ser_UCG 7;|Arg_CGC 31;|Thr_ACC 69, Met_AUG 70, Ser_UCA 71, HIs_CAC 72, 5S 73, 23S 74, 16S 75, Val_GUA 76;|Arg_CGC 117, Arg_AGA 118;|Leu_CUG 24, Met_AUG 25;|23S 87;|
+Total Deletions: size: 1 count: 31, size: 2 count: 9
+Total Duplications: size: 1 count: 35, size: 2 count: 4, size: 3 count: 1
+Size Distribution of Inversions: size: 6 count: 1
+Size Distribution of Transpositions: size: 1 count: 11, size: 2 count: 7, size: 3 count: 1, size: 4 count: 1, size: 5 count: 1, size: 10 count: 1
+Size Distribution of Inverted Transpositions: size: 1 count: 8, size: 2 count: 8, size: 3 count: 1, size: 8 count: 1
+Total Inversions: 1
+Total Transpositions: 22
+Total Inverted Transpositions: 18

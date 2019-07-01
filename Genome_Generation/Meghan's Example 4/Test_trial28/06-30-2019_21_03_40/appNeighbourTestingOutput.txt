@@ -1,0 +1,39 @@
+Starting application...
+Ala_GCA 112
+Ala_GCA 112
+['Ala_GCA 112']
+Removed: Ala_GCA 112
+Pro_CCG 3
+Pro_CCG 3
+['Pro_CCG 3']
+Removed: Pro_CCG 3
+Asp_GAU 26, Ala_GCC 27
+Ala_GCC 27
+['Asp_GAU 26', 'Ala_GCC 27']
+Removed: Ala_GCC 27
+Asp_GAU 26
+Asp_GAU 26
+['Asp_GAU 26']
+Removed: Asp_GAU 26
+Ala_GCG 109
+Ala_GCG 109
+['Ala_GCG 109']
+Removed: Ala_GCG 109
+Phe_UUC 122
+Phe_UUC 122
+['Phe_UUC 122']
+Removed: Phe_UUC 122
+Phe_UUC 71
+Phe_UUC 71
+['Phe_UUC 71']
+Removed: Phe_UUC 71
+5S 7
+5S 7
+['5S 7']
+Removed: 5S 7
+Arg_CGC 17
+Arg_CGC 17
+['Arg_CGC 17']
+Removed: Arg_CGC 17
+Total time (in seconds): 4.46300005913
+Ending application...

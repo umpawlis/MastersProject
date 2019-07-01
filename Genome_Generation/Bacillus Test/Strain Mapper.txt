@@ -1,19 +1,16 @@
 Name													Short hand			Accession#			Genome Id
 Bacillus amyloliquefaciens DSM 7 						amylo_dsm7			NC_014551			692420.6
-Bacillus amyloliquefaciens subsp. plantarum CAU B946 	amylo_caub			NC_016784.1			1114958.9		NOT FOUND!
+Bacillus amyloliquefaciens subsp. plantarum CAU B946 	amylo_caub			NC_016784.1			1114958.9
 Bacillus amyloliquefaciens FZB42 						amylo_fzb42			NC_009725			326423.5
 
-Bacillus subtilis subsp. spizizenii TU-B-10 			subspiz tu			NC_016047.1			1052585.4		NOT FOUND!
+Bacillus subtilis subsp. spizizenii TU-B-10 			subspiz tu			CP002905			1052585.4	
 Bacillus subtilis subsp. spizizenii str. W23 			subspiz w2			NC_014479			655816.3
 Bacillus subtilis subsp. subtilis str. 168 				subtilis			NC_000964			224308.43
 
-Bacillus thuringiensis serovar kurstaki str. HD73 		thur hd73			See list below		1279365.3		NOT FOUND!
+Bacillus thuringiensis serovar kurstaki str. HD73 		thur hd73			CP004069			1279365.3		
 Bacillus thuringiensis BMB171 							thur bmb17			NC_014171			714359.3
 Bacillus thuringiensis serovar konkukian str. 97-27 	thuring				NC_005957			281309.8
 
 Bacillus cereus E33L 									e33l				NC_006274			288681.15
 Bacillus cereus ATCC 14579 								atcc14579			NC_004722			226900.8
 Bacillus cereus ATCC 10987								atcc1098			NC_003909			222523.6
-
-
-List: NC_020238.1,NC_020250.1,NC_020249.1,NC_020240.1,NC_020239.1,NC_020241.1,NC_020242.1,NC_020243.1

@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Lys_AAG 42;Arg_CGG 6, !Pro_CCA -1, !Arg_CGC -1;!Leu_CUA -1, Gln_CAG 24, !Arg_CGG -1, !Glu_GAG -1;Ala_GCA 35, !Pro_CCC -1, !Pro_CCG -1, !Ala_GCC -1;!Ser_AGU -1, !Ala_GCG -1, !Lys_AAG -1, !Val_GUG -1, !Met_AUG -1, Phe_UUC 75, !Gly_GGC -1, !Gln_CAG -1, !Tyr_UAC -1, !Lys_AAG -1, !Pro_CCG -1;!Ala_GCC -1, !Gly_GGG -1;!Ala_GCG -1, !Gly_GGG -1, Val_GUG 95;Ser_AGU 107;Ser_UCG 38;Gln_CAG 37;Ser_AGU 51;Ala_GCG 50;Tyr_UAC 43;Pro_CCG 41;
+Deletion:Gly_GGA 1;Gln_CAG 21, Ser_UCG 22;Val_GUG 28, Gln_CAG 29;Pro_CCG 35, Ser_AGU 36;Phe_UUC 59, Leu_CUA 60, Ala_GCU 61;Lys_AAG 99, Tyr_UAC 98, Ala_GCG 97;
+Inversion:
+Transposition:Pro_CCG 41, Lys_AAG 42, Tyr_UAC 43, Gln_CAG 44, Gly_GGC 45, Phe_UUC 46, Met_AUG 47, Val_GUG 48, Lys_AAG 49, Ala_GCG 50, Ser_AGU 51;|5S 53;|
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:!Gly_GGA -1, !Arg_CGG -1, !Pro_CCA -1, Arg_CGC 12;Phe_UUU 100;Gly_GGA 101;Lys_AAG 102;Ala_GCC 92;Gly_GGC 93;Arg_CGA 94;Arg_AGA 95;Arg_AGA 46;Ser_UCG 45;Lys_AAG 44;
+Deletion:Arg_AGG 97, Pro_CCC 98;Arg_AGA 25;Lys_AAG 30, Leu_CUA 31, Gly_GGA 32;Arg_AGA 105, Arg_CGA 104;Ile_AUC 115;
+Inversion:
+Transposition:Glu_GAG 88, Arg_CGG 89, Gln_CAG 90, Leu_CUA 91, Ala_GCC 92, Gly_GGC 93, Arg_CGA 94, Arg_AGA 95;|Phe_UUU 115;|
+Inverted Transposition:Gly_GGG 57, Ala_GCC 58;16S 62, Phe_UUU 63, 23S 64, 5S 65;< t > 66;|
+Total Deletions: size: 1 count: 11, size: 2 count: 13, size: 3 count: 4, size: 4 count: 0
+Total Duplications: size: 1 count: 21, size: 2 count: 6, size: 3 count: 6, size: 4 count: 4, size: 6 count: 2, size: 11 count: 1
+Size Distribution of Inversions: 
+Size Distribution of Transpositions: size: 1 count: 4, size: 3 count: 1, size: 4 count: 1, size: 6 count: 1, size: 8 count: 1, size: 11 count: 1
+Size Distribution of Inverted Transpositions: size: 7 count: 1
+Total Inversions: 0
+Total Transpositions: 9
+Total Inverted Transpositions: 1

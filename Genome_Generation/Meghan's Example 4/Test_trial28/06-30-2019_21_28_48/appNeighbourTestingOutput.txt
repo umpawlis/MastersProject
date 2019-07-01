@@ -1,0 +1,51 @@
+Starting application...
+Glu_GAG 6
+Glu_GAG 6
+['Glu_GAG 6']
+Removed: Glu_GAG 6
+Arg_CGA 44, Pro_CCC 45, Ala_GCG 46
+Ala_GCG 46
+['Arg_CGA 44', 'Pro_CCC 45', 'Ala_GCG 46']
+Removed: Ala_GCG 46
+Arg_CGA 44, Pro_CCC 45
+Pro_CCC 45
+['Arg_CGA 44', 'Pro_CCC 45']
+Removed: Pro_CCC 45
+Arg_CGA 44
+Arg_CGA 44
+['Arg_CGA 44']
+Removed: Arg_CGA 44
+Gly_GGA 106, Arg_AGG 107
+Gly_GGA 106
+['Gly_GGA 106', 'Arg_AGG 107']
+Removed: Gly_GGA 106
+Arg_AGG 107
+Arg_AGG 107
+['Arg_AGG 107']
+Removed: Arg_AGG 107
+Val_GUU 74
+Val_GUU 74
+['Val_GUU 74']
+Removed: Val_GUU 74
+Arg_CGA 116
+Arg_CGA 116
+['Arg_CGA 116']
+Removed: Arg_CGA 116
+Glu_GAG 116
+Glu_GAG 116
+['Glu_GAG 116']
+Removed: Glu_GAG 116
+5S 82
+5S 82
+['5S 82']
+Removed: 5S 82
+Ser_UCA 22
+Ser_UCA 22
+['Ser_UCA 22']
+Removed: Ser_UCA 22
+Arg_AGG 53
+Arg_AGG 53
+['Arg_AGG 53']
+Removed: Arg_AGG 53
+Total time (in seconds): 5.09799981117
+Ending application...

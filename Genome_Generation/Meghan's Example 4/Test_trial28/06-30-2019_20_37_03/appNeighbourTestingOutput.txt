@@ -1,0 +1,39 @@
+Starting application...
+Gly_GGC 83, Ile_AUA 84, Gly_GGC 85
+Gly_GGC 83
+['Gly_GGC 83', 'Ile_AUA 84', 'Gly_GGC 85']
+Removed: Gly_GGC 83
+Ile_AUA 84, Gly_GGC 85
+Ile_AUA 84
+['Ile_AUA 84', 'Gly_GGC 85']
+Removed: Ile_AUA 84
+Gly_GGC 85
+Gly_GGC 85
+['Gly_GGC 85']
+Removed: Gly_GGC 85
+Ala_GCA 105
+Ala_GCA 105
+['Ala_GCA 105']
+Removed: Ala_GCA 105
+Arg_CGA 111
+Arg_CGA 111
+['Arg_CGA 111']
+Removed: Arg_CGA 111
+Glu_GAA 21, Leu_UUA 22, Val_GUU 23, Val_GUC 24
+Val_GUC 24
+['Glu_GAA 21', 'Leu_UUA 22', 'Val_GUU 23', 'Val_GUC 24']
+Removed: Val_GUC 24
+Glu_GAA 21, Leu_UUA 22, Val_GUU 23
+Val_GUU 23
+['Glu_GAA 21', 'Leu_UUA 22', 'Val_GUU 23']
+Removed: Val_GUU 23
+Glu_GAA 21, Leu_UUA 22
+Leu_UUA 22
+['Glu_GAA 21', 'Leu_UUA 22']
+Removed: Leu_UUA 22
+Glu_GAA 21
+Glu_GAA 21
+['Glu_GAA 21']
+Removed: Glu_GAA 21
+Total time (in seconds): 2.94499993324
+Ending application...

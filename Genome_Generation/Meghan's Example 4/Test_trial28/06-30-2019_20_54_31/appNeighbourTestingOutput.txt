@@ -1,0 +1,63 @@
+Starting application...
+Gln_CAG 37, Ser_UCG 38
+Ser_UCG 38
+['Gln_CAG 37', 'Ser_UCG 38']
+Removed: Ser_UCG 38
+Gln_CAG 37
+Gln_CAG 37
+['Gln_CAG 37']
+Removed: Gln_CAG 37
+Gly_GGA 101, Lys_AAG 102
+Gly_GGA 101
+['Gly_GGA 101', 'Lys_AAG 102']
+Removed: Gly_GGA 101
+Lys_AAG 102
+Lys_AAG 102
+['Lys_AAG 102']
+Removed: Lys_AAG 102
+Ala_GCC 92, Gly_GGC 93, Arg_CGA 94, Arg_AGA 95
+Ala_GCC 92
+['Ala_GCC 92', 'Gly_GGC 93', 'Arg_CGA 94', 'Arg_AGA 95']
+Removed: Ala_GCC 92
+Gly_GGC 93, Arg_CGA 94, Arg_AGA 95
+Gly_GGC 93
+['Gly_GGC 93', 'Arg_CGA 94', 'Arg_AGA 95']
+Removed: Gly_GGC 93
+Arg_CGA 94, Arg_AGA 95
+Arg_CGA 94
+['Arg_CGA 94', 'Arg_AGA 95']
+Removed: Arg_CGA 94
+Arg_AGA 95
+Arg_AGA 95
+['Arg_AGA 95']
+Removed: Arg_AGA 95
+Ala_GCG 50, Ser_AGU 51
+Ser_AGU 51
+['Ala_GCG 50', 'Ser_AGU 51']
+Removed: Ser_AGU 51
+Ala_GCG 50
+Ala_GCG 50
+['Ala_GCG 50']
+Removed: Ala_GCG 50
+Pro_CCG 41, Tyr_UAC 43
+Tyr_UAC 43
+['Pro_CCG 41', 'Tyr_UAC 43']
+Removed: Tyr_UAC 43
+Pro_CCG 41
+Pro_CCG 41
+['Pro_CCG 41']
+Removed: Pro_CCG 41
+Lys_AAG 44, Ser_UCG 45, Arg_AGA 46
+Arg_AGA 46
+['Lys_AAG 44', 'Ser_UCG 45', 'Arg_AGA 46']
+Removed: Arg_AGA 46
+Lys_AAG 44, Ser_UCG 45
+Ser_UCG 45
+['Lys_AAG 44', 'Ser_UCG 45']
+Removed: Ser_UCG 45
+Lys_AAG 44
+Lys_AAG 44
+['Lys_AAG 44']
+Removed: Lys_AAG 44
+Total time (in seconds): 4.47200012207
+Ending application...

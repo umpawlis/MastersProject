@@ -1,0 +1,11 @@
+Starting application...
+Ser_UCC 11
+Ser_UCC 11
+['Ser_UCC 11']
+Removed: Ser_UCC 11
+Ser_AGU 106
+Ser_AGU 106
+['Ser_AGU 106']
+Removed: Ser_AGU 106
+Total time (in seconds): 2.60100007057
+Ending application...

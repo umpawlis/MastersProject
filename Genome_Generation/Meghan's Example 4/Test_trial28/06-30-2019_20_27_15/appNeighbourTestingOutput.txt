@@ -1,0 +1,11 @@
+Starting application...
+Leu_UUG 66
+Leu_UUG 66
+['Leu_UUG 66']
+Removed: Leu_UUG 66
+Glu_GAA 79
+Glu_GAA 79
+['Glu_GAA 79']
+Removed: Glu_GAA 79
+Total time (in seconds): 2.51099991798
+Ending application...

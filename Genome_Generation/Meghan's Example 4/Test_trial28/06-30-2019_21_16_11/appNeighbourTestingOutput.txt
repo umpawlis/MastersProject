@@ -1,0 +1,27 @@
+Starting application...
+His_CAU 101
+His_CAU 101
+['His_CAU 101']
+Removed: His_CAU 101
+Pro_CCC 5
+Pro_CCC 5
+['Pro_CCC 5']
+Removed: Pro_CCC 5
+Val_GUA 3
+Val_GUA 3
+['Val_GUA 3']
+Removed: Val_GUA 3
+Leu_CUA 54
+Leu_CUA 54
+['Leu_CUA 54']
+Removed: Leu_CUA 54
+Phe_UUU 50
+Phe_UUU 50
+['Phe_UUU 50']
+Removed: Phe_UUU 50
+Pro_CCC 18
+Pro_CCC 18
+['Pro_CCC 18']
+Removed: Pro_CCC 18
+Total time (in seconds): 2.43700003624
+Ending application...

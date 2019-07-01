@@ -1,0 +1,25 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Arg_AGA 94;16S 4;Ser_AGU 6;Phe_UUC 36;Arg_AGA 80;Glu_GAA 65, Val_GUC 66;Ser_UCC 23;Glu_GAA 103;Gln_CAA 81, Ile_AUU 82;
+Deletion:Phe_UUC 2;His_CAU 17;Arg_AGG 35;Thr_ACU 55;Cys_UGU -1;Pro_CCU 41;Glu_GAA 6;Glu_GAA 7, Ser_UCA 8, Ser_UCC 9;5S 60, 23S 61, 16S 62;
+Inversion:Arg_AGA 33;< t > 34;HIs_CAC 35;Phe_UUC 36;5S 37, 23S 38, 16S 39;Glu_GAG 40, Ser_UCC 41;5S 42, 23S 43, 16S 44, Leu_UUA 45, Phe_UUC 46;|
+Transposition:16S 60, 23S 59, 5S 58;|Ser_UCC 9, Ser_UCA 10, Glu_GAG 11;|Ser_AGU 12;|16S 60, 23S 59, 5S 58;|
+Inverted Transposition:Cys_UGC 1, Asp_GAU 2, Ser_UCA 3, 16S 5, 23S 7, 5S 8;|5S 87, 23S 88, 16S 89, Pro_CCA 90, Arg_AGG 91;|Arg_AGA 33;|Glu_GAA 54;|Ser_UCC 57, 5S 58, 23S 59, 16S 60, Tyr_UAC 61;|
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:23S 32, 5S 33;5S 83;Ala_GCU -1, Pro_CCG -1;Leu_CUC 4;Glu_GAA 109;Glu_GAA 36;Glu_GAA 48;Arg_AGG 54;Ser_UCA 42;
+Deletion:5S 96, 23S 97, 16S 98;Tyr_UAC 88, Ser_UCC 87;Lys_AAA 22;Phe_UUC -1;Cys_UGU -1;Arg_AGA 107;Arg_AGG 21;Arg_AGA 27;Ala_GCU 11, Pro_CCG -1;
+Inversion:
+Transposition:HIs_CAC 37;|Thr_ACC 53, His_CAU 55, Ser_UCG 56;|Arg_AGG 3;|Ser_UCA 86, Thr_ACC 87, Thr_ACC 88, Arg_CGU 89;|Arg_AGG 17, Pro_CCA 18, 16S 19, 23S 20, 5S 21;|Glu_GAA 10, Leu_UUG 11, Ala_GCU 12;|
+Inverted Transposition:Thr_ACC 53, His_CAU 55, Ser_UCG 56;|16S 40, 23S 41, 5S 43;|5S 60, 23S 61, 16S 62;|
+Total Deletions: size: 1 count: 26, size: 2 count: 6, size: 3 count: 3, size: 4 count: 1
+Total Duplications: size: 1 count: 29, size: 2 count: 6, size: 3 count: 1
+Size Distribution of Inversions: size: 7 count: 1
+Size Distribution of Transpositions: size: 1 count: 6, size: 2 count: 2, size: 3 count: 5, size: 4 count: 1, size: 5 count: 3
+Size Distribution of Inverted Transpositions: size: 1 count: 8, size: 2 count: 4, size: 3 count: 4, size: 5 count: 2, size: 6 count: 1
+Total Inversions: 1
+Total Transpositions: 17
+Total Inverted Transpositions: 19

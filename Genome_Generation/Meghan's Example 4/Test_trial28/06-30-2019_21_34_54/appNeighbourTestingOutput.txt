@@ -1,0 +1,46 @@
+Starting application...
+Ala_GCA 25, Asp_GAU 26
+Asp_GAU 26
+['Ala_GCA 25', 'Asp_GAU 26']
+Removed: Asp_GAU 26
+Ala_GCA 25
+Ala_GCA 25
+['Ala_GCA 25']
+Removed: Ala_GCA 25
+Ala_GCU 97, Tyr_UAC 98, 5S 99, Ser_AGU 100, Tyr_UAC 101
+Ala_GCU 97
+['Ala_GCU 97', 'Tyr_UAC 98', '5S 99', 'Ser_AGU 100', 'Tyr_UAC 101']
+Removed: Ala_GCU 97
+Tyr_UAC 98, 5S 99, Ser_AGU 100, Tyr_UAC 101
+5S 99
+['Tyr_UAC 98', '5S 99', 'Ser_AGU 100', 'Tyr_UAC 101']
+Removed: 5S 99
+Tyr_UAC 98, Ser_AGU 100, Tyr_UAC 101
+Ser_AGU 100
+['Tyr_UAC 98', 'Ser_AGU 100', 'Tyr_UAC 101']
+Removed: Ser_AGU 100
+Tyr_UAC 98, Tyr_UAC 101
+Tyr_UAC 101
+['Tyr_UAC 98', 'Tyr_UAC 101']
+Removed: Tyr_UAC 101
+Ala_GCG 64, Glu_GAG 65
+Ala_GCG 64
+['Ala_GCG 64', 'Glu_GAG 65']
+Removed: Ala_GCG 64
+Glu_GAG 65
+Glu_GAG 65
+['Glu_GAG 65']
+Removed: Glu_GAG 65
+Val_GUC 84
+Val_GUC 84
+['Val_GUC 84']
+Removed: Val_GUC 84
+Asp_GAU 4
+Asp_GAU 4
+['Asp_GAU 4']
+Removed: Asp_GAU 4
+16S 42, 23S 43, Asp_GAU 44, Val_GUC 45, Ser_UCG 46, Ala_GCU 47, 5S 48
+Asp_GAU 4
+['16S 42', '23S 43', 'Asp_GAU 44', 'Val_GUC 45', 'Ser_UCG 46', 'Ala_GCU 47', '5S 48']
+Total time (in seconds): 4.18400001526
+Ending application...

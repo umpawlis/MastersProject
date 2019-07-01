@@ -1,0 +1,27 @@
+Starting application...
+Pro_CCG 103
+Pro_CCG 103
+['Pro_CCG 103']
+Removed: Pro_CCG 103
+Pro_CCU 46
+Pro_CCU 46
+['Pro_CCU 46']
+Removed: Pro_CCU 46
+Ser_UCU 27, Phe_UUU 28
+Phe_UUU 28
+['Ser_UCU 27', 'Phe_UUU 28']
+Removed: Phe_UUU 28
+Ser_UCU 27
+Ser_UCU 27
+['Ser_UCU 27']
+Removed: Ser_UCU 27
+Arg_AGA 83
+Arg_AGA 83
+['Arg_AGA 83']
+Removed: Arg_AGA 83
+Val_GUU 121
+Val_GUU 121
+['Val_GUU 121']
+Removed: Val_GUU 121
+Total time (in seconds): 5.02100014687
+Ending application...
