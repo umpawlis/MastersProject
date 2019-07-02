@@ -89,6 +89,8 @@ def inversionTranspositionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
 
     #Parse the data
     regions1 = data1.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
@@ -102,6 +104,7 @@ def inversionTranspositionComparison(data1, data2, outputFile):
     numGenesExpected = 0
     numAppEvents = len(regions1) - 1
     
+    count = -1
     for region in regions1:
         operons = region.split(';')
         for operon in operons:
@@ -109,7 +112,10 @@ def inversionTranspositionComparison(data1, data2, outputFile):
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
-                    dict1[data[1]] = data[0]
+                    if data[1] != '-1':
+                        dict1[data[1]] = data[0]
+                    else:
+                        negativePositionsList1.append(data[0])
     for region in regions2:
         if region != '':
 #            outputFile.write("Reversing Section\n")
@@ -126,13 +132,28 @@ def inversionTranspositionComparison(data1, data2, outputFile):
                     for gene in genes:
                         data = gene.split(' ')
                         if len(data) == 2:
-                            dict2[data[1]] = data[0]
+                            if data[1] != '-1':
+                                dict2[data[1]] = data[0]
+                            else:
+                                dict2[str(count)] = 'XXX'
+                                count -= 1
+                                negativePositionsList2.append(data[0])
+                                
+#    print dict1
+#    print dict2
+#    print negativePositionsList1
+#    print negativePositionsList2
+    
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numGenesFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numGenesFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -157,6 +178,8 @@ def duplicationDeletionComparison(data1, data2, outputFile):
     outputFile.write('|'.join(segments2) + "\n")
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
     
     numEventsFound = 0
     numEventsExpected = len(segments2) - 1
@@ -164,12 +187,16 @@ def duplicationDeletionComparison(data1, data2, outputFile):
     numGenesExpected = 0
     numAppEvents = len(segments1) - 1
     
+    count = -1
     for segment in segments1:
         genes = segment.split(', ')
         for gene in genes:
             data = gene.split(' ')
             if len(data) == 2:
-                dict1[data[1]] = data[0]
+                if data[1] != '-1':
+                    dict1[data[1]] = data[0]
+                else:
+                    negativePositionsList1.append(data[0])
     for segment in segments2:
         if segment != '':
 #            if ',' in segment:
@@ -186,14 +213,28 @@ def duplicationDeletionComparison(data1, data2, outputFile):
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
-                    dict2[data[1]] = data[0]
+                    if data[1] != '-1':
+                        dict2[data[1]] = data[0]
+                    else:
+                        dict2[str(count)] = 'XXX'
+                        count -= 1
+                        negativePositionsList2.append(data[0])
+                        
+#    print dict1
+#    print dict2
+#    print negativePositionsList1
+#    print negativePositionsList2
 
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numGenesFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numGenesFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -212,6 +253,8 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
 
     #Parse the data
     array1 = data1.strip().split(';')
@@ -223,22 +266,40 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     numEventsExpected = len(array2) - 1
     numAppEvents = len(array1) - 1
     
+    count = -1
     for entry in array1:
         data = entry.split(' ')
         if len(data) == 2:
-            dict1[data[1]] = data[0]
+            if data[1] != '-1':
+                dict1[data[1]] = data[0]
+            else:
+                negativePositionsList1.append(data[0])
     for entry in array2:
         if entry != '':
             data = entry.split(' ')
             if len(data) == 2:
-                dict2[data[1]] = data[0]
+                if data[1] != '-1':
+                    dict2[data[1]] = data[0]
+                else:
+                    dict2[str(count)] = 'XXX'
+                    count -= 1
+                    negativePositionsList2.append(data[0])
+                    
+#    print dict1
+#    print dict2
+#    print negativePositionsList1
+#    print negativePositionsList2
 
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numEventsFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numEventsFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -531,7 +592,7 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Size distribution of inversions
                 line2 = file2.readline() #Size distribution of inversions
                 if 'Size Distribution of Inversions:' in line1 and 'Size Distribution of Inversions:' in line2:
-                    print('Comparing size distribution for inversions')
+#                    print('Comparing size distribution for inversions')
                     line1 = line1.replace('Size Distribution of Inversions:', '').strip()
                     line2 = line2.replace('Size Distribution of Inversions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
@@ -543,7 +604,7 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Size distribution of transpositions
                 line2 = file2.readline() #Size distribution of transpositions
                 if 'Size Distribution of Transpositions:' in line1 and 'Size Distribution of Transpositions:' in line2:
-                    print('Comparing size distribution for transpositions')
+#                    print('Comparing size distribution for transpositions')
                     line1 = line1.replace('Size Distribution of Transpositions:', '').strip()
                     line2 = line2.replace('Size Distribution of Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
@@ -555,7 +616,7 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Size distribution of inverted transpositions
                 line2 = file2.readline() #Size distribution of inverted transpositions
                 if 'Size Distribution of Inverted Transpositions:' in line1 and 'Size Distribution of Inverted Transpositions:' in line2:
-                    print('Comparing size distribution for inverted transpositions')
+#                    print('Comparing size distribution for inverted transpositions')
                     line1 = line1.replace('Size Distribution of Inverted Transpositions:', '').strip()
                     line2 = line2.replace('Size Distribution of Inverted Transpositions:', '').strip()
                     dict1 = parseSizeDistribution(line1)
@@ -567,14 +628,14 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Total inversions
                 line2 = file2.readline() #Total inversions
                 if 'Total Inversions' in line1 and 'Total Inversions' in line2:
-                    print('Comparing total inversions between files!')
+#                    print('Comparing total inversions between files!')
                     line1 = line1.replace('Total Inversions:', '').strip()
                     line2 = line2.replace('Total Inversions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
                     if count2 > 0:
                         accuracyRate = (count1/count2) * 100
-                        print('Accuracy rate for inversions was %s %%' % (accuracyRate))
+#                        print('Accuracy rate for inversions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total inversions!')
                     return False
@@ -582,14 +643,14 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Total transpositions
                 line2 = file2.readline() #Total transpositions
                 if 'Total Transpositions' in line1 and 'Total Transpositions' in line2:
-                    print('Comparing total transpositions between files!')
+#                    print('Comparing total transpositions between files!')
                     line1 = line1.replace('Total Transpositions:', '').strip()
                     line2 = line2.replace('Total Transpositions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
                     if count2 > 0:
                         accuracyRate = (count1/count2) * 100
-                        print('Accuracy rate for transpositions was %s %%' % (accuracyRate))
+#                        print('Accuracy rate for transpositions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total transpositions!')
                     return False
@@ -597,14 +658,14 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                 line1 = file1.readline() #Total inverted transpositions
                 line2 = file2.readline() #Total inverted transpositions
                 if 'Total Inverted Transpositions' in line1 and 'Total Inverted Transpositions' in line2:
-                    print('Comparing total inverted transpositions between files!')
+#                    print('Comparing total inverted transpositions between files!')
                     line1 = line1.replace('Total Inverted Transpositions:', '').strip()
                     line2 = line2.replace('Total Inverted Transpositions:', '').strip()
                     count1 = int(line1) #Count of events
                     count2 = int(line2) #Count of events
                     if count2 > 0:
                         accuracyRate = (count1/count2) * 100
-                        print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
+#                        print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
                 else:
                     print('Error! Expected total inverted transpositions!')
                     return False
@@ -629,8 +690,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals
 
 ######## Main ########
-#if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
-#    print('Successfully processed the output files')
-#else:
-#    print('Error! An error has occured while processing the files!')
-#print('End of script...')
+if readFiles("AppCompareBacillusData", 'ApplicationOutput.txt', 'ApplicationOutput.txt', 'app-'):
+    print('Successfully processed the output files')
+else:
+    print('Error! An error has occured while processing the files!')
+print('End of script...')
