@@ -1,0 +1,188 @@
+(((NC_014551:0.00000,(HE617159:0.00000,NC_009725:0.00000):0.00000):0.00000,(NC_000964:0.00000,(CP002905:0.00000,NC_014479:0.00000):0.00000):0.00000):0.00000,((NC_005957:0.00000,(CP004069:0.00000,NC_014171:0.00000):0.00000):0.00000,(NC_004722:0.00000,(NC_006274:0.00000,NC_003909:0.00000):0.00000):0.00000):0.00000):0.00000;
+Strain:NC_014551
+Codon Mismatch:
+Substitution:Val_GUG 75;
+Duplication:Ile_AUC 118;Ala_GCA 117;Ile_AUC 67, Ala_GCA 68;Ile_AUC 38, Ala_GCA 39;Ile_AUC 60, Ala_GCA 61;Ile_AUC 2, Ala_GCA 3;Ile_AUC 8, Ala_GCA 9;
+Deletion:Leu_UUG 79;Ala_GCA 36;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:HE617159
+Codon Mismatch:
+Substitution:
+Duplication:Arg_CGU 46, Pro_CCA 47;Gly_GGC 44;Val_GUA 40, Thr_ACA 41, Lys_AAA 42, Leu_CUA 43;Ile_AUC 2, Ala_GCA 3;Ile_AUC 8, Ala_GCA 9;Leu_UUA 45;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_009725
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 111;Ala_GCA 110;Ile_AUC 35, Ala_GCA 36;Ala_GCA 33;
+Deletion:Ala_GCA 48;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:Met_AUG 66;
+Duplication:
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 2
+Codon Mismatch:
+Substitution:Val_GUG 66;
+Duplication:Lys_AAA 15, Leu_CUA 16;!16S -1, !23S -1, !5S -1;16S 25, 23S 26, 5S 27, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 30, !Leu_UUA -1, Arg_CGU 31, Pro_CCA 32, Ala_GCA 36, 16S 37, 23S 38, 5S 39;
+Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000964
+Codon Mismatch:
+Substitution:
+Duplication:Lys_AAA 19, Leu_CUA 20;!16S -1, !23S -1, !5S -1;16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;
+Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:CP002905
+Codon Mismatch:Thr_ACA 18;
+Substitution:Val_GUA 17;
+Duplication:Lys_AAA 19, Leu_CUA 20;Asn_AAC 32, Thr_ACC 33;!Gly_GGC -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1;16S 38, 23S 39, 5S 40, Asn_AAC 41, Thr_ACC 42;Gly_GGC 43, Arg_CGU 44, Pro_CCA 45, Ala_GCA 46, 16S 47, 23S 48, 5S 49, !Asn_AAC -1, !Thr_ACC -1;
+Deletion:!Asn_AAC -1, !Thr_ACC -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_014479
+Codon Mismatch:Thr_ACC 21;
+Substitution:Asn_AAC 20;
+Duplication:
+Deletion:Leu_UUA 22;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 3
+Codon Mismatch:
+Substitution:
+Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29;
+Deletion:!Ile_AUC -1, !Ala_GCA -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 4
+Codon Mismatch:
+Substitution:Met_AUG 53;
+Duplication:Ile_AUC 2, Ala_GCA 3;Ile_AUC 8, Ala_GCA 9;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 5
+Codon Mismatch:Leu_CUG 83;
+Substitution:His_CAC 71;Lys_AAA 84;Val_GUG 49;
+Duplication:!16S -1, !23S -1, !5S -1, !Asn_AAC -1, !Ser_UCC -1, !Glu_GAA -1, !Val_GUA -1, !Val_GUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Tyr_UAC -1, !Trp_UGG -1, !His_CAC -1, Gln_CAA 65, !Gly_GGC -1, !Cys_UGC -1, !Leu_UUA -1, !Leu_UUG -1;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_005957
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 2, Ala_GCA 3;Ile_AUC 8, Ala_GCA 9;16S 63, !23S -1, !5S -1;!16S -1, !23S -1, 5S 64;!16S -1, !23S -1, !5S -1, !Asn_AAC -1, !Ser_UCC -1, !Glu_GAA -1, !Val_GUA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Tyr_UAC -1, !Trp_UGG -1, !His_CAC -1, !Gln_CAA -1, !Gly_GGC -1, Cys_UGC 113, !Leu_UUG -1;!Glu_GAA -1, !Ser_AGC -1, !Asn_AAC -1, !Ile_AUC -1, Gly_GGA 117, !Lys_AAA -1, !Thr_ACA -1, !Phe_UUC -1, !Asp_GAC -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Met_AUG -1, !Ala_GCA -1, !Pro_CCA -1, !Arg_CGU -1, !Leu_UUA -1, !Gly_GGC -1, !Leu_CUA -1, !His_CAC -1, !Thr_ACA -1, !Val_GUA -1, !5S -1, !23S -1, !16S -1;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:CP004069
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 2, Ala_GCA 3;Ile_AUC 60, Ala_GCA 61;Ile_AUC 55, Ala_GCA 56;Ile_AUC 47, Ala_GCA 48;Ile_AUC 8, Ala_GCA 9;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1, !His_CAC -1, !Leu_CUA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, Met_AUG 136, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Lys_AAA -1, !Gly_GGA -1, !Ile_AUC -1, !Asn_AAC -1, !Ser_AGC -1, !Glu_GAA -1;
+Deletion:
+Inversion:
+Transposition:16S 46, Ile_AUC 47, Ala_GCA 48, 23S 49, 5S 50;|
+Inverted Transposition:
+Strain:NC_014171
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:
+Transposition:16S 66, 23S 67, 5S 68;|
+Inverted Transposition:
+Strain:Ancestor 6
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 29;16S 10, 23S 11, 5S 12;
+Deletion:
+Inversion:16S 42, 23S 43, 5S 44;16S 45, 23S 46, 5S 47;16S 48, 23S 49, 5S 50;16S 51, 23S 52, 5S 53;|
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 7
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:
+Transposition:16S 38, 23S 39, 5S 40;|
+Inverted Transposition:
+Strain:NC_004722
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 45;Val_GUC 113;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Tyr_UAC -1, !Gln_CAA -1, !Lys_AAA -1, !Leu_CUA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !Ser_UCA -1, !Ser_UCA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, Trp_UGG 114, !Ile_AUC -1, !Asn_AAC -1, !Glu_GAA -1;
+Deletion:
+Inversion:16S 58, 23S 59, 5S 60;16S 61, 23S 62, 5S 63;16S 64, 23S 65, 5S 66;16S 67, 23S 68, 5S 69;|
+Transposition:
+Inverted Transposition:
+Strain:NC_006274
+Codon Mismatch:Ile_AUC 2;
+Substitution:
+Duplication:16S 45, 23S 46, 5S 47;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_003909
+Codon Mismatch:Ile_GCA 3;
+Substitution:
+Duplication:Met_AUG 43, Asp_GAC 44;!Glu_GAA -1, !Ser_AGC -1, !Asn_AAC -1, !Ile_AUC -1, Gly_GGA 104, !Lys_AAA -1, !Thr_ACA -1, !Phe_UUC -1, !Asp_GAC -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Met_AUG -1, !Ala_GCA -1, !Pro_CCA -1, !Arg_CGU -1, !Leu_UUA -1, !Gly_GGC -1, !Leu_CUA -1, !His_CAC -1, !Thr_ACA -1, !Val_GUA -1, !5S -1, !23S -1, !16S -1;Ala_AUC 2;
+Deletion:Ala_GCA 3;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 8
+Codon Mismatch:
+Substitution:
+Duplication:16S 14, 23S 15, 5S 16;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 9
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 2, Ala_GCA 3;Ile_AUC 8, Ala_GCA 9;
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:Ancestor 10
+Codon Mismatch:Leu_CUA 113;
+Substitution:Lys_AAA 100;His_CAC 114;Met_AUG 57;
+Duplication:Thr_ACA 101;16S 38, 23S 39, 5S 40;16S 41, 23S 42, 5S 43;16S 44, 23S 45, 5S 46;16S 47, 23S 48, 5S 49;!Tyr_UAC -1;16S 69, 23S 70, 5S 71, Val_GUA 72, Thr_ACA 87, !His_CAC -1, !Leu_CUA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !Met_AUG -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Lys_AAA -1, !Gly_GGA -1, Ile_AUC 89, Asn_AAC 90, !Ser_AGC -1, Glu_GAA 91;!Glu_GAA -1, !Ser_AGC -1, !Asn_AAC -1, !Ile_AUC -1, !Gly_GGA -1, !Lys_AAA -1, !Thr_ACA -1, !Phe_UUC -1, !Asp_GAC -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, Met_AUG 94, !Ala_GCA -1, !Pro_CCA -1, !Arg_CGU -1, !Leu_UUA -1, !Gly_GGC -1, !Leu_CUA -1, !His_CAC -1, !Thr_ACA -1, !Val_GUA -1, !5S -1, !23S -1, !16S -1;
+Deletion:Leu_UUA 59;!Met_AUG -1;!Lys_AAA -1;!Ser_AGC -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+Total Deletions: size: 1 count: 11, size: 2 count: 4
+Total Duplications: size: 1 count: 13, size: 2 count: 25, size: 3 count: 11, size: 4 count: 2, size: 5 count: 2, size: 9 count: 1, size: 15 count: 2, size: 18 count: 1, size: 19 count: 1, size: 23 count: 1, size: 25 count: 5
+Size Distribution of Inversions: size: 12 count: 2
+Size Distribution of Transpositions: size: 3 count: 2, size: 5 count: 1
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 2
+Total Transpositions: 3
+Total Inverted Transpositions: 0
+Total Codon Mismatches: 12
+Total Substitutions: 20
+Total Execution Time: 2.55599999428
