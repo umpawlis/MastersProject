@@ -89,6 +89,8 @@ def inversionTranspositionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
 
     #Parse the data
     regions1 = data1.strip().split('|') #An inversion/transposition fragment ie entire piece that was transposed
@@ -102,6 +104,7 @@ def inversionTranspositionComparison(data1, data2, outputFile):
     numGenesExpected = 0
     numAppEvents = len(regions1) - 1
     
+    count = -1
     for region in regions1:
         operons = region.split(';')
         for operon in operons:
@@ -109,7 +112,10 @@ def inversionTranspositionComparison(data1, data2, outputFile):
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
-                    dict1[data[1]] = data[0]
+                    if data[1] != '-1':
+                        dict1[data[1]] = data[0]
+                    else:
+                        negativePositionsList1.append(data[0])
     for region in regions2:
         if region != '':
 #            outputFile.write("Reversing Section\n")
@@ -126,13 +132,28 @@ def inversionTranspositionComparison(data1, data2, outputFile):
                     for gene in genes:
                         data = gene.split(' ')
                         if len(data) == 2:
-                            dict2[data[1]] = data[0]
+                            if data[1] != '-1':
+                                dict2[data[1]] = data[0]
+                            else:
+                                dict2[str(count)] = 'XXX'
+                                count -= 1
+                                negativePositionsList2.append(data[0])
+                                
+    print dict1
+    print dict2
+    print negativePositionsList1
+    print negativePositionsList2
+    
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numGenesFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numGenesFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -157,6 +178,8 @@ def duplicationDeletionComparison(data1, data2, outputFile):
     outputFile.write('|'.join(segments2) + "\n")
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
     
     numEventsFound = 0
     numEventsExpected = len(segments2) - 1
@@ -164,12 +187,16 @@ def duplicationDeletionComparison(data1, data2, outputFile):
     numGenesExpected = 0
     numAppEvents = len(segments1) - 1
     
+    count = -1
     for segment in segments1:
         genes = segment.split(', ')
         for gene in genes:
             data = gene.split(' ')
             if len(data) == 2:
-                dict1[data[1]] = data[0]
+                if data[1] != '-1':
+                    dict1[data[1]] = data[0]
+                else:
+                    negativePositionsList1.append(data[0])
     for segment in segments2:
         if segment != '':
 #            if ',' in segment:
@@ -186,14 +213,28 @@ def duplicationDeletionComparison(data1, data2, outputFile):
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
-                    dict2[data[1]] = data[0]
+                    if data[1] != '-1':
+                        dict2[data[1]] = data[0]
+                    else:
+                        dict2[str(count)] = 'XXX'
+                        count -= 1
+                        negativePositionsList2.append(data[0])
+                        
+    print dict1
+    print dict2
+    print negativePositionsList1
+    print negativePositionsList2
 
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numGenesFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numGenesFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -212,6 +253,8 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     percentage = 0
     dict1 = {}
     dict2 = {}
+    negativePositionsList1 = []
+    negativePositionsList2 = []
 
     #Parse the data
     array1 = data1.strip().split(';')
@@ -223,22 +266,40 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     numEventsExpected = len(array2) - 1
     numAppEvents = len(array1) - 1
     
+    count = -1
     for entry in array1:
         data = entry.split(' ')
         if len(data) == 2:
-            dict1[data[1]] = data[0]
+            if data[1] != '-1':
+                dict1[data[1]] = data[0]
+            else:
+                negativePositionsList1.append(data[0])
     for entry in array2:
         if entry != '':
             data = entry.split(' ')
             if len(data) == 2:
-                dict2[data[1]] = data[0]
+                if data[1] != '-1':
+                    dict2[data[1]] = data[0]
+                else:
+                    dict2[str(count)] = 'XXX'
+                    count -= 1
+                    negativePositionsList2.append(data[0])
+                    
+    print dict1
+    print dict2
+    print negativePositionsList1
+    print negativePositionsList2
 
     #Compute a percentage
-    keys = dict1.keys()
+    keys = dict2.keys()
     count = 0
     for key in keys:
-        if key in dict2 and dict2[key] == dict1[key]: #A correctly identified event
+        if int(key) < 0:
+            if count < len(negativePositionsList2):
+                if negativePositionsList2[count] in negativePositionsList1:
+                    numEventsFound += 1
             count += 1
+        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
             numEventsFound += 1
 
 #    if count == 0 and len(dict2) == 0:
@@ -629,8 +690,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals
 
 ######## Main ########
-#if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
-#    print('Successfully processed the output files')
-#else:
-#    print('Error! An error has occured while processing the files!')
-#print('End of script...')
+if readFiles("AppCompareBacillusData", 'ApplicationOutput.txt', 'ApplicationOutput.txt', 'app-'):
+    print('Successfully processed the output files')
+else:
+    print('Error! An error has occured while processing the files!')
+print('End of script...')

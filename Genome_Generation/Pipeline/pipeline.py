@@ -10,6 +10,7 @@ import os
 import sys
 import subprocess
 import datetime
+import time
 
 ### CONSTANTS ###
 ORTHOALIGN_PATH =  "OrthoAlign/OrthoAlign/"; ##I recommend using an absolute path
@@ -174,6 +175,8 @@ def main():
     totalAppNeighbourFMeasureList = []
     totalOrthoNeighbourFMeasureList = []
     
+    averageRunTimePerTest = []
+    
     for test in tests:
         numEventsAppAveragesList = []
         numEventsGenAveragesList = []
@@ -261,6 +264,8 @@ def main():
         appNeighbourFMeasureList = []
         orthoNeighbourFMeasureList = []
         
+        testRunTimes = []
+        
         args = test.strip().split()
         count = 4
         
@@ -319,6 +324,7 @@ def main():
             sys.exit(0)
             
         for i in range(numRounds):
+            startTime = time.time()
             testSetDir = testFolder + datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
             if neighbour:
                 tree = 'tree2LeafNeighbour.dnd'
@@ -594,8 +600,12 @@ def main():
                     relaxedOrthoNeighbourInvAccuracyAveragesList.append(relaxedOrthoNeighbourInvEventAccuracy)
                     strictOrthoNeighbourTransAccuracyAveragesList.append(strictOrthoNeighbourTransEventAccuracy)
                     relaxedOrthoNeighbourTransAccuracyAveragesList.append(relaxedOrthoNeighbourTransEventAccuracy)
-                    
-                
+            runTime = time.time() - startTime
+            testRunTimes.append(runTime)
+            
+        averageRunTimePerTest.append(testRunTimes)
+        printAverages(averageRunTimePerTest)
+        
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
         totalEventsOrthoAveragesList.append(numEventsOrthoAveragesList)
@@ -741,6 +751,20 @@ def calculateAccuracy(totalEventsFound, totalEventsExpected, totalGenesFound, to
         relaxedEventAccuracy = 0.0
         
     return strictEventAccuracy, relaxedEventAccuracy
+
+def printAverages(AveragesPerTest):
+    runTimeSum = 0
+    
+    with open(testFolder + "runtimeAverages.txt", "w+") as f:
+        for testRuntimes in AveragesPerTest:
+            for runtime in testRuntimes:
+                runTimeSum += runtime
+                f.write(runtime + " ")
+                
+            average = runTimeSum / len(testRuntimes)
+            f.write("\n")
+            f.write(str(average) + "\n")
+        
 
 def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None, totalAverages5 = None, totalAverages6 = None):
     if graphType == "Events":
