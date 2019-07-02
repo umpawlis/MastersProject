@@ -75,7 +75,6 @@ def outputTotalsToFile(fileName, time):
 
     appendToFile(fileName, 'Total Inversions: %s\n' % (globals.inversionCounter))
     appendToFile(fileName, 'Total Transpositions: %s\n' % (globals.transposedCounter))
-    appendToFile(fileName, 'Total Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
     appendToFile(fileName, 'Total Inverted Transpositions: %s\n' % (globals.invertedTransposedCounter))
     appendToFile(fileName, 'Total Codon Mismatches: %s\n' % (globals.codonMismatchCounter))
     appendToFile(fileName, 'Total Substitutions: %s\n' % (globals.substitutionCounter))
