@@ -1171,6 +1171,11 @@ def checkForMatch(gap, positions, sequence, fragment, size):
                     del gap[x:x+1]
                     del positions[x:x+1]
                     x = x-1
+                    if globals.printToConsole:
+                        #For making sure everything is working
+                        print('Gap sequence found! Removing gap sequence!')
+                        print('This is the gap that was removed, %s' % (tempString))
+                        print('This is the sequence the gap was found in, %s' % (sequence))
                     break #Break out of sequence loop
 
     return geneDuplicateSizes, duplicationDetails, gap, positions
