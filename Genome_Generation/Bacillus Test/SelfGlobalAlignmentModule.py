@@ -204,23 +204,31 @@ def handleDuplicateDetails(event, strain):
     #Indicate the whole operon was duplicated
     index = 0
     tempString = ''
-    sequenceAligned = event.ancestralOperonGeneSequence
+    sequenceTarget = event.fragmentDetails1.sequence
     sequenceDuplicated = event.fragmentDetails2.sequence
     position = event.fragmentDetails1.startPositionInGenome
-    
+    rememberPoint = 0
     for x in range(0, len(sequenceDuplicated)):
-        if index < len(sequenceAligned) and sequenceDuplicated[x] == sequenceAligned[index]:
-            if event.fragmentDetails1.isNegativeOrientation == False:
-                tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
+        found = False
+        while index < len(sequenceTarget):
+            if sequenceTarget[index] == sequenceDuplicated[x]:
+                if event.fragmentDetails1.isNegativeOrientation == False:
+                    tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
+                else:
+                    tempString = sequenceDuplicated[x] + ' ' + str(position + len(event.fragmentDetails1.sequence) - index - 1) + ', ' + tempString
+                rememberPoint = index + 1
+                found = True
+                break
             else:
-                tempString = sequenceDuplicated[x] + ' ' + str(position + len(event.fragmentDetails1.sequence) - index - 1) + ', ' + tempString
-            index += 1
-        else:
+                index+=1
+        if found == False:
             if event.fragmentDetails1.isNegativeOrientation == False:
                 tempString += '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', '
             else:
                 tempString = '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
-                
+            index = rememberPoint #reset the index back to our last found point
+        else:
+            index = rememberPoint
     tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
     tempString += ';'
     strain.duplicationDetails += tempString
