@@ -1109,21 +1109,20 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             duplicatePositions = positions[startIndex:endIndex]
 
             #Creates a string containing the genes and their position
+            tempString = ''
             for p in range(0, len(duplicateGenes)):
                 gene = duplicateGenes[p]
                 pos = duplicatePositions[p]
-
                 if fragment.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
                     genePos = pos + fragment.startPositionInGenome
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
                 if fragment.isNegativeOrientation:
-                    duplicationDetails = gene + ' ' + str(genePos) + ', ' + duplicationDetails
+                    tempString = gene + ' ' + str(genePos) + ', ' + tempString
                 else:
-                    duplicationDetails += gene + ' ' + str(genePos) + ', '
-                    
-            duplicationDetails = duplicationDetails[0:(len(duplicationDetails) - 2)]
-            duplicationDetails += ';' #This indicates end of duplication fragment
+                    tempString += gene + ' ' + str(genePos) + ', '
+            tempString = tempString[0:(len(tempString) - 2)]
+            duplicationDetails += tempString + ';' #This indicates end of duplication fragment
 
             #Remove the duplicated region
             del gap[startIndex:endIndex]
@@ -1144,7 +1143,37 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             windowSize = min(windowSize-1, len(gap))
             startIndex = 0
             endIndex = startIndex + windowSize
+    
+    #Special case for within alignment b/c the above was not checking all possible genes of size 1
+    if size == 0 and len(gap) > 0:
+        for x in range(0, len(gap)):
+            for y in range(0, len(sequence)): #Iterate over all genes in sequence
+                if gap[x] == sequence[y]:
+                    geneDuplicateSizes.append(1)
+                    duplicateGenes = gap[x:x+1]
+                    duplicatePositions = positions[x:x+1]
+                    #Creates a string containing the genes and their position
+                    tempString = ''
+                    for p in range(0, len(duplicateGenes)):
+                        gene = duplicateGenes[p]
+                        pos = duplicatePositions[p]
 
+                        if fragment.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
+                            genePos = pos + fragment.startPositionInGenome
+                        else:
+                            genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
+                        if fragment.isNegativeOrientation:
+                            tempString = gene + ' ' + str(genePos) + ', ' + tempString
+                        else:
+                            tempString += gene + ' ' + str(genePos) + ', '
+                    tempString = tempString[0:(len(tempString) - 2)]
+                    duplicationDetails += tempString + ';' #This indicates end of duplication fragment
+                    #Remove the duplicated region
+                    del gap[x:x+1]
+                    del positions[x:x+1]
+                    x = x-1
+                    break #Break out of sequence loop
+                    
     return geneDuplicateSizes, duplicationDetails, gap, positions
 
 ######################################################
