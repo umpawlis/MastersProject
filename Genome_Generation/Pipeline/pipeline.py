@@ -759,7 +759,7 @@ def printAverages(AveragesPerTest):
         for testRuntimes in AveragesPerTest:
             for runtime in testRuntimes:
                 runTimeSum += runtime
-                f.write(runtime + " ")
+                f.write(str(runtime) + " ")
                 
             average = runTimeSum / len(testRuntimes)
             f.write("\n")
@@ -833,7 +833,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
         
         average = currentSum / len(averagesList)
         averages.append(average)
-    line1, = plt.plot(xAxis, averages, 'o-', label='Application')
+    line1, = plt.plot(xAxis, averages, 'o-', label='BOPAL')
     labels.append(line1)
     
     averages2 = []
@@ -890,7 +890,7 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
             
             average = currentSum / len(averagesList)
             averages5.append(average)
-        line5, = plt.plot(xAxis, averages5, 'o--', label='Application with Neighbour')
+        line5, = plt.plot(xAxis, averages5, 'o--', label='BOPAL with Neighbour')
         labels.append(line5)
         
     if totalAverages6 is not None:
