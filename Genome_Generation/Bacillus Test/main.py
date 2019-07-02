@@ -24,6 +24,8 @@ from SequenceService import updateGlobalTranspositionSizeDistributionCounter
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
+from SequenceService import updateGlobalCodonMismatchCounter
+from SequenceService import updateGlobalSubstitutionCounter
 
 #Application parameters
 newickFileName = 'tree.dnd' #Name of newick tree file
@@ -113,6 +115,12 @@ def createAncestor(strain1, strain2, neighborStrain):
     updateGlobalTranspositionSizeDistributionCounter(strain2)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
+    
+    #Increment counters
+    updateGlobalCodonMismatchCounter(strain1)
+    updateGlobalCodonMismatchCounter(strain2)
+    updateGlobalSubstitutionCounter(strain1)
+    updateGlobalSubstitutionCounter(strain2)
     
     #Append all details to file here
     #outputStrainDetailsToFile(outputFileName, strain1)
@@ -206,14 +214,14 @@ def constructEvents(strain1, strain2):
             print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
     
     #Try reducing the number of singleton deletions
-    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
-        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
-    if len(newEvents) > 0:
-            events.extend(newEvents)
-    if len(lossEvents1) > 0:
-            events.extend(lossEvents1)
-    if len(lossEvents2) > 0:
-            events.extend(lossEvents2)
+#    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
+#        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
+#    if len(newEvents) > 0:
+#        events.extend(newEvents)
+#    if len(lossEvents1) > 0:
+#        events.extend(lossEvents1)
+#    if len(lossEvents2) > 0:
+#        events.extend(lossEvents2)
             
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
@@ -422,6 +430,9 @@ if globals.printToConsole:
     print('Traversing newick tree...')
 result = traverseNewickTree(newickTree.clade, None)
 
+endTime = time.time()
+totalTime = endTime - startTime
+
 if globals.printToConsole:
     #Output newick tree after the ancestors have been added to it
     Phylo.draw(newickTree)
@@ -443,7 +454,7 @@ newickTree.clade.name = '' #Make sure that the output for the root is not output
 traverseNewickTreeAndOutputToFile(newickTree.clade)
     
 #Output the totals for the computation to console and file
-outputTotalsToFile(outputFileName)
+outputTotalsToFile(outputFileName, totalTime)
 
 #TODO compute lineage
 #target = 'NC_014019'
@@ -451,7 +462,6 @@ outputTotalsToFile(outputFileName)
 #lineageCost = computeLineageCost(newickTree.clade, target, None)
 #if lineageCost != None:
     #print('Successfully found and computed the lineage for: %s' % (target))
-endTime = time.time()
-totalTime = endTime - startTime
+
 print('Total time (in seconds): %s' % (totalTime))
 print('Ending application...')
