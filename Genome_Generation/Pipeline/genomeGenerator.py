@@ -294,24 +294,40 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
     increasedNumEvents = False
     if equalEvents:
         eventOrder = []
-        numLoops = numEvents / 3
+        if (numEvents % 4) == 0:
+            numTypeOfEvents = 4
+            startProb = 0.10
+            increment = 0.20
+        elif (numEvents % 3) == 0:
+            numTypeOfEvents = 3
+            startProb = 0.10
+            increment = 0.25
+        
+        numLoops = numEvents / numTypeOfEvents
         
         for i in range(numLoops):
-            eventOrder.append(0.20)
+            eventOrder.append(startProb)
+        startProb += increment
         for j in range(numLoops):
-            eventOrder.append(0.45)
+            eventOrder.append(startProb)
+        startProb += (increment * 2)
         for k in range(numLoops):
-            eventOrder.append(0.95)
+            eventOrder.append(startProb)
+            
+        if numTypeOfEvents == 4:
+            startProb += increment
+            for l in range(numLoops):
+                eventOrder.append(startProb)
             
         if neighbour:
             if node.name == "NC_000001" or node.name == "NC_000002":
                 if invMultiplier == 1.0:
-                    eventOrder.append(0.70)
+                    eventOrder.append(0.55)
                     numEvents += 1
                     increasedNumEvents = True
         else:
             if invMultiplier == 1.0:
-                eventOrder.append(0.70)
+                eventOrder.append(0.55)
                 numEvents += 1
                 increasedNumEvents = True
             
