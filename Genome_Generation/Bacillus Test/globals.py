@@ -4,7 +4,7 @@
 def initialize():
     
     global printToConsole
-    printToConsole = True
+    printToConsole = False
     
     global enableDeletionReversions
     enableDeletionReversions = False
@@ -41,6 +41,12 @@ def initialize():
 
     global transposedCounter
     transposedCounter = 0
+    
+    global codonMismatchCounter
+    codonMismatchCounter = 0
+    
+    global substitutionCounter
+    substitutionCounter = 0
 
     global invertedTransposedCounter
     invertedTransposedCounter = 0

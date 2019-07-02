@@ -13,7 +13,7 @@ from BacterialStrain import BacterialStrain
 # Parameters:
 # Description: Adds the totals of each event to the output file
 ######################################################
-def outputTotalsToFile(fileName):
+def outputTotalsToFile(fileName, time):
     if globals.printToConsole:
         print('Outputting statistics for total events:')
 
@@ -76,6 +76,10 @@ def outputTotalsToFile(fileName):
     appendToFile(fileName, 'Total Inversions: %s\n' % (globals.inversionCounter))
     appendToFile(fileName, 'Total Transpositions: %s\n' % (globals.transposedCounter))
     appendToFile(fileName, 'Total Inverted Transpositions: %s' % (globals.invertedTransposedCounter))
+    appendToFile(fileName, 'Total Inverted Transpositions: %s\n' % (globals.invertedTransposedCounter))
+    appendToFile(fileName, 'Total Codon Mismatches: %s\n' % (globals.codonMismatchCounter))
+    appendToFile(fileName, 'Total Substitutions: %s\n' % (globals.substitutionCounter))
+    appendToFile(fileName, 'Total Execution Time: %s' % (time))
 
 ######################################################
 # outputStrainDetailsToFile

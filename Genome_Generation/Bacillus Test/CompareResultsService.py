@@ -608,10 +608,18 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                     if count2 > 0:
                         accuracyRate = (count1/count2) * 100
                         print('Accuracy rate for inverted transpositions was %s %%' % (accuracyRate))
+                    
+                    #Run to end of file
+                    line1 = file1.readline() #Codon mismatch
+                    line2 = file2.readline() #Codon mismatch
+                    line1 = file1.readline() #subs
+                    line2 = file2.readline() #subs
+                    line1 = file1.readline() #time
+                    line2 = file2.readline() #time
                 else:
                     print('Error! Expected total inverted transpositions!')
                     return False
-   
+                
             print('\n')
             line1 = file1.readline() #Strain 1 or Totals at the end
             line2 = file2.readline() #Strain 2 or Totals at the end

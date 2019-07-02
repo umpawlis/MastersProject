@@ -2,6 +2,7 @@ import globals
 import multiset
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 ####################################
 ##Sequence Service Functions########
@@ -24,6 +25,32 @@ def computeOperonDifferences(operon1, operon2):
 
     return len(set3)
 
+######################################################
+# updateGlobalCodonMismatchCounter
+# Parameters: strain
+# Description: Increments the global counter for codon mismatches
+######################################################
+def updateGlobalCodonMismatchCounter(strain):
+    tempString = copy.deepcopy(strain.codonMismatchDetails)
+    tempString = tempString.replace('Codon Mismatch:', '').strip()
+    if tempString:
+        array = tempString.split(';')
+        if len(array) > 0:
+            globals.codonMismatchCounter += len(array)
+        
+######################################################
+# updateGlobalCodonMismatchCounter
+# Parameters: strain
+# Description: Increments the global counter for codon mismatches
+######################################################
+def updateGlobalSubstitutionCounter(strain):
+    tempString = copy.deepcopy(strain.substitutionDetails)
+    tempString = tempString.replace('Substitution:', '').strip()
+    if tempString:
+        array = tempString.split(';')
+        if len(array) > 0:
+            globals.substitutionCounter += len(array)
+        
 ######################################################
 # updateGlobalInversionSizeDistributionCounter
 # Parameters: strain

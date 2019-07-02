@@ -25,6 +25,8 @@ from SequenceService import updateGlobalTranspositionSizeDistributionCounter
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
+from SequenceService import updateGlobalCodonMismatchCounter
+from SequenceService import updateGlobalSubstitutionCounter
 
 #Application parameters
 newickFileName = 'tree8Leaf-v2.dnd' #Name of newick tree file
@@ -114,6 +116,12 @@ def createAncestor(strain1, strain2, neighborStrain):
     updateGlobalTranspositionSizeDistributionCounter(strain2)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
+    
+    #Increment counters
+    updateGlobalCodonMismatchCounter(strain1)
+    updateGlobalCodonMismatchCounter(strain2)
+    updateGlobalSubstitutionCounter(strain1)
+    updateGlobalSubstitutionCounter(strain2)
     
     #Append all details to file here
     #outputStrainDetailsToFile(outputFileName, strain1)
@@ -435,6 +443,9 @@ def main():
         print('Traversing newick tree...')
     result = traverseNewickTree(newickTree.clade, None)
     
+    endTime = time.time()
+    totalTime = endTime - startTime
+    
     #Output ancestral genome to console
     if globals.printToConsole:
         print('This is the root ancestral genome!')
@@ -480,7 +491,7 @@ def main():
     traverseNewickTreeAndOutputToFile(newickTree.clade)
         
     #Output the totals for the computation to console and file
-    outputTotalsToFile(outputFileName)
+    outputTotalsToFile(outputFileName, totalTime)
     
     #TODO compute lineage
     #target = 'NC_014019'
@@ -489,8 +500,6 @@ def main():
     #if lineageCost != None:
         #print('Successfully found and computed the lineage for: %s' % (target))
                 
-    endTime = time.time()
-    totalTime = endTime - startTime
     print('Total time (in seconds): %s' % (totalTime))
     print('Ending application...')
     

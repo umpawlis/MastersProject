@@ -3,6 +3,12 @@
 ##################################################
 def initialize():
     
+    global codonMismatchCounter
+    codonMismatchCounter = 0
+    
+    global substitutionCounter
+    substitutionCounter = 0
+    
     global printToConsole
     printToConsole = False
     
