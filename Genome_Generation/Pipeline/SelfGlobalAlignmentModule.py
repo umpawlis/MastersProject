@@ -207,7 +207,7 @@ def handleDuplicateDetails(event, strain):
     sequenceTarget = event.fragmentDetails1.sequence
     sequenceDuplicated = event.fragmentDetails2.sequence
     position = event.fragmentDetails1.startPositionInGenome
-    
+    rememberPoint = 0
     for x in range(0, len(sequenceDuplicated)):
         found = False
         while index < len(sequenceTarget):
@@ -226,7 +226,7 @@ def handleDuplicateDetails(event, strain):
                 tempString += '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', '
             else:
                 tempString = '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
-            index = 0 #reset the index to find other genes
+            index = rememberPoint #reset the index back to our last found point
         else:
             index = rememberPoint
     tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
