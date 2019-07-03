@@ -773,8 +773,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals
 
 ######## Main ########
-if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
-    print('Successfully processed the output files')
-else:
-    print('Error! An error has occured while processing the files!')
-print('End of script...')
+#if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
+#    print('Successfully processed the output files')
+#else:
+#    print('Error! An error has occured while processing the files!')
+#print('End of script...')
