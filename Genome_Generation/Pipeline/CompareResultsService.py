@@ -122,7 +122,9 @@ def inversionTranspositionComparison(data1, data2, outputFile):
 #            outputFile.write(region + '\n')
 #            reversedRegion = getReversed(region) +';'
 #            outputFile.write(reversedRegion + '\n')
-            if region in regions1:
+#            if region in regions1:
+#                numEventsFound += 1
+            if flexCompareEvents(region, regions1):
                 numEventsFound += 1
             operons = region.split(';')
             for operon in operons:
@@ -153,8 +155,11 @@ def inversionTranspositionComparison(data1, data2, outputFile):
                 if negativePositionsList2[count] in negativePositionsList1:
                     numGenesFound += 1
             count += 1
-        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
-            numGenesFound += 1
+        else:
+            for newKey in range(int(key)-2, int(key)+3):
+                if str(newKey) in dict1 and dict2[key] == dict1[str(newKey)]: #A correctly identified event
+                    numGenesFound += 1
+                    break
 
 #    if count == 0 and len(dict2) == 0:
 #        return 100
@@ -206,7 +211,9 @@ def duplicationDeletionComparison(data1, data2, outputFile):
 #                outputFile.write(reversedSegment + '\n')
 #                if reversedSegment in segments1:
 #                    numEventsFound += 1
-            if segment in segments1:
+#            if segment in segments1:
+#                numEventsFound += 1
+            if flexCompareEvents(segment, segments1):
                 numEventsFound += 1
             genes = segment.split(', ')
             numGenesExpected += len(genes)
@@ -234,8 +241,11 @@ def duplicationDeletionComparison(data1, data2, outputFile):
                 if negativePositionsList2[count] in negativePositionsList1:
                     numGenesFound += 1
             count += 1
-        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
-            numGenesFound += 1
+        else:
+            for newKey in range(int(key)-2, int(key)+3):
+                if str(newKey) in dict1 and dict2[key] == dict1[str(newKey)]: #A correctly identified event
+                    numGenesFound += 1
+                    break
 
 #    if count == 0 and len(dict2) == 0:
 #        return 100
@@ -299,8 +309,11 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
                 if negativePositionsList2[count] in negativePositionsList1:
                     numEventsFound += 1
             count += 1
-        elif key in dict1 and dict2[key] == dict1[key]: #A correctly identified event
-            numEventsFound += 1
+        else:
+            for newKey in range(int(key)-2, int(key)+3):
+                if str(newKey) in dict1 and dict2[key] == dict1[str(newKey)]: #A correctly identified event
+                    numEventsFound += 1
+                    break
 
 #    if count == 0 and len(dict2) == 0:
 #        return 100
@@ -308,6 +321,68 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
 #        percentage = (count/len(dict2)) * 100 #Number of correct events divided by the total events from simulator
 
     return (numEventsFound, numEventsExpected, numAppEvents)
+
+def flexCompareEvents(event, compareList):
+    formattedEvent = []
+    if ';' in event:
+        operons = event.split(';')
+        for operon in operons:
+            if operon != '':
+                genes = operon.split(', ')
+                formattedEvent += genes
+    else:
+        genes = event.split(', ')
+        formattedEvent += genes
+    print formattedEvent
+    
+    equal = False
+    for compareEvent in compareList:
+        if compareEvent != '':
+            formattedCompareEvent = []
+            if ';' in compareEvent:
+                operons = compareEvent.split(';')
+                for operon in operons:
+                    if operon != '':
+                        genes = operon.split(', ')
+                        formattedCompareEvent += genes
+            else:
+                genes = compareEvent.split(', ')
+                formattedCompareEvent += genes
+                
+            print formattedCompareEvent
+                
+            if len(formattedEvent) == len(formattedCompareEvent):
+                for i in range(len(formattedEvent)):
+                    if '< t >' in formattedEvent[i]:
+                        gene1 = formattedEvent[i][:5]
+                        position1 = int(formattedEvent[i][6:])
+                    else:
+                        data1 = formattedEvent[i].split(' ')
+                        gene1 = data1[0]
+                        position1 = int(data1[1])
+                        
+                    if '< t >' in formattedCompareEvent[i]:
+                        gene2 = formattedCompareEvent[i][:5]
+                        position2 = int(formattedCompareEvent[i][6:])
+                    else:
+                        data2 = formattedCompareEvent[i].split(' ')
+                        gene2 = data2[0]
+                        position2 = int(data2[1])
+                    
+                    if gene1 == gene2:
+                        print gene1 + " " + gene2
+                        print str(position1)
+                        print range(position2-2, position2+3)
+                        if position1 in range(position2-2, position2+3):
+                            if i == len(formattedEvent)-1:
+                                equal = True
+                                return equal
+                        else:
+                            break
+                    else:
+                        break
+    return equal
+                
 
 def getReversed(section):
     operons = section.strip().split(';')
@@ -698,8 +773,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals
 
 ######## Main ########
-#if readFiles("AppCompareBacillusData", 'ApplicationOutput.txt', 'ApplicationOutput.txt', 'app-'):
-#    print('Successfully processed the output files')
-#else:
-#    print('Error! An error has occured while processing the files!')
-#print('End of script...')
+if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
+    print('Successfully processed the output files')
+else:
+    print('Error! An error has occured while processing the files!')
+print('End of script...')
