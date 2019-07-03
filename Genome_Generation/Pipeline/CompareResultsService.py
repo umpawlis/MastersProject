@@ -353,7 +353,7 @@ def flexCompareEvents(event, compareList):
                 
             if len(formattedEvent) == len(formattedCompareEvent):
                 for i in range(len(formattedEvent)):
-                    if '< t >' in formattedEvent[i]:
+                    if '< t >' in formattedEvent[i] or '< o >' in formattedEvent[i]:
                         gene1 = formattedEvent[i][:5]
                         position1 = int(formattedEvent[i][6:])
                     else:
@@ -361,7 +361,7 @@ def flexCompareEvents(event, compareList):
                         gene1 = data1[0]
                         position1 = int(data1[1])
                         
-                    if '< t >' in formattedCompareEvent[i]:
+                    if '< t >' in formattedCompareEvent[i] or '< o >' in formattedCompareEvent[i]:
                         gene2 = formattedCompareEvent[i][:5]
                         position2 = int(formattedCompareEvent[i][6:])
                     else:
