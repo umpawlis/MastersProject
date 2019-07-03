@@ -211,14 +211,14 @@ def constructEvents(strain1, strain2):
             print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
     
     #Try reducing the number of singleton deletions
-    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
-        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
-    if len(newEvents) > 0:
-            events.extend(newEvents)
-    if len(lossEvents1) > 0:
-            events.extend(lossEvents1)
-    if len(lossEvents2) > 0:
-            events.extend(lossEvents2)
+#    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
+#        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
+#    if len(newEvents) > 0:
+#            events.extend(newEvents)
+#    if len(lossEvents1) > 0:
+#            events.extend(lossEvents1)
+#    if len(lossEvents2) > 0:
+#            events.extend(lossEvents2)
             
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)

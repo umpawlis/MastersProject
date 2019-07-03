@@ -85,11 +85,21 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                             
             if bestEvent != None: #A match was found meaning the operon is a duplicate therefor do not add it into the ancestor
                 globals.trackingId += 1
+                coverageTracker[i] = True
                 bestEvent.trackingEventId = globals.trackingId
                 
-                handleDuplicateDetails(bestEvent, strain)
-                
-                coverageTracker[i] = True
+                if len(bestEvent.fragmentDetails1.sequence) > 1 and len(bestEvent.fragmentDetails2.sequence) > 1:    
+                    handleDuplicateDetails(bestEvent, strain)
+                else:
+                    #Singleton was mapped to an operon
+                    if len(bestEvent.fragmentDetails1.sequence) == 1:
+                        gene = bestEvent.fragmentDetails1.sequence[0]
+                        position = bestEvent.fragmentDetails1.startPositionInGenome
+                    else:
+                        gene = bestEvent.fragmentDetails2.sequence[0]
+                        position = bestEvent.fragmentDetails2.startPositionInGenome
+                    tempString = gene + ' ' + str(position) + ';'
+                    strain = addDuplicationEventsToStrain(strain, [1], tempString)
                 duplicationEvents.append(bestEvent)
                 
                 #This is now being handled with the function handleDuplicateDetails
@@ -127,26 +137,27 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                 event.setAncestralOperonGeneSequence(copy.deepcopy(unmarkedFragment.sequence))
                 lossEvents.append(event)
                 
-#                deletionDetails = ''
-#                position = event.fragmentDetails1.startPositionInGenome
-#                op = copy.deepcopy(event.fragmentDetails1.sequence)
-#                
-#                if event.fragmentDetails1.isNegativeOrientation == True: #Reverses the genes if the operon was originally negative to ensure the correct position is computed
-#                    op.reverse()
-#                
-#                for gene in op:
-#                    deletionDetails += gene + ' ' + str(position) + ', '
-#                    position += 1
-#                deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
-#                deletionDetails += ';'
-#                
-#                #Increment the loss counter with the size of the operon since the operon is a loss
-#                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], deletionDetails)
+                position = event.fragmentDetails1.startPositionInGenome
+                op = copy.deepcopy(event.fragmentDetails1.sequence)
+                
+                tempString = ''
+                for n in range(0, len(op)):
+                    gene = op[n]
+                    if event.fragmentDetails1.isNegativeOrientation == False:
+                        tempString += gene + ' ' + str(n + position) + ', '
+                    else:
+                        tempString = gene + ' ' + str(position + len(op) - n - 1) + ', ' + tempString
+                tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
+                tempString += ';'
+                
+                #Increment the loss counter with the size of the operon since the operon is a loss
+                sibling = addDeletionEventsToStrain(sibling, [len(event.fragmentDetails1.sequence)], tempString)
+                
                 if globals.printToConsole:
                     print('\n&&&&&& Self Global Alignment &&&&&')
                     print(event.toString())
                     print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n')
-                
+                    
     return duplicationEvents, lossEvents, coverageTracker, strain, sibling
 
 ######################################################
