@@ -40,6 +40,8 @@ totalInvertedTrans = 0
 testFolder = ""
 equalEvents = False
 neighbour = False
+hasSubs = False
+inversionLeaf = 0
 
 class Event:
     def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
@@ -157,6 +159,15 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     probSub = subProb
     probTrans = transProb
     trans_pValue = trans_p
+    
+    global hasSubs
+    global inversionLeaf
+    if equalEvents:
+        if probSub != 0.0:
+            hasSubs = True
+        index = treeStructure.find('L')
+        numLeaves = int(treeStructure[4:index])
+        inversionLeaf = random.randint(1,numLeaves)
 
     if not os.path.exists(testSetDir):
         os.makedirs(testFolder)
@@ -294,11 +305,11 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
     increasedNumEvents = False
     if equalEvents:
         eventOrder = []
-        if (numEvents % 4) == 0:
+        if hasSubs:
             numTypeOfEvents = 4
             startProb = 0.10
             increment = 0.20
-        elif (numEvents % 3) == 0:
+        else:
             numTypeOfEvents = 3
             startProb = 0.10
             increment = 0.25
@@ -326,7 +337,12 @@ def buildTreeData(node, before, after, numEvents, events, parent, invMultiplier 
                     numEvents += 1
                     increasedNumEvents = True
         else:
-            if invMultiplier == 1.0:
+#            if invMultiplier == 1.0:
+            if inversionLeaf < 10:
+                compareName = "NC_00000" + str(inversionLeaf)
+            else:
+                compareName = "NC_0000" + str(inversionLeaf)
+            if node.name == compareName:
                 eventOrder.append(0.55)
                 numEvents += 1
                 increasedNumEvents = True
