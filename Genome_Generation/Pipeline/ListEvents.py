@@ -291,7 +291,7 @@ if __name__ == '__main__':
 	#outputEvents("test-orthoAlign.out", "testevents.out")
 	#outputEvents("orthoAlign-transpo.out", "testevents.out")
 	#outputEvents("orthoAlign.out", "testevents.out")
-#	outputEvents("orthoAlign-bigTest.out", "testevents.out")
+	outputEvents("orthoAlign-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTest.out", "testevents.out")
 	#outputEvents("duploss-bigTestMOD.out", "testevents.out")
 	#outputEvents("orthoAlign-buggy.out", "testevents.out")
