@@ -540,9 +540,9 @@ def main():
                     appNeighbourRecall, appNeighbourPrecision, appNeighbourfMeasure = compareAnc(appNeighbourAncestor, genAncestor, testSetDir + "/appNeighbour-")
                     appNeighbourFMeasureList.append(appNeighbourfMeasure)
                     
-                    genome1 = getFirstLineFromFile(testSetDir + '/NC_000001/sequence.txt ')
-                    genome2 = getFirstLineFromFile(testSetDir + '/NC_000002/sequence.txt ')
-                    genome3 = getFirstLineFromFile(testSetDir + '/NC_000003/sequence.txt ')
+                    genome1 = getFirstLineFromFile(testSetDir + '/NC_000001/sequence.txt')
+                    genome2 = getFirstLineFromFile(testSetDir + '/NC_000002/sequence.txt')
+                    genome3 = getFirstLineFromFile(testSetDir + '/NC_000003/sequence.txt')
                     
                     genome1 = cleanUpGenomes(genome1)
                     genome2 = cleanUpGenomes(genome2)

@@ -1316,7 +1316,7 @@ if __name__ == '__main__':
     #All probabilities determine how likely the event will occur. **Probabilities have to add up to 1
     #All pValues determine how many genes the event will affect. The higher the pValue, the lower the chance that the event will be large
     #Examples: code below creates genomes of size 25 with atleast 3 operons and 3 events for each genome. Only transpositions will occur though. None of the other events have a probability.
-    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 60, 3, 1, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
+#    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 60, 3, 1, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
 #    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.

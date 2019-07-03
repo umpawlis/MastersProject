@@ -15,7 +15,7 @@ def getFirstLineFromFile(filename):
     try:
         f = open(filename, 'r')
     except IOError as e:
-        sys.exit("Error opening file "+filename+': '+e)
+        sys.exit("Error opening file "+filename+': '+str(e))
     line = f.readline()
     f.close()
     return line
