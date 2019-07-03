@@ -168,6 +168,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
 def handleDuplicateDetails(event, strain):
     operon1Gaps = event.operon1Gaps
     operon2Gaps = event.operon2Gaps
+    operon1GapPositions = event.operon1GapPositions    
     
     if len(operon1Gaps) > 0 or len(operon2Gaps) > 0:
         #S1 is the duplicate operon ie target therefore S2 is the source
@@ -195,13 +196,19 @@ def handleDuplicateDetails(event, strain):
         if len(operon1Gaps) > 0:
             #These are the extra genes in the target, therefore there were duplicated into the target
             tempString = ''
-            for gap in operon1Gaps:
-                tempString = ''
-                for gene in gap:
-                    if event.fragmentDetails1.isNegativeOrientation:
-                        tempString = '!' + gene + ' ' +str(-1) + ', ' + tempString
+            for m in range(0, len(operon1Gaps)):
+                gap = operon1Gaps[m]
+                positions = operon1GapPositions[m]
+
+                for n in range(0, len(gap)):
+                    gene = gap[n]
+                    position = positions[n]
+                    if event.fragmentDetails1.isNegativeOrientation: #This compute the correct gene position based on whether operon was in the negative orientation or not originally
+                        genePos = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - position - 1
+                        tempString = gene + ' ' + str(genePos) + ', ' + tempString
                     else:
-                        tempString += '!' + gene + ' ' +str(-1) + ', '
+                        genePos = position + event.fragmentDetails1.startPositionInGenome
+                        tempString += gene + ' ' +str(genePos) + ', '
                 tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
                 tempString += ';'
                 strain.duplicationDetails += tempString
