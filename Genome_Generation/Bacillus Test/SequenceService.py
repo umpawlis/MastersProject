@@ -34,7 +34,7 @@ def updateGlobalCodonMismatchCounter(strain):
     tempString = copy.deepcopy(strain.codonMismatchDetails)
     tempString = tempString.replace('Codon Mismatch:', '').strip()
     if tempString:
-        array = tempString.split(';')
+        array = filter(None, tempString.split(';'))
         if len(array) > 0:
             globals.codonMismatchCounter += len(array)
         
@@ -47,7 +47,7 @@ def updateGlobalSubstitutionCounter(strain):
     tempString = copy.deepcopy(strain.substitutionDetails)
     tempString = tempString.replace('Substitution:', '').strip()
     if tempString:
-        array = tempString.split(';')
+        array = filter(None, tempString.split(';'))
         if len(array) > 0:
             globals.substitutionCounter += len(array)
         

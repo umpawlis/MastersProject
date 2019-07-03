@@ -183,6 +183,6 @@ Size Distribution of Inverted Transpositions:
 Total Inversions: 2
 Total Transpositions: 3
 Total Inverted Transpositions: 0
-Total Codon Mismatches: 12
-Total Substitutions: 20
-Total Execution Time: 13.2520000935
+Total Codon Mismatches: 6
+Total Substitutions: 12
+Total Execution Time: 2.6859998703
