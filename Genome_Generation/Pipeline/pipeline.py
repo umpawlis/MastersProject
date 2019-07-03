@@ -283,9 +283,13 @@ def main():
         elif testDiff == "Tree":
             xAxisTitle = "Size of Tree"
             if len(tree) > 4:
-                xAxis.append(int(tree[4]))
+                index = tree.find('L')
+                if index == -1:
+                    print "WARNING: Tree file must be in format tree#Leaf*.dnd where # is the number of leaves. Exiting..."
+                    sys.exit(0)
+                xAxis.append(int(tree[4:index]))
             else:
-                print "WARNING: Tree file must be in format tree#*.dnd where # is the number of leaves. Exiting..."
+                print "WARNING: Tree file must be in format tree#Leaf*.dnd where # is the number of leaves. Exiting..."
                 sys.exit(0)
         
         basePValue = 0.0
