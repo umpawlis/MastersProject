@@ -333,7 +333,7 @@ def flexCompareEvents(event, compareList):
     else:
         genes = event.split(', ')
         formattedEvent += genes
-    print formattedEvent
+#    print formattedEvent
     
     equal = False
     for compareEvent in compareList:
@@ -349,7 +349,7 @@ def flexCompareEvents(event, compareList):
                 genes = compareEvent.split(', ')
                 formattedCompareEvent += genes
                 
-            print formattedCompareEvent
+#            print formattedCompareEvent
                 
             if len(formattedEvent) == len(formattedCompareEvent):
                 for i in range(len(formattedEvent)):
@@ -370,9 +370,9 @@ def flexCompareEvents(event, compareList):
                         position2 = int(data2[1])
                     
                     if gene1 == gene2:
-                        print gene1 + " " + gene2
-                        print str(position1)
-                        print range(position2-2, position2+3)
+#                        print gene1 + " " + gene2
+#                        print str(position1)
+#                        print range(position2-2, position2+3)
                         if position1 in range(position2-2, position2+3):
                             if i == len(formattedEvent)-1:
                                 equal = True
