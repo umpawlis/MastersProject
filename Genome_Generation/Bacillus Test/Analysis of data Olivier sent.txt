@@ -4,4 +4,4 @@ Source: [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg
 
 
 Extra Genes in target: [16S, 23S, 5S]
-Extra Genes in Source: [Lys_AAA, Leu_CUA], [Leu_UUA]
+Extra Genes in Source: [Lys_AAA, Leu_CUA], [Leu_UUA] == !Lys_AAA -1, !Leu_CUA -1;Leu_UUA;
