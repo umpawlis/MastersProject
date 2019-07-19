@@ -81,6 +81,21 @@ def outputTotalsToFile(fileName, time):
     appendToFile(fileName, 'Total Execution Time: %s' % (time))
 
 ######################################################
+# outputGenomeToFile
+# Parameters:
+# Description: Outputs the genome of a provided strain to a file
+######################################################
+def outputGenomeToFile(fileName, strain):
+    #Creates string of genome
+    ancestralFragments = strain.genomeFragments
+    genome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
+    
+    #Writes string to file
+    file = open(fileName, "w")
+    file.write(genome)
+    file.close()
+    
+######################################################
 # outputStrainDetailsToFile
 # Parameters:
 # Description: Creates a file where the output will be stored

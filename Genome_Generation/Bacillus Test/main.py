@@ -26,6 +26,7 @@ from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
 from SequenceService import updateGlobalCodonMismatchCounter
 from SequenceService import updateGlobalSubstitutionCounter
+from FileService import outputGenomeToFile
 
 #Application parameters
 newickFileName = 'tree.dnd' #Name of newick tree file
@@ -127,6 +128,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     #outputStrainDetailsToFile(outputFileName, strain2)
     
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
+    
     if globals.printToConsole:
         print(strain1.name)
         for frag in strain1.genomeFragments:
@@ -335,6 +337,7 @@ def traverseNewickTreeAndOutputToFile(node):
         foundStrain = next(filteredList, None)
         if foundStrain != None:
             outputStrainDetailsToFile(outputFileName, foundStrain)
+            outputGenomeToFile(node.name + ".txt", foundStrain)
             
 ######################################################
 # traverseNewickTree
