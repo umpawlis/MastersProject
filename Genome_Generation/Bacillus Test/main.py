@@ -136,7 +136,13 @@ def createAncestor(strain1, strain2, neighborStrain):
         print(strain2.name)
         for frag in strain2.genomeFragments:
             print(frag.originalSequence)
+    
+    #Handle the substitution and codon mismatches here
+    if '@' in strain1.substitutionDetails:
+        print('Handling substitution')
         
+    
+    
     return ancestor
 
 ######################################################
