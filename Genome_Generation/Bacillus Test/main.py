@@ -139,11 +139,76 @@ def createAncestor(strain1, strain2, neighborStrain):
     
     #Handle the substitution and codon mismatches here
     if '@' in strain1.substitutionDetails:
-        print('Handling substitution')
+        newDetails1 = 'Substitution:'
+        newDetails2 = 'Substitution:'
         
-    
-    
+        line1 = strain1.substitutionDetails.replace('Substitution:', '').strip()
+        line2 = strain2.substitutionDetails.replace('Substitution:', '').strip()
+        
+        subsList1 = filter(None, line1.split(';')) #Ensures we don't have a list with an empty string as an element
+        subsList2 = filter(None, line2.split(';'))
+        
+        #For each substitution in the list
+        for w in range(0, len(subsList1)):
+            gene1, idNumber1, position1 = parseSubstitutionDetails(subsList1[w])
+            gene2, idNumber2, position2 = parseSubstitutionDetails(subsList2[w])
+            processedSubstitution = False #Tracks whether the current substitution was handled
+            
+            #Check if we have a neighbor
+            if neighborCopy:
+                #Check if the same substitution occurred when comparing to the neighbor
+                if '@' in strain1Copy.substitutionDetails:
+                    line3 = strain1Copy.substitutionDetails.replace('Substitution:', '').strip()
+                    subsList3 = filter(None, line3.split(';'))
+                    for v in range(0, len(subsList3)):
+                        gene3, idNumber3, position3 = parseSubstitutionDetails(subsList3[v])
+                        if gene1 == gene3 and position1 == position3:
+                            #We found the same substitution when comparing with the neighbor, therefore we should keep strain 2's verison of the gene!
+                            processedSubstitution = True
+                            fragments = ancestor.genomeFragments
+                            for fragment in fragments:
+                                if idNumber1 in fragment.originalSequence:
+                                    fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
+                                    for m in range(0, len(fragment.sequence)):
+                                        if idNumber1 in fragment.sequence[m]:
+                                            fragment.sequence[m] = gene2
+                                            break
+                                    break
+            if processedSubstitution:
+                #We found the substitution and swapped with strain 2's gene therefore strain 1's gene was the substituion so put the substitution details in strain1
+                newDetails1+= gene1 + ' ' + position1 + ';'
+            else:
+                #We were not able to find the same substitution either due to there being no neighbor or it was just not there. So just assume strain 2 is the substitution
+                newDetails2+= gene2 + ' ' + position2 + ';'
+                fragments = ancestor.genomeFragments
+                for fragment in fragments:
+                    if idNumber1 in fragment.originalSequence:
+                        fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
+                        for m in range(0, len(fragment.sequence)):
+                            if idNumber1 in fragment.sequence[m]:
+                                fragment.sequence[m] = gene1
+                                break
+                        break
+        #Insert the new details about the substitution
+        strain1.substitutionDetails = newDetails1
+        strain2.substitutionDetails = newDetails2
+
     return ancestor
+
+######################################################
+# parseSubstitutionDetails
+# Parameters:
+# Description: Parses the gene, unique Id number, and position from a given substitution
+######################################################
+def parseSubstitutionDetails(line):
+    temp = line.split('-')
+    gene = temp[0].strip() #Extracts the substituted gene
+    
+    temp = temp[1].split(' ')
+    idNumber = temp[0] #Extracts unique Id number
+    position = temp[1] #Extracts the position
+    
+    return gene, idNumber, position
 
 ######################################################
 # initializeTracker
