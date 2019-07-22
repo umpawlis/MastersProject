@@ -136,8 +136,68 @@ def createAncestor(strain1, strain2, neighborStrain):
         print(strain2.name)
         for frag in strain2.genomeFragments:
             print(frag.originalSequence)
-    
-    #Handle the substitution and codon mismatches here
+            
+    ####################################
+    #Handle the Codon Mismatches here##
+    ###################################
+    if '#' in strain1.codonMismatchDetails:
+        newDetails1 = 'Codon Mismatch:'
+        newDetails2 = 'Codon Mismatch:'
+        
+        line1 = strain1.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+        line2 = strain2.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+        
+        subsList1 = filter(None, line1.split(';')) #Ensures we don't have a list with an empty string as an element
+        subsList2 = filter(None, line2.split(';'))
+        
+        #For each substitution in the list
+        for w in range(0, len(subsList1)):
+            gene1, idNumber1, position1 = parseDetails(subsList1[w])
+            gene2, idNumber2, position2 = parseDetails(subsList2[w])
+            processed = False #Tracks whether the current codon mismatch was handled
+            
+            #Check if we have a neighbor
+            if neighborCopy:
+                #Check if the same codon mismatch occurred when comparing to the neighbor
+                if '#' in strain1Copy.codonMismatchDetails:
+                    line3 = strain1Copy.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+                    subsList3 = filter(None, line3.split(';'))
+                    for v in range(0, len(subsList3)):
+                        gene3, idNumber3, position3 = parseDetails(subsList3[v])
+                        if gene1 == gene3 and position1 == position3:
+                            #We found the same codon mismatch when comparing with the neighbor, therefore we should keep strain 2's verison of the gene!
+                            processed = True
+                            fragments = ancestor.genomeFragments
+                            for fragment in fragments:
+                                if idNumber1 in fragment.originalSequence:
+                                    fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
+                                    for m in range(0, len(fragment.sequence)):
+                                        if idNumber1 in fragment.sequence[m]:
+                                            fragment.sequence[m] = gene2
+                                            break
+                                    break
+            if processed:
+                #We found the codon mismatch and swapped with strain 2's gene therefore strain 1's gene was the codon mismatch so put the codon mismatch details in strain1
+                newDetails1+= gene1 + ' ' + position1 + ';'
+            else:
+                #We were not able to find the same codon mismatch either due to there being no neighbor or it was just not there. So just assume strain 2 is the codon mismatch
+                newDetails2+= gene2 + ' ' + position2 + ';'
+                fragments = ancestor.genomeFragments
+                for fragment in fragments:
+                    if idNumber1 in fragment.originalSequence:
+                        fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
+                        for m in range(0, len(fragment.sequence)):
+                            if idNumber1 in fragment.sequence[m]:
+                                fragment.sequence[m] = gene1
+                                break
+                        break
+        #Insert the new details about the substitution
+        strain1.codonMismatchDetails = newDetails1
+        strain2.codonMismatchDetails = newDetails2
+        
+    ################################
+    #Handle the substitutions here##
+    ################################
     if '@' in strain1.substitutionDetails:
         newDetails1 = 'Substitution:'
         newDetails2 = 'Substitution:'
@@ -150,9 +210,9 @@ def createAncestor(strain1, strain2, neighborStrain):
         
         #For each substitution in the list
         for w in range(0, len(subsList1)):
-            gene1, idNumber1, position1 = parseSubstitutionDetails(subsList1[w])
-            gene2, idNumber2, position2 = parseSubstitutionDetails(subsList2[w])
-            processedSubstitution = False #Tracks whether the current substitution was handled
+            gene1, idNumber1, position1 = parseDetails(subsList1[w])
+            gene2, idNumber2, position2 = parseDetails(subsList2[w])
+            processed = False #Tracks whether the current substitution was handled
             
             #Check if we have a neighbor
             if neighborCopy:
@@ -161,10 +221,10 @@ def createAncestor(strain1, strain2, neighborStrain):
                     line3 = strain1Copy.substitutionDetails.replace('Substitution:', '').strip()
                     subsList3 = filter(None, line3.split(';'))
                     for v in range(0, len(subsList3)):
-                        gene3, idNumber3, position3 = parseSubstitutionDetails(subsList3[v])
+                        gene3, idNumber3, position3 = parseDetails(subsList3[v])
                         if gene1 == gene3 and position1 == position3:
                             #We found the same substitution when comparing with the neighbor, therefore we should keep strain 2's verison of the gene!
-                            processedSubstitution = True
+                            processed = True
                             fragments = ancestor.genomeFragments
                             for fragment in fragments:
                                 if idNumber1 in fragment.originalSequence:
@@ -174,7 +234,7 @@ def createAncestor(strain1, strain2, neighborStrain):
                                             fragment.sequence[m] = gene2
                                             break
                                     break
-            if processedSubstitution:
+            if processed:
                 #We found the substitution and swapped with strain 2's gene therefore strain 1's gene was the substituion so put the substitution details in strain1
                 newDetails1+= gene1 + ' ' + position1 + ';'
             else:
@@ -196,11 +256,11 @@ def createAncestor(strain1, strain2, neighborStrain):
     return ancestor
 
 ######################################################
-# parseSubstitutionDetails
+# parseDetails
 # Parameters:
 # Description: Parses the gene, unique Id number, and position from a given substitution
 ######################################################
-def parseSubstitutionDetails(line):
+def parseDetails(line):
     temp = line.split('-')
     gene = temp[0].strip() #Extracts the substituted gene
     

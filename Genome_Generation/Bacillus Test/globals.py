@@ -12,8 +12,11 @@ def initialize():
     global trackingId
     trackingId = 0
     
-    global substitutionCounter
-    substitutionCounter = 0
+    global substitutionId
+    substitutionId = 0
+    
+    global codonMismatchId
+    codonMismatchId = 0
     
     global strains
     strains = []
