@@ -117,10 +117,10 @@ def createAncestor(strain1, strain2, neighborStrain):
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
     
-    #Increment counters
-    updateGlobalCodonMismatchCounter(strain1)
+    #Increment counters (only need to do the count only once otherwise it leads to double counts ie x2 number of events)
+    #updateGlobalCodonMismatchCounter(strain1)
     updateGlobalCodonMismatchCounter(strain2)
-    updateGlobalSubstitutionCounter(strain1)
+    #updateGlobalSubstitutionCounter(strain1)
     updateGlobalSubstitutionCounter(strain2)
     
     #Append all details to file here

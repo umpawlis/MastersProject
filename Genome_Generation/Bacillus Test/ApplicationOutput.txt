@@ -48,7 +48,7 @@ Inversion:
 Transposition:
 Inverted Transposition:
 Strain:CP002905
-Codon Mismatch:Thr_ACA 18;
+Codon Mismatch:
 Substitution:
 Duplication:Lys_AAA 19, Leu_CUA 20;Asn_AAC 32, Thr_ACC 33;Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37;16S 38, 23S 39, 5S 40, Asn_AAC 41, Thr_ACC 42;Gly_GGC 43, Arg_CGU 44, Pro_CCA 45, Ala_GCA 46, 16S 47, 23S 48, 5S 49, !Asn_AAC -1, !Thr_ACC -1;
 Deletion:!Asn_AAC -1, !Thr_ACC -1;
@@ -80,7 +80,7 @@ Inversion:
 Transposition:
 Inverted Transposition:
 Strain:Ancestor 5
-Codon Mismatch:Leu_CUG 83;
+Codon Mismatch:
 Substitution:
 Duplication:Gln_CAA 65;
 Deletion:16S 10, 23S 11, 5S 12, Asn_AAC 13, Thr_ACC 14, Glu_GAA 15, Val_GUA 16, Tyr_UAC 17, Gln_CAA 18, Lys_AAA 19, Gly_GGC 20, Ala_GCA 21;Asn_AAC 22, Ser_AGC 23, Glu_GAA 24, Val_GUA 25, Asp_GAC 26, Gln_CAA 27, Lys_AAA 28, Leu_CUC 29, Arg_CGU 30, Pro_CCA 31, Gly_GGA 32, 16S 33, 23S 34, 5S 35, Met_AUG 36, Asp_GAC 37;
@@ -136,7 +136,7 @@ Inversion:16S 58, 23S 59, 5S 60;16S 61, 23S 62, 5S 63;16S 64, 23S 65, 5S 66;16S 
 Transposition:
 Inverted Transposition:
 Strain:NC_006274
-Codon Mismatch:Ile_AUC 2;
+Codon Mismatch:
 Substitution:
 Duplication:16S 45, 23S 46, 5S 47;
 Deletion:
@@ -183,6 +183,6 @@ Size Distribution of Inverted Transpositions:
 Total Inversions: 2
 Total Transpositions: 3
 Total Inverted Transpositions: 0
-Total Codon Mismatches: 6
-Total Substitutions: 7437
-Total Execution Time: 249.555000067
+Total Codon Mismatches: 3
+Total Substitutions: 4
+Total Execution Time: 10.9620001316
