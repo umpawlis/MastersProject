@@ -28,6 +28,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
             bestScore = -1000    #Make the best score some large numer
             bestEvent = None    #Initialize the event
             minDistance = 1000  #Used to track the minimum distance from singleton to operon that has an identical gene
+            bestJ = -999
             
             filteredList = iter(filter(lambda x:x.fragmentIndex == i, fragments)) #Get the fragment we need based on the index
             unmarkedFragment = next(filteredList, None)
@@ -37,7 +38,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                     filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
                     currFragment = next(filteredList, None)
                     
-                    if i != j and coverageTracker[j] == True and len(currFragment.sequence) > 1:
+                    if i != j and currFragment.isDuplicate == False and len(currFragment.sequence) > 1:
                         op1 = unmarkedFragment.sequence
                         op2 = currFragment.sequence
                         
@@ -60,10 +61,11 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                             bestScore = score
                             bestEvent = event
                             minDistance = abs(i-j)
+                            bestJ = j
             #Make sure an origin or a terminus doesn't get mapped with a singleton gene
             elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description != 'Terminus':
                 for j in range(0, len(coverageTracker)):
-                    if i != j and coverageTracker[j] == True:
+                    if i != j and currFragment.isDuplicate == False:
                         filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
                         currFragment = next(filteredList, None)
                         
@@ -82,8 +84,13 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                             minDistance = abs(i-j)
                             event.setScore(0)
                             bestEvent = event
+                            bestJ = j
                             
             if bestEvent != None: #A match was found meaning the operon is a duplicate therefor do not add it into the ancestor
+                #Handle special case where two unmarked operons are selected as the best matches
+                if coverageTracker[i] == False and coverageTracker[bestJ] == False:
+                    bestEvent.fragmentDetails2.isDuplicate = True
+                    coverageTracker[bestJ] = True
                 globals.trackingId += 1
                 coverageTracker[i] = True
                 bestEvent.trackingEventId = globals.trackingId
