@@ -12,6 +12,9 @@ def initialize():
     global trackingId
     trackingId = 0
     
+    global enableSelfAlignmentDetails
+    enableSelfAlignmentDetails = False
+    
     global substitutionId
     substitutionId = 0
     

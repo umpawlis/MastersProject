@@ -260,7 +260,7 @@ def handleDuplicateDetails(event, strain):
     ####################################
     #Handle the Codon Mismatches here##
     ###################################
-    if len(event.codonMismatchGenesStrain1) > 0:
+    if len(event.codonMismatchGenesStrain1) > 0 and globals.enableDeletionReversions:
         for w in range(0, len(event.codonMismatchGenesStrain1)):
             temp = event.codonMismatchGenesStrain1[w].split('-')
             gene = temp[0].strip()            
@@ -269,12 +269,12 @@ def handleDuplicateDetails(event, strain):
             else:
                 position = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - event.codonMismatchIndexesStrain1[w] - 1
             globals.codonMismatchCounter += 1 #Increment the counter by one for each codon mismatch
-            strain.codonMismatchDetails += gene + ' ' + str(position) + ';'
+            strain.tempCodonDetails += gene + ' ' + str(position) + ';'
             
     ################################
     #Handle the Substitutions here##
     ################################
-    if len(event.substitutionGenesStrain1) > 0:
+    if len(event.substitutionGenesStrain1) > 0 and globals.enableDeletionReversions:
         for w in range(0, len(event.substitutionGenesStrain1)):
             temp = event.substitutionGenesStrain1[w].split('-')
             gene = temp[0].strip()            
@@ -283,7 +283,7 @@ def handleDuplicateDetails(event, strain):
             else:
                 position = event.fragmentDetails1.startPositionInGenome + len(event.fragmentDetails1.sequence) - event.substitutionIndexesStrain1[w] - 1
             globals.substitutionCounter += 1 #Increment the counter by one for each substitution
-            strain.substitutionDetails += gene + ' ' + str(position) + ';'
+            strain.tempSubstitutionDetails += gene + ' ' + str(position) + ';'
             
     #Now handle the match region details, the matched regions are duplications with a normal index
 #    tempString = ''

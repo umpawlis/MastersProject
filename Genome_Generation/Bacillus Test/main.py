@@ -55,8 +55,13 @@ def createAncestor(strain1, strain2, neighborStrain):
 
     if globals.printToConsole:
         print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
+        
     globals.enableDeletionReversions = True #Only do the backtrace between these two strains!
+    globals.enableSelfAlignmentDetails = True
+    
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
+    
+    globals.enableSelfAlignmentDetails = False
     globals.enableDeletionReversions = False
 
     if globals.printToConsole:
@@ -252,7 +257,13 @@ def createAncestor(strain1, strain2, neighborStrain):
         #Insert the new details about the substitution
         strain1.substitutionDetails = newDetails1
         strain2.substitutionDetails = newDetails2
-
+    
+    #Add any codon mismatches from the self global alignment as those details were stored in another variable so it doesn't mess with codon mismatches and substitution handlers in the previous 2 for loops
+    strain1.codonMismatchDetails += strain1.tempCodonDetails
+    strain2.codonMismatchDetails += strain2.tempCodonDetails
+    strain1.substitutionDetails += strain1.tempSubstitutionDetails
+    strain2.substitutionDetails += strain2.tempSubstitutionDetails
+    
     return ancestor
 
 ######################################################

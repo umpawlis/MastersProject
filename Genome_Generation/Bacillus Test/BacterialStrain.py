@@ -26,6 +26,9 @@ class BacterialStrain(object):
 
         self.invertedTranspositionCounts = {}
         self.invertedTranspositionDetails = 'Inverted Transposition:'
+        
+        self.tempCodonDetails = ''
+        self.tempSubstitutionDetails = ''
 
     def addCodonMismatchDetails(self, codonMismatchDetails):
         self.codonMismatchDetails += codonMismatchDetails
