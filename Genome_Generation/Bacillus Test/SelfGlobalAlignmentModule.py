@@ -65,9 +65,11 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
             #Make sure an origin or a terminus doesn't get mapped with a singleton gene
             elif len(unmarkedFragment.sequence) == 1 and unmarkedFragment.description != 'Origin' and unmarkedFragment.description != 'Terminus':
                 for j in range(0, len(coverageTracker)):
+                    
+                    filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
+                    currFragment = next(filteredList, None)
+                    
                     if i != j and currFragment.isDuplicate == False:
-                        filteredList = iter(filter(lambda x:x.fragmentIndex == j, fragments)) #Get the fragment we need based on the index
-                        currFragment = next(filteredList, None)
                         
                         op1 = unmarkedFragment.sequence
                         op2 = currFragment.sequence
