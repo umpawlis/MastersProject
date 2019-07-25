@@ -1,0 +1,18 @@
+Strain:CP002905
+Codon Mismatch:
+Substitution:
+Duplication:Lys_AAA 19, Leu_CUA 20;Asn_AAC 32, Thr_ACC 33;Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37;16S 38, 23S 39, 5S 40, Asn_AAC 41, Thr_ACC 42;Gly_GGC 43, Arg_CGU 44, Pro_CCA 45, Ala_GCA 46, 16S 47, 23S 48, 5S 49, !Asn_AAC -1, !Thr_ACC -1;
+Deletion:!Asn_AAC -1, !Thr_ACC -1;
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Strain:NC_014479
+Codon Mismatch:Thr_ACC 21;
+Substitution:Asn_AAC 20;
+Duplication:
+Deletion:Leu_UUA 22;
+Inversion:
+Transposition:
+Inverted Transposition:
+

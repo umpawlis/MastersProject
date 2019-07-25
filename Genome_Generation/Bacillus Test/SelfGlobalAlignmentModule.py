@@ -57,7 +57,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                         #threshold = threshold//3
                         #numOperonDifferences = computeOperonDifferences(op1, op2)
                         #if numOperonDifferences <= threshold and score < bestScore:
-                        if score > 0 and score > bestScore and abs(i-j) < minDistance:
+                        if (score > 0 and score > bestScore) or (score == bestScore and abs(i-j) < minDistance):
                             bestScore = score
                             bestEvent = event
                             minDistance = abs(i-j)
