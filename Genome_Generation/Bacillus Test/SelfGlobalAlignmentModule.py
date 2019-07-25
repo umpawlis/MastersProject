@@ -90,15 +90,18 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                             
             if bestEvent != None: #A match was found meaning the operon is a duplicate therefor do not add it into the ancestor
                 #Handle special case where two unmarked operons are selected as the best matches
+                cycleDuplication = False
                 if coverageTracker[i] == False and coverageTracker[bestJ] == False:
                     bestEvent.fragmentDetails2.isDuplicate = True
                     coverageTracker[bestJ] = True
+                    cycleDuplication = True
+                    
                 globals.trackingId += 1
                 coverageTracker[i] = True
                 bestEvent.trackingEventId = globals.trackingId
                 
                 if len(bestEvent.fragmentDetails1.sequence) > 1 and len(bestEvent.fragmentDetails2.sequence) > 1:    
-                    handleDuplicateDetails(bestEvent, strain)
+                    handleDuplicateDetails(bestEvent, strain, sibling, cycleDuplication)
                 else:
                     #Singleton was mapped to an operon
                     if len(bestEvent.fragmentDetails1.sequence) == 1:
@@ -174,7 +177,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
 # Parameters:
 # Description: Reconstructs the ancestral operon by determining whether the gaps are losses or duplications
 ######################################################
-def handleDuplicateDetails(event, strain):
+def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
     operon1Gaps = event.operon1Gaps
     operon2Gaps = event.operon2Gaps
     operon1GapPositions = event.operon1GapPositions    
@@ -266,6 +269,14 @@ def handleDuplicateDetails(event, strain):
     else:
         strain.duplicationCounts[sizeOfDuplication] = 1
         
+    #Special case when two unmarked operons are mapped as good matches then we must indicate the operon was lost in the sibling
+    if cycleDuplication:
+        sibling.deletionDetails += tempString
+        if sizeOfDuplication in sibling.deletionCounts:
+            sibling.deletionCounts[sizeOfDuplication] += 1
+        else:
+            sibling.deletionCounts[sizeOfDuplication] = 1
+            
     ####################################
     #Handle the Codon Mismatches here##
     ###################################
