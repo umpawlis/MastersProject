@@ -96,7 +96,7 @@ def findOrthologsBySelfGlobalAlignment(strain, coverageTracker, sibling):
                     coverageTracker[bestJ] = True
                     cycleDuplication = True
                     bestEvent.setScore(-1)
-                    bestEvent.setAncestralOperonGeneSequence(copy.deepcopy(unmarkedFragment.sequence))
+                    bestEvent.setAncestralOperonGeneSequence(copy.deepcopy(bestEvent.fragmentDetails2.sequence)) #insert source as ancestral operon
                     bestEvent.setTechnique('Self Global Alignment (Cyclic Duplication!)')
                     lossEvents.append(bestEvent)
                     
