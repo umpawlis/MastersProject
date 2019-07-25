@@ -35,7 +35,7 @@ Strain:Ancestor 2
 Codon Mismatch:Thr_ACC 29;
 Substitution:Asn_AAC 28;
 Duplication:Lys_AAA 15, Leu_CUA 16;16S 33, 23S 34, 5S 35;16S 25, 23S 26, 5S 27, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 30, !Leu_UUA -1, Arg_CGU 31, Pro_CCA 32, Ala_GCA 36, 16S 37, 23S 38, 5S 39;Leu_UUG 78;
-Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;Gly_GGC 27, Arg_CGU 28, Pro_CCA 29, Ala_GCA 30, 16S 31, 23S 32, 5S 33, Asn_AAC 34, Thr_ACC 35;Arg_AGA 79;
+Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;Arg_AGA 70;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -43,7 +43,7 @@ Strain:NC_000964
 Codon Mismatch:Thr_ACC 33;
 Substitution:Asn_AAC 32;
 Duplication:Lys_AAA 19, Leu_CUA 20;16S 38, 23S 39, 5S 40;16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;
-Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;Gly_GGC 30, Arg_CGU 31, Pro_CCA 32, Ala_GCA 33, 16S 34, 23S 35, 5S 36, Asn_AAC 37, Thr_ACC 38;
+Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -66,8 +66,8 @@ Inverted Transposition:
 Strain:Ancestor 3
 Codon Mismatch:
 Substitution:
-Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29;
-Deletion:!Ile_AUC -1, !Ala_GCA -1;
+Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29;16S 34, 23S 35, 5S 36, !Val_GUA -1, !Thr_ACA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !16S -1, !23S -1, !5S -1;
+Deletion:!Ile_AUC -1, !Ala_GCA -1;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1;!Leu_UUA -1;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -82,7 +82,7 @@ Inverted Transposition:
 Strain:Ancestor 5
 Codon Mismatch:
 Substitution:
-Duplication:Arg_AGA 74;Gln_CAA 75;
+Duplication:Arg_AGA 64;Gln_CAA 66;
 Deletion:16S 25, 23S 26, 5S 27, Asn_AAC 28, Thr_ACC 29, Glu_GAA 30, Val_GUA 31, Tyr_UAC 32, Gln_CAA 33, Lys_AAA 34, Gly_GGC 35, Ala_GCA 36;Asn_AAC 37, Ser_AGC 38, Glu_GAA 39, Val_GUA 40, Asp_GAC 41, Gln_CAA 42, Lys_AAA 43, Leu_CUC 44, Arg_CGU 45, Pro_CCA 46, Gly_GGA 47, 16S 48, 23S 49, 5S 50, Met_AUG 51, Asp_GAC 52;16S 53, 23S 54, 5S 55;16S 59, 23S 60, 5S 61;His_CAC 107, Trp_UGG 108;
 Inversion:
 Transposition:
@@ -171,12 +171,12 @@ Strain:Ancestor 10
 Codon Mismatch:Leu_CUA 132;
 Substitution:Lys_AAA 119;His_CAC 133;Gly_GGA 112;Trp_UGG 103;Ser_UCA 97;Lys_AAA 90;Gln_CAA 89;
 Duplication:Thr_ACA 120;Lys_AAA 15, Leu_CUA 16;16S 53, 23S 54, 5S 55;16S 59, 23S 60, 5S 61;Tyr_UAC 88;16S 84, 23S 85, 5S 86, Val_GUA 87, Thr_ACA 102, !His_CAC -1, !Leu_CUA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !Met_AUG -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Lys_AAA -1, !Gly_GGA -1, Ile_AUC 104, Asn_AAC 105, !Ser_AGC -1, Glu_GAA 106;Met_AUG 113;
-Deletion:Leu_UUA 68;Gly_GGC 23, Arg_CGU 24, Pro_CCA 25, Ala_GCA 26, 16S 27, 23S 28, 5S 29, Asn_AAC 30, Thr_ACC 31;Glu_GAA 32, Val_GUA 33, Thr_ACA 34, Tyr_UAC 35, Gln_CAA 36;Asn_AAC 37, Ser_AGC 38, Glu_GAA 39, Gln_CAA 40, Lys_AAA 41, Leu_CUA 42, Leu_CUC 43;Arg_CGU 44, Gly_GGA 45, 16S 46, 23S 47, 5S 48, Met_AUG 49, Asp_GAC 50;Arg_AGG 73;Ala_GCC 102;!Met_AUG -1;!Lys_AAA -1;!Ser_AGC -1;
+Deletion:Leu_UUA 59;Glu_GAA 23, Val_GUA 24, Thr_ACA 25, Tyr_UAC 26, Gln_CAA 27;Asn_AAC 28, Ser_AGC 29, Glu_GAA 30, Gln_CAA 31, Lys_AAA 32, Leu_CUA 33, Leu_CUC 34;Arg_CGU 35, Gly_GGA 36, 16S 37, 23S 38, 5S 39, Met_AUG 40, Asp_GAC 41;Arg_AGG 65;Ala_GCC 93;!Met_AUG -1;!Lys_AAA -1;!Ser_AGC -1;
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 15, size: 2 count: 10, size: 3 count: 2, size: 5 count: 1, size: 7 count: 3, size: 9 count: 3, size: 12 count: 1, size: 15 count: 2, size: 16 count: 1
-Total Duplications: size: 1 count: 24, size: 2 count: 27, size: 3 count: 7, size: 4 count: 1, size: 5 count: 1, size: 7 count: 1, size: 15 count: 2, size: 25 count: 1
+Total Deletions: size: 1 count: 16, size: 2 count: 10, size: 3 count: 2, size: 5 count: 2, size: 7 count: 3, size: 12 count: 1, size: 15 count: 2, size: 16 count: 1
+Total Duplications: size: 1 count: 24, size: 2 count: 27, size: 3 count: 7, size: 4 count: 1, size: 5 count: 1, size: 7 count: 1, size: 13 count: 1, size: 15 count: 2, size: 25 count: 1
 Size Distribution of Inversions: size: 12 count: 1
 Size Distribution of Transpositions: size: 3 count: 2
 Size Distribution of Inverted Transpositions: 
@@ -185,4 +185,4 @@ Total Transpositions: 2
 Total Inverted Transpositions: 0
 Total Codon Mismatches: 5
 Total Substitutions: 11
-Total Execution Time: 12.4590001106
+Total Execution Time: 10.1000001431
