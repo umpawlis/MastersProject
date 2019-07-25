@@ -86,6 +86,7 @@ Ser_UCA,
 [Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], 
 [Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], 
 [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], 
+Leu_UUG, 
 Gly_GGA, 
 Val_GUC, 
 < t >, 
@@ -96,7 +97,4 @@ Gln_CAA,
 -Ala_GCC, 
 -Arg_CGG, 
 -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
-
-
-
 
