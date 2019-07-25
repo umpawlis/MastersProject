@@ -38,6 +38,8 @@ Formatted Operon 2: ['16S', 'Ile_AUC', 'Ala_GCA', '23S', '5S', 'Val_GUA', 'Thr_A
 Formatted Operon 1: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 		     '16S', 							'23S', '5S', {'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUA',} {'Gly_GGC',} {'Leu_UUA',} {'Arg_CGU', 'Pro_CCA',} {'Ala_GCA',} 	'16S', '23S', '5S']
 Formatted Operon 2: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', {'Ala_GCA',} '16S', {'Ile_AUC', 'Ala_GCA',} 	'23S', '5S', 																							   		  	  		'16S', '23S', '5S']
 																									(E)						(D)
+Ancestral Operon:[16S, 23S, 5S, Asn_AAC, Thr_ACC, Gly_GGC, Arg_CGU, Pro_CCA, 16S, 23S, 5S, Ala_GCA, 16S, 23S, 5S]																								
+																									
 (D) - Found in another operon
 (E) - Found within operon since we allow for gaps to be of size 1 when checking within operon itself
 (F) - Gap of size 1 and not found within operon itself and we do not allow for gaps of size 1 to be check within other operons
