@@ -1,42 +1,52 @@
 Strain:CP002905
 Codon Mismatch:
 Substitution:
-Duplication:Lys_AAA 19, Leu_CUA 20; (A)
-Asn_AAC 32, Thr_ACC 33;(D)
-Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37;
-16S 38, 23S 39, 5S 40, Asn_AAC 41, Thr_ACC 42;
-Gly_GGC 43, Arg_CGU 44, Pro_CCA 45, Ala_GCA 46, 16S 47, 23S 48, 5S 49, !Asn_AAC -1, !Thr_ACC -1;
-
-Deletion:!Asn_AAC -1, !Thr_ACC -1;
+Duplication:Lys_AAA 19, Leu_CUA 20;Asn_AAC 32, Thr_ACC 33;Asn_AAC 41, Thr_ACC 42;Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;
+Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
 
 Strain:NC_014479
 Codon Mismatch:Thr_ACC 21;
-Substitution:Asn_AAC 20; (C)
+Substitution:Asn_AAC 20;
 Duplication:
-Deletion:Leu_UUA 22; (B)
+Deletion:Leu_UUA 22;Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;
 Inversion:
 Transposition:
 Inverted Transposition:
 
 
 Operons with differences:
-									(C)						 (A)					(B)
-Original Operon 1: 	[16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, 	Gly_GGC, Leu_UUA, 	Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
-Original Operon 2: 	[16S, 23S, 5S, Asn_AAC, Thr_ACC, 				  	Gly_GGC, 			Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
-Ancestral Operon:	[16S, 23S, 5S, Val_GUA, Thr_ACA, 					Gly_GGC, Leu_UUA, 	Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S],
 
-(A) - Detected as duplication because Lys_AAA, Leu_CUA were found in another operon
-(B) - Labelled as deletion since we don't allow for gaps of size 1 to be checked in other operons and there is no matching gene within operon
-(C) - Substitution detected. Since the same Substitution was not found when comparing to the neighbor with CP002905,  therefore Val_GUA inserted into ancestral operon and Asn was labeled as the Substitution
 
-										 (D)
-Original Operon 1: [16S, 23S, 5S, Asn_AAC, Thr_ACC]
-Original Operon 2: [16S, 23S, 5S				  ]
 
-(D) - Detected as duplication because gap was found in another operon
 
-[Gly_GGC, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S, Asn_AAC, Thr_ACC]
-[Gly_GGC, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+
+
+
+
+
+Ancestor 3
+< o >, 
+[16S, Ile_AUC, Ala_GCA, 23S, 5S], 
+Ser_UCA, 
+[16S, Ile_AUC, Ala_GCA, 23S, 5S], 
+[Met_AUG, Glu_GAA], 
+[16S, 23S, 5S, Val_GUA, Thr_ACA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], 
+[16S, 23S, 5S], 
+[Gly_GGC, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S, Asn_AAC, Thr_ACC], 
+[Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA], 
+[Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], 
+[Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], 
+[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], 
+Gly_GGA, 
+Val_GUC, 
+< t >, 
+-Arg_AGG, 
+Gln_CAA, 
+-Arg_AGA, 
+-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S], 
+-Ala_GCC, 
+-Arg_CGG, 
+-[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
