@@ -243,7 +243,7 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
     position = event.fragmentDetails1.startPositionInGenome
     
     for x in range(0, len(sequenceDuplicated)):
-        if sequenceDuplicated[x] == alignment[index]:
+        if index < len(alignment) and sequenceDuplicated[x] == alignment[index]:
             if event.fragmentDetails1.isNegativeOrientation == False:
                 tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
             else:
