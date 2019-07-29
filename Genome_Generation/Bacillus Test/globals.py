@@ -37,10 +37,10 @@ def initialize():
     substitutionCost = -1
 
     global yDistanceThreshold
-    yDistanceThreshold = 3
+    yDistanceThreshold = 2
     
     global xDistanceThreshold
-    xDistanceThreshold = 4
+    xDistanceThreshold = 2
 
     global ancestralCounter
     ancestralCounter = 0
