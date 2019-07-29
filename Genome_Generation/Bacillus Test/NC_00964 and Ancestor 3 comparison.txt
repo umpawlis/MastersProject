@@ -12,20 +12,21 @@ Inversion:
 Transposition:
 Inverted Transposition:
 
+
+
 Strain:Ancestor 3
 Codon Mismatch:
 Substitution:
 Duplication:
 16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29; (H)
-16S 34, 23S 35, 5S 36, !Val_GUA -1, !Thr_ACA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !16S -1, !23S -1, !5S -1; (J)
+!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1, Gly_GGC 30, !Leu_UUA -1, Arg_CGU 31, Pro_CCA 32, Ala_GCA 33, 16S 34, 23S 35, 5S 36; (J)
 Deletion:
-!Ile_AUC -1, !Ala_GCA -1; (I)
-!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1; (K)
+!Ile_AUC -1, !Ala_GCA -1;! (I)
+16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1;(K)
 !Leu_UUA -1; (L)
 Inversion:
 Transposition:
 Inverted Transposition:
-
 
 Operons with differences:
 														  (A)

@@ -291,6 +291,9 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     #Tracks where the extra genes are from
     gap1Indexes = [] #This is used to determine where to insert the genes into the alignment
     gap2Indexes = []
+    
+    selfDuplication = '' #Used only for self global alignment
+    selfPosition = event.fragmentDetails1.startPositionInGenome
 
     while i > 0 or j > 0:
         #Case 1: Perfect match
@@ -302,6 +305,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = selfDuplication + operon2[j-1] + ' ' + str((i-1) + selfPosition) + ', '
+            else:
+                selfDuplication = operon2[j-1] + ' ' + str(len(operon1) - (i-1) + selfPosition) + ', ' + selfDuplication
+
         #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
             #Increment the Id counter to ensure Id id unique
@@ -322,6 +332,14 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
+            
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = selfDuplication + '!' + operon2[j-1] + ' ' + str(-1) + ', '
+            else:
+                selfDuplication = operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
+            
         #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.substitutionCost):
             #Increment the Id counter to ensure the ID is unique
@@ -342,6 +360,13 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = selfDuplication + '!' + operon2[j-1] + ' ' + str(-1) + ', '
+            else:
+                selfDuplication = operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
+                
         #Case 4: Mismatch- Gap in operon 2
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + globals.deletionCost):
             index = i-1
@@ -387,6 +412,12 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
                 operon1GapIndex.insert(0, index)
                 gap1Indexes.insert(0, len(alignmentSequence1))
                 operon1ConsecutiveGap = True
+                
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = selfDuplication + '!' + operon2[j-1] + ' ' + str(-1) + ', '
+            else:
+                selfDuplication = operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
 
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
