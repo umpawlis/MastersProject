@@ -39,6 +39,7 @@ Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;Arg_AGA 70;
 Inversion:
 Transposition:
 Inverted Transposition:
+
 Strain:NC_000964
 Codon Mismatch:Thr_ACC 33;
 Substitution:Asn_AAC 32;
@@ -74,6 +75,7 @@ Deletion:!Ile_AUC -1, !Ala_GCA -1;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_AC
 Inversion:
 Transposition:
 Inverted Transposition:
+
 Strain:Ancestor 4
 Codon Mismatch:
 Substitution:
