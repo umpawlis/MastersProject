@@ -9,6 +9,7 @@ class Event(object):
         self.operon2Gaps = []
         self.deletionDetailsList = []
         self.genesDeletedFromOperon = False
+        self.selfDuplication = ''
 
     def setScore(self, score):
         self.score = score
