@@ -236,28 +236,8 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
                     strain.duplicationCounts[sizeOfDuplication] = 1
                     
     #Indicate the whole operon was duplicated
-    index = 0
-    tempString = ''
     sequenceDuplicated = event.fragmentDetails2.sequence
-    alignment = event.operon1Alignment
-    position = event.fragmentDetails1.startPositionInGenome
-    
-    for x in range(0, len(sequenceDuplicated)):
-        if index < len(alignment) and sequenceDuplicated[x] == alignment[index]:
-            if event.fragmentDetails1.isNegativeOrientation == False:
-                tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
-            else:
-                tempString = sequenceDuplicated[x] + ' ' + str(position + len(event.fragmentDetails1.sequence) - index - 1) + ', ' + tempString
-            index += 1
-        else:
-            if event.fragmentDetails1.isNegativeOrientation == False:
-                tempString += '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', '
-            else:
-                tempString = '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
-                
-    tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
-    tempString += ';'
-    strain.duplicationDetails += tempString
+    strain.duplicationDetails = event.selfDuplication #Built from the trace back
     
     sizeOfDuplication = len(sequenceDuplicated)
     if sizeOfDuplication in strain.duplicationCounts:
