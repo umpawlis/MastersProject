@@ -39,16 +39,14 @@ Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;Arg_AGA 70;
 Inversion:
 Transposition:
 Inverted Transposition:
-
 Strain:NC_000964
 Codon Mismatch:Thr_ACC 33;
 Substitution:Asn_AAC 32;
-Duplication:Lys_AAA 19, Leu_CUA 20;16S 38, 23S 39, 5S 40;16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;
+Duplication:Lys_AAA 19, Leu_CUA 20;16S 38, 23S 39, 5S 40;16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 41, 23S 42, 5S 43;
 Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1;
 Inversion:
 Transposition:
 Inverted Transposition:
-
 Strain:CP002905
 Codon Mismatch:
 Substitution:
@@ -57,7 +55,6 @@ Deletion:
 Inversion:
 Transposition:
 Inverted Transposition:
-
 Strain:NC_014479
 Codon Mismatch:Thr_ACC 21;
 Substitution:Asn_AAC 20;
@@ -66,16 +63,14 @@ Deletion:Leu_UUA 22;Gly_GGC 34, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 
 Inversion:
 Transposition:16S 14, 23S 15, 5S 16;16S 17, 23S 18, 5S 19, Asn_AAC 20, Thr_ACC 21, Gly_GGC 22, Arg_CGU 23, Pro_CCA 24, Ala_GCA 25, 16S 26, 23S 27, 5S 28;|
 Inverted Transposition:
-
 Strain:Ancestor 3
 Codon Mismatch:
 Substitution:
-Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29;16S 34, 23S 35, 5S 36, !Val_GUA -1, !Thr_ACA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !16S -1, !23S -1, !5S -1;
+Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1, Gly_GGC 30, !Leu_UUA -1, Arg_CGU 31, Pro_CCA 32, Ala_GCA 33, 16S 34, 23S 35, 5S 36;
 Deletion:!Ile_AUC -1, !Ala_GCA -1;!16S -1, !23S -1, !5S -1, !Val_GUA -1, !Thr_ACA -1;!Leu_UUA -1;
 Inversion:
 Transposition:
 Inverted Transposition:
-
 Strain:Ancestor 4
 Codon Mismatch:
 Substitution:
@@ -175,7 +170,7 @@ Inverted Transposition:
 Strain:Ancestor 10
 Codon Mismatch:Leu_CUA 132;
 Substitution:Lys_AAA 119;His_CAC 133;Gly_GGA 112;Trp_UGG 103;Ser_UCA 97;Lys_AAA 90;Gln_CAA 89;
-Duplication:Thr_ACA 120;Lys_AAA 15, Leu_CUA 16;16S 53, 23S 54, 5S 55;16S 59, 23S 60, 5S 61;Tyr_UAC 88;16S 84, 23S 85, 5S 86, Val_GUA 87, Thr_ACA 102, !His_CAC -1, !Leu_CUA -1, !Gly_GGC -1, !Leu_UUA -1, !Arg_CGU -1, !Pro_CCA -1, !Ala_GCA -1, !Met_AUG -1, !Met_AUG -1, !Ser_UCA -1, !Met_AUG -1, !Asp_GAC -1, !Phe_UUC -1, !Thr_ACA -1, !Lys_AAA -1, !Gly_GGA -1, Ile_AUC 104, Asn_AAC 105, !Ser_AGC -1, Glu_GAA 106;Met_AUG 113;
+Duplication:Thr_ACA 120;Lys_AAA 15, Leu_CUA 16;16S 53, 23S 54, 5S 55;16S 59, 23S 60, 5S 61;Tyr_UAC 88;16S 84, 23S 85, 5S 86, Val_GUA 87, !Thr_ACA -1, !His_CAC -1, Leu_CUA 91, Gly_GGC 92, Leu_UUA 93, Arg_CGU 94, Pro_CCA 95, Ala_GCA 96, !Met_AUG -1, !Met_AUG -1, Ser_UCA 98, Met_AUG 99, Asp_GAC 100, Phe_UUC 101, Thr_ACA 102, !Lys_AAA -1, !Gly_GGA -1, Ile_AUC 104, Asn_AAC 105, !Ser_AGC -1, Glu_GAA 106;Met_AUG 113;
 Deletion:Leu_UUA 59;Glu_GAA 23, Val_GUA 24, Thr_ACA 25, Tyr_UAC 26, Gln_CAA 27;Asn_AAC 28, Ser_AGC 29, Glu_GAA 30, Gln_CAA 31, Lys_AAA 32, Leu_CUA 33, Leu_CUC 34;Arg_CGU 35, Gly_GGA 36, 16S 37, 23S 38, 5S 39, Met_AUG 40, Asp_GAC 41;Arg_AGG 65;Ala_GCC 93;!Met_AUG -1;!Lys_AAA -1;!Ser_AGC -1;
 Inversion:
 Transposition:
@@ -190,4 +185,4 @@ Total Transpositions: 11
 Total Inverted Transpositions: 0
 Total Codon Mismatches: 5
 Total Substitutions: 11
-Total Execution Time: 11.2479999065
+Total Execution Time: 14.5269999504
