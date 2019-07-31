@@ -339,11 +339,16 @@ def main():
 #            appCommand = baseCommand + tree + ' ' + testSetDir + ' > ' + testSetDir + '/appTestingOutput.txt'
 #            os.system(appCommand)
 #            subprocess.Popen(appCommand, shell=True).wait()
+            appStartTime = time.time()
             p = subprocess.Popen(['python', 'main.py', tree, testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            appRunTime = time.time() - appStartTime
             out, err = p.communicate()
             with open(testSetDir + '/appTestingOutput.txt', "w+") as f:
                 f.write(out)
                 f.write(err)
+
+            with open(testSetDir + "/runtimes.txt", "a+") as runtimeFile:
+                runtimeFile.write("App Runtime: %f" % (appRunTime))
             
             totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-')
             strictAppDupEventAccuracy, relaxedAppDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])

@@ -129,12 +129,16 @@ if __name__ == '__main__':
     #Running OrthoAlign
     command = "java -classpath " + ORTHOALIGN_PATH + " " + ORTHOALIGN_EXEC + " -dt " + genome1 + " " + genome2 + " > " + orthoAlignOutFile
     print command
+    orthoAlignStartTime = time.time()
     os.system(command)
+    orthoAlignRunTime = time.time() - orthoAlignStartTime
     
     #Running Duploss
     command = "python " + DUPLOSS_PATH + DUPLOSS_EXEC + " -eiqdt " + genome1 + " " + genome2 + " > " + duplossOutFile
     print command
+    duplossStartTime = time.time()
     os.system(command)
+    duplossRunTime = time.time() - duplossStartTime
     
     orthoCost, orthoAncestor = getCostAndAncestorFromOutFile(orthoAlignOutFile)
     duplossCost, duplossAncestor = getCostAndAncestorFromOutFile(duplossOutFile)
@@ -144,3 +148,6 @@ if __name__ == '__main__':
         print "Duploss ancestor =    " + duplossAncestor
         print "OrthoAlign cost = " + str(orthoCost)
         print "OrthoAlign ancestor = " + orthoAncestor
+        with open(args[2] + "/runtimes.txt", "a+") as runtimeFile:
+            runtimeFile.write("Ortho Runtime: %f" % (orthoAlignRunTime))
+            runtimeFile.write("DupLoss Runtime: %f" % (duplossRunTime))
