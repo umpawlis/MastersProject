@@ -237,7 +237,7 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
                     
     #Indicate the whole operon was duplicated
     sequenceDuplicated = event.fragmentDetails2.sequence
-    strain.duplicationDetails = event.selfDuplication #Built from the trace back
+    strain.duplicationDetails += event.selfDuplication #Built from the trace back
     
     sizeOfDuplication = len(sequenceDuplicated)
     if sizeOfDuplication in strain.duplicationCounts:
@@ -247,7 +247,7 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
         
     #Special case when two unmarked operons are mapped as good matches then we must indicate the operon was lost in the sibling
     if cycleDuplication:
-        sibling.deletionDetails = event.selfDuplication
+        sibling.deletionDetails += event.selfDuplication
         if sizeOfDuplication in sibling.deletionCounts:
             sibling.deletionCounts[sizeOfDuplication] += 1
         else:
