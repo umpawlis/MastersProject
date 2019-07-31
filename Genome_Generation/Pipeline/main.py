@@ -1,7 +1,6 @@
 import time
 import copy
 import os.path
-import sys
 import globals
 from Bio import Phylo
 from FileService import createFile
@@ -10,6 +9,7 @@ from LineageSummary import LineageSummary
 from SequenceService import createDotPlot
 from FileService import outputTotalsToFile
 from SequenceService import createBarGraph
+from FileService import outputGenomeToFile
 from BacterialStrain import BacterialStrain
 from FragmentService import determineRegions
 from FileService import outputStrainDetailsToFile
@@ -17,6 +17,8 @@ from SequenceService import normalizeIndexesForDotPlot
 from SequenceService import updateGlobalDeletionCounter
 from GlobalAlignmentModule import reduceSingletonDeletions
 from SequenceService import updateGlobalDuplicationCounter
+from SequenceService import updateGlobalSubstitutionCounter
+from SequenceService import updateGlobalCodonMismatchCounter
 from LocalAlignmentModule import findOrthologsByLocalAlignment
 from GlobalAlignmentModule import findOrthologsByGlobalAlignment
 from SelfGlobalAlignmentModule import findOrthologsBySelfGlobalAlignment
@@ -25,16 +27,13 @@ from SequenceService import updateGlobalTranspositionSizeDistributionCounter
 from FragmentService import determineAncestralFragmentArrangementUsingNeighbor
 from FragmentService import determineAncestralFragmentArrangementWithoutNeighbor
 from SequenceService import updateGlobalInvertedTranspositionSizeDistributionCounter
-from SequenceService import updateGlobalCodonMismatchCounter
-from SequenceService import updateGlobalSubstitutionCounter
 
 #Application parameters
-newickFileName = 'tree8Leaf-v2.dnd' #Name of newick tree file
+newickFileName = 'tree.dnd' #Name of newick tree file
 
 #Global vaiables used by the script
 strains = [] #Global variable that stores all of the strains in the phylogenetic tree
 outputFileName = 'ApplicationOutput.txt' #Name of output file
-testFileName = ''
 
 ################################################################
 ################# Main Fuctions ################################
@@ -50,20 +49,26 @@ def createAncestor(strain1, strain2, neighborStrain):
     ancestor = None
     ancestralName = 'Ancestor ' + str(globals.ancestralCounter)
     ancestralFragments = None
-    
+
     strain1Copy = copy.deepcopy(strain1) #Do a deep copy of object for when we compare to the neighbor
     neighborCopy = copy.deepcopy(neighborStrain) #Do a deep copy of the neighbor as well b/c we don't want to store those comparisons in the strain either
+
     if globals.printToConsole:
         print('Performing a series of alignments for the following strains: %s, %s' % (strain1.name, strain2.name))
+        
     globals.enableDeletionReversions = True #Only do the backtrace between these two strains!
+    globals.enableSelfAlignmentDetails = True
+    
     events, duplicatesStrain1, duplicatesStrain2 = constructEvents(strain1, strain2)
+    
+    globals.enableSelfAlignmentDetails = False
     globals.enableDeletionReversions = False
+
     if globals.printToConsole:
         print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     if globals.printToConsole:
         createDotPlot(points, strain1, strain2, testFileName)
-
         createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
         createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
         createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
@@ -76,7 +81,7 @@ def createAncestor(strain1, strain2, neighborStrain):
     #inversionDetails1, inversionDetails2 = computeRegionDetails(IR, 'Inversion:')
     #transpositionDetails1, transpositionDetails2 = computeRegionDetails(TR, 'Transposition:')
     #invertedTransposedDetails1, invertedTransposedDetails2 = computeRegionDetails(ITR, 'Inverted Transposition:')
-    
+
     #Compare one of the siblings to the neighbor if one exists
     if neighborCopy != None:
         if globals.printToConsole:
@@ -99,12 +104,12 @@ def createAncestor(strain1, strain2, neighborStrain):
             if globals.printToConsole:
                 print('No inverted or transposed regions detected!!')
         ancestralFragments, strain2 = determineAncestralFragmentArrangementWithoutNeighbor(FCR, TR, IR, ITR, lostPoints, strain2)
-    
+
     #Computes the total number of inversions, transpositions, inverted transpositions
     globals.inversionCounter += len(IR)
     globals.transposedCounter += len(TR)
     globals.invertedTransposedCounter += len(ITR)
-    
+
     #Increments the counters for the size distributions for each event type
     updateGlobalDeletionCounter(strain1)
     updateGlobalDeletionCounter(strain2)
@@ -116,18 +121,19 @@ def createAncestor(strain1, strain2, neighborStrain):
     updateGlobalTranspositionSizeDistributionCounter(strain2)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain1)
     updateGlobalInvertedTranspositionSizeDistributionCounter(strain2)
-    
-    #Increment counters
-    updateGlobalCodonMismatchCounter(strain1)
+
+    #Increment counters (only need to do the count only once otherwise it leads to double counts ie x2 number of events)
+    #updateGlobalCodonMismatchCounter(strain1)
     updateGlobalCodonMismatchCounter(strain2)
-    updateGlobalSubstitutionCounter(strain1)
+    #updateGlobalSubstitutionCounter(strain1)
     updateGlobalSubstitutionCounter(strain2)
-    
+
     #Append all details to file here
     #outputStrainDetailsToFile(outputFileName, strain1)
     #outputStrainDetailsToFile(outputFileName, strain2)
-    
+
     ancestor = BacterialStrain(ancestralName, ancestralFragments)
+
     if globals.printToConsole:
         print(strain1.name)
         for frag in strain1.genomeFragments:
@@ -135,8 +141,145 @@ def createAncestor(strain1, strain2, neighborStrain):
         print(strain2.name)
         for frag in strain2.genomeFragments:
             print(frag.originalSequence)
+
+    ####################################
+    #Handle the Codon Mismatches here##
+    ###################################
+    if '#' in strain1.codonMismatchDetails:
+        newDetails1 = 'Codon Mismatch:'
+        newDetails2 = 'Codon Mismatch:'
+
+        line1 = strain1.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+        line2 = strain2.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+
+        subsList1 = filter(None, line1.split(';')) #Ensures we don't have a list with an empty string as an element
+        subsList2 = filter(None, line2.split(';'))
+
+        #For each substitution in the list
+        for w in range(0, len(subsList1)):
+            gene1, idNumber1, position1 = parseDetails(subsList1[w])
+            gene2, idNumber2, position2 = parseDetails(subsList2[w])
+            processed = False #Tracks whether the current codon mismatch was handled
+
+            #Check if we have a neighbor
+            if neighborCopy:
+                #Check if the same codon mismatch occurred when comparing to the neighbor
+                if '#' in strain1Copy.codonMismatchDetails:
+                    line3 = strain1Copy.codonMismatchDetails.replace('Codon Mismatch:', '').strip()
+                    subsList3 = filter(None, line3.split(';'))
+                    for v in range(0, len(subsList3)):
+                        gene3, idNumber3, position3 = parseDetails(subsList3[v])
+                        if gene1 == gene3 and position1 == position3:
+                            #We found the same codon mismatch when comparing with the neighbor, therefore we should keep strain 2's verison of the gene!
+                            processed = True
+                            fragments = ancestor.genomeFragments
+                            for fragment in fragments:
+                                if idNumber1 in fragment.originalSequence:
+                                    fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
+                                    for m in range(0, len(fragment.sequence)):
+                                        if idNumber1 in fragment.sequence[m]:
+                                            fragment.sequence[m] = gene2
+                                            break
+                                    break
+            if processed:
+                #We found the codon mismatch and swapped with strain 2's gene therefore strain 1's gene was the codon mismatch so put the codon mismatch details in strain1
+                newDetails1+= gene1 + ' ' + position1 + ';'
+            else:
+                #We were not able to find the same codon mismatch either due to there being no neighbor or it was just not there. So just assume strain 2 is the codon mismatch
+                newDetails2+= gene2 + ' ' + position2 + ';'
+                fragments = ancestor.genomeFragments
+                for fragment in fragments:
+                    if idNumber1 in fragment.originalSequence:
+                        fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
+                        for m in range(0, len(fragment.sequence)):
+                            if idNumber1 in fragment.sequence[m]:
+                                fragment.sequence[m] = gene1
+                                break
+                        break
+        #Insert the new details about the substitution
+        strain1.codonMismatchDetails = newDetails1
+        strain2.codonMismatchDetails = newDetails2
+
+    ################################
+    #Handle the substitutions here##
+    ################################
+    if '@' in strain1.substitutionDetails:
+        newDetails1 = 'Substitution:'
+        newDetails2 = 'Substitution:'
+
+        line1 = strain1.substitutionDetails.replace('Substitution:', '').strip()
+        line2 = strain2.substitutionDetails.replace('Substitution:', '').strip()
+
+        subsList1 = filter(None, line1.split(';')) #Ensures we don't have a list with an empty string as an element
+        subsList2 = filter(None, line2.split(';'))
+
+        #For each substitution in the list
+        for w in range(0, len(subsList1)):
+            gene1, idNumber1, position1 = parseDetails(subsList1[w])
+            gene2, idNumber2, position2 = parseDetails(subsList2[w])
+            processed = False #Tracks whether the current substitution was handled
+
+            #Check if we have a neighbor
+            if neighborCopy:
+                #Check if the same substitution occurred when comparing to the neighbor
+                if '@' in strain1Copy.substitutionDetails:
+                    line3 = strain1Copy.substitutionDetails.replace('Substitution:', '').strip()
+                    subsList3 = filter(None, line3.split(';'))
+                    for v in range(0, len(subsList3)):
+                        gene3, idNumber3, position3 = parseDetails(subsList3[v])
+                        if gene1 == gene3 and position1 == position3:
+                            #We found the same substitution when comparing with the neighbor, therefore we should keep strain 2's verison of the gene!
+                            processed = True
+                            fragments = ancestor.genomeFragments
+                            for fragment in fragments:
+                                if idNumber1 in fragment.originalSequence:
+                                    fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
+                                    for m in range(0, len(fragment.sequence)):
+                                        if idNumber1 in fragment.sequence[m]:
+                                            fragment.sequence[m] = gene2
+                                            break
+                                    break
+            if processed:
+                #We found the substitution and swapped with strain 2's gene therefore strain 1's gene was the substituion so put the substitution details in strain1
+                newDetails1+= gene1 + ' ' + position1 + ';'
+            else:
+                #We were not able to find the same substitution either due to there being no neighbor or it was just not there. So just assume strain 2 is the substitution
+                newDetails2+= gene2 + ' ' + position2 + ';'
+                fragments = ancestor.genomeFragments
+                for fragment in fragments:
+                    if idNumber1 in fragment.originalSequence:
+                        fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
+                        for m in range(0, len(fragment.sequence)):
+                            if idNumber1 in fragment.sequence[m]:
+                                fragment.sequence[m] = gene1
+                                break
+                        break
+        #Insert the new details about the substitution
+        strain1.substitutionDetails = newDetails1
+        strain2.substitutionDetails = newDetails2
+    
+    #Add any codon mismatches from the self global alignment as those details were stored in another variable so it doesn't mess with codon mismatches and substitution handlers in the previous 2 for loops
+    strain1.codonMismatchDetails += strain1.tempCodonDetails
+    strain2.codonMismatchDetails += strain2.tempCodonDetails
+    strain1.substitutionDetails += strain1.tempSubstitutionDetails
+    strain2.substitutionDetails += strain2.tempSubstitutionDetails
     
     return ancestor
+
+######################################################
+# parseDetails
+# Parameters:
+# Description: Parses the gene, unique Id number, and position from a given substitution
+######################################################
+def parseDetails(line):
+    temp = line.split('-')
+    gene = temp[0].strip() #Extracts the substituted gene
+
+    temp = temp[1].split(' ')
+    idNumber = temp[0] #Extracts unique Id number
+    position = temp[1] #Extracts the position
+
+    return gene, idNumber, position
 
 ######################################################
 # initializeTracker
@@ -176,6 +319,7 @@ def constructEvents(strain1, strain2):
     lossEvents1 = []
     lossEvents2 = []
     newEvents = []
+
     if globals.printToConsole:
         print('Performing global alignment with: %s, %s' % (strain1.name, strain2.name))
     events, coverageTracker1, coverageTracker2, globalAlignmentCounter, strain1, strain2 = findOrthologsByGlobalAlignment(strain1, strain2, coverageTracker1, coverageTracker2)
@@ -187,13 +331,16 @@ def constructEvents(strain1, strain2):
 
     #Local Alignment operation
 #    if numRemainingOperons1 > 0 and numRemainingOperons2 > 0:
-#        print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
+#        if globals.printToConsole:
+#            print('Performing local alignment with: %s, %s' % (strain1.name, strain2.name))
 #        localAlignmentEvents, coverageTracker1, coverageTracker2, localAlignmentCounter, strain1, strain2 = findOrthologsByLocalAlignment(coverageTracker1, coverageTracker2, strain1, strain2)
-#        print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
+#        if globals.printToConsole:
+#            print('Number of orthologous operons identified using Local Alignment %s' % (localAlignmentCounter))
 #
 #        numRemainingOperons1 = countRemainingOperons(coverageTracker1)
 #        numRemainingOperons2 = countRemainingOperons(coverageTracker2)
-#        print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
+#        if globals.printToConsole:
+#            print('The number of remaining operons in each respective tracker is: %s, %s' % (numRemainingOperons1, numRemainingOperons2))
 #        if len(localAlignmentEvents) > 0:
 #            events.extend(localAlignmentEvents)
 
@@ -203,23 +350,23 @@ def constructEvents(strain1, strain2):
         duplicationEvents1, lossEvents1, coverageTracker1, strain1, strain2 = findOrthologsBySelfGlobalAlignment(strain1, coverageTracker1, strain2)
         if globals.printToConsole:
             print('%s, duplicates identified %s and losses identified %s' % (strain1.name, len(duplicationEvents1), len(lossEvents1)))
-        
+
     if numRemainingOperons2 > 0:
         #Remember to insert the deletions into the sibling (that's how we defined it)
         duplicationEvents2, lossEvents2, coverageTracker2, strain2, strain1 = findOrthologsBySelfGlobalAlignment(strain2, coverageTracker2, strain1)
         if globals.printToConsole:
             print('%s, duplicates identified %s and losses identified %s' % (strain2.name, len(duplicationEvents2), len(lossEvents2)))
-    
+
     #Try reducing the number of singleton deletions
 #    if len(lossEvents1) > 0 or len(lossEvents2) > 0:
 #        lossEvents1, lossEvents2, newEvents = reduceSingletonDeletions(lossEvents1, lossEvents2, coverageTracker1, coverageTracker2, strain1, strain2)
 #    if len(newEvents) > 0:
-#            events.extend(newEvents)
-#    if len(lossEvents1) > 0:
-#            events.extend(lossEvents1)
-#    if len(lossEvents2) > 0:
-#            events.extend(lossEvents2)
-            
+#        events.extend(newEvents)
+    if len(lossEvents1) > 0:
+        events.extend(lossEvents1)
+    if len(lossEvents2) > 0:
+        events.extend(lossEvents2)
+
     #Verify there's no unmarked operons at this point
     numRemainingOperons1 = countRemainingOperons(coverageTracker1)
     numRemainingOperons2 = countRemainingOperons(coverageTracker2)
@@ -286,12 +433,12 @@ def createStrainFromFile(node):
 ######################################################
 def computeLineageCost(node, targetName, lineageCost):
     newLineageCost = LineageSummary(targetName)
-    
+
     if lineageCost != None: #Insert the previous costs
         newLineageCost.totalCodonMismatches = lineageCost.totalCodonMismatches
         newLineageCost.totalSubstitutions = lineageCost.totalSubstitutions
-    
-    if node.name != None: #Sometimes there's a none type. not sure why    
+
+    if node.name != None: #Sometimes there's a none type. not sure why
         #Now add in the costs for the current node
         filteredList = iter(filter(lambda x: x.name == node.name, strains))
         foundStrain = next(filteredList, None)
@@ -305,7 +452,7 @@ def computeLineageCost(node, targetName, lineageCost):
             if globals.printToConsole:
                 print('Found  node in newick tree! The found node is: %s' % (targetName))
             return newLineageCost
-        
+
     if len(node.clades) > 0:
         temp = computeLineageCost(node.clades[0], targetName, newLineageCost)
         if temp != None:
@@ -332,7 +479,8 @@ def traverseNewickTreeAndOutputToFile(node):
         foundStrain = next(filteredList, None)
         if foundStrain != None:
             outputStrainDetailsToFile(outputFileName, foundStrain)
-            
+            outputGenomeToFile(node.name + ".txt", foundStrain)
+
 ######################################################
 # traverseNewickTree
 # Parameters: node - Strain being currently processed, parentNode - direct ancestor of node
@@ -392,7 +540,7 @@ def traverseNewickTree(node, parentNode):
         ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
         node.name = ancestor.name
         strains.append(ancestor)
-        
+
         return ancestor
     #Case 2: Only the left sibling exists so return it
     elif leftSibling != None and leftSibling.genomeFragments != None and len(leftSibling.genomeFragments) > 0:
@@ -407,8 +555,7 @@ def traverseNewickTree(node, parentNode):
 ######################################################
 #                       main
 ######################################################
-def main():
-    globals.initialize() #Initialize the globals file
+globals.initialize() #Initialize the globals file
     
     global newickFileName
     global outputFileName
@@ -502,5 +649,3 @@ def main():
                 
     print('Total time (in seconds): %s' % (totalTime))
     print('Ending application...')
-    
-main()
