@@ -27,8 +27,9 @@ def determineRegions(fragments):
         consecutiveRegion.append(currFragment)
         foundNeighbor = True #Keeps track of whether we found a neighboring operon
         
-        skipCounter = 0 #Counters the number of skipped fragments
         index = 0
+        
+        oppositeOrientationCount = 0 #Counts the number of operons with opposite orientation within a consecutive region
         
         yIncreaseCounter = 0 #Counts the number of points that are increasing in the current region
         yDecreaseCounter = 0 #Counts the number of points that are decreasing in the current region
@@ -42,8 +43,12 @@ def determineRegions(fragments):
             aboveMainDiagonal = True
         if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point > 0:
             belowMainDiagonal = True
+        
+        #Counts the number of mapped operons with the opposite orientation            
+        if currFragment.fragmentDetails1.isNegativeOrientation != currFragment.fragmentDetails2.isNegativeOrientation:
+            oppositeOrientationCount += 1
 
-        while index < len(fragmentsCopy) and ((foundNeighbor and len(fragmentsCopy) > 0) or (skipCounter < 2 and len(fragmentsCopy) > 0)): #Continue looping as long as we keep on finding a neighbor
+        while index < len(fragmentsCopy) and foundNeighbor and len(fragmentsCopy) > 0: #Continue looping as long as we keep on finding a neighbor
             foundNeighbor = False #Reset the tracker
 
             prevFragment = consecutiveRegion[len(consecutiveRegion)-1] #Gets the last operon in the the consecutive operons list
@@ -51,21 +56,14 @@ def determineRegions(fragments):
             yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
             xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
             
-            #TODO ADD POINT DISTANCE FORMULA
-            if skipCounter > 0:
-                tempFragment = fragmentsCopy[index -1]
-                tempYDistance = abs(currFragment.fragmentDetails2.point - tempFragment.fragmentDetails2.point) #The distance on the y-axis
-                tempXDistance = abs(currFragment.fragmentDetails1.point - tempFragment.fragmentDetails1.point) #The distance on the x-axis
-                tempDistance = math.sqrt((tempXDistance * tempXDistance) + (tempYDistance * tempYDistance))
-                distance = math.sqrt((xDistance * xDistance) + (yDistance * yDistance))
-                if tempDistance < distance:
-                    break #Break out of the while loop if there's a better match by not skipping
-                
             if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
-                skipCounter = 0 #Reset the skip counter
-
+                #skipCounter = 0 #Reset the skip counter
+                
+                if currFragment.fragmentDetails1.isNegativeOrientation != currFragment.fragmentDetails2.isNegativeOrientation:
+                    oppositeOrientationCount += 1
+                
                 #Tracks the minimuim distance from the main diagonal
                 currMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point)
                 if currMainDiagonalDistance < minMainDiagonalDistance:
@@ -82,21 +80,16 @@ def determineRegions(fragments):
                     yIncreaseCounter += 1
                 else:
                     yDecreaseCounter += 1
-            else:
-                skipCounter += 1
-                index += 1
-                
         #Add the region to the appropriate array
-        if yIncreaseCounter > yDecreaseCounter or len(consecutiveRegion) == 1:  #If the points were going up or there was only 1 point
-            if minMainDiagonalDistance < globals.yDistanceThreshold:            #If the distance from the main diagonal is below the threshold
-                conservedForwardRegions.append(consecutiveRegion)
-            else:                                                               #Else this is a transposition
-                transposedForwardRegions.append(consecutiveRegion)
+        if aboveMainDiagonal == True and belowMainDiagonal == True and oppositeOrientationCount > 0 and yIncreaseCounter < yDecreaseCounter:
+            invertedRegions.append(consecutiveRegion) #An inversion is defined as crossing the main diagonal and the signs of the orientations being opposite
         else:
-            if aboveMainDiagonal == True and belowMainDiagonal == True:         #If the points crossed the main diagonal it's an inversion
-                invertedRegions.append(consecutiveRegion)
-            else:                                                               #Else it's a transposition
-                invertedTransposedRegions.append(consecutiveRegion)
+            if minMainDiagonalDistance == 0 and yIncreaseCounter > yDecreaseCounter: #If the distance from the main diagonal is 0 and y is increasing
+                conservedForwardRegions.append(consecutiveRegion)
+            else:
+                transposedForwardRegions.append(consecutiveRegion)
+                #TODO: Handle invertedTransposedRegions.append(consecutiveRegion)
+                
     if globals.printToConsole:
         print('Statistics for regions in the genome:')
         print('Total number of tracking points on the graph: %s' % (len(fragments)))
@@ -370,16 +363,14 @@ def determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, LR, NFC
     if len(details1Counter) > 0:
         for size, count in details1Counter.items():
             if size in strain1.invertedTranspositionCounts:
-                if size in strain2.invertedTranspositionCounts:
-                    strain2.invertedTranspositionCounts[size] += count
+                strain2.invertedTranspositionCounts[size] += count
             else:
                 strain2.invertedTranspositionCounts[size] = count
         strain2.invertedTranspositionDetails += details1
     if len(details2Counter) > 0:
         for size, count in details2Counter.items():
             if size in strain2.invertedTranspositionCounts:
-                if size in strain1.invertedTranspositionCounts:
-                    strain1.invertedTranspositionCounts[size] += count
+                strain1.invertedTranspositionCounts[size] += count
             else:
                 strain1.invertedTranspositionCounts[size] = count
         strain1.invertedTranspositionDetails += details2
@@ -488,10 +479,10 @@ def insertRegionIntoDictionary(regions, NFCR, arrangedFragments):
 def checkForFragment(fragment, NFCR):
     match = False
     for region in NFCR:
-        for x in range(0, len(region)):
-            currFragment = region[x]
-            if fragment.genome1Name == currFragment.genome1Name and fragment.fragmentDetails1.fragmentIndex == currFragment.fragmentDetails1.fragmentIndex:
-                return True
+        filteredList = iter(filter(lambda x:x.fragmentDetails1.fragmentIndex == fragment.fragmentDetails1.fragmentIndex, region))
+        foundFragment = next(filteredList, None)
+        if foundFragment:
+            return True
     return match
 
 ######################################################
