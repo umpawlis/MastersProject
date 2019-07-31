@@ -247,7 +247,7 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
         
     #Special case when two unmarked operons are mapped as good matches then we must indicate the operon was lost in the sibling
     if cycleDuplication:
-        sibling.deletionDetails += tempString
+        sibling.deletionDetails = event.selfDuplication
         if sizeOfDuplication in sibling.deletionCounts:
             sibling.deletionCounts[sizeOfDuplication] += 1
         else:
