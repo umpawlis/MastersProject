@@ -4,7 +4,7 @@
 def initialize():
     
     global printToConsole
-    printToConsole = True
+    printToConsole = False
     
     global enableDeletionReversions
     enableDeletionReversions = False
