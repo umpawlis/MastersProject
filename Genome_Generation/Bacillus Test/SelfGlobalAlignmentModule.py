@@ -236,36 +236,8 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
                     strain.duplicationCounts[sizeOfDuplication] = 1
                     
     #Indicate the whole operon was duplicated
-    index = 0
-    tempString = ''
-    sequenceTarget = event.fragmentDetails1.sequence
     sequenceDuplicated = event.fragmentDetails2.sequence
-    position = event.fragmentDetails1.startPositionInGenome
-    rememberPoint = 0
-    for x in range(0, len(sequenceDuplicated)):
-        found = False
-        while index < len(sequenceTarget):
-            if sequenceTarget[index] == sequenceDuplicated[x]:
-                if event.fragmentDetails1.isNegativeOrientation == False:
-                    tempString += sequenceDuplicated[x] + ' ' + str(index + position) + ', '
-                else:
-                    tempString = sequenceDuplicated[x] + ' ' + str(position + len(event.fragmentDetails1.sequence) - index - 1) + ', ' + tempString
-                rememberPoint = index + 1
-                found = True
-                break
-            else:
-                index+=1
-        if found == False:
-            if event.fragmentDetails1.isNegativeOrientation == False:
-                tempString += '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', '
-            else:
-                tempString = '!' + sequenceDuplicated[x] + ' ' + str(-1) + ', ' + tempString
-            index = rememberPoint #reset the index back to our last found point
-        else:
-            index = rememberPoint
-    tempString = tempString[0:(len(tempString) - 2)] #Remove the last comma and space
-    tempString += ';'
-    strain.duplicationDetails += tempString
+    strain.duplicationDetails += event.selfDuplication #Built from the trace back
     
     sizeOfDuplication = len(sequenceDuplicated)
     if sizeOfDuplication in strain.duplicationCounts:
@@ -275,7 +247,7 @@ def handleDuplicateDetails(event, strain, sibling, cycleDuplication):
         
     #Special case when two unmarked operons are mapped as good matches then we must indicate the operon was lost in the sibling
     if cycleDuplication:
-        sibling.deletionDetails += tempString
+        sibling.deletionDetails += event.selfDuplication
         if sizeOfDuplication in sibling.deletionCounts:
             sibling.deletionCounts[sizeOfDuplication] += 1
         else:
