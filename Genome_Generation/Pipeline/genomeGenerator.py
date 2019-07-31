@@ -190,7 +190,9 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     currNode = newickTree.clade
 
     createFile(testFolder + '/' + "generatorOutput.txt", newickTree)
+    createDuploCutFiles()
 
+    treeFile = open(testFolder + "/duplocutTree.txt", "w+")
     listOfEvents = []
     if len(currNode.clades) > 0:
         invMultiplier = 1.0
@@ -213,9 +215,14 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
             adjustLossIndexes(left.lossEvents, right.branchEvents, right.inversionBefores, None)
             adjustLossIndexes(right.lossEvents, leftEvents, left.inversionBefores, None)
 
-        printTree(left)
+        treeFile.write("(")
+        printTree(left, treeFile)
         if hasRight:
-            printTree(right)
+            treeFile.write(",")
+            printTree(right, treeFile)
+
+    treeFile.write(")root;")
+    treeFile.close()
             
     printTotals()
     ancestorCounter = 1
@@ -239,11 +246,14 @@ def resetCounters():
     totalTranspositions = 0
     totalInvertedTrans = 0
 
-def printTree(currNode):
+def printTree(currNode, treeFile):
     if len(currNode.children) > 0:
-        printTree(currNode.children[0])
+        treeFile.write("(")
+        printTree(currNode.children[0], treeFile)
         if len(currNode.children) > 1:
-            printTree(currNode.children[1])
+            treeFile.write(",")
+            printTree(currNode.children[1], treeFile)
+            treeFile.write(")")
     
     if neighbour:
         if currNode.name == "NC_000001" or currNode.name == "NC_000002":
@@ -251,6 +261,63 @@ def printTree(currNode):
     else:
         currNode.printNode()
 
+    with open(testFolder + "/duplocutSequences.txt", "a+") as sequenceFile:
+        if "genAncestor" not in currNode.name:
+            sequenceFile.write("##" + currNode.name + "\n")
+            sequenceFile.write(formatSequence(currNode.before, currNode.after))
+
+    if currNode.name is not None:
+        treeFile.write(currNode.name)
+
+def formatSequence(before, after):
+    sequence = "[o]"
+
+    for i in range(0, len(before)):
+        if isinstance(before[i], list):
+            for j in range(0, len(before[i])):
+                sequence += ","
+                sequence += convertCodon(before[i][j])
+        else:
+            sequence += ","
+            sequence += convertCodon(before[i])
+
+    for i in range(0, len(after)):
+        if isinstance(after[i], list):
+            for j in range(0, len(after[i])):
+                sequence += ","
+                sequence += convertCodon(after[i][j])
+        else:
+            sequence += ","
+            sequence += convertCodon(after[i])
+
+    sequence += "\n"
+
+    return sequence
+
+
+def convertCodon(gene):
+    dna = ""
+
+    geneSplit = gene.split('_')
+    if len(geneSplit) == 2:
+        codon = geneSplit[1]
+
+        for char in reversed(codon):
+            if char == "A":
+                dna += "T"
+            elif char == "U":
+                dna += "A"
+            elif char == "G":
+                dna += "C"
+            elif char == "C":
+                dna += "G"
+    elif len(geneSplit) == 1:
+        gene += "rRNA"
+        dna += gene
+    else:
+        sys.exit("Error: Gene is neither tRNA or rRNA")
+
+    return dna
 
 def printTotals():
     outputFile = open(testFolder + "/generatorOutput.txt", "a+")
@@ -1321,6 +1388,16 @@ def createFile(fileName, newickTree):
     file = open(fileName, "w+")
     Phylo.write(newickTree,fileName, 'newick') #Write the tree to the output file
     file.close()
+
+def createDuploCutFiles():
+
+    treeFile = open(testFolder + "/duplocutTree.txt", "w+")
+    treeFile.write("") #Write the tree to the output file
+    treeFile.close()
+
+    sequenceFile = open(testFolder + "/duplocutSequences.txt", "w+")
+    sequenceFile.write("") #Write the tree to the output file
+    sequenceFile.close()
     
 if __name__ == '__main__':
     #generateTests formatting
