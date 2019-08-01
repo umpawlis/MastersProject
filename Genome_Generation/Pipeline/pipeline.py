@@ -347,8 +347,8 @@ def main():
                 f.write(out)
                 f.write(err)
 
-            with open(testSetDir + "/runtimes.txt", "a+") as runtimeFile:
-                runtimeFile.write("App Runtime: %f" % (appRunTime))
+            with open(testFolder + "/AppRuntimes.txt", "a+") as runtimeFile:
+                runtimeFile.write("%f " % (appRunTime))
             
             totalAppEventsFound, totalAppEventsExpected, totalAppGenesFound, totalAppGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-')
             strictAppDupEventAccuracy, relaxedAppDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
@@ -502,11 +502,16 @@ def main():
                 relaxedDupTransAccuracyAveragesList.append(relaxedDupTransEventAccuracy)
                 
                 if neighbour:
+                    appNeighbourStartTime = time.time()
                     p = subprocess.Popen(['python', 'main.py', 'tree2LeafNeighbour.dnd', testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    appNeighbourRunTime = time.time() - appNeighbourStartTime
                     out, err = p.communicate()
                     with open(testSetDir + '/appNeighbourTestingOutput.txt', "w+") as f:
                         f.write(out)
                         f.write(err)
+                    
+                    with open(testFolder + "/AppNeighbourRuntimes.txt", "a+") as runtimeFile:
+                        runtimeFile.write("%f " % (appNeighbourRunTime))
                         
                     totalAppNeighbourEventsFound, totalAppNeighbourEventsExpected, totalAppNeighbourGenesFound, totalAppNeighbourGenesExpected, totalAppNeighbourEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals = readFiles(testSetDir, 'ApplicationNeighbourOutput.txt', 'generatorOutput.txt', 'appNeighbour-')
                     strictAppNeighbourDupEventAccuracy, relaxedAppNeighbourDupEventAccuracy = calculateAccuracy(duplicationTotals[0], duplicationTotals[1], duplicationTotals[2], duplicationTotals[3])
@@ -559,8 +564,12 @@ def main():
                     
                     #Running Duploss with neighbour
                     command = "java -classpath " + ORTHOALIGN_PATH + " " + ORTHOALIGN_EXEC + " -dt " + genome1 + " " + genome2 + " " + genome3 + " > " + testSetDir + "/orthoAlignNeighbour.out"
-                    print command
+                    orthoNeighbourStartTime = time.time()
                     os.system(command)
+                    orthoNeighbourRunTime = time.time() - orthoNeighbourStartTime
+                    
+                    with open(testFolder + "/OrthoNeighbourRuntimes.txt", "a+") as runtimeFile:
+                        runtimeFile.write("%f " % (orthoNeighbourRunTime))
                     
                     orthoAlignNeighbourOutFile = testSetDir + "/orthoAlignNeighbour.out"
                     
@@ -611,9 +620,21 @@ def main():
                     relaxedOrthoNeighbourTransAccuracyAveragesList.append(relaxedOrthoNeighbourTransEventAccuracy)
             runTime = time.time() - startTime
             testRunTimes.append(runTime)
-            
+        
+        with open(testFolder + "/AppRuntimes.txt", "a+") as runtimeFile:
+            runtimeFile.write("\n")
+        with open(testFolder + "/OrthoRuntimes.txt", "a+") as runtimeFile:
+            runtimeFile.write("\n")
+        with open(testFolder + "/DuplossRuntimes.txt", "a+") as runtimeFile:
+            runtimeFile.write("\n")
+        if neighbour:
+            with open(testFolder + "/AppNeighbourRuntimes.txt", "a+") as runtimeFile:
+                runtimeFile.write("\n")
+            with open(testFolder + "/OrthoNeighbourRuntimes.txt", "a+") as runtimeFile:
+                runtimeFile.write("\n")
+        
         averageRunTimePerTest.append(testRunTimes)
-        printAverages(averageRunTimePerTest)
+#        printAverages(averageRunTimePerTest)
         
         totalEventsAppAveragesList.append(numEventsAppAveragesList)
         totalEventsGenAveragesList.append(numEventsGenAveragesList)
@@ -742,6 +763,8 @@ def main():
             graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis)
             graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis)
             graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
+            
+        plotRuntimes(cherryTree, neighbour)
 
         
     if testFolder:
@@ -773,6 +796,39 @@ def printAverages(AveragesPerTest):
             average = runTimeSum / len(testRuntimes)
             f.write("\n")
             f.write(str(average) + "\n")
+            
+def plotRuntimes(cherryTree, neighbour):
+    if cherryTree:
+        with open(testFolder + "/AppRuntimes.txt", "r") as runtimeFile:
+            appTotalRuntimes = []
+            lines = runtimeFile.readlines()
+            for line in lines:
+                appTotalRuntimes.append(line.split())
+        with open(testFolder + "/OrthoRuntimes.txt", "r") as runtimeFile:
+            orthoTotalRuntimes = []
+            lines = runtimeFile.readlines()
+            for line in lines:
+                orthoTotalRuntimes.append(line.split())
+        with open(testFolder + "/DuplossRuntimes.txt", "r") as runtimeFile:
+            dupTotalRuntimes = []
+            lines = runtimeFile.readlines()
+            for line in lines:
+                dupTotalRuntimes.append(line.split())
+        if neighbour:
+            with open(testFolder + "/AppNeighbourRuntimes.txt", "r") as runtimeFile:
+                appNeighbourTotalRuntimes = []
+                lines = runtimeFile.readlines()
+                for line in lines:
+                    appNeighbourTotalRuntimes.append(line.split())
+            with open(testFolder + "/OrthoNeighbourRuntimes.txt", "r") as runtimeFile:
+                orthoNeighbourTotalRuntimes = []
+                lines = runtimeFile.readlines()
+                for line in lines:
+                    orthoNeighbourTotalRuntimes.append(line.split())
+    
+#    if cherryTree:
+#        if neighbour:
+#            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourAccuracyAveragesList)
         
 
 def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None, totalAverages3 = None, totalAverages4 = None, totalAverages5 = None, totalAverages6 = None):

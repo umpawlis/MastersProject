@@ -1,6 +1,7 @@
 import time
 import copy
 import os.path
+import sys
 import globals
 from Bio import Phylo
 from FileService import createFile
@@ -555,7 +556,8 @@ def traverseNewickTree(node, parentNode):
 ######################################################
 #                       main
 ######################################################
-globals.initialize() #Initialize the globals file
+def main():
+    globals.initialize() #Initialize the globals file
     
     global newickFileName
     global outputFileName
@@ -649,3 +651,5 @@ globals.initialize() #Initialize the globals file
                 
     print('Total time (in seconds): %s' % (totalTime))
     print('Ending application...')
+    
+main()
