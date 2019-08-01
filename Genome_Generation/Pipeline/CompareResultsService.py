@@ -5,6 +5,25 @@ import matplotlib.pyplot as plt
 #outputFile1 = 'ApplicationOutput.txt'
 #outputFile2 = 'generatorOutput.txt'
 
+minSize = 0
+maxSize = 0
+medianSize = 0
+sizeSum = 0
+totalNumGenes = 0
+
+def resetGlobals():
+    global minSize
+    global maxSize
+    global sizeSum
+    global medianSize
+    global totalNumGenes
+    
+    minSize = 0
+    maxSize = 0
+    sizeSum = 0
+    medianSize = 0
+    totalNumGenes = 0
+
 ######################################################
 # constructDistributionGraph
 # Parameters:
@@ -86,6 +105,12 @@ def parseSizeDistribution(line):
 # Description: Compares results of inversions, transpositions, and inverted transpositions
 ######################################################
 def inversionTranspositionComparison(data1, data2, outputFile):
+    global minSize
+    global maxSize
+    global sizeSum
+    global medianSize
+    global totalNumGenes
+    
     percentage = 0
     dict1 = {}
     dict2 = {}
@@ -117,6 +142,7 @@ def inversionTranspositionComparison(data1, data2, outputFile):
                     else:
                         negativePositionsList1.append(data[0])
     for region in regions2:
+        eventFound = False
         if region != '':
 #            outputFile.write("Reversing Section\n")
 #            outputFile.write(region + '\n')
@@ -126,11 +152,14 @@ def inversionTranspositionComparison(data1, data2, outputFile):
 #                numEventsFound += 1
             if flexCompareEvents(region, regions1):
                 numEventsFound += 1
+                eventFound = True
             operons = region.split(';')
             for operon in operons:
                 if operon != '':
                     genes = operon.split(', ')
                     numGenesExpected += len(genes)
+                    if eventFound:
+                        sizeSum += len(genes)
                     for gene in genes:
                         data = gene.split(' ')
                         if len(data) == 2:
@@ -174,6 +203,12 @@ def inversionTranspositionComparison(data1, data2, outputFile):
 # Description: Compares results of codon mismatches and substitutions
 ######################################################
 def duplicationDeletionComparison(data1, data2, outputFile):
+    global minSize
+    global maxSize
+    global sizeSum
+    global medianSize
+    global totalNumGenes
+    
     percentage = 0
 
     #Parse the data
@@ -203,6 +238,7 @@ def duplicationDeletionComparison(data1, data2, outputFile):
                 else:
                     negativePositionsList1.append(data[0])
     for segment in segments2:
+        eventFound = False
         if segment != '':
 #            if ',' in segment:
 #                outputFile.write("Reversing Section\n")
@@ -215,8 +251,11 @@ def duplicationDeletionComparison(data1, data2, outputFile):
 #                numEventsFound += 1
             if flexCompareEvents(segment, segments1):
                 numEventsFound += 1
+                eventFound = True
             genes = segment.split(', ')
             numGenesExpected += len(genes)
+            if eventFound:
+                sizeSum += len(genes)
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
@@ -260,6 +299,12 @@ def duplicationDeletionComparison(data1, data2, outputFile):
 # Description: Compares results of codon mismatches and substitutions
 ######################################################
 def codonMismatchSubstitutionComparison(data1, data2, outputFile):
+    global minSize
+    global maxSize
+    global sizeSum
+    global medianSize
+    global totalNumGenes
+    
     percentage = 0
     dict1 = {}
     dict2 = {}
@@ -308,11 +353,13 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
             if count < len(negativePositionsList2):
                 if negativePositionsList2[count] in negativePositionsList1:
                     numEventsFound += 1
+                    sizeSum += 1
             count += 1
         else:
             for newKey in range(int(key)-2, int(key)+3):
                 if str(newKey) in dict1 and dict2[key] == dict1[str(newKey)]: #A correctly identified event
                     numEventsFound += 1
+                    sizeSum += 1
                     break
 
 #    if count == 0 and len(dict2) == 0:
@@ -439,6 +486,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     totalGenesFound = 0
     totalGenesExpected = 0
     totalAppEvents = 0
+    
+    resetGlobals()
     
     #Track total counts for each event type
     duplicationTotals = [0, 0, 0, 0]
