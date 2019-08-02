@@ -3,12 +3,6 @@
 ##################################################
 def initialize():
     
-    global codonMismatchCounter
-    codonMismatchCounter = 0
-    
-    global substitutionCounter
-    substitutionCounter = 0
-    
     global printToConsole
     printToConsole = False
     
@@ -17,6 +11,15 @@ def initialize():
     
     global trackingId
     trackingId = 0
+    
+    global enableSelfAlignmentDetails
+    enableSelfAlignmentDetails = False
+    
+    global substitutionId
+    substitutionId = 0
+    
+    global codonMismatchId
+    codonMismatchId = 0
     
     global strains
     strains = []
@@ -34,10 +37,10 @@ def initialize():
     substitutionCost = -1
 
     global yDistanceThreshold
-    yDistanceThreshold = 3
+    yDistanceThreshold = 2
     
     global xDistanceThreshold
-    xDistanceThreshold = 4
+    xDistanceThreshold = 2
 
     global ancestralCounter
     ancestralCounter = 0
@@ -47,6 +50,12 @@ def initialize():
 
     global transposedCounter
     transposedCounter = 0
+    
+    global codonMismatchCounter
+    codonMismatchCounter = 0
+    
+    global substitutionCounter
+    substitutionCounter = 0
 
     global invertedTransposedCounter
     invertedTransposedCounter = 0

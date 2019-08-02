@@ -161,7 +161,6 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
         for t in range(0, len(operonGaps)):
             genes = operonGaps[t]
             positions = operonGapPositions[t]
-            count = 0
             for g in range(0, len(genes)):
                 gene = genes[g]
                 position = positions[g]
@@ -170,14 +169,14 @@ def removeGenesDeletedMultipleGenerations(event, op, operonGaps, operonGapPositi
                 if removeGenes == True:
                     sequenceChanged = True
                     redoAlignment = True
-                    del op.sequence[position - count]
-                    count += 1
-                    
                     #print(position)
-                    #print(op.sequence)                    
-                    #currIndex = g + 1
-                    #for c in range(currIndex, len(positions)):
-                        #positions[c] = positions[c] - 1
+                    #print(op.sequence)
+                    del op.sequence[position]
+                    
+                    currIndex = g + 1
+                    for c in range(currIndex, len(positions)):
+                        positions[c] = positions[c] - 1
+                    
         #Reconstruct the operon string sequence now
         if sequenceChanged:
             sequenceCopy = copy.deepcopy(op.sequence)
@@ -292,10 +291,19 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
     #Tracks where the extra genes are from
     gap1Indexes = [] #This is used to determine where to insert the genes into the alignment
     gap2Indexes = []
+    
+    selfDuplication = '' #Used only for self global alignment
+    selfPosition = event.fragmentDetails1.startPositionInGenome
 
     while i > 0 or j > 0:
         #Case 1: Perfect match
         if i > 0 and j > 0 and matrix[i][j] == (matrix[i-1][j-1] + globals.match) and operon1[i-1] == operon2[j-1]:
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = operon2[j-1] + ' ' + str((i-1) + selfPosition) + ', ' + selfDuplication
+            else:
+                selfDuplication = selfDuplication + operon2[j-1] + ' ' + str(len(operon1) - (i-1) + selfPosition) + ', '
+                
             match += 1
             alignmentSequence1.insert(0, operon1[i-1])
             alignmentSequence2.insert(0, operon2[j-1])
@@ -303,40 +311,61 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
         #Case 2: Codon mismatch
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.codonCost) and operon1[i-1].split('_')[0].strip() == operon2[j-1].split('_')[0].strip():
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = '!' + operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
+            else:
+                selfDuplication = selfDuplication + '!' + operon2[j-1] + ' ' + str(-1) + ', '
+                
+            #Increment the Id counter to ensure Id id unique
+            globals.codonMismatchId += 1
+            
             codonMismatch += 1
 
-            alignmentSequence1.insert(0, operon1[i-1])
-            alignmentSequence2.insert(0, operon2[j-1])
+            alignmentSequence1.insert(0, operon1[i-1] + '-#' + str(globals.codonMismatchId))
+            alignmentSequence2.insert(0, operon2[j-1] + '-#' + str(globals.codonMismatchId))
 
             codonMismatchIndexesStrain1.append(i-1)
-            codonMismatchGenesStrain1.append(operon1[i-1])
+            codonMismatchGenesStrain1.append(operon1[i-1] + '-#' + str(globals.codonMismatchId))
 
             codonMismatchIndexesStrain2.append(j-1)
-            codonMismatchGenesStrain2.append(operon2[j-1])
+            codonMismatchGenesStrain2.append(operon2[j-1] + '-#' + str(globals.codonMismatchId))
 
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
         #Case 3: Substitution
         elif i > 0 and j > 0 and (matrix[i][j] == matrix[i-1][j-1] + globals.substitutionCost):
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = '!' + operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
+            else:
+                selfDuplication = selfDuplication + '!' + operon2[j-1] + ' ' + str(-1) + ', '
+                
+            #Increment the Id counter to ensure the ID is unique
+            globals.substitutionId += 1
+            
             substitution += 1
-
-            alignmentSequence1.insert(0, operon1[i-1])
-            alignmentSequence2.insert(0, operon2[j-1])
+            
+            alignmentSequence1.insert(0, operon1[i-1] + '-@' + str(globals.substitutionId))
+            alignmentSequence2.insert(0, operon2[j-1] + '-@' + str(globals.substitutionId))
 
             substitutionIndexesStrain1.append(i-1)
-            substitutionGenesStrain1.append(operon1[i-1])
+            substitutionGenesStrain1.append(operon1[i-1] + '-@' + str(globals.substitutionId))
 
             substitutionIndexesStrain2.append(j-1)
-            substitutionGenesStrain2.append(operon2[j-1])
+            substitutionGenesStrain2.append(operon2[j-1] + '-@' + str(globals.substitutionId))
 
             i -= 1
             j -= 1
             operon1ConsecutiveGap = False
             operon2ConsecutiveGap = False
+            
         #Case 4: Mismatch- Gap in operon 2
         elif i > 0 and matrix[i][j] == (matrix[i-1][j] + globals.deletionCost):
             index = i-1
@@ -362,6 +391,12 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
 
         #Case 5: Mismatch - Gap in operon 1
         else:
+            #Self global alignment
+            if event.fragmentDetails1.isNegativeOrientation == False:
+                selfDuplication = '!' + operon2[j-1] + ' ' + str(-1) + ', ' + selfDuplication
+            else:
+                selfDuplication = selfDuplication + operon2[j-1] + ' ' + str(-1) + ', '
+                
             index = j - 1
             mismatch += 1
             j -= 1
@@ -382,7 +417,8 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
                 operon1GapIndex.insert(0, index)
                 gap1Indexes.insert(0, len(alignmentSequence1))
                 operon1ConsecutiveGap = True
-
+    
+    event.selfDuplication = selfDuplication[0:(len(selfDuplication) - 2)] + ';' #Remove the last comma and space and add a semicolon 
     #Empty any remaining gaps
     if len(operon1Gap) > 0:
         operon1Gaps.insert(0, operon1Gap)
@@ -655,13 +691,12 @@ def removeGenesFromStrains(deletionList):
                     newDeletionDescription = 'Deletion:'
                     for description in listOfDescriptions:
                         if stringToRemove in description:
-                            print description
-                            print stringToRemove
+                            
                             otherStrain.duplicationDetails += stringToRemove + ';'   #Add the gene to the duplication list
                             
                             listOfGenes = description.split(', ')                #Split the sequence
                             count = len(listOfGenes)                            #Tells us which counter to modify based on number of genes
-                            print listOfGenes
+                            
                             #Remove the size from the deletion size distribution and add it to next smaller size if greater than 0 both in the strain and global counter
                             globals.deletionSizeCounter[count] += -1
                             strain.deletionCounts[count] += -1
@@ -686,15 +721,15 @@ def removeGenesFromStrains(deletionList):
                                 otherStrain.duplicationCounts[1] += 1
                             else:
                                 otherStrain.duplicationCounts[1] = 1
-                                
+                            
                             #print(stringToRemove)
                             #print(listOfGenes)
-                            #for m in range(0, len(listOfGenes)):
-                                #listOfGenes[m] = listOfGenes[m].strip()
-                                
+                            
+#                            for m in range(0, len(listOfGenes)):
+#                                listOfGenes[m] = listOfGenes[m].strip()
+                            
                             if listOfGenes.count(stringToRemove) > 0:
                                 listOfGenes.remove(stringToRemove)                  #Remove the gene from the list
-                                print "Removed: " + stringToRemove
                             if len(listOfGenes) > 0:                            #Check if there's any genes left to add back in
                                 newString = ''
                                 for x in range(0, len(listOfGenes)):
@@ -742,7 +777,7 @@ def operonHadGenesRemoved(deletions, ancestralName, originalSequence, sequence):
 #                                if yPosition > xPosition:
 #                                    otherDeletion.ancestralPosition = yPosition - 1 #Shift to the left
 #                                    otherDeletion.originalPosition = otherDeletion.originalPosition - 1
-                        
+                                    
                         if fragment.fragmentIndex == deletion.ancestralFragmentId:
                             #Replace the operon array and the string sequence
                             fragment.originalSequence = originalSequence
@@ -825,6 +860,7 @@ def reconstructOperonSequence(event, strain1, strain2):
         operon2GapIndexes = event.operon2GapIndexes
         operon1GapPositions = event.operon1GapPositions
         operon2GapPositions = event.operon2GapPositions
+        
         if globals.printToConsole:
             print('These are the extra genes for operon 1: %s' %(operon1Gaps))
             print('These are the indexes for extra genes in operon 1: %s' %(operon1GapIndexes))
@@ -888,11 +924,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
+                        
                         if event.fragmentDetails1.isNegativeOrientation:
                             deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -932,11 +969,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
+                        
                         if event.fragmentDetails2.isNegativeOrientation:
                             deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -976,11 +1014,13 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon1Gaps[i-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain1)
-
+                        
                         if event.fragmentDetails1.isNegativeOrientation:
                             deletionDetails += operon1Gaps[i-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon1Gaps[i-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon1Gaps[i-1])) #Size of segment
@@ -1020,11 +1060,12 @@ def reconstructOperonSequence(event, strain1, strain2):
                         originalDeletedGenes.append(operon2Gaps[j-1][k])
                         originalDeletedGenesPositions.append(genePos)
                         otherStrains.append(strain2)
-
+                        
                         if event.fragmentDetails2.isNegativeOrientation:
                             deletionDetails += operon2Gaps[j-1][k] + ' ' + str(genePos) + ', '
                         else:
                             deletionDetails = operon2Gaps[j-1][k] + ' ' + str(genePos) + ', ' + deletionDetails
+                            
                     deletionDetails = deletionDetails[0:(len(deletionDetails) - 2)]
                     deletionDetails += ';'                      #End of deleted segment
                     deletionSizes.append(len(operon2Gaps[j-1])) #Size of segment
@@ -1110,12 +1151,10 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             for p in range(0, len(duplicateGenes)):
                 gene = duplicateGenes[p]
                 pos = duplicatePositions[p]
-
                 if fragment.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
                     genePos = pos + fragment.startPositionInGenome
                 else:
                     genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
-
                 if fragment.isNegativeOrientation:
                     tempString = gene + ' ' + str(genePos) + ', ' + tempString
                 else:
@@ -1131,7 +1170,7 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             if globals.printToConsole:
                 #For making sure everything is working
                 print('Gap sequence found! Removing gap sequence!')
-                print('This is the gap that was removed, %s' % (duplicationDetails))
+                print('This is the gap that was removed, %s' % (tempString))
                 print('This is the sequence the gap was found in, %s' % (sequence))
         else:
             startIndex+=1
@@ -1142,7 +1181,7 @@ def checkForMatch(gap, positions, sequence, fragment, size):
             windowSize = min(windowSize-1, len(gap))
             startIndex = 0
             endIndex = startIndex + windowSize
-            
+    
     #Special case for within alignment b/c the above was not checking all possible genes of size 1
     if size == 0 and len(gap) > 0:
         for x in reversed(range(0, len(gap))):
@@ -1170,14 +1209,14 @@ def checkForMatch(gap, positions, sequence, fragment, size):
                     #Remove the duplicated region
                     del gap[x:x+1]
                     del positions[x:x+1]
-                    x = x-1
+                    x = x-1    
                     if globals.printToConsole:
                         #For making sure everything is working
                         print('Gap sequence found! Removing gap sequence!')
                         print('This is the gap that was removed, %s' % (tempString))
                         print('This is the sequence the gap was found in, %s' % (sequence))
                     break #Break out of sequence loop
-
+                    
     return geneDuplicateSizes, duplicationDetails, gap, positions
 
 ######################################################

@@ -14,6 +14,7 @@ class GenomeFragment(object):
         self.description = description
         self.isNegativeOrientation = isNegativeOrientation
         self.deletionDetailsList = []
+        self.isDuplicate = False
 
     def setPoint(self, point):
         self.point = point
