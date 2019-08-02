@@ -1,0 +1,82 @@
+Comparison of CP004069 and NC_014171
+
+Strain:CP004069
+Codon Mismatch:
+Substitution:
+Duplication:
+Ile_AUC 2, Ala_GCA 3; (A)
+Ile_AUC 60, Ala_GCA 61; (B)
+Ile_AUC 55, Ala_GCA 56; (C)
+Ile_AUC 47, Ala_GCA 48; (D)
+Ile_AUC 8, Ala_GCA 9; (E)
+Met_AUG 136; (F)
+Deletion:
+16S 10, 23S 11, 5S 12, Val_GUA 13, Thr_ACA 14, Lys_AAA 15, Leu_CUA 16, Gly_GGC 17, Leu_UUA 18, Arg_CGU 19, Pro_CCA 20, Ala_GCA 21, 16S 22, 23S 23, 5S 24; (G)
+His_CAC 112, Trp_UGG 113; (H)
+Inversion:
+Transposition:16S 17, 23S 18, 5S 19, Asn_AAC 20, Thr_ACC 21, Glu_GAA 22, Val_GUA 23, Tyr_UAC 24, Gln_CAA 25, Lys_AAA 26, Gly_GGC 27, Ala_GCA 28;Asn_AAC 29, Ser_AGC 30, Glu_GAA 31, Val_GUA 32, Met_AUG 33, Asp_GAC 34, Gln_CAA 35, Lys_AAA 36, Leu_CUC 37, Arg_CGU 38, Pro_CCA 39, Gly_GGA 40, 16S 41, 23S 42, 5S 43, Met_AUG 44, Asp_GAC 45;|
+16S 46, Ile_AUC 47, Ala_GCA 48, 23S 49, 5S 50;|
+16S 51, 23S 52, 5S 53;16S 54, Ile_AUC 55, Ala_GCA 56, 23S 57, 5S 58;16S 59, Ile_AUC 60, Ala_GCA 61, 23S 62, 5S 63;|
+Inverted Transposition:
+
+Strain:NC_014171
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:
+Inversion:
+Transposition:
+16S 66, 23S 67, 5S 68;|
+16S 5, 23S 6, 5S 7;Met_AUG 8, Glu_GAA 9;|
+Inverted Transposition:
+
+Operons with differences:
+								(A)
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				   23S, 5S]
+(A) - Marked as duplicate since found in another operon
+
+								(B)
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				   23S, 5S]
+(B) - Marked as duplicate since found in another operon
+
+							   (C)
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				   23S, 5S]
+(C) - Marked as duplicate since found in another operon
+
+							   (D)
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				   23S, 5S]
+(D) - Marked as duplicate since found in another operon
+
+								 (E)
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				23S, 5S]
+(E) - Marked as duplicate since found in another operon
+
+
+Self Global alignment CP004069
+
+Original Operon 1: Met_AUG
+Original Operon 2: -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S]
+(F) - Singleton was unmapped but an identical copy was found in an operon therefore marked as duplication
+
+Self global alignment NC_014171
+Original Operon 1: [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+(G) - No match was found therefore marked as deletion in sibling
+
+Original Operon 1: [His_CAC, Trp_UGG]
+(H) - No match was found therefore marked as deletion in sibling
+
+
+Genome CP004069: 	< o >, [16S, Ile_AUC, Ala_GCA, 23S, 5S], Ser_UCA, [16S, Ile_AUC, Ala_GCA, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA], [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], [16S, Ile_AUC, Ala_GCA, 23S, 5S], [16S, 23S, 5S], [16S, Ile_AUC, Ala_GCA, 23S, 5S], [16S, Ile_AUC, Ala_GCA, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG], Gly_GGA, [16S, 23S, 5S, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, Ser_UCA, Ser_UCA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Trp_UGG, Ile_AUC, Asn_AAC, Glu_GAA], -Val_GUC, < t >, -Met_AUG, -[Arg_AGA, Gly_GGA], -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S], Met_AUG, -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+Genome NC_014171:	< o >, [16S, 23S, 5S], Ser_UCA, [16S, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA], [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG], Gly_GGA, [16S, 23S, 5S, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, Ser_UCA, Ser_UCA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Trp_UGG, Ile_AUC, Asn_AAC, Glu_GAA], -Val_GUC, [His_CAC, Trp_UGG], < t >, -Met_AUG, -[Arg_AGA, Gly_GGA], -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+
+
+
+
+
+
+
