@@ -1184,7 +1184,7 @@ def checkForMatch(gap, positions, sequence, fragment, size):
     
     #Special case for within alignment b/c the above was not checking all possible genes of size 1
     if size == 0 and len(gap) > 0:
-        for x in range(0, len(gap)):
+        for x in reversed(range(0, len(gap))):
             for y in range(0, len(sequence)): #Iterate over all genes in sequence
                 if gap[x] == sequence[y]:
                     geneDuplicateSizes.append(1)
