@@ -88,7 +88,7 @@ def parseSizeDistribution(line):
             dataArray = data. split()
             
             if len(dataArray) != 4:
-                print('Error! Should be 4 elements for the size distribution')
+#                print('Error! Should be 4 elements for the size distribution')
                 return {}
             else:
                 size = dataArray[1]
@@ -494,6 +494,7 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     lossTotals = [0, 0, 0, 0]
     inversionTotals = [0, 0, 0, 0]
     transpositionTotals = [0, 0, 0, 0]
+    substitutionTotals = [0, 0, 0, 0]
     
     if file1.mode == "r" and file2.mode == "r":
         newickTree1 = file1.readline() #Newick tree 1
@@ -519,15 +520,26 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
 
                     line1 = file1.readline() #Codon mismatch
                     line2 = file2.readline() #Codon mismatch
-                    if 'Codon Mismatch' in line1 and 'Codon Mismatch' in line2:
+                    line2 = file2.readline() #Substitution instead because generator does not produce codon mismatches
+                    if 'Codon Mismatch' in line1 and 'Substitution' in line2:
                         outputFile.write('Comparing the codon mismatches between the strains!\n')
                         line1 = line1.replace('Codon Mismatch:', '')
-                        line2 = line2.replace('Codon Mismatch:', '')
+#                        line2 = line2.replace('Codon Mismatch:', '')
+                        line2 = line2.replace('Substitution:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        substitutionTotals[0] += result[0]
+                        
                         totalEventsExpected += result[1]
+                        substitutionTotals[1] += result[1]
+                        
                         totalGenesFound += result[0]
+                        substitutionTotals[2] += result[0]
+                        
                         totalGenesExpected += result[1]
+                        substitutionTotals[3] += result[1]
+                        
                         totalAppEvents += result[2]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Codon Mismatches is: %s percent' % (result))
@@ -536,16 +548,26 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                         return False
 
                     line1 = file1.readline() #Substitution
-                    line2 = file2.readline() #Substitution
-                    if 'Substitution' in line1 and 'Substitution' in line2:
+#                    line2 = file2.readline() #Substitution
+#                    if 'Substitution' in line1 and 'Substitution' in line2:
+                    if 'Substitution' in line1:
                         outputFile.write('Comparing the substitutions between the strains!\n')
                         line1 = line1.replace('Substitution:', '')
-                        line2 = line2.replace('Substitution:', '')
+#                        line2 = line2.replace('Substitution:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
+                        
                         totalEventsFound += result[0]
+                        substitutionTotals[0] += result[0]
+                        
                         totalEventsExpected += result[1]
+                        substitutionTotals[1] += result[1]
+                        
                         totalGenesFound += result[0]
+                        substitutionTotals[2] += result[0]
+                        
                         totalGenesExpected += result[1]
+                        substitutionTotals[3] += result[1]
+                        
                         totalAppEvents += result[2]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Substitutions is: %s percent' % (result))
@@ -813,13 +835,23 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
     outputFile.write('Inversion Events Found: %s Inversion Events Expected: %s Inversion Genes Found: %s Inversion Genes Expected: %s\n' % (inversionTotals[0], inversionTotals[1], inversionTotals[2], inversionTotals[3]))
     outputFile.write('Transposition Events Found: %s Transposition Events Expected: %s Transposition Genes Found: %s Transposition Genes Expected: %s\n' % (transpositionTotals[0], transpositionTotals[1], transpositionTotals[2], transpositionTotals[3]))
 #    outputFile.write('Inverted Transposition Events Found: %s Inverted Transposition Events Expected: %s Inverted TranspositionInverted Transposition Genes Found: %s Inverted Transposition Genes Expected: %s\n' % (invertedTranspositionTotals[0], invertedTranspositionTotals[1], invertedTranspositionTotals[2], invertedTranspositionTotals[3]))
+    outputFile.write('Substitution Events Found: %s Substitution Events Expected: %s Substitution Genes Found: %s Substitution Genes Expected: %s\n' % (substitutionTotals[0], substitutionTotals[1], substitutionTotals[2], substitutionTotals[3]))
     
-    print('Closing files...')
+#    print('Closing files...')
     outputFile.close()
     file1.close()
     file2.close()
-    print('Successfully closed files.')
-    return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals
+#    print('Successfully closed files.')
+    
+    directories = fileDir.split("/")
+    dataFileDir = "/".join(directories[:-1])
+    
+#    avgEventSize = float(sizeSum) / float(totalEventsFound)
+    with open(dataFileDir + "/" + prefix + "EventSizeData.txt", "a+") as dataFile:
+        dataFile.write("%f " % sizeSum)
+    with open(dataFileDir + "/" + prefix + "EventCountData.txt", "a+") as dataFile:
+        dataFile.write("%f " % totalEventsFound)
+    return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals, substitutionTotals
 
 ######## Main ########
 #if readFiles("compareTest", 'ApplicationOutput.txt', 'generatorOutput.txt', 'app-'):
