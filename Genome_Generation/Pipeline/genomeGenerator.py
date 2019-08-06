@@ -889,12 +889,6 @@ def performTransposition(before, after, p):
     
     if isinstance(genome[targetIndex], list):
         # print "target in list"
-#        operon = genome[targetIndex]
-#        targetPos = random.randint(0, len(operon)-1)
-#
-#        for gene in reversed(transSection):
-#            # print "inserting " + gene
-#            genome[targetIndex].insert(targetPos, gene)
         genome.insert(targetIndex, transSection)
             
         if printToConsole:
@@ -945,17 +939,13 @@ def performSubstitution(before, after):
         genome = after
         fromBefore = False
 
-#    index = random.randint(0, len(genome)-1)
     index, targetPos = getSubstitutionTarget(genome)
     if isinstance(genome[index], list):
         # print "is list"
-#        targetPos = random.randint(0, len(genome[index])-1)
-
         genome[index][targetPos] = random.choice(aminoAcids)
         geneSub = genome[index][targetPos]
     else:
         # print "is singleton"
-#        targetPos = 0
         genome[index] = random.choice(aminoAcids)
         geneSub = genome[index]
 
@@ -1388,6 +1378,7 @@ def createAncestor(maxLength, numOperons):
             afterTerminus = []
             seqLength = 0
             currNumOperons = 0
+            operonProb = 0.65
             terminusAdded = False
             currentSequence = beforeTerminus
 
