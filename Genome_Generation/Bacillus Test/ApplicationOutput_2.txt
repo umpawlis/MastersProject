@@ -144,10 +144,10 @@ Inversion:
 Transposition:
 Inverted Transposition:
 Strain:NC_003909
-Codon Mismatch:Ile_GCA 3;
+Codon Mismatch:
 Substitution:
-Duplication:Met_AUG 43, Asp_GAC 44;Gly_GGA 104;Ala_AUC 2;
-Deletion:Ala_GCA 3;Arg_AGA 105, Gly_GGA 106;
+Duplication:Met_AUG 43, Asp_GAC 44;Gly_GGA 104;
+Deletion:Arg_AGA 105, Gly_GGA 106;
 Inversion:
 Transposition:
 Inverted Transposition:
@@ -175,14 +175,14 @@ Deletion:Leu_UUA 59;Glu_GAA 23, Val_GUA 24, Thr_ACA 25, Tyr_UAC 26, Gln_CAA 27;A
 Inversion:
 Transposition:
 Inverted Transposition:
-Total Deletions: size: 1 count: 16, size: 2 count: 10, size: 3 count: 2, size: 5 count: 2, size: 7 count: 3, size: 12 count: 1, size: 15 count: 2, size: 16 count: 1
-Total Duplications: size: 1 count: 24, size: 2 count: 27, size: 3 count: 7, size: 4 count: 1, size: 5 count: 1, size: 7 count: 1, size: 13 count: 1, size: 15 count: 2, size: 25 count: 1
+Total Deletions: size: 1 count: 15, size: 2 count: 10, size: 3 count: 2, size: 5 count: 2, size: 7 count: 3, size: 12 count: 1, size: 15 count: 2, size: 16 count: 1
+Total Duplications: size: 1 count: 23, size: 2 count: 27, size: 3 count: 7, size: 4 count: 1, size: 5 count: 1, size: 7 count: 1, size: 13 count: 1, size: 15 count: 2, size: 25 count: 1
 Size Distribution of Inversions: 
 Size Distribution of Transpositions: size: 3 count: 4, size: 12 count: 1, size: 5 count: 1, size: 6 count: 1, size: 15 count: 1
 Size Distribution of Inverted Transpositions: 
 Total Inversions: 0
 Total Transpositions: 8
 Total Inverted Transpositions: 0
-Total Codon Mismatches: 5
+Total Codon Mismatches: 4
 Total Substitutions: 11
-Total Execution Time: 9.31200003624
+Total Execution Time: 8.87599992752
