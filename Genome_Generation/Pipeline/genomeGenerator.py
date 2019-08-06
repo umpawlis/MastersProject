@@ -9,7 +9,7 @@ printToConsole = False
 
 aminoAcids = ["Ala_GCU", "Ala_GCC", "Ala_GCA", "Ala_GCG", "Arg_CGU", "Arg_CGC", "Arg_CGA", "Arg_CGG", "Arg_AGA", 
     "Arg_AGG", "Asp_GAU", "Asp_GAC", "Cys_UGU", "Cys_UGC", "Glu_GAA", "Glu_GAG", "Gln_CAA", "Gln_CAG", "Gly_GGU", "Gly_GGC",
-    "Gly_GGA", "Gly_GGG", "His_CAU", "HIs_CAC", "Ile_AUU", "Ile_AUC", "Ile_AUA", "Leu_UUA", "Leu_UUG", "Leu_CUU", "Leu_CUC", "Leu_CUA", "Leu_CUG",
+    "Gly_GGA", "Gly_GGG", "His_CAU", "His_CAC", "Ile_AUU", "Ile_AUC", "Ile_AUA", "Leu_UUA", "Leu_UUG", "Leu_CUU", "Leu_CUC", "Leu_CUA", "Leu_CUG",
     "Lys_AAA", "Lys_AAG", "Met_AUG", "Phe_UUU", "Phe_UUC", "Pro_CCU", "Pro_CCC", "Pro_CCA", "Pro_CCG", "Ser_UCU", "Ser_UCC", "Ser_UCA", "Ser_UCG", "Ser_AGU", "Ser_AGC",
     "Thr_ACU", "Thr_ACC", "Thr_ACA", "Thr_ACG", "Trp_UGG", "Tyr_UAU", "Tyr_UAC", "Val_GUU", "Val_GUC","Val_GUA","Val_GUG"]
 
@@ -63,7 +63,8 @@ class Event:
                 print self.genes
                 print self.range
             for operon in self.genes:
-                print operon
+                if printToConsole:
+                    print operon
                 if isinstance(operon, list):
                     event += ', '.join(gene + " " + str(index) for gene, index in zip(operon, self.range[count:count + len(operon)]))
                     event += ";"
@@ -694,12 +695,14 @@ def updateEvents(eventList, newEvent, before, after, prevEventRange = None, upda
                                     if overlap[0] == count:
                                         event.genes[i][j] = newEvent.genes[0]
                                         updated = True
+                                        count += 1
                                     else:
                                         count += 1
                             else:
                                 if overlap[0] == count:
                                     event.genes[i] = newEvent.genes[0]
                                     updated = True
+                                    count += 1
                                 else:
                                     count += 1
                         if updated == False:
@@ -886,12 +889,13 @@ def performTransposition(before, after, p):
     
     if isinstance(genome[targetIndex], list):
         # print "target in list"
-        operon = genome[targetIndex]
-        targetPos = random.randint(0, len(operon)-1)
-
-        for gene in reversed(transSection):
-            # print "inserting " + gene
-            genome[targetIndex].insert(targetPos, gene)
+#        operon = genome[targetIndex]
+#        targetPos = random.randint(0, len(operon)-1)
+#
+#        for gene in reversed(transSection):
+#            # print "inserting " + gene
+#            genome[targetIndex].insert(targetPos, gene)
+        genome.insert(targetIndex, transSection)
             
         if printToConsole:
         # event = "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
@@ -941,16 +945,17 @@ def performSubstitution(before, after):
         genome = after
         fromBefore = False
 
-    index = random.randint(0, len(genome)-1)
+#    index = random.randint(0, len(genome)-1)
+    index, targetPos = getSubstitutionTarget(genome)
     if isinstance(genome[index], list):
         # print "is list"
-        targetPos = random.randint(0, len(genome[index])-1)
+#        targetPos = random.randint(0, len(genome[index])-1)
 
         genome[index][targetPos] = random.choice(aminoAcids)
         geneSub = genome[index][targetPos]
     else:
         # print "is singleton"
-        targetPos = 0
+#        targetPos = 0
         genome[index] = random.choice(aminoAcids)
         geneSub = genome[index]
 
@@ -966,6 +971,22 @@ def performSubstitution(before, after):
     eventType = "S"
     branchEvent = Event(eventType, range(absoluteIndex, absoluteIndex+1), gene)
     return branchEvent, range(absoluteIndex, absoluteIndex+1), gene
+
+def getSubstitutionTarget(genome):
+    targetAllowed = False
+    
+    while not targetAllowed:
+        index = random.randint(0, len(genome)-1)
+        if isinstance(genome[index], list):
+            targetPos = random.randint(0, len(genome[index])-1)
+            
+            if genome[index][targetPos] != "16S" and genome[index][targetPos] != "5S" and genome[index][targetPos] != "23S":
+                targetAllowed = True
+        else:
+            targetPos = 0
+            if genome[index] != "16S" and genome[index][targetPos] != "5S" and genome[index][targetPos] != "23S":
+                targetAllowed = True
+    return index, targetPos
 
 def getDifferentGene(currGene):
     while True:
@@ -1326,9 +1347,11 @@ def createAncestor(maxLength, numOperons):
     afterTerminus = []
     seqLength = 0
     currNumOperons = 0
+    operonProb = 0.65
     terminusAdded = False
 
     currentSequence = beforeTerminus
+    numSingletons = 0
     while currNumOperons < numOperons or seqLength < maxLength:
         prob = random.random()
 
@@ -1337,13 +1360,13 @@ def createAncestor(maxLength, numOperons):
         else:
             rnaSequence = ["16S", "23S", "5S"]
 
-        if prob <= 0.6:
-            if prob <= 0.07:
+        if prob <= operonProb:
+            if prob <= 0.04:
                 operon = rnaSequence
             else:
                 operon = createOperon()
-                if prob <= 0.15:
-                    if prob <= 0.11:
+                if prob <= 0.16:
+                    if prob <= 0.10:
                         operon.extend(rnaSequence)
                     else:
                         operon = rnaSequence + operon
@@ -1355,6 +1378,10 @@ def createAncestor(maxLength, numOperons):
             if seqLength + 1 <= maxLength:
                 currentSequence.append(random.choice(aminoAcids))
                 seqLength += 1
+                numSingletons += 1
+                if numSingletons >= 8:
+                    operonProb = 0.90
+                
         
         if seqLength == maxLength and currNumOperons < numOperons:
             beforeTerminus = []
@@ -1370,16 +1397,19 @@ def createAncestor(maxLength, numOperons):
 
 def createOperon():
     operon = []
-    size = max(geometricSampling(0.45), 2)
+    size = geometricSampling(0.125, 2, 25)
 
     for i in range(size):
         operon.append(random.choice(aminoAcids))
 
     return operon
 
-def geometricSampling(p, minValue = 1):
+def geometricSampling(p, minValue = 1, maxValue = -1):
     value = minValue
     while random.random() > p:
+        if maxValue != -1:
+            if value >= maxValue:
+                break
         value += 1
     return value
 
@@ -1411,8 +1441,8 @@ if __name__ == '__main__':
     #All probabilities determine how likely the event will occur. **Probabilities have to add up to 1
     #All pValues determine how many genes the event will affect. The higher the pValue, the lower the chance that the event will be large
     #Examples: code below creates genomes of size 25 with atleast 3 operons and 3 events for each genome. Only transpositions will occur though. None of the other events have a probability.
-    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 60, 3, 1, 0.0, 0.7, 0.0, 0.7, 1.0, 0.7, 0.0, 0.0, 0.7, False)
+#    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 120, 3, 5, 0.0, 0.7, 0.0, 0.7, 0.5, 0.5, 0.5, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
 #    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.
-#    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 80, 4, 3, 0.25, 0.7, 0.25, 0.7, 0.25, 0.4, 0.0, 0.25, 0.7, True)
+    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 120, 4, 4, 0.20, 0.7, 0.20, 0.7, 0.20, 0.4, 0.20, 0.20, 0.7, True)

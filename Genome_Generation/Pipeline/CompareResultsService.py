@@ -5,11 +5,12 @@ import matplotlib.pyplot as plt
 #outputFile1 = 'ApplicationOutput.txt'
 #outputFile2 = 'generatorOutput.txt'
 
-minSize = 0
+minSize = 100
 maxSize = 0
 medianSize = 0
 sizeSum = 0
 totalNumGenes = 0
+totalGenes = []
 
 def resetGlobals():
     global minSize
@@ -17,12 +18,14 @@ def resetGlobals():
     global sizeSum
     global medianSize
     global totalNumGenes
+    global totalGenes
     
     minSize = 0
     maxSize = 0
     sizeSum = 0
     medianSize = 0
     totalNumGenes = 0
+    totalGenes = []
 
 ######################################################
 # constructDistributionGraph
@@ -108,8 +111,8 @@ def inversionTranspositionComparison(data1, data2, outputFile):
     global minSize
     global maxSize
     global sizeSum
-    global medianSize
     global totalNumGenes
+    global totalGenes
     
     percentage = 0
     dict1 = {}
@@ -160,6 +163,11 @@ def inversionTranspositionComparison(data1, data2, outputFile):
                     numGenesExpected += len(genes)
                     if eventFound:
                         sizeSum += len(genes)
+                        totalGenes.append(len(genes))
+                        if len(genes) < minSize:
+                            minSize = len(genes)
+                        if len(genes) > maxSize:
+                            maxSize = len(genes)
                     for gene in genes:
                         data = gene.split(' ')
                         if len(data) == 2:
@@ -206,8 +214,8 @@ def duplicationDeletionComparison(data1, data2, outputFile):
     global minSize
     global maxSize
     global sizeSum
-    global medianSize
     global totalNumGenes
+    global totalGenes
     
     percentage = 0
 
@@ -256,6 +264,11 @@ def duplicationDeletionComparison(data1, data2, outputFile):
             numGenesExpected += len(genes)
             if eventFound:
                 sizeSum += len(genes)
+                totalGenes.append(len(genes))
+                if len(genes) < minSize:
+                    minSize = len(genes)
+                if len(genes) > maxSize:
+                    maxSize = len(genes)
             for gene in genes:
                 data = gene.split(' ')
                 if len(data) == 2:
@@ -302,8 +315,8 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
     global minSize
     global maxSize
     global sizeSum
-    global medianSize
     global totalNumGenes
+    global totalGenes
     
     percentage = 0
     dict1 = {}
@@ -354,12 +367,22 @@ def codonMismatchSubstitutionComparison(data1, data2, outputFile):
                 if negativePositionsList2[count] in negativePositionsList1:
                     numEventsFound += 1
                     sizeSum += 1
+                    totalGenes.append(1)
+                    if minSize > 1:
+                        minSize = 1
+                    if maxSize < 1:
+                        maxSize = 1
             count += 1
         else:
             for newKey in range(int(key)-2, int(key)+3):
                 if str(newKey) in dict1 and dict2[key] == dict1[str(newKey)]: #A correctly identified event
                     numEventsFound += 1
                     sizeSum += 1
+                    totalGenes.append(1)
+                    if minSize > 1:
+                        minSize = 1
+                    if maxSize < 1:
+                        maxSize = 1
                     break
 
 #    if count == 0 and len(dict2) == 0:
@@ -851,6 +874,22 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
         dataFile.write("%f " % sizeSum)
     with open(dataFileDir + "/" + prefix + "EventCountData.txt", "a+") as dataFile:
         dataFile.write("%f " % totalEventsFound)
+    with open(dataFileDir + "/" + prefix + "EventMinData.txt", "a+") as dataFile:
+        if minSize == 100:
+            dataFile.write("0 ")
+        else:
+            dataFile.write("%f " % minSize)
+    with open(dataFileDir + "/" + prefix + "EventMaxData.txt", "a+") as dataFile:
+        dataFile.write("%f " % maxSize)
+    if len(totalGenes) > 0:
+        totalGenes.sort()
+        if (len(totalGenes) % 2) == 1:
+            medianSize = totalGenes[len(totalGenes)/2]
+        else:
+            medianSize = (totalGenes[len(totalGenes)/2] + totalGenes[(len(totalGenes)/2) - 1]) / 2
+    with open(dataFileDir + "/" + prefix + "EventMedianData.txt", "a+") as dataFile:
+        dataFile.write("%f " % medianSize)
+        
     return totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents, duplicationTotals, lossTotals, inversionTotals, transpositionTotals, substitutionTotals
 
 ######## Main ########

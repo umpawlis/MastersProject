@@ -673,23 +673,55 @@ def main():
             dataFile.write("\n")
         with open(testFolder + "/app-EventCountData.txt", "a+") as dataFile:
             dataFile.write("\n")
+        with open(testFolder + "/app-EventMinData.txt", "a+") as dataFile:
+            dataFile.write("\n")
+        with open(testFolder + "/app-EventMaxData.txt", "a+") as dataFile:
+            dataFile.write("\n")
+        with open(testFolder + "/app-EventMedianData.txt", "a+") as dataFile:
+            dataFile.write("\n")
         if cherryTree:
             with open(testFolder + "/ortho-EventSizeData.txt", "a+") as dataFile:
                 dataFile.write("\n")
             with open(testFolder + "/ortho-EventCountData.txt", "a+") as dataFile:
                 dataFile.write("\n")
+            with open(testFolder + "/ortho-EventMinData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+            with open(testFolder + "/ortho-EventMaxData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+            with open(testFolder + "/ortho-EventMedianData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+                
             with open(testFolder + "/dup-EventSizeData.txt", "a+") as dataFile:
                 dataFile.write("\n")
             with open(testFolder + "/dup-EventCountData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+            with open(testFolder + "/dup-EventMinData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+            with open(testFolder + "/dup-EventMaxData.txt", "a+") as dataFile:
+                dataFile.write("\n")
+            with open(testFolder + "/dup-EventMedianData.txt", "a+") as dataFile:
                 dataFile.write("\n")
             if neighbour:
                 with open(testFolder + "/appNeighbour-EventSizeData.txt", "a+") as dataFile:
                     dataFile.write("\n")
                 with open(testFolder + "/appNeighbour-EventCountData.txt", "a+") as dataFile:
                     dataFile.write("\n")
+                with open(testFolder + "/appNeighbour-EventMinData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                with open(testFolder + "/appNeighbour-EventMaxData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                with open(testFolder + "/appNeighbour-EventMedianData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                    
                 with open(testFolder + "/orthoNeighbour-EventSizeData.txt", "a+") as dataFile:
                     dataFile.write("\n")
                 with open(testFolder + "/orthoNeighbour-EventCountData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                with open(testFolder + "/orthoNeighbour-EventMinData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                with open(testFolder + "/orthoNeighbour-EventMaxData.txt", "a+") as dataFile:
+                    dataFile.write("\n")
+                with open(testFolder + "/orthoNeighbour-EventMedianData.txt", "a+") as dataFile:
                     dataFile.write("\n")
         
         averageRunTimePerTest.append(testRunTimes)
@@ -947,25 +979,49 @@ def plotRuntimes(cherryTree, neighbour, xAxisTitle, xAxis):
 def plotEventSizeData(cherryTree, neighbour, xAxisTitle, xAxis):
     appEventSizes = readDataFile(testFolder + "/app-EventSizeData.txt")
     appNumEvents = readDataFile(testFolder + "/app-EventCountData.txt")
-    appAvgEventSizes = calculateAverages(appEventSizes, appNumEvents)
+    appAvgEventSizes = calculateSizeAverages(appEventSizes, appNumEvents)
+    
+    appMinSizes = readDataFile(testFolder + "/app-EventMinData.txt")
+    appMaxSizes = readDataFile(testFolder + "/app-EventMaxData.txt")
+    appMedianSizes = readDataFile(testFolder + "/app-EventMedianData.txt")
     
     if cherryTree:
         orthoEventSizes = readDataFile(testFolder + "/ortho-EventSizeData.txt")
         orthoNumEvents = readDataFile(testFolder + "/ortho-EventCountData.txt")
-        orthoAvgEventSizes = calculateAverages(orthoEventSizes, orthoNumEvents)
+        orthoAvgEventSizes = calculateSizeAverages(orthoEventSizes, orthoNumEvents)
+        
+        orthoMinSizes = readDataFile(testFolder + "/ortho-EventMinData.txt")
+        orthoMaxSizes = readDataFile(testFolder + "/ortho-EventMaxData.txt")
+        orthoMedianSizes = readDataFile(testFolder + "/ortho-EventMedianData.txt")
         
         dupEventSizes = readDataFile(testFolder + "/dup-EventSizeData.txt")
         dupNumEvents = readDataFile(testFolder + "/dup-EventCountData.txt")
-        dupAvgEventSizes = calculateAverages(dupEventSizes, dupNumEvents)
+        dupAvgEventSizes = calculateSizeAverages(dupEventSizes, dupNumEvents)
+        
+        dupMinSizes = readDataFile(testFolder + "/dup-EventMinData.txt")
+        dupMaxSizes = readDataFile(testFolder + "/dup-EventMaxData.txt")
+        dupMedianSizes = readDataFile(testFolder + "/dup-EventMedianData.txt")
         if neighbour:
             appNeighbourEventSizes = readDataFile(testFolder + "/appNeighbour-EventSizeData.txt")
             appNeighbourNumEvents = readDataFile(testFolder + "/appNeighbour-EventCountData.txt")
-            appNeighbourAvgEventSizes = calculateAverages(appNeighbourEventSizes, appNeighbourNumEvents)
+            appNeighbourAvgEventSizes = calculateSizeAverages(appNeighbourEventSizes, appNeighbourNumEvents)
+            
+            appNeighbourMinSizes = readDataFile(testFolder + "/appNeighbour-EventMinData.txt")
+            appNeighbourMaxSizes = readDataFile(testFolder + "/appNeighbour-EventMaxData.txt")
+            appNeighbourMedianSizes = readDataFile(testFolder + "/appNeighbour-EventMedianData.txt")
             
             orthoNeighbourEventSizes = readDataFile(testFolder + "/orthoNeighbour-EventSizeData.txt")
             orthoNeighbourNumEvents = readDataFile(testFolder + "/orthoNeighbour-EventCountData.txt")
-            orthoNeighbourAvgEventSizes = calculateAverages(orthoNeighbourEventSizes, orthoNeighbourNumEvents)
+            orthoNeighbourAvgEventSizes = calculateSizeAverages(orthoNeighbourEventSizes, orthoNeighbourNumEvents)
+            
+            orthoNeighbourMinSizes = readDataFile(testFolder + "/orthoNeighbour-EventMinData.txt")
+            orthoNeighbourMaxSizes = readDataFile(testFolder + "/orthoNeighbour-EventMaxData.txt")
+            orthoNeighbourMedianSizes = readDataFile(testFolder + "/orthoNeighbour-EventMedianData.txt")
             graphData("AvgEventSize", appAvgEventSizes, xAxisTitle, xAxis, totalAverages3 = orthoAvgEventSizes, totalAverages4 = dupAvgEventSizes, totalAverages5 = appNeighbourAvgEventSizes, totalAverages6 = orthoNeighbourAvgEventSizes)
+            graphData("AvgMinSize", appMinSizes, xAxisTitle, xAxis, totalAverages3 = orthoMinSizes, totalAverages4 = dupMinSizes, totalAverages5 = appNeighbourMinSizes, totalAverages6 = orthoNeighbourMinSizes)
+            graphData("AvgMaxSize", appMaxSizes, xAxisTitle, xAxis, totalAverages3 = orthoMaxSizes, totalAverages4 = dupMaxSizes, totalAverages5 = appNeighbourMaxSizes, totalAverages6 = orthoNeighbourMaxSizes)
+            graphData("AvgMedianSize", appMedianSizes, xAxisTitle, xAxis, totalAverages3 = orthoMedianSizes, totalAverages4 = dupMedianSizes, totalAverages5 = appNeighbourMedianSizes, totalAverages6 = orthoNeighbourMedianSizes)
+            graphData("AvgTotalSize", appEventSizes, xAxisTitle, xAxis, totalAverages3 = orthoEventSizes, totalAverages4 = dupEventSizes, totalAverages5 = appNeighbourEventSizes, totalAverages6 = orthoNeighbourEventSizes)
         else:
             graphData("AvgEventSize", appAvgEventSizes, xAxisTitle, xAxis, totalAverages3 = orthoAvgEventSizes, totalAverages4 = dupAvgEventSizes)
     else:
@@ -981,7 +1037,7 @@ def readDataFile(fileName):
     
     return totalData
 
-def calculateAverages(sizes, count):
+def calculateSizeAverages(sizes, count):
     averages = []
     if printToConsole:
         print sizes
@@ -1065,6 +1121,18 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     elif graphType == "AvgEventSize":
         title = "Average Event Size for Strict Accuracy"
         yAxisTitle = "Average Event Size"
+    elif graphType == "AvgMinSize":
+        title = "Average Minimum Event Size for Strict Accuracy"
+        yAxisTitle = "Average Minimum Event Size"
+    elif graphType == "AvgMaxSize":
+        title = "Average Maximum Event Size for Strict Accuracy"
+        yAxisTitle = "Average Maximum Event Size"
+    elif graphType == "AvgMedianSize":
+        title = "Average Median Event Size for Strict Accuracy"
+        yAxisTitle = "Average Median Event Size"
+    elif graphType == "AvgTotalSize":
+        title = "Average Total Events Size for Strict Accuracy"
+        yAxisTitle = "Average Total Events Size"
         
         
     labels = []

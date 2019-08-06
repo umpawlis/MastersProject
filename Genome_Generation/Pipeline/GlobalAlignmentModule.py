@@ -220,10 +220,10 @@ def performGlobalAlignment(operon1, operon2, event):
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
 
     for a in range(0, len(operon1)+1):
-        scoreMatrix[a][0] = -a
+        scoreMatrix[a][0] = a * globals.deletionCost
 
     for a in range(0, len(operon2)+1):
-        scoreMatrix[0][a] = -a
+        scoreMatrix[0][a] = a * globals.deletionCost
 
     #perform the Global Alignment
     for a in range(1, len(operon1)+1):
