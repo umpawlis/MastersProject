@@ -1379,6 +1379,7 @@ def createAncestor(maxLength, numOperons):
             seqLength = 0
             currNumOperons = 0
             operonProb = 0.65
+            numSingletons = 0
             terminusAdded = False
             currentSequence = beforeTerminus
 
