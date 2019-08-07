@@ -83,15 +83,20 @@ def determineRegions(fragments):
                     yIncreaseCounter += 1
                 else:
                     yDecreaseCounter += 1
+                    
         #Add the region to the appropriate array
-        if aboveMainDiagonal == True and belowMainDiagonal == True and oppositeOrientationCount > 0 and yIncreaseCounter < yDecreaseCounter:
-            invertedRegions.append(consecutiveRegion) #An inversion is defined as crossing the main diagonal and the signs of the orientations being opposite
+        if oppositeOrientationCount > 0:
+            #This is either an inversion or an inverted transposition
+            if aboveMainDiagonal == True and belowMainDiagonal == True and yIncreaseCounter < yDecreaseCounter:
+                invertedRegions.append(consecutiveRegion) #Crosses the main diagonal and y is decreasing
+            else:
+                invertedTransposedRegions.append(consecutiveRegion) #If does not cross main diagonal and y is not decreasing, treat as inverted transposition
         else:
+            #This is either a forward conserved region or a transposition
             if (minMainDiagonalDistance < 3 and yIncreaseCounter > yDecreaseCounter) or (minMainDiagonalDistance == 0 and len(consecutiveRegion) == 1): #If the distance from the main diagonal is 0 and y is increasing
                 conservedForwardRegions.append(consecutiveRegion)
             else:
                 transposedForwardRegions.append(consecutiveRegion)
-                #TODO: Handle invertedTransposedRegions.append(consecutiveRegion)
                 
     if globals.printToConsole:
         print('Statistics for regions in the genome:')

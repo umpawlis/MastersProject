@@ -29,16 +29,16 @@ Substitution:Pro_CCU 52;Leu_CUU 94;
 Duplication:Trp_UGG 111;
 Deletion:Pro_CCA 93, Glu_GAG 94;Ile_AUU 25, Cys_UGC 26;
 Inversion:
-Transposition:Phe_UUU 9;Phe_UUU 10;|Thr_ACA 61, Thr_ACU 62;< t > 65;|Asp_GAC 88, Ala_GCC 89;|Ala_GCU 24, Lys_AAA 25, Gly_GGA 26, Asp_GAC 27, Ile_AUU 28, Cys_UGC 29;|Leu_UUG 114;|
-Inverted Transposition:
+Transposition:Phe_UUU 9;Phe_UUU 10;|Thr_ACA 61, Thr_ACU 62;< t > 65;|Asp_GAC 88, Ala_GCC 89;|Leu_UUG 114;|
+Inverted Transposition:Ala_GCU 24, Lys_AAA 25, Gly_GGA 26, Asp_GAC 27, Ile_AUU 28, Cys_UGC 29;|
 Total Deletions: size: 1 count: 3, size: 2 count: 5, size: 4 count: 1
 Total Duplications: size: 1 count: 6, size: 2 count: 2
 Size Distribution of Inversions: size: 12 count: 1
-Size Distribution of Transpositions: size: 1 count: 2, size: 2 count: 2, size: 3 count: 1, size: 6 count: 1
-Size Distribution of Inverted Transpositions: 
+Size Distribution of Transpositions: size: 1 count: 2, size: 2 count: 2, size: 3 count: 1
+Size Distribution of Inverted Transpositions: size: 6 count: 1
 Total Inversions: 1
-Total Transpositions: 6
-Total Inverted Transpositions: 0
+Total Transpositions: 5
+Total Inverted Transpositions: 1
 Total Codon Mismatches: 2
 Total Substitutions: 3
-Total Execution Time: 3.40400004387
+Total Execution Time: 3.23500013351
