@@ -56,6 +56,9 @@ def determineRegions(fragments):
             yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
             xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
             
+            #cMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Current points distance from the main diagonal
+            #pMainDiagonalDistance = abs(prevFragment.fragmentDetails1.point - prevFragment.fragmentDetails2.point) #Previous points distance from the main diagonal
+            #not(pMainDiagonalDistance == 0 and cMainDiagonalDistance > 0)
             if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
@@ -84,7 +87,7 @@ def determineRegions(fragments):
         if aboveMainDiagonal == True and belowMainDiagonal == True and oppositeOrientationCount > 0 and yIncreaseCounter < yDecreaseCounter:
             invertedRegions.append(consecutiveRegion) #An inversion is defined as crossing the main diagonal and the signs of the orientations being opposite
         else:
-            if minMainDiagonalDistance == 0 and yIncreaseCounter > yDecreaseCounter: #If the distance from the main diagonal is 0 and y is increasing
+            if (minMainDiagonalDistance < 3 and yIncreaseCounter > yDecreaseCounter) or (minMainDiagonalDistance == 0 and len(consecutiveRegion) == 1): #If the distance from the main diagonal is 0 and y is increasing
                 conservedForwardRegions.append(consecutiveRegion)
             else:
                 transposedForwardRegions.append(consecutiveRegion)
