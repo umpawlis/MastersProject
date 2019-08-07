@@ -813,6 +813,22 @@ def main():
         totalAppNeighbourFMeasureList.append(appNeighbourFMeasureList)
         totalOrthoNeighbourFMeasureList.append(orthoFMeasureList)
         
+        if cherryTree:
+            if neighbour: 
+                graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourAccuracyAveragesList)
+                graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList, totalAverages5 = totalRelaxedAppNeighbourAccuracyAveragesList, totalAverages6 = totalRelaxedOrthoNeighbourAccuracyAveragesList)
+                graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList, totalAverages5 = totalAppNeighbourFMeasureList, totalAverages6 = totalOrthoNeighbourFMeasureList)
+                graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList, totalEventsAppNeighbourAveragesList, totalEventsOrthoNeighbourAveragesList)
+            else:
+                graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList)
+                graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalRelaxedOrthoAccuracyAveragesList, totalAverages4 = totalRelaxedDupAccuracyAveragesList)
+                graphData("fMeasure", totalAppFMeasureList, xAxisTitle, xAxis, totalAverages3 = totalOrthoFMeasureList, totalAverages4 = totalDupFMeasureList)
+                graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList, totalEventsOrthoAveragesList, totalEventsDupAveragesList)
+        else:
+            graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis)
+            graphData("rAccuracy", totalRelaxedAppAccuracyAveragesList, xAxisTitle, xAxis)
+            graphData("Events", totalEventsAppAveragesList, xAxisTitle, xAxis, totalEventsGenAveragesList)
+        
     outputData(totalEventsAppAveragesList, testFolder + "appEventsData.txt")
     outputData(totalEventsGenAveragesList, testFolder + "genEventsData.txt")
     outputData(totalEventsOrthoAveragesList, testFolder + "orthoEventsData.txt")
