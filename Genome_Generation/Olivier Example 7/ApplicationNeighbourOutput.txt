@@ -1,0 +1,28 @@
+((NC_000001:0.00000,NC_000002:0.00000):0.00000,NC_000003:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Glu_GAA 2;Thr_ACC 33;Glu_GAA 23;
+Deletion:Trp_UGG 92;
+Inversion:Ala_GCU 54;< t > 55;Leu_CUA 56, Val_GUG 57, Thr_ACU 58;Thr_ACG 59;5S 60, 23S 61, 16S 62;Thr_ACG 63;Gln_CAG 64;|
+Transposition:Pro_CCG 3, Ser_UCC 4, Met_AUG 5, Gly_GGC 6, Arg_AGG 7, Pro_CCG 8;Glu_GAG 9, Val_GUU 10;Asp_GAU 11, Tyr_UAC 12;Glu_GAG 13;Leu_CUG 14, HIs_CAC 15;Ser_UCU 16, Val_GUG 17, Thr_ACU 18, Val_GUC 19, Gly_GGC 20, Ile_AUU 21;Pro_CCC 22;Glu_GAA 23, Thr_ACG 24, Pro_CCU 25, Phe_UUU 26, Arg_AGA 27, Gln_CAA 28;Cys_UGU 29;Arg_CGU 30, Tyr_UAC 31;Pro_CCC 32;Ile_AUC 34;Asp_GAU 35, Gln_CAA 36, Ser_UCC 37, Ser_AGC 38, Glu_GAG 39, Arg_CGC 40, Gly_GGG 41;HIs_CAC 42;Tyr_UAU 43;16S 44, 23S 45, 5S 46, Gln_CAG 47, Ala_GCU 48;Ser_UCU 49;Ser_UCC 50, Met_AUG 51;Cys_UGC 52;Pro_CCC 53;|Val_GUC 79, Ser_AGU 80;|
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:
+Duplication:Leu_CUG 4;Ser_UCC 80;
+Deletion:
+Inversion:
+Transposition:Ser_UCA 65, Gly_GGC 66, Pro_CCG 67, Ser_UCG 68, Arg_CGA 69;Glu_GAA 70, Asp_GAC 71;Gln_CAA 72;Arg_CGU 73, Ser_UCA 74;Leu_UUG 75, Arg_CGA 76, Ala_GCC 77, Thr_ACC 78;|Arg_CGC 114;|5S 79, Ser_UCC 80, 23S 81, 16S 82;5S 83, 23S 84, 16S 85, Asp_GAU 86, Gly_GGG 87;Leu_CUU 88, Leu_CUC 89, Ser_UCA 90;Ala_GCA 91;Ser_UCU 93;Ser_UCC 94;HIs_CAC 95, Pro_CCU 96, Leu_CUC 97, Gly_GGU 98, 5S 99, 23S 100, 16S 101;Pro_CCC 102, Phe_UUU 103;Ala_GCC 104, Pro_CCC 105;Gln_CAG 106;Val_GUU 107;Cys_UGU 108;Ser_UCU 109, Val_GUG 110;Gly_GGU 111, Gln_CAG 112;Leu_CUA 113;|
+Inverted Transposition:
+Total Deletions: size: 1 count: 4
+Total Duplications: size: 1 count: 11, size: 3 count: 1
+Size Distribution of Inversions: size: 11 count: 1
+Size Distribution of Transpositions: size: 1 count: 2, size: 34 count: 1, size: 3 count: 2, size: 2 count: 1, size: 14 count: 2, size: 50 count: 1, size: 27 count: 1
+Size Distribution of Inverted Transpositions: 
+Total Inversions: 1
+Total Transpositions: 10
+Total Inverted Transpositions: 0
+Total Codon Mismatches: 0
+Total Substitutions: 2
+Total Execution Time: 2.72299695015
