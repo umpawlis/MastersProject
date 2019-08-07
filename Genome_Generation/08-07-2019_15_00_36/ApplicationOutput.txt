@@ -1,0 +1,28 @@
+(NC_000001:0.00000,NC_000002:0.00000):0.00000;
+Strain:NC_000001
+Codon Mismatch:
+Substitution:
+Duplication:Gly_GGG 94;Gly_GGU 95;Pro_CCC 106;
+Deletion:Gly_GGU 111;Arg_AGG 22;
+Inversion:
+Transposition:
+Inverted Transposition:
+Strain:NC_000002
+Codon Mismatch:
+Substitution:Gly_GGU 75;Gln_CAA 114;Ile_AUU 47;
+Duplication:Val_GUC 108, Arg_AGG 109;Ala_GCA 96;Ala_GCG 102;
+Deletion:Gly_GGG 107, Gly_GGU 108;Met_AUG 49, Phe_UUU 50;Arg_AGA 99, Arg_CGA 100;
+Inversion:His_CAC 94;His_CAC 95;|
+Transposition:Thr_ACU 71, Leu_CUC 72, Pro_CCU 73, Asp_GAC 74, Gly_GGU 75, Pro_CCG 76, Pro_CCA 77, Thr_ACG 78, Lys_AAA 79, Leu_UUA 80, Gly_GGG 81, Ile_AUC 82, Ser_AGC 83, Thr_ACU 84, Thr_ACA 85, Pro_CCU 86, Ile_AUU 87, Thr_ACU 88, Arg_CGA 89, His_CAC 90, Tyr_UAC 91;His_CAC 92;|Arg_CGU 27;|Thr_ACC 37, Pro_CCG 38, Lys_AAG 39, Cys_UGC 40, Arg_CGU 41, Leu_CUA 42, Val_GUA 43, Ser_AGU 44;Asp_GAU 45, Cys_UGU 46, Ile_AUU 47, Arg_CGG 48, Glu_GAG 49, Gln_CAG 50, Ala_GCA 51;|Gly_GGU 28, His_CAC 29, Phe_UUU 30, Arg_CGU 31, Leu_UUG 32, Ala_GCG 33, Lys_AAG 34, Ser_UCU 35;|Gly_GGA 52, Leu_CUC 53, Ser_UCA 54, Leu_CUG 55, Asp_GAC 56, Ala_GCG 57, Pro_CCG 58, Thr_ACA 59, Ser_AGU 60, Ile_AUA 61, Leu_UUG 62, Gly_GGG 63, Pro_CCG 64, Phe_UUC 65, Gly_GGG 66, Ile_AUC 67, Thr_ACC 68, His_CAC 69, Tyr_UAU 70;|< t > 97;|Tyr_UAU 98, 5S 99, 23S 100, 16S 101;|
+Inverted Transposition:Thr_ACC 93;|Thr_ACC 36;|
+Total Deletions: size: 1 count: 2, size: 2 count: 3
+Total Duplications: size: 1 count: 5, size: 2 count: 1
+Size Distribution of Inversions: size: 2 count: 1
+Size Distribution of Transpositions: size: 1 count: 2, size: 4 count: 1, size: 8 count: 1, size: 15 count: 1, size: 19 count: 1, size: 22 count: 1
+Size Distribution of Inverted Transpositions: size: 1 count: 2
+Total Inversions: 1
+Total Transpositions: 7
+Total Inverted Transpositions: 2
+Total Codon Mismatches: 0
+Total Substitutions: 3
+Total Execution Time: 0.154595851898

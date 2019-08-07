@@ -1,0 +1,15 @@
+Starting application...
+Traceback (most recent call last):
+  File "main.py", line 655, in <module>
+    main()
+  File "main.py", line 593, in main
+    result = traverseNewickTree(newickTree.clade, None)
+  File "main.py", line 498, in traverseNewickTree
+    leftSibling = traverseNewickTree(node.clades[0], node)
+  File "main.py", line 541, in traverseNewickTree
+    ancestor = createAncestor(leftSibling, rightSibling, neighborStrain)
+  File "main.py", line 99, in createAncestor
+    ancestralFragments, strain1, strain2 = determineAncestralFragmentArrangementUsingNeighbor(FCR, TR, IR, ITR, lostPoints, NFCR, NTR, NIR, NITR, neighborLostPoints, strain1, strain2)
+  File "/Users/tremblao/Documents/MastersProject/Genome_Generation/Pipeline/FragmentService.py", line 381, in determineAncestralFragmentArrangementUsingNeighbor
+    strain1.invertedTranspositionCounts[size] += count
+KeyError: 1

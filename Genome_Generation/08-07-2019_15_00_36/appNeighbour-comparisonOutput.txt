@@ -1,0 +1,6 @@
+Opening ApplicationNeighbourOutput.txt generatorOutput.txt...
+Duplication Events Found: 0 Duplication Events Expected: 0 Duplication Genes Found: 0 Duplication Genes Expected: 0
+Deletion Events Found: 0 Deletion Events Expected: 0 Deletion Genes Found: 0 Deletion Genes Expected: 0
+Inversion Events Found: 0 Inversion Events Expected: 0 Inversion Genes Found: 0 Inversion Genes Expected: 0
+Transposition Events Found: 0 Transposition Events Expected: 0 Transposition Genes Found: 0 Transposition Genes Expected: 0
+Substitution Events Found: 0 Substitution Events Expected: 0 Substitution Genes Found: 0 Substitution Genes Expected: 0
