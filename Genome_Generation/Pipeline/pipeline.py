@@ -656,6 +656,13 @@ def main():
             runTime = time.time() - startTime
             testRunTimes.append(runTime)
         
+        with open(testFolder + "/genNumOperonsData.txt", "a+") as dataFile:
+            dataFile.write("\n")
+        with open(testFolder + "/genNumSingletonsData.txt", "a+") as dataFile:
+            dataFile.write("\n")
+        with open(testFolder + "/genTotalSizesData.txt", "a+") as dataFile:
+            dataFile.write("\n")
+        
         with open(testFolder + "/AppRuntimes.txt", "a+") as runtimeFile:
             runtimeFile.write("\n")
         if cherryTree:

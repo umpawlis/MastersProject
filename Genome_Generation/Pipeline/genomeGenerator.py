@@ -1417,6 +1417,7 @@ def createAncestor(maxLength, numOperons):
 
     currentSequence = beforeTerminus
     numSingletons = 0
+    totalOperonSize = 0
     while currNumOperons < numOperons or seqLength < maxLength:
         prob = random.random()
 
@@ -1439,6 +1440,7 @@ def createAncestor(maxLength, numOperons):
                 seqLength += len(operon)
                 currentSequence.append(operon)
                 currNumOperons += 1
+                totalOperonSize += len(operon)
         else:
             if seqLength + 1 <= maxLength:
                 currentSequence.append(random.choice(aminoAcids))
@@ -1457,10 +1459,20 @@ def createAncestor(maxLength, numOperons):
             numSingletons = 0
             terminusAdded = False
             currentSequence = beforeTerminus
+            totalOperonSize = 0
 
         if terminusAdded == False and seqLength >= maxLength/2:
             terminusAdded = True
             currentSequence = afterTerminus
+            
+    directories = testFolder.split("/")
+    dataFileDir = "/".join(directories[:-1])
+    with open(dataFileDir + "/genNumOperonsData.txt", "a+") as dataFile:
+        dataFile.write("%d " % (currNumOperons))
+    with open(dataFileDir + "/genNumSingletonsData.txt", "a+") as dataFile:
+        dataFile.write("%d " % (numSingletons))
+    with open(dataFileDir + "/genTotalSizesData.txt", "a+") as dataFile:
+        dataFile.write("%d " % (totalOperonSize))
 
 def createOperon():
     operon = []
