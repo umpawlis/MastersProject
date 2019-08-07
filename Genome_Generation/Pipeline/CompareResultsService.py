@@ -547,24 +547,24 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
                     line2 = file2.readline() #Substitution instead because generator does not produce codon mismatches
                     if 'Codon Mismatch' in line1 and 'Substitution' in line2:
                         outputFile.write('Comparing the codon mismatches between the strains!\n')
-                        line1 = line1.replace('Codon Mismatch:', '')
+                        codonLine = line1.replace('Codon Mismatch:', '')
 #                        line2 = line2.replace('Codon Mismatch:', '')
                         line2 = line2.replace('Substitution:', '')
-                        result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
-                        
-                        totalEventsFound += result[0]
-                        substitutionTotals[0] += result[0]
-                        
-                        totalEventsExpected += result[1]
-                        substitutionTotals[1] += result[1]
-                        
-                        totalGenesFound += result[0]
-                        substitutionTotals[2] += result[0]
-                        
-                        totalGenesExpected += result[1]
-                        substitutionTotals[3] += result[1]
-                        
-                        totalAppEvents += result[2]
+#                        result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
+#                        
+#                        totalEventsFound += result[0]
+#                        substitutionTotals[0] += result[0]
+#                        
+#                        totalEventsExpected += result[1]
+#                        substitutionTotals[1] += result[1]
+#                        
+#                        totalGenesFound += result[0]
+#                        substitutionTotals[2] += result[0]
+#                        
+#                        totalGenesExpected += result[1]
+#                        substitutionTotals[3] += result[1]
+#                        
+#                        totalAppEvents += result[2]
                         outputFile.write('Events Found: %s Events Expected: %s Genes Found: %s Genes Expected: %s Total App Events: %s\n' % (totalEventsFound, totalEventsExpected, totalGenesFound, totalGenesExpected, totalAppEvents))
 #                        print('The result of the Codon Mismatches is: %s percent' % (result))
                     else:
@@ -576,7 +576,8 @@ def readFiles(fileDir, outputFile1, outputFile2, prefix):
 #                    if 'Substitution' in line1 and 'Substitution' in line2:
                     if 'Substitution' in line1:
                         outputFile.write('Comparing the substitutions between the strains!\n')
-                        line1 = line1.replace('Substitution:', '')
+                        line1 = line1.replace('Substitution:', '').strip()
+                        line1 = line1 + codonLine
 #                        line2 = line2.replace('Substitution:', '')
                         result = codonMismatchSubstitutionComparison(line1, line2, outputFile)
                         
