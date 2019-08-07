@@ -1,0 +1,1 @@
+((NC_000001,NC_000002)genAncestor1,NC_000003)root;
