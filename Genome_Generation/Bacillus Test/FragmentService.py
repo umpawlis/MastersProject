@@ -56,10 +56,10 @@ def determineRegions(fragments):
             yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
             xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
             
-            cMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Current points distance from the main diagonal
-            pMainDiagonalDistance = abs(prevFragment.fragmentDetails1.point - prevFragment.fragmentDetails2.point) #Previous points distance from the main diagonal
-            
-            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold and not(pMainDiagonalDistance == 0 and cMainDiagonalDistance > 0): #If the y-Distance is less than the threshold add it to the consecutive region
+            #cMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Current points distance from the main diagonal
+            #pMainDiagonalDistance = abs(prevFragment.fragmentDetails1.point - prevFragment.fragmentDetails2.point) #Previous points distance from the main diagonal
+            #not(pMainDiagonalDistance == 0 and cMainDiagonalDistance > 0)
+            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
                 #skipCounter = 0 #Reset the skip counter
