@@ -220,10 +220,10 @@ def performGlobalAlignment(operon1, operon2, event):
     scoreMatrix = np.zeros((len(operon1)+1, len(operon2)+1))
 
     for a in range(0, len(operon1)+1):
-        scoreMatrix[a][0] = -a
+        scoreMatrix[a][0] = a * globals.deletionCost
 
     for a in range(0, len(operon2)+1):
-        scoreMatrix[0][a] = -a
+        scoreMatrix[0][a] = a * globals.deletionCost
 
     #perform the Global Alignment
     for a in range(1, len(operon1)+1):
@@ -1184,7 +1184,7 @@ def checkForMatch(gap, positions, sequence, fragment, size):
     
     #Special case for within alignment b/c the above was not checking all possible genes of size 1
     if size == 0 and len(gap) > 0:
-        for x in range(0, len(gap)):
+        for x in reversed(range(0, len(gap))):
             for y in range(0, len(sequence)): #Iterate over all genes in sequence
                 if gap[x] == sequence[y]:
                     geneDuplicateSizes.append(1)
