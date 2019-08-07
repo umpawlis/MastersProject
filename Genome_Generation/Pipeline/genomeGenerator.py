@@ -833,13 +833,25 @@ def performTransposition(before, after, p):
     startPos = 0
     operonTrans = False
     sectionReversed = False
+    
+    if printToConsole:
+        print "Before"
+        print before
+        print "After"
+        print after
 
     if random.random() < 0.5:
         genome = before
         fromBefore = True
+        if (len(after) - len(before)) > 3:
+            genome = after
+            fromBefore = False
     else:
         genome = after
         fromBefore = False
+        if (len(before) - len(after)) > 3:
+            genome = before
+            fromBefore = True
 
     index = random.randint(0, len(genome)-1)
     if isinstance(genome[index], list):
@@ -883,29 +895,24 @@ def performTransposition(before, after, p):
         transSection.reverse()
         sectionReversed = True
         eventType = "IT"
-
-    targetIndex = random.randint(0, len(genome)-1)
+        
+    if len(genome) > 0:
+        targetIndex = random.randint(0, len(genome)-1)
+    else:
+        targetIndex = 0
+        
     targetPos = 0
     
-    if isinstance(genome[targetIndex], list):
-        # print "target in list"
+    if operonTrans:
         genome.insert(targetIndex, transSection)
-            
-        if printToConsole:
-        # event = "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
-            print "Performing transposition... From before: %s Index: %s  Section length: %s Target before: %s Target index: %s Target position: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex), str(targetPos))
     else:
-        # print "target in singleton"
-        if operonTrans:
-            genome.insert(targetIndex, transSection)
-        else:
-            for gene in reversed(transSection):
-                # print "inserting " + gene
-                genome.insert(targetIndex, gene)
-                
-        if printToConsole:
-        # event = "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
-            print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
+        for gene in reversed(transSection):
+            # print "inserting " + gene
+            genome.insert(targetIndex, gene)
+            
+    if printToConsole:
+    # event = "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
+        print "Performing transposition... From before: %s Index: %s Section length: %s Target before: %s Target index: %s" % (str(fromBefore), str(index), str(len(transSection)), str(targetBefore), str(targetIndex))
 
     absoluteIndex = getAbsoluteIndex(targetBefore, before, after, targetIndex, targetPos)
     startIndex = absoluteIndex
@@ -932,12 +939,25 @@ def performTransposition(before, after, p):
 
 def performSubstitution(before, after):
     gene = []
+    
+    if printToConsole:
+        print "Before"
+        print before
+        print "After"
+        print after
+        
     if random.random() < 0.5:
         genome = before
         fromBefore = True
+        if len(genome) <= 2:
+            genome = after
+            fromBefore = False
     else:
         genome = after
         fromBefore = False
+        if len(genome) <= 2:
+            genome = before
+            fromBefore = True
 
     index, targetPos = getSubstitutionTarget(genome)
     if isinstance(genome[index], list):
@@ -990,11 +1010,31 @@ def getDifferentGene(currGene):
 def performInversion(before, after, p):
     event = ""
     genes = []
-    lengthBefore = min(geometricSampling(p, 0), len(before))
-    if not lengthBefore:
-        lengthAfter = min(geometricSampling(p), len(after))
+    
+    if printToConsole:
+        print "Before"
+        print before
+        print "After"
+        print after
+    
+    if (len(before) - len(after)) > 3:
+        lengthBefore = min(geometricSampling(p, 1), len(before))
+        if not lengthBefore:
+            lengthAfter = min(geometricSampling(p), len(after))
+        else:
+            lengthAfter = min(geometricSampling(p, 0), len(after))
+    elif (len(after) - len(before)) > 3:
+        lengthAfter = min(geometricSampling(p, 1), len(after))
+        if not lengthAfter:
+            lengthBefore = min(geometricSampling(p), len(before))
+        else:
+            lengthBefore = min(geometricSampling(p, 0), len(before))
     else:
-        lengthAfter = min(geometricSampling(p, 0), len(after))
+        lengthBefore = min(geometricSampling(p, 0), len(before))
+        if not lengthBefore:
+            lengthAfter = min(geometricSampling(p), len(after))
+        else:
+            lengthAfter = min(geometricSampling(p, 0), len(after))
     
     if neighbour:
         # Make sure we have at least 10 genes in our inversion
@@ -1016,7 +1056,7 @@ def performInversion(before, after, p):
             print "After length: " + str(lengthAfter)
                 
         if numGenes < 10:
-            if random.random() > 0.5:
+            if random.random() > 0.5 and getSequenceLength(before) >= 10:
                 # Extending lengthBefore
                 count = 1
                 while numGenes < 10:
@@ -1120,19 +1160,42 @@ def reverseOperons(sequence):
     for index in sequence:
         if isinstance(index, list):
             index.reverse()
+            
+def getSequenceLength(sequence):
+    length = 0
+    
+    for operon in sequence:
+        if isinstance(operon, list):
+            length += len(operon)
+        else:
+            length += 1
+            
+    return length
 
 def performLoss(before, after, p):
     event = ""
     genes = []
     startPos = 0
     stopPos = 1
+    
+    if printToConsole:
+        print "Before"
+        print before
+        print "After"
+        print after
 
     if random.random() < 0.5:
         genome = before
         deleteBefore = True
+        if len(genome) <= 2:
+            genome = after
+            deleteBefore = False
     else:
         genome = after
         deleteBefore = False
+        if len(genome) <= 2:
+            genome = before
+            deleteBefore = True
 
     index = random.randint(0, len(genome)-1)
     if isinstance(genome[index], list):
@@ -1181,13 +1244,25 @@ def performDuplication(before, after, p):
     stopPos = 0
     operonDup = False
     sectionReversed = False
+    
+    if printToConsole:
+        print "Before"
+        print before
+        print "After"
+        print after
 
     if random.random() < 0.5:
         genome = before
         dupFromBefore = True
+        if len(genome) <= 2:
+            genome = after
+            dupFromBefore = False
     else:
         genome = after
         dupFromBefore = False
+        if len(genome) <= 2:
+            genome = before
+            dupFromBefore = True
 
     index = random.randint(0, len(genome)-1)
     if isinstance(genome[index], list):
@@ -1437,4 +1512,4 @@ if __name__ == '__main__':
      #Examples: code below creates genomes of size 100 with atleast 5 operons and 8 events for each genome. Only duplications and losses will occur.
 #    generateTests("generatorTesting", "tree2Leaf.dnd", 100, 5, 8, 0.5, 0.7, 0.5, 0.7, 0.0, 0.7, 0.0, 0.0, 0.7, False)
      #Examples: code below creates genomes of size 80 with atleast 4 operons and 6 events for each genome. All events have a chance of occuring.
-    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 120, 4, 4, 0.20, 0.7, 0.20, 0.7, 0.20, 0.4, 0.20, 0.20, 0.7, True)
+    generateTests("generatorTesting", "tree2LeafNeighbour.dnd", 120, 13, 4, 0.20, 0.7, 0.20, 0.7, 0.20, 0.4, 0.20, 0.20, 0.7, True)
