@@ -1299,9 +1299,15 @@ def performDuplication(before, after, p):
     if random.random() < 0.5:
         genome = before
         targetBefore = True
+        if len(genome) <= 2:
+            genome = after
+            targetBefore = False
     else:
         genome = after
         targetBefore = False
+        if len(genome) <= 2:
+            genome = before
+            targetBefore = True
 
     if dupFromBefore and not targetBefore:
         dupSection.reverse()
