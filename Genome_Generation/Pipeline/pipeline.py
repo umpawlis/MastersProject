@@ -831,6 +831,9 @@ def main():
             genNumOperons = readDataFile(testFolder + "/genNumOperonsData.txt")
             genAvgOperonSizes = calculateSizeAverages(genOperonSizes, genNumOperons)
 #            xAxis.append(genAvgOperonSizes[-1][0])
+        with open(testFolder + "/genTotalSizesAvgsData.txt", "a+") as dataFile:
+            for average in genAvgOperonSizes:
+                dataFile.write("%f " % (average[0]))
         
         if cherryTree:
             if neighbour: 
