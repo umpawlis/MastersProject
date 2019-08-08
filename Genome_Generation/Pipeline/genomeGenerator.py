@@ -43,6 +43,8 @@ neighbour = False
 hasSubs = False
 inversionLeaf = 0
 
+operon_pValue = 0.0
+
 class Event:
     def __init__(self, eventType, indexRange, genes, prevEventRange = None, operonFormat = None):
         self.type = eventType
@@ -131,7 +133,7 @@ class Node:
         #     print event
         outputFile.close()
 # Traverse the Newick tree and add events everytime you find more clades on a branch.
-def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events, dupProb, dup_p, lossProb, loss_p, invProb, inv_p, subProb, transProb, trans_p, equal):
+def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events, dupProb, dup_p, lossProb, loss_p, invProb, inv_p, subProb, transProb, trans_p, equal, Op_value=0.125):
     global probDup
     global dup_pValue
     global probLoss
@@ -150,6 +152,9 @@ def generateTests(testSetDir, treeStructure, max_length, num_operons, num_events
     global neighbour
     if treeStructure == 'tree2LeafNeighbour.dnd':
         neighbour = True
+        
+    global operon_pValue
+    operon_pValue = Op_value
 
     probDup = dupProb
     dup_pValue = dup_p
@@ -1054,9 +1059,20 @@ def performInversion(before, after, p):
             print str(numGenes)
             print "Before length: " + str(lengthBefore)
             print "After length: " + str(lengthAfter)
+            
+        if random.random() > 0.5:
+            if getSequenceLength(before) >= 10:
+                targetBefore = True
+            else:
+                targetBefore = False
+        else:
+            if getSequenceLength(after) >= 10:
+                targetBefore = False
+            else:
+                targetBefore = True
                 
         if numGenes < 10:
-            if random.random() > 0.5 and getSequenceLength(before) >= 10:
+            if targetBefore:
                 # Extending lengthBefore
                 count = 1
                 while numGenes < 10:
@@ -1476,7 +1492,7 @@ def createAncestor(maxLength, numOperons):
 
 def createOperon():
     operon = []
-    size = geometricSampling(0.125, 2, 25)
+    size = geometricSampling(operon_pValue, 2, 25)
 
     for i in range(size):
         operon.append(random.choice(aminoAcids))

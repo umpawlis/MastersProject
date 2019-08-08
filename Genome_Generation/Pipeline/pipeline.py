@@ -311,6 +311,9 @@ def main():
             else:
                 print "WARNING: Tree file must be in format tree#Leaf*.dnd where # is the number of leaves. Exiting..."
                 sys.exit(0)
+        elif testDiff == "Op-Value":
+            xAxisTitle = "Average Size of Operons per Branch"
+            xAxis.append(float(args[-1]))
         
         basePValue = 0.0
         while count < len(args):
@@ -352,7 +355,10 @@ def main():
             testSetDir = testFolder + datetime.datetime.now().strftime("%m-%d-%Y_%H_%M_%S")
             if neighbour:
                 tree = 'tree2LeafNeighbour.dnd'
-            generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue, equalEvents)
+            if testDiff == "Op-Value":
+                generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue, equalEvents, float(args[-1]))
+            else:
+                generateTests(testSetDir, tree, maxLength, numOperons, numEvents, probDup, dup_pValue, probLoss, loss_pValue, probInv, inv_pValue, probSub, probTrans, trans_pValue, equalEvents)
             if neighbour:
                 tree = args[0]
 #            analyzeTree(tree, testSetDir)
@@ -820,6 +826,12 @@ def main():
         totalAppNeighbourFMeasureList.append(appNeighbourFMeasureList)
         totalOrthoNeighbourFMeasureList.append(orthoFMeasureList)
         
+        if testDiff == "Op-Value":
+            genOperonSizes = readDataFile(testFolder + "/genTotalSizesData.txt")
+            genNumOperons = readDataFile(testFolder + "/genNumOperonsData.txt")
+            genAvgOperonSizes = calculateSizeAverages(genOperonSizes, genNumOperons)
+#            xAxis.append(genAvgOperonSizes[-1][0])
+        
         if cherryTree:
             if neighbour: 
                 graphData("sAccuracy", totalStrictAppAccuracyAveragesList, xAxisTitle, xAxis, totalAverages3 = totalStrictOrthoAccuracyAveragesList, totalAverages4 = totalStrictDupAccuracyAveragesList, totalAverages5 = totalStrictAppNeighbourAccuracyAveragesList, totalAverages6 = totalStrictOrthoNeighbourAccuracyAveragesList)
@@ -1169,15 +1181,16 @@ def graphData(graphType, totalAverages, xAxisTitle, xAxis, totalAverages2 = None
     averages = [] 
     if printToConsole:
         print totalAverages
-    for averagesList in totalAverages:
-        currentSum = 0.0    
-        for average in averagesList:
-            currentSum += average
-        
-        average = currentSum / len(averagesList)
-        averages.append(average)
-    line1, = plt.plot(xAxis, averages, 'o-', label='BOPAL')
-    labels.append(line1)
+    if totalAverages is not None:
+        for averagesList in totalAverages:
+            currentSum = 0.0    
+            for average in averagesList:
+                currentSum += average
+            
+            average = currentSum / len(averagesList)
+            averages.append(average)
+        line1, = plt.plot(xAxis, averages, 'o-', label='BOPAL')
+        labels.append(line1)
     
     averages2 = []
     if totalAverages2 is not None:
