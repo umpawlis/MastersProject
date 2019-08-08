@@ -312,7 +312,7 @@ def main():
                 print "WARNING: Tree file must be in format tree#Leaf*.dnd where # is the number of leaves. Exiting..."
                 sys.exit(0)
         elif testDiff == "Op-Value":
-            xAxisTitle = "Average Size of Operons per Branch"
+            xAxisTitle = "p parameter"
             xAxis.append(float(args[-1]))
         
         basePValue = 0.0
