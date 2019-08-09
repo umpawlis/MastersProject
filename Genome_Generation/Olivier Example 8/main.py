@@ -1,7 +1,6 @@
 import time
 import copy
 import os.path
-import sys
 import globals
 from Bio import Phylo
 from FileService import createFile
@@ -69,7 +68,7 @@ def createAncestor(strain1, strain2, neighborStrain):
         print('Constructing dot plot for the following strains: %s, %s' % (strain1.name, strain2.name))
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     if globals.printToConsole:
-        createDotPlot(points, strain1, strain2, testFileName)
+        createDotPlot(points, strain1, strain2)
         createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
         createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
         createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
@@ -258,7 +257,6 @@ def createAncestor(strain1, strain2, neighborStrain):
         #Insert the new details about the substitution
         strain1.substitutionDetails = newDetails1
         strain2.substitutionDetails = newDetails2
-
     
     #Add any codon mismatches from the self global alignment as those details were stored in another variable so it doesn't mess with codon mismatches and substitution handlers in the previous 2 for loops
     strain1.codonMismatchDetails += strain1.tempCodonDetails
@@ -415,9 +413,9 @@ def getNeighborStrain(currNode):
 def createStrainFromFile(node):
     strain = None
 
-    if os.path.isdir(testFileName + node.name):
-        if os.path.isfile(testFileName + node.name + '/sequence.txt'):
-            genome = open(testFileName + node.name + '/sequence.txt', 'r').read()
+    if os.path.isdir(node.name):
+        if os.path.isfile(node.name + '/sequence.txt'):
+            genome = open(node.name + '/sequence.txt', 'r').read()
             strain = processSequence(node.name, genome)
         else:
             if globals.printToConsole:
@@ -557,100 +555,58 @@ def traverseNewickTree(node, parentNode):
 ######################################################
 #                       main
 ######################################################
-def main():
-    globals.initialize() #Initialize the globals file
-    
-    global newickFileName
-    global outputFileName
-    global testFileName
-    
-    if len(sys.argv) != 3:
-        print "WARNING: Must provide a Newick tree and test folder name. Exiting..."
-        sys.exit(0)
-    
-    newickFileName = sys.argv[1]
-    if newickFileName == "tree2LeafNeighbour.dnd":
-        outputFileName = sys.argv[2] + "/ApplicationNeighbourOutput.txt"
-    else:
-        outputFileName = sys.argv[2] + "/ApplicationOutput.txt"
-    testFileName = sys.argv[2] + '/'
-    
-    print('Starting application...')
-    startTime = time.time()
-    
-    if globals.printToConsole:
-        print('Reading newick tree from file: %s...' % (newickFileName))
-    newickTree = Phylo.read(newickFileName, 'newick')
-    if globals.printToConsole:
-        Phylo.draw(newickTree)
-    
-    
-    globals.strains = strains #Assign pointer to the global strains array so we can access it anywhere
-    createFile(outputFileName, newickTree) #Creates file where data will be output
-    
-    #Traverses the newick tree recursively reconstructing ancestral genomes
-    if globals.printToConsole:
-        print('Traversing newick tree...')
-    result = traverseNewickTree(newickTree.clade, None)
-    
-    endTime = time.time()
-    totalTime = endTime - startTime
-    
-    #Output ancestral genome to console
-    if globals.printToConsole:
-        print('This is the root ancestral genome!')
-        
-    root = newickTree.clade
-    rootGenome = []
-    if newickFileName == "tree2LeafNeighbour.dnd":
-        if len(root.clades) == 2:
-            child = root.clades[0]
-            if len(child.clades) != 2:
-                child = root.clades[1]
-                neighbour = root.clades[0]
-            else:
-                neighbour = root.clades[1]
-            if child.name != None and len(child.name) > 0:
-                filteredList = iter(filter(lambda x: x.name == child.name, strains))
-                foundStrain = next(filteredList, None)
-                if foundStrain != None:
-                    ancestralFragments = foundStrain.genomeFragments
-                    rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
-                        
-            with open(testFileName + "appNeighbourRoot.txt", "w+") as f:
-                f.write(rootGenome)
-            neighbour.name = ''
-            child.name = ''
-    else:
-        if root.name != None and len(root.name) > 0:
-            filteredList = iter(filter(lambda x: x.name == root.name, strains))
-            foundStrain = next(filteredList, None)
-            if foundStrain != None:
-                ancestralFragments = foundStrain.genomeFragments
-                rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
-                    
-        with open(testFileName + "appRoot.txt", "w+") as f:
-            f.write(rootGenome)
-    
-    if globals.printToConsole:
-        #Output newick tree after the ancestors have been added to it
-        Phylo.draw(newickTree)
-    
-    #Need to traverse tree to ouput appropriate content to file
-    newickTree.clade.name = '' #Make sure that the output for the root is not output
-    traverseNewickTreeAndOutputToFile(newickTree.clade)
-        
-    #Output the totals for the computation to console and file
-    outputTotalsToFile(outputFileName, totalTime)
-    
-    #TODO compute lineage
-    #target = 'NC_014019'
-    #print('Computing lineage cost for: %s' % (target))
-    #lineageCost = computeLineageCost(newickTree.clade, target, None)
-    #if lineageCost != None:
-        #print('Successfully found and computed the lineage for: %s' % (target))
-                
-    print('Total time (in seconds): %s' % (totalTime))
-    print('Ending application...')
-    
-main()
+print('Starting application...')
+startTime = time.time()
+
+globals.initialize() #Initialize the globals file
+
+if globals.printToConsole:
+    print('Reading newick tree from file: %s...' % (newickFileName))
+newickTree = Phylo.read(newickFileName, 'newick')
+
+if globals.printToConsole:
+    Phylo.draw(newickTree)
+
+globals.strains = strains #Assign pointer to the global strains array so we can access it anywhere
+createFile(outputFileName, newickTree) #Creates file where data will be output
+
+#Traverses the newick tree recursively reconstructing ancestral genomes
+if globals.printToConsole:
+    print('Traversing newick tree...')
+result = traverseNewickTree(newickTree.clade, None)
+
+endTime = time.time()
+totalTime = endTime - startTime
+
+if globals.printToConsole:
+    #Output newick tree after the ancestors have been added to it
+    Phylo.draw(newickTree)
+
+#Output ancestral genome to console
+print('This is the root ancestral genome!')
+root = newickTree.clade
+rootGenome = []
+if root.name != None and len(root.name) > 0:
+    filteredList = iter(filter(lambda x: x.name == root.name, strains))
+    foundStrain = next(filteredList, None)
+    if foundStrain != None:
+        ancestralFragments = foundStrain.genomeFragments
+        rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
+print('\nRoot: %s\n' % (rootGenome))
+
+#Need to traverse tree to ouput appropriate content to file
+newickTree.clade.name = '' #Make sure that the output for the root is not output
+traverseNewickTreeAndOutputToFile(newickTree.clade)
+
+#Output the totals for the computation to console and file
+outputTotalsToFile(outputFileName, totalTime)
+
+#TODO compute lineage
+#target = 'NC_014019'
+#print('Computing lineage cost for: %s' % (target))
+#lineageCost = computeLineageCost(newickTree.clade, target, None)
+#if lineageCost != None:
+    #print('Successfully found and computed the lineage for: %s' % (target))
+
+print('Total time (in seconds): %s' % (totalTime))
+print('Ending application...')
