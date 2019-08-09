@@ -51,7 +51,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             event = Event(0)
             event.setScore(1.0)
-            event.setDistance(abs(int(op1.fragmentIndex) - int(op2.fragmentIndex)))
+            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -325,14 +325,14 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             
             codonMismatch += 1
 
-            alignmentSequence1.insert(0, operon1[i-1] + '-#' + str(globals.codonMismatchId))
-            alignmentSequence2.insert(0, operon2[j-1] + '-#' + str(globals.codonMismatchId))
+            alignmentSequence1.insert(0, operon1[i-1] + '-#' + str(globals.codonMismatchId) + '#')
+            alignmentSequence2.insert(0, operon2[j-1] + '-#' + str(globals.codonMismatchId) + '#')
 
             codonMismatchIndexesStrain1.append(i-1)
-            codonMismatchGenesStrain1.append(operon1[i-1] + '-#' + str(globals.codonMismatchId))
+            codonMismatchGenesStrain1.append(operon1[i-1] + '-#' + str(globals.codonMismatchId) + '#')
 
             codonMismatchIndexesStrain2.append(j-1)
-            codonMismatchGenesStrain2.append(operon2[j-1] + '-#' + str(globals.codonMismatchId))
+            codonMismatchGenesStrain2.append(operon2[j-1] + '-#' + str(globals.codonMismatchId) + '#')
 
             i -= 1
             j -= 1
@@ -352,14 +352,14 @@ def globalAlignmentTraceback(matrix, operon1, operon2, event):
             
             substitution += 1
             
-            alignmentSequence1.insert(0, operon1[i-1] + '-@' + str(globals.substitutionId))
-            alignmentSequence2.insert(0, operon2[j-1] + '-@' + str(globals.substitutionId))
+            alignmentSequence1.insert(0, operon1[i-1] + '-@' + str(globals.substitutionId) + '@')
+            alignmentSequence2.insert(0, operon2[j-1] + '-@' + str(globals.substitutionId) + '@')
 
             substitutionIndexesStrain1.append(i-1)
-            substitutionGenesStrain1.append(operon1[i-1] + '-@' + str(globals.substitutionId))
+            substitutionGenesStrain1.append(operon1[i-1] + '-@' + str(globals.substitutionId) + '@')
 
             substitutionIndexesStrain2.append(j-1)
-            substitutionGenesStrain2.append(operon2[j-1] + '-@' + str(globals.substitutionId))
+            substitutionGenesStrain2.append(operon2[j-1] + '-@' + str(globals.substitutionId) + '@')
 
             i -= 1
             j -= 1
