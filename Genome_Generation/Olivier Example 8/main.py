@@ -174,10 +174,10 @@ def createAncestor(strain1, strain2, neighborStrain):
                             processed = True
                             fragments = ancestor.genomeFragments
                             for fragment in fragments:
-                                if gene1 + '-' + idNumber1 in fragment.originalSequence:
+                                if idNumber1 in fragment.originalSequence:
                                     fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
                                     for m in range(0, len(fragment.sequence)):
-                                        if gene1 + '-' + idNumber1 == fragment.sequence[m]:
+                                        if idNumber1 in fragment.sequence[m]:
                                             fragment.sequence[m] = gene2
                                             break
                                     break
@@ -189,10 +189,10 @@ def createAncestor(strain1, strain2, neighborStrain):
                 newDetails2+= gene2 + ' ' + position2 + ';'
                 fragments = ancestor.genomeFragments
                 for fragment in fragments:
-                    if gene1 + '-' + idNumber1 in fragment.originalSequence:
+                    if idNumber1 in fragment.originalSequence:
                         fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
                         for m in range(0, len(fragment.sequence)):
-                            if gene1 + '-' + idNumber1 == fragment.sequence[m]:
+                            if idNumber1 in fragment.sequence[m]:
                                 fragment.sequence[m] = gene1
                                 break
                         break
@@ -232,10 +232,10 @@ def createAncestor(strain1, strain2, neighborStrain):
                             processed = True
                             fragments = ancestor.genomeFragments
                             for fragment in fragments:
-                                if gene1 + '-' + idNumber1 in fragment.originalSequence:
+                                if idNumber1 in fragment.originalSequence:
                                     fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene2) #Put in strain 2's gene
                                     for m in range(0, len(fragment.sequence)):
-                                        if gene1 + '-' + idNumber1 == fragment.sequence[m]:
+                                        if idNumber1 in fragment.sequence[m]:
                                             fragment.sequence[m] = gene2
                                             break
                                     break
@@ -247,10 +247,10 @@ def createAncestor(strain1, strain2, neighborStrain):
                 newDetails2+= gene2 + ' ' + position2 + ';'
                 fragments = ancestor.genomeFragments
                 for fragment in fragments:
-                    if gene1 + '-' + idNumber1 in fragment.originalSequence:
+                    if idNumber1 in fragment.originalSequence:
                         fragment.originalSequence = fragment.originalSequence.replace(gene1 + '-' + idNumber1, gene1) #Put in strain 1's gene
                         for m in range(0, len(fragment.sequence)):
-                            if gene1 + '-' + idNumber1 == fragment.sequence[m]:
+                            if idNumber1 in fragment.sequence[m]:
                                 fragment.sequence[m] = gene1
                                 break
                         break

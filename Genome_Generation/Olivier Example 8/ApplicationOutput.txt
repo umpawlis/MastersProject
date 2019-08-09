@@ -41,4 +41,4 @@ Total Transpositions: 4
 Total Inverted Transpositions: 7
 Total Codon Mismatches: 0
 Total Substitutions: 13
-Total Execution Time: 2.507999897
+Total Execution Time: 1.6360001564
