@@ -70,7 +70,7 @@ def determineRegions(fragments):
             else:
                 prevFragmentOpposite = False
 
-            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
+            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold and currFragmentOpposite ==  prevFragmentOpposite: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
                 #skipCounter = 0 #Reset the skip counter
