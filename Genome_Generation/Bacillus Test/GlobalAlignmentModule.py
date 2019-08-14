@@ -52,7 +52,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
             event = Event(0)
             event.setScore(1.0)
             #TODO
-            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
+            event.setDistance(abs(int(op1.fragmentIndex) - int(op2.fragmentIndex)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
