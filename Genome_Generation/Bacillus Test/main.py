@@ -583,7 +583,6 @@ if globals.printToConsole:
     Phylo.draw(newickTree)
 
 #Output ancestral genome to console
-print('This is the root ancestral genome!')
 root = newickTree.clade
 rootGenome = []
 if root.name != None and len(root.name) > 0:
@@ -592,7 +591,9 @@ if root.name != None and len(root.name) > 0:
     if foundStrain != None:
         ancestralFragments = foundStrain.genomeFragments
         rootGenome = ', '.join(fragment.originalSequence for fragment in ancestralFragments)
-print('\nRoot: %s\n' % (rootGenome))
+if globals.printToConsole:
+    print('This is the root ancestral genome!')
+    print('\nRoot: %s\n' % (rootGenome))
 
 #Need to traverse tree to ouput appropriate content to file
 newickTree.clade.name = '' #Make sure that the output for the root is not output
