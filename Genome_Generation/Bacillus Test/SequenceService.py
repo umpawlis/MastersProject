@@ -293,25 +293,44 @@ def createBarGraph(dictionary, title):
         keys = list(dictionary.keys())
         keys.sort()
         
-        maxValue = keys[len(keys)-1]
-        maxValue += 1
-        if (maxValue < 10):
-            maxValue = 10
+        if len(keys) < 8:
+            maxValue = keys[len(keys)-1]
+            maxValue += 1
+            if (maxValue < 6):
+                maxValue = 6
+                
+            y_pos = []
+            for x in range(1, maxValue):
+                y_pos.append(x)
             
-        y_pos = []
-        for x in range(1, maxValue):
-            y_pos.append(x)
+            performance = []
+            for x in range(1, maxValue):
+                if x in keys:
+                    performance.append(dictionary[x])
+                else:
+                    performance.append(0)
+        else:
+            y_pos = np.arange(len(keys))
+            performance = []
+            for key in keys:
+                performance.append(dictionary[key])
         
-        performance = []
-        for x in range(1, maxValue):
-            if x in keys:
-                performance.append(dictionary[x])
-            else:
-                performance.append(0)
-        
+        #Used for the y-ticks
+        val = max(performance)
+        ticks = []
+        ticks.append(2)
+        index = 4        
+        while index < val + 2:
+            ticks.append(index)
+            index += 2
+            
         f = plt.figure()
         plt.bar(y_pos, performance, align='center', alpha=0.5)
-        plt.xticks(y_pos, y_pos)
+        if len(keys) < 8:
+            plt.xticks(y_pos, y_pos)
+        else :
+            plt.xticks(y_pos, keys)
+        plt.yticks(ticks)
         plt.ylabel('Number of Occurrences')
         plt.xlabel('Size of Occurrence')
         plt.title(title)

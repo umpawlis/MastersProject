@@ -602,8 +602,8 @@ traverseNewickTreeAndOutputToFile(newickTree.clade)
 outputTotalsToFile(outputFileName, totalTime)
 
 #Output Bar graphs of each event
-createBarGraph(globals.deletionSizeCounter, 'Distribution of Duplications')
-createBarGraph(globals.duplicationSizeCounter, 'Distribution of Deletions')
+createBarGraph(globals.deletionSizeCounter, 'Distribution of Deletions')
+createBarGraph(globals.duplicationSizeCounter, 'Distribution of Duplications')
 createBarGraph(globals.inversionSizeDistributionCounter, 'Distribution of Inversions')
 createBarGraph(globals.transpositionSizeDistributionCounter, 'Distribution of Transpositions')
 createBarGraph(globals.invertedTranspositionSizeDistributionCounter, 'Distribution of Inverted Transpositions')
