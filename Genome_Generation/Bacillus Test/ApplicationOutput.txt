@@ -185,4 +185,4 @@ Total Transpositions: 6
 Total Inverted Transpositions: 2
 Total Codon Mismatches: 4
 Total Substitutions: 11
-Total Execution Time: 6.90599989891
+Total Execution Time: 6.18700003624

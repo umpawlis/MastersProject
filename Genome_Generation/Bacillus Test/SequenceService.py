@@ -3,6 +3,7 @@ import multiset
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
+from matplotlib.ticker import MaxNLocator
 
 ####################################
 ##Sequence Service Functions########
@@ -291,16 +292,29 @@ def createBarGraph(dictionary, title):
     if dictionary != None and len(dictionary) > 0:
         keys = list(dictionary.keys())
         keys.sort()
-
-        y_pos = np.arange(len(keys))
-
+        
+        maxValue = keys[len(keys)-1]
+        maxValue += 1
+        if (maxValue < 10):
+            maxValue = 10
+            
+        y_pos = []
+        for x in range(1, maxValue):
+            y_pos.append(x)
+        
         performance = []
-        for key in keys:
-            performance.append(dictionary[key])
-
+        for x in range(1, maxValue):
+            if x in keys:
+                performance.append(dictionary[x])
+            else:
+                performance.append(0)
+        
+        f = plt.figure()
         plt.bar(y_pos, performance, align='center', alpha=0.5)
-        plt.xticks(y_pos, keys)
+        plt.xticks(y_pos, y_pos)
         plt.ylabel('Number of Occurrences')
         plt.xlabel('Size of Occurrence')
         plt.title(title)
         plt.show()
+        
+        f.savefig("%s.pdf" %(title), bbox_inches='tight')
