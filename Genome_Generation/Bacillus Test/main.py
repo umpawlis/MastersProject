@@ -69,10 +69,10 @@ def createAncestor(strain1, strain2, neighborStrain):
     points, lostPoints = normalizeIndexesForDotPlot(events, duplicatesStrain1, duplicatesStrain2, strain1, strain2)
     if globals.printToConsole:
         createDotPlot(points, strain1, strain2)
-        createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
-        createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
-        createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
-        createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
+        #createBarGraph(strain1.duplicationCounts, 'Distribution of Duplications for %s'%(strain1.name))
+        #createBarGraph(strain2.duplicationCounts, 'Distribution of Duplications for %s'%(strain2.name))
+        #createBarGraph(strain1.deletionCounts, 'Distribution of Deletions for %s'%(strain1.name)) #Remember! Deletions refer to the other strain!
+        #createBarGraph(strain2.deletionCounts, 'Distribution of Deletions for %s'%(strain2.name)) #Remember! Deletions refer to the other strain!
 
     #Compute and output the inverted, transposed, and inverted transposed regions
     FCR, TR, IR, ITR = determineRegions(points)
@@ -600,6 +600,13 @@ traverseNewickTreeAndOutputToFile(newickTree.clade)
 
 #Output the totals for the computation to console and file
 outputTotalsToFile(outputFileName, totalTime)
+
+#Output Bar graphs of each event
+createBarGraph(globals.deletionSizeCounter, 'Distribution of Duplications')
+createBarGraph(globals.duplicationSizeCounter, 'Distribution of Deletions')
+createBarGraph(globals.inversionSizeDistributionCounter, 'Distribution of Inversions')
+createBarGraph(globals.transpositionSizeDistributionCounter, 'Distribution of Transpositions')
+createBarGraph(globals.invertedTranspositionSizeDistributionCounter, 'Distribution of Inverted Transpositions')
 
 #TODO compute lineage
 #target = 'NC_014019'
