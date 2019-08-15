@@ -602,7 +602,7 @@ traverseNewickTreeAndOutputToFile(newickTree.clade)
 #Output the totals for the computation to console and file
 outputTotalsToFile(outputFileName, totalTime)
 
-if globals.printToConsole:
+if True:
     #Output Bar graphs of each event
     createBarGraph(globals.deletionSizeCounter, 'Distribution of Deletions')
     createBarGraph(globals.duplicationSizeCounter, 'Distribution of Duplications')
