@@ -1,9 +1,8 @@
 import globals
+import copy
 import multiset
 import numpy as np
 import matplotlib.pyplot as plt
-import copy
-from matplotlib.ticker import MaxNLocator
 
 ####################################
 ##Sequence Service Functions########
@@ -51,7 +50,7 @@ def updateGlobalSubstitutionCounter(strain):
         array = filter(None, tempString.split(';'))
         if len(array) > 0:
             globals.substitutionCounter += len(array)
-        
+            
 ######################################################
 # updateGlobalInversionSizeDistributionCounter
 # Parameters: strain
@@ -154,7 +153,7 @@ def addDeletionEventsToStrain(strain, deletionSizes, deletionDescription):
 # Parameters:
 # Description: Constructs a dot plot to indicate a mapping of the orthologous operons
 ######################################################
-def createDotPlot(events, strain1, strain2):
+def createDotPlot(events, strain1, strain2, testFolder = ''):
     #Stores all of the coordinates
     x_coord = []
     y_coord = []
@@ -221,7 +220,7 @@ def createDotPlot(events, strain1, strain2):
         plt.ylabel('Operon Position in %s' % (strain1.name))
         plt.xlabel('Operon Position in %s' % (strain2.name))
         plt.show()
-        f.savefig("%s %s.pdf" %(strain1.name, strain2.name), bbox_inches='tight')
+        f.savefig(testFolder + '%s %s.pdf' %(strain1.name, strain2.name), bbox_inches='tight')
     else:
         if globals.printToConsole:
             print('No plot to display!')
@@ -292,48 +291,16 @@ def createBarGraph(dictionary, title):
     if dictionary != None and len(dictionary) > 0:
         keys = list(dictionary.keys())
         keys.sort()
-        
-        if len(keys) < 8:
-            maxValue = keys[len(keys)-1]
-            maxValue += 1
-            if (maxValue < 6):
-                maxValue = 6
-                
-            y_pos = []
-            for x in range(1, maxValue):
-                y_pos.append(x)
-            
-            performance = []
-            for x in range(1, maxValue):
-                if x in keys:
-                    performance.append(dictionary[x])
-                else:
-                    performance.append(0)
-        else:
-            y_pos = np.arange(len(keys))
-            performance = []
-            for key in keys:
-                performance.append(dictionary[key])
-        
-        #Used for the y-ticks
-        val = max(performance)
-        ticks = []
-        ticks.append(2)
-        index = 4        
-        while index < val + 2:
-            ticks.append(index)
-            index += 2
-            
-        f = plt.figure()
+
+        y_pos = np.arange(len(keys))
+
+        performance = []
+        for key in keys:
+            performance.append(dictionary[key])
+
         plt.bar(y_pos, performance, align='center', alpha=0.5)
-        if len(keys) < 8:
-            plt.xticks(y_pos, y_pos)
-        else :
-            plt.xticks(y_pos, keys)
-        plt.yticks(ticks)
+        plt.xticks(y_pos, keys)
         plt.ylabel('Number of Occurrences')
         plt.xlabel('Size of Occurrence')
         plt.title(title)
         plt.show()
-        
-        f.savefig("%s.pdf" %(title), bbox_inches='tight')

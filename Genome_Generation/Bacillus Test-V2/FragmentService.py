@@ -59,18 +59,7 @@ def determineRegions(fragments):
             #cMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Current points distance from the main diagonal
             #pMainDiagonalDistance = abs(prevFragment.fragmentDetails1.point - prevFragment.fragmentDetails2.point) #Previous points distance from the main diagonal
             #not(pMainDiagonalDistance == 0 and cMainDiagonalDistance > 0)
-            
-            #Tracks whether the neighboring operons are of the same orientation
-            if currFragment.fragmentDetails1.isNegativeOrientation != currFragment.fragmentDetails2.isNegativeOrientation:
-                currFragmentOpposite = True
-            else:
-                currFragmentOpposite = False
-            if prevFragment.fragmentDetails1.isNegativeOrientation != prevFragment.fragmentDetails2.isNegativeOrientation:
-                prevFragmentOpposite = True
-            else:
-                prevFragmentOpposite = False
-
-            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold and currFragmentOpposite ==  prevFragmentOpposite: #If the y-Distance is less than the threshold add it to the consecutive region
+            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
                 consecutiveRegion.append(fragmentsCopy.pop(index))
                 foundNeighbor = True #Indicates we found a consecutive region
                 #skipCounter = 0 #Reset the skip counter
