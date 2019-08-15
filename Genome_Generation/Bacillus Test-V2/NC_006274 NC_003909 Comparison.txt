@@ -1,0 +1,46 @@
+NC_006274, NC_003909
+
+Strain:NC_006274
+Codon Mismatch:
+Substitution:
+Duplication:16S 45, 23S 46, 5S 47; (B)
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Strain:NC_003909
+Codon Mismatch:
+Substitution:
+Duplication:Met_AUG 43, Asp_GAC 44; (A)
+Gly_GGA 104; (D)
+Deletion:Arg_AGA 105, Gly_GGA 106; (C)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Operons with differences:
+Original Operon 1: [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, 				   Met_AUG, Asp_GAC]
+Original Operon 2: [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC, Met_AUG, Asp_GAC]
+																																			  (A)
+(A)- Marked as duplicate since sequence found within operon itself
+
+Self Global Alignment NC_006274:
+
+Original Operon 1: [16S, 23S, 5S]
+(B) - Marked as duplicate
+
+Original Operon 1: -[Arg_AGA, Gly_GGA]
+(C) Marked as deletion
+
+Self Global Alignment NC_003909:
+
+Original Operon 1: -Gly_GGA
+(D) - Marked as duplication
+
+
+Genome NC_006274:	< o >, [16S, Ile_AUC, Ala_GCA, 23S, 5S], Ser_UCA, [16S, Ile_AUC, Ala_GCA, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA], [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, 					 Met_AUG, Asp_GAC], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG], Gly_GGA, [16S, 23S, 5S, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, Ser_UCA, Ser_UCA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Trp_UGG, Ile_AUC, Asn_AAC, Glu_GAA], -Val_GUC, < t >, -Met_AUG, 				-[Arg_AGA, Gly_GGA], -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+Genome NC_003909:	< o >, [16S, Ile_AUC, Ala_GCA, 23S, 5S], Ser_UCA, [16S, Ile_AUC, Ala_GCA, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA], [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC, Met_AUG, Asp_GAC], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], 				[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG], Gly_GGA, [16S, 23S, 5S, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, Ser_UCA, Ser_UCA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Trp_UGG, Ile_AUC, Asn_AAC, Glu_GAA], -Val_GUC, < t >, -Met_AUG, -Gly_GGA, 						 -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+Genome Ancestor 8:	< o >, [16S, Ile_AUC, Ala_GCA, 23S, 5S], Ser_UCA, [16S, Ile_AUC, Ala_GCA, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Glu_GAA, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Gly_GGC, Ala_GCA], [Asn_AAC, Ser_AGC, Glu_GAA, Val_GUA, Asp_GAC, Gln_CAA, Lys_AAA, Leu_CUC, Arg_CGU, Pro_CCA, Gly_GGA, 16S, 23S, 5S, 					 Met_AUG, Asp_GAC], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], [16S, 23S, 5S], 				[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUG], Gly_GGA, [16S, 23S, 5S, Val_GUA, Tyr_UAC, Gln_CAA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, Ser_UCA, Ser_UCA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Trp_UGG, Ile_AUC, Asn_AAC, Glu_GAA], -Val_GUC, < t >, -Met_AUG, 				-[Arg_AGA, Gly_GGA], -[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, Lys_AAA, Thr_ACA, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUA, His_CAC, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+
+ 

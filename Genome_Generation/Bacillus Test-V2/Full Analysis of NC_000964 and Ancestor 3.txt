@@ -1,0 +1,117 @@
+Output:
+
+Strain:NC_000964
+Codon Mismatch:
+Substitution:
+Duplication:Lys_AAA 19, Leu_CUA 20;(A)
+	16S 38, 23S 39, 5S 40; (C)
+	16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40; (D)
+Deletion:!Lys_AAA -1, !Leu_CUA -1;!Leu_UUA -1; (B)
+Inversion:
+
+Strain:Ancestor 3
+Codon Mismatch:
+Substitution:
+Duplication:16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29; (F)
+Deletion:!Ile_AUC -1, !Ala_GCA -1; (E)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Details of these events:
+
+Global alignment identified 17 operons as perfect matches (ie no gaps). This count also includes singletons but there's no gaps in singletons. There was actually 19 but I exluded the
+terminus and origin from the count.
+
+One pair of operons that were marked as orthologs had a gap in the alignment. Global Alignment detected differences between these two operons:
+Formatted Operon from 964: 		  ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUA', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', '16S', '23S', '5S']
+Formatted Operon from Ancestor 3: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 					   'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', '16S', '23S', '5S']
+
+There's a gap for Lys_AAA and Leu_CUA however these exact same order of these genes was found in another operon,
+['Asn_AAC', 'Ser_AGC', 'Glu_GAA', 'Gln_CAA', 		'Lys_AAA', 'Leu_CUA', 			'Leu_CUC'] I left spacing intentionally
+therefore these were marked as duplicates == Lys_AAA 19, Leu_CUA 20; (A)
+
+After the global alignment completed, each genome had an operon remaining that couldn't be matched during global alignment
+
+These two operons where identified as duplicates by self global alignment in 964:
+Target: [16S, 23S, 5S, Asn_AAC, Thr_ACC, 		  		   Gly_GGC, 		 Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S, 16S, 23S, 5S]
+Source: [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S			  ]
+
+Extra Genes in target: [16S, 23S, 5S] == 16S 38, 23S 39, 5S 40; (C)
+Since these genes do appear in the target but do not appear in the source, then we agreed to assume these genes were the result of a duplication event
+
+Extra Genes in Source: [Lys_AAA, Leu_CUA], [Leu_UUA] == !Lys_AAA -1, !Leu_CUA -1;Leu_UUA -1; (B)
+Since we agreed the entire source had to be duplicated we assumed that any genes that cannot be mapped to the target must've been
+deleted therefore these genes would appear as deletions in 964 however since these are not present in the target, they will have a -1 index.
+
+Now since this operon was identified as a duplicate we also assumed there were no partial duplications therefore the entire source must have been duplicated which would have resulted
+in the following sequence:
+16S 29, 23S 30, 5S 31, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 34, !Leu_UUA -1, Arg_CGU 35, Pro_CCA 36, Ala_GCA 37, 16S 38, 23S 39, 5S 40;(D)
+
+Notice that this is the Source sequence. Also notice that some of these have -1. the Lys_AAA, Leu_CUA, and Leu_UUA were all gaps in the alignment therefore these would have have
+an index of -1 since the indexes here refer to the target's indexes and they do not exist in the target. The Val_GUA and Thr_ACA also have -1 indexes. 
+These were marked as a codon mismatch and a substitution therefore these genes technically do not exist in the target originally so I left them as -1. I wonder, in that case, 
+would we want to indicate a codon mismatch or substitution in this case as well? b/c this would penalty on the genome itself. Something we didn't consider.
+
+Now the remaining operon in Ancestor 3:
+
+Target: [16S, 					23S, 5S]
+Source: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+
+Same as before, we see Ile_AUC and Ala_GCA as gaps in the target and since the entire source must've been replicated therefore they 
+must've been deleted from the target resulting in:
+!Ile_AUC -1, !Ala_GCA -1; (E)
+
+Now we have to indicate the Source was duplicated at the location where the target is resulting in the following sequence:
+
+16S 27, !Ile_AUC -1, !Ala_GCA -1, 23S 28, 5S 29; (F)
+
+Again since Ile_AUC and Ala_GCA do not exist in the target, therefore they have an index of -1.
+
+At the bottom I have included the genomes of NC_000964 and Ancestor 03 just for reference.
+
+NC_000964
+< o >
+[16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Ser_UCA
+[16S, Ile_AUC, Ala_GCA, 23S, 5S]
+[Met_AUG, Glu_GAA]
+[16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+[16S, 23S, 5S, Asn_AAC, Thr_ACC, Gly_GGC, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S, 16S, 23S, 5S]
+[Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA]
+[Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC]
+[Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC]
+[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG]
+Gly_GGA
+Val_GUC
+< t >
+-Arg_AGG
+Gln_CAA
+-Arg_AGA
+-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S]
+-Ala_GCC
+-Arg_CGG
+-[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+
+Ancestor 3
+< o >
+[16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Ser_UCA
+[16S, Ile_AUC, Ala_GCA, 23S, 5S]
+[Met_AUG, Glu_GAA]
+[16S, 23S, 5S, Val_GUA, Thr_ACA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+[16S, 23S, 5S]
+[Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA]
+[Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC]
+[Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC]
+[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG]
+Gly_GGA
+Val_GUC
+< t >
+-Arg_AGG
+Gln_CAA
+-Arg_AGA
+-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S]
+-Ala_GCC
+-Arg_CGG
+-[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]

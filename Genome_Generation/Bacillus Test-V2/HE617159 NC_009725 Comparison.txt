@@ -1,0 +1,57 @@
+Comparison #1:
+
+Strain:HE617159
+Codon Mismatch:
+Substitution:
+Duplication:Arg_CGU 46, Pro_CCA 47; (G)
+Gly_GGC 44; (H)
+Val_GUA 40, Thr_ACA 41, Lys_AAA 42, Leu_CUA 43; (J)
+Ile_AUC 2, Ala_GCA 3; (B)
+Ile_AUC 8, Ala_GCA 9; (C)
+Leu_UUA 45; (I)
+
+Deletion:
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Strain:NC_009725
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 111; (A)
+Ala_GCA 110; (A)
+Ile_AUC 35, Ala_GCA 36; (D)
+Ala_GCA 33; (E)
+
+Deletion:Ala_GCA 48; (F)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Perfect matches: 17
+
+Diff operons: Seperate because detected as individual duplications within operon itself. ie they were not continuous within the operon itself. (A)
+Formatted Operon 1: ['16S', 					  '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUG', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA']
+Formatted Operon 2: ['16S', 'Ile_AUC', 'Ala_GCA', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUG', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA']
+
+																																													(J)							(H)			(I)				(G)				 	(F)
+Formatted Operon 1: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', 		     '16S', 							'23S', '5S', {'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUA',} {'Gly_GGC',} {'Leu_UUA',} {'Arg_CGU', 'Pro_CCA',} {'Ala_GCA',} 	'16S', '23S', '5S']
+Formatted Operon 2: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', {'Ala_GCA',} '16S', {'Ile_AUC', 'Ala_GCA',} 	'23S', '5S', 																							   		  	  		'16S', '23S', '5S']
+																									(E)						(D)
+Ancestral Operon:[16S, 23S, 5S, Asn_AAC, Thr_ACC, Gly_GGC, Arg_CGU, Pro_CCA, 16S, 23S, 5S, Ala_GCA, 16S, 23S, 5S]																								
+																									
+(D) - Found in another operon
+(E) - Found within operon since we allow for gaps to be of size 1 when checking within operon itself
+(F) - Gap of size 1 and not found within operon itself and we do not allow for gaps of size 1 to be check within other operons
+(G) - Found in another operon
+(H) - Found within operon since we allow for gaps of size 1 to be checked within operon
+(I) - Found within operon since we allow for gaps of size 1 to be checked within operon
+(J) - Found within another operon
+
+Gap found in another operon therefore marked as duplicate (B)
+Formatted Operon 1: ['16S', 'Ile_AUC', 'Ala_GCA', '23S', '5S']
+Formatted Operon 2: ['16S', 					  '23S', '5S']
+
+Gaps found in another operon therefore marked as duplicate (C)
+Formatted Operon 1: ['16S', 'Ile_AUC', 'Ala_GCA', '23S', '5S']
+Formatted Operon 2: ['16S', 					  '23S', '5S']
