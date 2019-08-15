@@ -649,7 +649,15 @@ def main():
     #lineageCost = computeLineageCost(newickTree.clade, target, None)
     #if lineageCost != None:
         #print('Successfully found and computed the lineage for: %s' % (target))
-                
+    
+    if globals.printToConsole:
+        #Output Bar graphs of each event
+        createBarGraph(globals.deletionSizeCounter, 'Distribution of Deletions')
+        createBarGraph(globals.duplicationSizeCounter, 'Distribution of Duplications')
+        createBarGraph(globals.inversionSizeDistributionCounter, 'Distribution of Inversions')
+        createBarGraph(globals.transpositionSizeDistributionCounter, 'Distribution of Transpositions')
+        createBarGraph(globals.invertedTranspositionSizeDistributionCounter, 'Distribution of Inverted Transpositions')
+        
     print('Total time (in seconds): %s' % (totalTime))
     print('Ending application...')
     
