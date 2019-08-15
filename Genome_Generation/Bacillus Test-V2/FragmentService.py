@@ -85,7 +85,8 @@ def determineRegions(fragments):
                     yDecreaseCounter += 1
                     
         #Add the region to the appropriate array
-        if oppositeOrientationCount > 0:
+        sameOrientation = len(consecutiveRegion) - oppositeOrientationCount # number of positive oriented operons
+        if oppositeOrientationCount > 0 and oppositeOrientationCount >= sameOrientation:
             #This is either an inversion or an inverted transposition
             if aboveMainDiagonal == True and belowMainDiagonal == True and yIncreaseCounter < yDecreaseCounter:
                 invertedRegions.append(consecutiveRegion) #Crosses the main diagonal and y is decreasing
