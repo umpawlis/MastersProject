@@ -870,12 +870,12 @@ def reconstructOperonSequence(event, strain1, strain2):
             print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
 
         #Step 1: Check if these extra genes are the result of a duplicate event within the alignment, remove them if they are
-        operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
-        operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
+        #operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
+        #operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
 
         #Add the details to the respective strain
-        strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
-        strain2 = addDuplicationEventsToStrain(strain2, duplicateSizesWithinAlignment2, duplicationDetails2)
+        #strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
+        #strain2 = addDuplicationEventsToStrain(strain2, duplicateSizesWithinAlignment2, duplicationDetails2)
 
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
