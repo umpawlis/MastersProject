@@ -880,7 +880,10 @@ def reconstructOperonSequence(event, strain1, strain2):
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
         j = len(operon2Gaps)
-
+        
+        alignedGenes1 = copy.deepcopy(event.operon1Alignment)
+        alignedGenes2 = copy.deepcopy(event.operon2Alignment)
+        
         #Tracks the genes marked as deleted and their positions
         deletedGenes = []
         deletedGenesPositions = []
@@ -895,7 +898,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
-                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                #duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkIfDuplicate(operon1Gaps[i-1], operon1GapPositions[i-1], event.fragmentDetails1, strain1.genomeFragments, alignedGenes1)
                 strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
@@ -938,7 +942,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                #duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkIfDuplicate(operon2Gaps[j-1], operon2GapPositions[j-1], event.fragmentDetails2, strain2.genomeFragments, alignedGenes2)
                 strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -983,7 +988,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
-                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                #duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkIfDuplicate(operon1Gaps[i-1], operon1GapPositions[i-1], event.fragmentDetails1, strain1.genomeFragments, alignedGenes1)
                 strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -1029,7 +1035,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                #duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkIfDuplicate(operon2Gaps[j-1], operon2GapPositions[j-1], event.fragmentDetails2, strain2.genomeFragments, alignedGenes2)
                 strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
