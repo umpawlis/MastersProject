@@ -1266,13 +1266,13 @@ def checkIfDuplicate(gap, positions, fragment, fragments, alignedGenes):
             #Remove the duplicated region
             del gap[startIndex:endIndex]
             del positions[startIndex:endIndex]
-            startIndex = endIndex
-            endIndex += windowSize
-        else:
+            #startIndex = endIndex
+            #endIndex += windowSize
+        elif windowSize > 1:
             #Check the other operons for potential matches
             for x in range(0, len(fragments)):
                 currFragment = fragments[x]
-                if currFragment.fragmentIndex != fragment.fragmentIndex and windowSize > 1 and len(currFragment.sequence) > 1: #They're not the same operon and the window size is greater than 1 and the operon is not a singleton
+                if currFragment.fragmentIndex != fragment.fragmentIndex and len(currFragment.sequence) > 1: #They're not the same operon and the operon is not a singleton
                     #Step 2: Check if the gap exists within another operon
                     genesMatched = checkSequence(genes, currFragment.sequence)
                     if genesMatched != 0 and genesMatched == len(genes):
@@ -1282,8 +1282,8 @@ def checkIfDuplicate(gap, positions, fragment, fragments, alignedGenes):
                         #Remove the duplicated region
                         del gap[startIndex:endIndex]
                         del positions[startIndex:endIndex]
-                        startIndex = endIndex
-                        endIndex += windowSize
+                        #startIndex = endIndex
+                        #endIndex += windowSize
                         break #Break out of the for loop
         if found == False: #We did not find a sequence of genes to match the gap so shift the window
             startIndex+=1
