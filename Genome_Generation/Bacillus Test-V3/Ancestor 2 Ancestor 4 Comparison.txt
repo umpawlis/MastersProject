@@ -1,0 +1,65 @@
+Strain:Ancestor 2
+Codon Mismatch:Thr_ACC 29; (E)
+Substitution:Asn_AAC 28; (D)
+Duplication:Lys_AAA 15, Leu_CUA 16; (A)
+16S 33, 23S 34, 5S 35;(I)
+16S 25, 23S 26, 5S 27, !Val_GUA -1, !Thr_ACA -1, !Lys_AAA -1, !Leu_CUA -1, Gly_GGC 30, !Leu_UUA -1, Arg_CGU 31, Pro_CCA 32, Ala_GCA 36, 16S 37, 23S 38, 5S 39; (F)
+Leu_UUG 78; (J)
+Deletion:!Lys_AAA -1, !Leu_CUA -1; (G)
+!Leu_UUA -1; (H)
+Arg_AGA 70; (L)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Strain:Ancestor 4
+Codon Mismatch:
+Substitution:
+Duplication:Ile_AUC 2, Ala_GCA 3; (B)
+Ile_AUC 8, Ala_GCA 9; (C)
+Deletion:Arg_AGA 84, Arg_AGA 85; (K)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Operons with differences
+														 (A)
+Original Operon 1: [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+Original Operon 2: [16S, 23S, 5S, Val_GUA, Thr_ACA, 				  Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S]
+(A) - Gap found in another operon therefore marked as duplication
+
+Original Operon 1: [16S, 				   23S, 5S]
+Original Operon 2: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+							  (B)
+(B) - Found in another operon therefore marked as duplication
+
+Original Operon 1: [16S, 				   23S, 5S]
+Original Operon 2: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+								(C)
+(C) - Found in another operon therefore marked as duplication
+
+Self Global Alignment
+											(D)         (E)                                                                             (I)
+Formatted Operon 1: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 						 'Gly_GGC', 		   'Arg_CGU', 'Pro_CCA', '16S', '23S', '5S', 'Ala_GCA', '16S', '23S', '5S']
+Formatted Operon 2: ['16S', '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUA', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 					 'Ala_GCA',	'16S', '23S', '5S']
+																		(G)                        (H)
+(D) + (E) When comparing to the neighbor, it was found that the substitution and the codon mismatch were in Ancestor 2
+(F) Operon 1 == Target, Operon 2 == Source therefore Operon 2 must've been duplicated into the target's location
+(G) + (H) - Both exist in the source but not in the target, therefore were marked as deletions
+(I) - Marked as duplication
+
+Original Operon 1: Leu_UUG
+Original Operon 2: [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG]
+(J) - The singleton Leu_UUG was found in another operon therefore marked as duplication
+
+Original Operon 1: -[Arg_AGA, Arg_AGA]
+(K) - No match found therefore marked as a deletion
+
+Original Operon 1: -Arg_AGA
+(L) - No match found therefore marked as a deletion
+
+
+Ancestor 2 Genome:	< o >, [16S, 				   23S, 5S], Ser_UCA, [16S, 				  23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], [16S, 23S, 5S, Asn_AAC, Thr_ACC, Gly_GGC, Arg_CGU, Pro_CCA, 16S, 23S, 5S, Ala_GCA, 16S, 23S, 5S], [Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA], [Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], [Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], Leu_UUG, Gly_GGA, Val_GUC, < t >, 			 -Arg_AGG, Gln_CAA, -[Arg_AGA, Arg_AGA], 			-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Ala_GCC, -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+Ancestor 4 Genome:	< o >, [16S, Ile_AUC, Ala_GCA, 23S, 5S], Ser_UCA, [16S, Ile_AUC, Ala_GCA, 23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S, Val_GUA, Thr_ACA, 				   Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], 																									 [Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA], [Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], [Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], 		  Gly_GGA, Val_GUC, < t >, 			 -Arg_AGG, Gln_CAA, 					 -Arg_AGA, 	-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Ala_GCC, -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+Ancestor 5 Genome:	< o >, [16S, 				   23S, 5S], Ser_UCA, [16S, 				  23S, 5S], [Met_AUG, Glu_GAA], [16S, 23S, 5S, Val_GUA, Thr_ACA,				   Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], 																									 [Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA], [Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], [Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], [16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], 		  Gly_GGA, Val_GUC, < t >, -Arg_AGA, -Arg_AGG, Gln_CAA, -[Arg_AGA, Arg_AGA], 			-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S], -Ala_GCC, -Arg_CGG, -[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+

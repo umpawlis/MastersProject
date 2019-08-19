@@ -1,0 +1,100 @@
+Strain:NC_014551
+Codon Mismatch:
+Substitution:Val_GUG 75; (D)
+
+Duplication:
+Ile_AUC 118; (A)
+Ala_GCA 117; (A)
+Ile_AUC 67, Ala_GCA 68; (B)
+Ile_AUC 38, Ala_GCA 39; (E)
+Ile_AUC 60, Ala_GCA 61; (G)
+Ile_AUC 2, Ala_GCA 3; (H)
+Ile_AUC 8, Ala_GCA 9; (I)
+
+Deletion:
+Leu_UUG 79; (C)
+Ala_GCA 36; (F)
+
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Strain:Ancestor 1
+Codon Mismatch:
+Substitution:
+Duplication:
+Deletion:Leu_UUG 86; (J)
+Inversion:
+Transposition:
+Inverted Transposition:
+
+Number of operons with no differences: 
+
+Operons with differences:
+								(A)
+Formatted Operon 1: ['16S', {'Ile_AUC', 'Ala_GCA',} '23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUG', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA']
+Formatted Operon 2: ['16S', 					  	'23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUG', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA']
+Ancestral Operon:	['16S', 					  	'23S', '5S', 'Val_GUA', 'Thr_ACA', 'Lys_AAA', 'Leu_CUG', 'Gly_GGC', 'Leu_UUA', 'Arg_CGU', 'Pro_CCA', 'Ala_GCA', 'Met_AUG', 'Met_AUG', 'Ser_UCA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'His_CAC', 'Gly_GGA', 'Ile_AUC', 'Asn_AAC', 'Ser_AGC', 'Glu_GAA']
+(A) - split into two b/c they were found within operon but not as continous
+
+
+Formatted Operon 1: ['16S', 'Ile_AUC', 'Ala_GCA', 	'23S', '5S', 'Asn_AAC', 'Ser_UCC', 'Glu_GAA', 'Val_GUA', 'Val_GUG', 'Asp_GAC', 'Phe_UUC', 'Thr_ACA', 'Tyr_UAC', 'Trp_UGG', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 'Cys_UGC', 'Leu_UUA']
+Formatted Operon 2: ['16S', 						'23S', '5S', 'Asn_AAC', 'Ser_UCC', 'Glu_GAA', 'Val_GUA', 'Met_AUG', 'Asp_GAC', 'Phe_UUC', 'Thr_ACA', 'Tyr_UAC', 'Trp_UGG', 'His_CAC', 'Gln_CAA', 'Gly_GGC', 'Cys_UGC', 'Leu_UUA', 'Leu_UUG']
+Ancestral operon:	[ 16S, 							 23S,   5S,   Asn_AAC,   Ser_UCC,   Glu_GAA,   Val_GUA,   Met_AUG,   Asp_GAC,   Phe_UUC,   Thr_ACA,   Tyr_UAC,   Trp_UGG,   His_CAC,   Gln_CAA,   Gly_GGC,   Cys_UGC,   Leu_UUA,   Leu_UUG]
+(B) - Found in another operon                                                                                    (D)                                                                                                                        (C)
+(C) - Detected as deletion since gap of size 1 and no other copy exists within operon
+(D) - Substitution detected however since the same substitution was found when comparing strain 1 to the neighbor therefore the Val_GUG was the substitution and Met_AUG was inserted into the operon
+
+
+																																			 (F)
+Formatted Operon 1: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', '16S', 'Ile_AUC', 'Ala_GCA', '23S', '5S', 			 '16S', '23S', '5S']
+Formatted Operon 2: ['16S', '23S', '5S', 'Asn_AAC', 'Thr_ACC', 'Gly_GGC', 'Arg_CGU', 'Pro_CCA', '16S', 						 '23S', '5S', 'Ala_GCA', '16S', '23S', '5S']
+Ancestral Operon:	[16S, 	 23S, 	5S,   Asn_AAC, 	 Thr_ACC, 	Gly_GGC,   Arg_CGU,   Pro_CCA,   16S, 						  23S,   5S,   Ala_GCA,   16S,   23S,   5S]
+																											   (E)
+(E) - Detected as duplicate since found in another operon
+(F) - Gap of size 1 and since no other copy within operon exists therefore its detected as a deletion
+
+
+Original Operon 1: [Arg_CGU, Gly_GGA, 16S, Ile_AUC, Ala_GCA, 23S, 5S, Met_AUG, Asp_GAC]
+Original Operon 2: [Arg_CGU, Gly_GGA, 16S, 					 23S, 5S, Met_AUG, Asp_GAC]
+(G) - Found in another operon therefore detected as duplicate
+
+
+Original Operon 1: [16S, Ile_AUC, Ala_GCA, 23S, 5S]
+Original Operon 2: [16S, 				   23S, 5S]
+(H) - Found in another operon therefore detected as duplicate
+
+Original Operon 1: [16S, Ile_AUC, Ala_GCA,  23S, 5S]
+Original Operon 2: [16S, 					23S, 5S]
+(I) - Detected as duplication because found in another operon
+
+
+Lost singletons
+NC_014551 had a Leu_UUG remaining however the self global alignment detected this as a deletion since no copy was found within another operon
+(J)
+
+
+Complete Ancestor 2 Genome:
+< o >, 
+[16S, 23S, 5S], 
+Ser_UCA, 
+[16S, 23S, 5S], 
+[Met_AUG, Glu_GAA], 
+[16S, 23S, 5S, Val_GUA, Thr_ACA, Lys_AAA, Leu_CUA, Gly_GGC, Leu_UUA, Arg_CGU, Pro_CCA, Ala_GCA, 16S, 23S, 5S], 
+[16S, 23S, 5S, Asn_AAC, Thr_ACC, Gly_GGC, Arg_CGU, Pro_CCA, 16S, 23S, 5S, Ala_GCA, 16S, 23S, 5S], 
+[Glu_GAA, Val_GUA, Thr_ACA, Tyr_UAC, Gln_CAA], 
+[Asn_AAC, Ser_AGC, Glu_GAA, Gln_CAA, Lys_AAA, Leu_CUA, Leu_CUC], 
+[Arg_CGU, Gly_GGA, 16S, 23S, 5S, Met_AUG, Asp_GAC], 
+[16S, 23S, 5S, Asn_AAC, Ser_UCC, Glu_GAA, Val_GUA, Met_AUG, Asp_GAC, Phe_UUC, Thr_ACA, Tyr_UAC, Trp_UGG, His_CAC, Gln_CAA, Gly_GGC, Cys_UGC, Leu_UUA, Leu_UUG], 
+Leu_UUG, 
+Gly_GGA, 
+Val_GUC, 
+< t >, 
+-Arg_AGG, 
+Gln_CAA, 
+-[Arg_AGA, Arg_AGA], 
+-[Glu_GAA, Ser_AGC, Asn_AAC, Ile_AUC, Gly_GGA, His_CAC, Phe_UUC, Asp_GAC, Met_AUG, Ser_UCA, Met_AUG, Met_AUG, Ala_GCA, Pro_CCA, Arg_CGU, Leu_UUA, Gly_GGC, Leu_CUG, Lys_AAA, Thr_ACA, Val_GUA, 5S, 23S, 16S], 
+-Ala_GCC, 
+-Arg_CGG, 
+-[Phe_UUC, Asp_GAC, Glu_GAA, Lys_AAA]
+
