@@ -1,7 +1,7 @@
-import math
 import copy
 import globals
 from GenomeFragment import GenomeFragment
+
 
 ######################################################
 # determineRegions
@@ -9,6 +9,130 @@ from GenomeFragment import GenomeFragment
 # Description: Takes a list of genome fragments and computes Forward Conserved, Transposed Forward, Inverted, Inverted Transposed, and Lost regions
 ######################################################
 def determineRegions(fragments):
+    #Various regions of the genome
+    conservedForwardRegions = []
+    transposedForwardRegions = []
+    invertedRegions = []
+    invertedTransposedRegions = []
+    
+    #Sort the fragments
+    fragmentsCopy = copy.deepcopy(fragments)
+    fragmentsCopy.sort(key=lambda x:x.fragmentDetails1.point, reverse=False)
+    
+    while len(fragmentsCopy) > 0:
+        currFragment = fragmentsCopy.pop(0)
+
+        #Remember there's no lost fragments at this point
+        consecutiveRegion = [] #Stores a consecutive region
+        consecutiveRegion.append(currFragment)
+        foundNeighbor = True #Keeps track of whether we found a neighboring operon
+        
+        index = 0
+        
+        oppositeOrientationCount = 0 #Counts the number of operons with opposite orientation within a consecutive region
+        
+        yIncreaseCounter = 0 #Counts the number of points that are increasing in the current region
+        yDecreaseCounter = 0 #Counts the number of points that are decreasing in the current region
+
+        minMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Calculates the distance from the main diagonal
+
+        #These track whether we cross the main diagonal
+        aboveMainDiagonal = False
+        belowMainDiagonal = False
+        if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point < 0:
+            aboveMainDiagonal = True
+        if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point > 0:
+            belowMainDiagonal = True
+        
+        #Counts the number of mapped operons with the opposite orientation            
+        if currFragment.fragmentDetails1.isNegativeOrientation != currFragment.fragmentDetails2.isNegativeOrientation:
+            oppositeOrientationCount += 1
+            
+        while index < len(fragmentsCopy) and foundNeighbor and len(fragmentsCopy) > 0: #Continue looping as long as we keep on finding a neighbor
+            foundNeighbor = False #Reset the tracker
+
+            prevFragment = consecutiveRegion[len(consecutiveRegion)-1] #Gets the last operon in the the consecutive operons list
+            currFragment = fragmentsCopy[index] #Get the next available operon
+            yDistance = abs(currFragment.fragmentDetails2.point - prevFragment.fragmentDetails2.point) #The distance on the y-axis
+            xDistance = abs(currFragment.fragmentDetails1.point - prevFragment.fragmentDetails1.point) #The distance on the x-axis
+            
+            #cMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point) #Current points distance from the main diagonal
+            #pMainDiagonalDistance = abs(prevFragment.fragmentDetails1.point - prevFragment.fragmentDetails2.point) #Previous points distance from the main diagonal
+            #not(pMainDiagonalDistance == 0 and cMainDiagonalDistance > 0)
+            if yDistance < globals.yDistanceThreshold and xDistance < globals.xDistanceThreshold: #If the y-Distance is less than the threshold add it to the consecutive region
+                consecutiveRegion.append(fragmentsCopy.pop(index))
+                foundNeighbor = True #Indicates we found a consecutive region
+                #skipCounter = 0 #Reset the skip counter
+                
+                if currFragment.fragmentDetails1.isNegativeOrientation != currFragment.fragmentDetails2.isNegativeOrientation:
+                    oppositeOrientationCount += 1
+                
+                #Tracks the minimuim distance from the main diagonal
+                currMainDiagonalDistance = abs(currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point)
+                if currMainDiagonalDistance < minMainDiagonalDistance:
+                    minMainDiagonalDistance = currMainDiagonalDistance
+
+                #Tracks whether this point is above or below the main diagonal
+                if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point < 0:
+                    aboveMainDiagonal = True
+                if currFragment.fragmentDetails1.point - currFragment.fragmentDetails2.point > 0:
+                    belowMainDiagonal = True
+
+                #Determines if the points are moving up or down
+                if prevFragment.fragmentDetails2.point < currFragment.fragmentDetails2.point:
+                    yIncreaseCounter += 1
+                else:
+                    yDecreaseCounter += 1
+                    
+        #Add the region to the appropriate array
+        sameOrientation = len(consecutiveRegion) - oppositeOrientationCount # number of positive oriented operons
+        if oppositeOrientationCount > 0 and oppositeOrientationCount >= sameOrientation:
+            #This is either an inversion or an inverted transposition
+            if aboveMainDiagonal == True and belowMainDiagonal == True and yIncreaseCounter < yDecreaseCounter:
+                invertedRegions.append(consecutiveRegion) #Crosses the main diagonal and y is decreasing
+            else:
+                invertedTransposedRegions.append(consecutiveRegion) #If does not cross main diagonal and y is not decreasing, treat as inverted transposition
+        else:
+            #This is either a forward conserved region or a transposition
+            if (minMainDiagonalDistance < 3 and yIncreaseCounter > yDecreaseCounter) or (minMainDiagonalDistance == 0 and len(consecutiveRegion) == 1): #If the distance from the main diagonal is 0 and y is increasing
+                conservedForwardRegions.append(consecutiveRegion)
+            else:
+                transposedForwardRegions.append(consecutiveRegion)
+    
+    if globals.printToConsole:
+        print('Statistics for regions in the genome:')
+        print('Total number of tracking points on the graph: %s' % (len(fragments)))
+        print('Total number of forward conserved regions: %s' % len(conservedForwardRegions))
+        print('Total number of forward transposed regions: %s' % len(transposedForwardRegions))
+        print('Total number of inverted regions: %s' % len(invertedRegions))
+        print('Total number of inverted transposed regions: %s' % len(invertedTransposedRegions))
+
+        #Prints indexs of the various regions computed
+        for region in conservedForwardRegions:
+            print('Forward Conserved Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in transposedForwardRegions:
+            print('Forward Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in invertedRegions:
+            print('Inverted Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+        for region in invertedTransposedRegions:
+            print('Inverted Transposed Region')
+            for x in range(0, len(region)):
+                print('%s, %s : %s, %s' %(region[x].fragmentDetails1.point, region[x].fragmentDetails2.point, region[x].fragmentDetails1.startPositionInGenome, region[x].fragmentDetails2.startPositionInGenome))
+
+    return conservedForwardRegions, transposedForwardRegions, invertedRegions, invertedTransposedRegions
+    
+######################################################
+# determineRegions
+# Parameters:
+# Description: Takes a list of genome fragments and computes Forward Conserved, Transposed Forward, Inverted, Inverted Transposed, and Lost regions
+######################################################
+def determineRegions2(fragments):
     #Various regions of the genome
     conservedForwardRegions = []
     transposedForwardRegions = []
