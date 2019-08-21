@@ -51,7 +51,7 @@ def computeGlobalAlignmentMatrix(strain1, strain2):
 
             event = Event(0)
             event.setScore(1.0)
-            event.setDistance(abs(int(op1.startPositionInGenome) - int(op2.startPositionInGenome)))
+            event.setDistance(abs(int(op1.fragmentIndex) - int(op2.fragmentIndex)))
             event.setFragmentDetails1(op1)
             event.setFragmentDetails2(op2)
             event.setGenome1Name(strain1.name)
@@ -870,17 +870,20 @@ def reconstructOperonSequence(event, strain1, strain2):
             print('These are the positions of the extra genes in operon 2: %s' %(operon2GapPositions))
 
         #Step 1: Check if these extra genes are the result of a duplicate event within the alignment, remove them if they are
-        operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
-        operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
+        #operon1Gaps, operon1GapPositions, duplicateSizesWithinAlignment1, duplicationDetails1 = checkForMatchesWithinAlignment(operon1Gaps, event.operon1Alignment, operon1GapPositions, event.fragmentDetails1)
+        #operon2Gaps, operon2GapPositions, duplicateSizesWithinAlignment2, duplicationDetails2 = checkForMatchesWithinAlignment(operon2Gaps, event.operon2Alignment, operon2GapPositions, event.fragmentDetails2)
 
         #Add the details to the respective strain
-        strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
-        strain2 = addDuplicationEventsToStrain(strain2, duplicateSizesWithinAlignment2, duplicationDetails2)
+        #strain1 = addDuplicationEventsToStrain(strain1, duplicateSizesWithinAlignment1, duplicationDetails1)
+        #strain2 = addDuplicationEventsToStrain(strain2, duplicateSizesWithinAlignment2, duplicationDetails2)
 
         #Step 2: Check if these extra genes are the result of a duplication event within another operon, remove them if they are, else insert them
         i = len(operon1Gaps)
         j = len(operon2Gaps)
-
+        
+        alignedGenes1 = copy.deepcopy(event.operon1Alignment)
+        alignedGenes2 = copy.deepcopy(event.operon2Alignment)
+        
         #Tracks the genes marked as deleted and their positions
         deletedGenes = []
         deletedGenesPositions = []
@@ -895,7 +898,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             if i > 0 and j > 0 and operon1GapIndexes[i-1] > operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 1 is bigger so we'll deal with that one first
                 #print('Gap being processed: %s' % (operon1Gaps[i]))
-                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                #duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkIfDuplicate(operon1Gaps[i-1], operon1GapPositions[i-1], event.fragmentDetails1, strain1.genomeFragments, alignedGenes1)
                 strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
@@ -938,7 +942,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0 and j > 0 and operon1GapIndexes[i-1] < operon2GapIndexes[j-1]:
                 #This means both queues have gaps however the index in queue 2 is bigger so we'll insert that one first
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                #duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkIfDuplicate(operon2Gaps[j-1], operon2GapPositions[j-1], event.fragmentDetails2, strain2.genomeFragments, alignedGenes2)
                 strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -983,7 +988,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif i > 0:
                 #This means that queue 2 has no more gaps so we process the remaining gaps in queue 1
                 #print('Gap being processed: %s' % (operon1Gaps[i-1]))
-                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                #duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkForMatchesWithinOperons(strain1.genomeFragments, event.fragmentDetails1, operon1Gaps[i-1], operon1GapPositions[i-1])
+                duplicationSizes, duplicationDetails, operon1Gaps[i-1], operon1GapPositions[i-1] = checkIfDuplicate(operon1Gaps[i-1], operon1GapPositions[i-1], event.fragmentDetails1, strain1.genomeFragments, alignedGenes1)
                 strain1 = addDuplicationEventsToStrain(strain1, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -1029,7 +1035,8 @@ def reconstructOperonSequence(event, strain1, strain2):
             elif j > 0:
                 #This means that queue 1 has no more gaps to process so we deal with the remaining gaps in queue 2
                 #print('Gap being processed: %s' % (operon2Gaps[j-1]))
-                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                #duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkForMatchesWithinOperons(strain2.genomeFragments, event.fragmentDetails2, operon2Gaps[j-1], operon2GapPositions[j-1])
+                duplicationSizes, duplicationDetails, operon2Gaps[j-1], operon2GapPositions[j-1] = checkIfDuplicate(operon2Gaps[j-1], operon2GapPositions[j-1], event.fragmentDetails2, strain2.genomeFragments, alignedGenes2)
                 strain2 = addDuplicationEventsToStrain(strain2, duplicationSizes, duplicationDetails) #Adds duplication details to strain
 
                 #incrementDuplicateSizeCounters(duplicationSizes)
@@ -1096,26 +1103,6 @@ def reconstructOperonSequence(event, strain1, strain2):
         #print('These are the duplicate sizes operon 2: %s\n\n' %(duplicateSizesWithinAlignment2))
 
     return event, strain1, strain2
-
-######################################################
-# checkForMatchesWithinOperons
-# Parameters:
-# Description: Checks if a given gap exists in any of the other operons
-######################################################
-def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
-    allDuplicationSizes = []
-    allDuplicationDetails = ''
-
-    for w in range(0, len(genomeFragments)): #Iterate through all fragments
-        currFragment = genomeFragments[w]
-        if currFragment.startPositionInGenome != fragment.startPositionInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
-            duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment, 1)
-
-            if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
-                allDuplicationSizes.extend(duplicationSizes)
-                allDuplicationDetails += duplicationDetails
-
-    return allDuplicationSizes, allDuplicationDetails, gap, positions
 
 ######################################################
 # checkForMatch
@@ -1220,6 +1207,26 @@ def checkForMatch(gap, positions, sequence, fragment, size):
     return geneDuplicateSizes, duplicationDetails, gap, positions
 
 ######################################################
+# checkForMatchesWithinOperons
+# Parameters:
+# Description: Checks if a given gap exists in any of the other operons
+######################################################
+def checkForMatchesWithinOperons(genomeFragments, fragment, gap, positions):
+    allDuplicationSizes = []
+    allDuplicationDetails = ''
+
+    for w in range(0, len(genomeFragments)): #Iterate through all fragments
+        currFragment = genomeFragments[w]
+        if currFragment.startPositionInGenome != fragment.startPositionInGenome and len(gap) > 0 and len(currFragment.sequence) > 1: #They're not the same operon and the gap is longer than 0 and the operon is not a singleton
+            duplicationSizes, duplicationDetails, gap, positions = checkForMatch(gap, positions, currFragment.sequence, fragment, 1)
+
+            if len(duplicationSizes) > 0: #If we found a duplicate, add it to the totals
+                allDuplicationSizes.extend(duplicationSizes)
+                allDuplicationDetails += duplicationDetails
+
+    return allDuplicationSizes, allDuplicationDetails, gap, positions
+
+######################################################
 # checkForMatchesWithinAlignment
 # Parameters:
 # Description: Takes an array of gaps and an alignment, then checks if the genes in the gap match any of the genes in the alignment, if they do then genes are popped off the gap array
@@ -1240,6 +1247,106 @@ def checkForMatchesWithinAlignment(arrayOfGaps, alignedGenes, arrayOfGapPosition
             arrayOfGapPositions[w] = positions
 
     return arrayOfGaps, arrayOfGapPositions, allDuplicationSizes, allDuplicationDetails
+
+
+######################################################
+# checkIfDuplicate
+# Parameters:
+# Description: Takes an array of gaps and checks if the gap is found within the aligned gene or within another operon
+######################################################
+def checkIfDuplicate(gap, positions, fragment, fragments, alignedGenes):
+    duplicationSizes = []   #Array of duplicate sizes
+    duplicationDetails = '' #Details obout the duplication
+    windowSize = len(gap)   #Current window size
+    startIndex = 0          #Start position of window
+    endIndex = len(gap)     #End position of Window
+    
+    while windowSize > 0:
+        found = False
+        genes = gap[startIndex:endIndex] #Grabs the genes within the window        
+        #Step 1: Check if the gap exists in the operon within the aligned region
+        genesMatched = checkSequence(genes, alignedGenes)
+        if genesMatched != 0 and genesMatched == len(genes):
+            found = True
+            #Indicate the gap is a duplication
+            duplicationSizes, duplicationDetails = handleDuplicationDetails(duplicationSizes, duplicationDetails, genes, startIndex, endIndex, gap, positions, fragment)            
+            #Remove the duplicated region
+            del gap[startIndex:endIndex]
+            del positions[startIndex:endIndex]
+            #startIndex = endIndex
+            #endIndex += windowSize
+        elif windowSize > 1:
+            #Check the other operons for potential matches
+            for x in range(0, len(fragments)):
+                currFragment = fragments[x]
+                if currFragment.fragmentIndex != fragment.fragmentIndex and len(currFragment.sequence) > 1: #They're not the same operon and the operon is not a singleton
+                    #Step 2: Check if the gap exists within another operon
+                    genesMatched = checkSequence(genes, currFragment.sequence)
+                    if genesMatched != 0 and genesMatched == len(genes):
+                        found = True
+                        #Indicate the gap is a duplication
+                        duplicationSizes, duplicationDetails = handleDuplicationDetails(duplicationSizes, duplicationDetails, genes, startIndex, endIndex, gap, positions, fragment)
+                        #Remove the duplicated region
+                        del gap[startIndex:endIndex]
+                        del positions[startIndex:endIndex]
+                        #startIndex = endIndex
+                        #endIndex += windowSize
+                        break #Break out of the for loop
+        if found == False: #We did not find a sequence of genes to match the gap so shift the window
+            startIndex+=1
+            endIndex+=1
+        
+        if (startIndex + windowSize) > len(gap):
+            #Reduce and reset starting position of the window
+            windowSize = min(windowSize-1, len(gap))
+            startIndex = 0
+            endIndex = startIndex + windowSize
+            
+    return duplicationSizes, duplicationDetails, gap, positions
+
+######################################################
+# checkSequence
+# Parameters:
+# Description: checks if the genes provided exist in a given sequence
+######################################################
+def checkSequence(genes, sequence):
+    genesMatched = 0
+    for x in range(0, len(sequence)): #Iterate over all genes in sequence
+        if genes[0] == sequence[x] and genesMatched == 0: #If the first gene matches in the sequence and we don't have an existing match then check if this is potentially a match for the gap
+            for y in range(0, len(genes)): #Iterates over all of the genes in the gap
+                if (x+y) < len(sequence) and genes[y] == sequence[y+x]: #Match sure we don't go out of bounds and the genes match
+                    genesMatched+=1
+            if genesMatched != len(genes): #Reset the counter if we don't find a match for the gap
+                genesMatched = 0    
+    return genesMatched
+
+######################################################
+# handleDuplicationDetails
+# Parameters:
+# Description: Stores size of duplication and constructs a string of the duplication
+######################################################
+def handleDuplicationDetails(duplicationSizes, duplicationDetails, genes, startIndex, endIndex, gap, positions, fragment):
+    duplicationSizes.append(len(genes))
+    duplicateGenes = gap[startIndex:endIndex]
+    duplicatePositions = positions[startIndex:endIndex]
+    
+    #Creates a string containing the genes and their position
+    tempString = ''
+    for p in range(0, len(duplicateGenes)):
+        gene = duplicateGenes[p]
+        pos = duplicatePositions[p]
+        if fragment.isNegativeOrientation == False: #Computes position based on whether the operon was originally in the negative orientation
+            genePos = pos + fragment.startPositionInGenome
+        else:
+            genePos = fragment.startPositionInGenome + len(fragment.sequence) - pos - 1
+        if fragment.isNegativeOrientation:
+            tempString = gene + ' ' + str(genePos) + ', ' + tempString
+        else:
+            tempString += gene + ' ' + str(genePos) + ', '
+    tempString = tempString[0:(len(tempString) - 2)]
+    duplicationDetails += tempString + ';' #This indicates end of duplication fragment
+    
+    return duplicationSizes, duplicationDetails
 
 ######################################################
 # reduceSingletonDeletions
