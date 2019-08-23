@@ -367,8 +367,9 @@ def main():
 #            subprocess.Popen(appCommand, shell=True).wait()
             appStartTime = time.time()
             p = subprocess.Popen(['python', 'main.py', tree, testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            appRunTime = time.time() - appStartTime
+            ##appRunTime = time.time() - appStartTime  #this is done WHILE the process is running!
             out, err = p.communicate()
+            appRunTime = time.time() - appStartTime
             with open(testSetDir + '/appTestingOutput.txt', "w+") as f:
                 f.write(out)
                 f.write(err)
@@ -539,8 +540,9 @@ def main():
                 if neighbour:
                     appNeighbourStartTime = time.time()
                     p = subprocess.Popen(['python', 'main.py', 'tree2LeafNeighbour.dnd', testSetDir], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    appNeighbourRunTime = time.time() - appNeighbourStartTime
+                    ##appNeighbourRunTime = time.time() - appNeighbourStartTime  ##This is done WHILE the process is running!
                     out, err = p.communicate()
+                    appNeighbourRunTime = time.time() - appNeighbourStartTime
                     with open(testSetDir + '/appNeighbourTestingOutput.txt', "w+") as f:
                         f.write(out)
                         f.write(err)
